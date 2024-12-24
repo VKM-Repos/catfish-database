@@ -1,6 +1,6 @@
 ## Catfish Database Project - Frontend
 
-Choosing a technology stack is a very subjective matter, if you happen to like using `Vite`, `Tailwind`, `TS` and `shadcn ui` and more to build React SPA applications, then give it a try.
+Welcome to the frontend repo for the Catfish database project
 
 ## Run
 

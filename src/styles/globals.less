@@ -4,57 +4,131 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+    --primary-1: #f0e8f4;
+    --primary-2: #d8c4e3;
+    --primary-3: #b188c7;
+    --primary-4: #8c4ead;
+    --primary-5: #651391;
+    --primary-6: #4c0e6d;
+    --primary-7: #320948;
+    --primary-8: #190524;
+    --secondary-1: #fffaf6;
+    --secondary-2: #fef2e6;
+    --secondary-3: #fde4ce;
+    --secondary-4: #fdd8b6;
+    --secondary-5: #fccb9e;
+    --secondary-6: #bd9876;
+    --secondary-7: #7e654f;
+    --secondary-8: #3f3327;
+    --neutral-1: #ecedee;
+    --neutral-2: #d0d1d4;
+    --neutral-3: #a1a4aa;
+    --neutral-4: #737780;
+    --neutral-5: #444955;
+    --neutral-6: #333740;
+    --neutral-7: #22252b;
+    --neutral-8: #111215;
+    --warning-1: #fff0e5;
+    --warning-2: #ffdabf;
+    --warning-3: #ffb580;
+    --warning-4: #ff9040;
+    --warning-5: #ff6b00;
+    --warning-6: #bf5000;
+    --warning-7: #803600;
+    --warning-8: #401b00;
+    --error-1: #ffe5e5;
+    --error-2: #ffbfbf;
+    --error-3: #ff8080;
+    --error-4: #ff4040;
+    --error-5: #f00;
+    --error-6: #bf0000;
+    --error-7: #800000;
+    --error-8: #400000;
+    --success-1: #e7f6e5;
+    --success-2: #c2e8bf;
+    --success-3: #86d27f;
+    --success-4: #4abc40;
+    --success-5: #0da500;
+    --success-6: #109204;
+    --success-7: #0c6304;
+    --success-8: #074302;
+    --info-1: #e5e7ff;
+    --info-2: #bfc2ff;
+    --info-3: #8085ff;
+    --info-4: #4047ff;
+    --info-5: #000aff;
+    --info-6: #0008bf;
+    --info-7: #000580;
+    --info-8: #000340;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --primary-1: #190524;
+    --primary-2: #320948;
+    --primary-3: #4c0e6d;
+    --primary-4: #651391;
+    --primary-5: #8c4ead;
+    --primary-6: #b188c7;
+    --primary-7: #d8c4e3;
+    --primary-8: #f0e8f4;
+    --secondary-1: #3f3327;
+    --secondary-2: #7e654f;
+    --secondary-3: #bd9876;
+    --secondary-4: #fccb9e;
+    --secondary-5: #fdd8b6;
+    --secondary-6: #fde4ce;
+    --secondary-7: #fef2e6;
+    --secondary-8: #fffaf6;
+    --neutral-1: #111215;
+    --neutral-2: #22252b;
+    --neutral-3: #333740;
+    --neutral-4: #444955;
+    --neutral-5: #737780;
+    --neutral-6: #a1a4aa;
+    --neutral-7: #d0d1d4;
+    --neutral-8: #ecedee;
+    --warning-1: #401b00;
+    --warning-2: #803600;
+    --warning-3: #bf5000;
+    --warning-4: #ff6b00;
+    --warning-5: #ff9040;
+    --warning-6: #ffb580;
+    --warning-7: #ffdabf;
+    --warning-8: #fff0e5;
+    --error-1: #400000;
+    --error-2: #800000;
+    --error-3: #bf0000;
+    --error-4: #f00;
+    --error-5: #ff4040;
+    --error-6: #ff8080;
+    --error-7: #ffbfbf;
+    --error-8: #ffe5e5;
+    --success-1: #074302;
+    --success-2: #0c6304;
+    --success-3: #109204;
+    --success-4: #0da500;
+    --success-5: #4abc40;
+    --success-6: #86d27f;
+    --success-7: #c2e8bf;
+    --success-8: #e7f6e5;
+    --info-1: #000340;
+    --info-2: #000580;
+    --info-3: #0008bf;
+    --info-4: #000aff;
+    --info-5: #4047ff;
+    --info-6: #8085ff;
+    --info-7: #bfc2ff;
+    --info-8: #e5e7ff;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-neutral-3;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-neutral-1 text-neutral-8;
   }
 }

@@ -1,28 +1,54 @@
 import React from 'react'
-import { createHashRouter, RouteObject } from 'react-router-dom'
+import { createBrowserRouter, RouteObject, Navigate } from 'react-router-dom'
+import { allRoutes } from './routes'
 import ErrorPage from './components/error-page'
-import { getDefaultLayout } from './components/layout'
-import HomePage from './pages/home'
+import { getDefaultLayout } from './components/layouts'
+import { isAuthenticated } from './lib/auth'
+import { DashboardLayout } from './components/layouts/dashboard'
+import { AuthLayout } from './components/layouts/auth'
 
-export const routerObjects: RouteObject[] = [
-  {
-    path: '/',
-    Component: HomePage,
-  },
-]
+const publicRoutes = ['/login', '/forget-password', '/reset-password']
 
-export function createRouter(): ReturnType<typeof createHashRouter> {
-  const routeWrappers = routerObjects.map((router) => {
-    // @ts-ignore TODO: better type support
-    const getLayout = router.Component?.getLayout || getDefaultLayout
-    const Component = router.Component!
-    const page = getLayout(<Component />)
+function isPublicRoute(path: string) {
+  return publicRoutes.includes(path)
+}
+
+function ProtectedRoute({ element }: { element: React.ReactNode }) {
+  const auth = isAuthenticated()
+  return auth ? element : <Navigate to="/login" replace />
+}
+
+export function createRouter() {
+  const routeWrappers: RouteObject[] = allRoutes.map((route) => {
+    const getLayout = route.Component?.getLayout || getDefaultLayout
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const Component = route.Component!
+
+    const isProtected = !isPublicRoute(route.path)
+
+    const page = getLayout(
+      isProtected ? (
+        <ProtectedRoute
+          element={
+            <DashboardLayout>
+              <Component />
+            </DashboardLayout>
+          }
+        />
+      ) : (
+        <AuthLayout>
+          <Component />
+        </AuthLayout>
+      ),
+    )
+
     return {
-      ...router,
+      ...route,
       element: page,
       Component: null,
       ErrorBoundary: ErrorPage,
     }
   })
-  return createHashRouter(routeWrappers)
+
+  return createBrowserRouter(routeWrappers)
 }

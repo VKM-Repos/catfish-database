@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
 import { Popover, PopoverArrow, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -7,6 +8,7 @@ import { Languages, ChevronDown } from 'lucide-react'
 import i18next from 'i18next'
 
 const getLocaleDisplayName = (locale: string, displayLocale?: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const displayName = new Intl.DisplayNames([displayLocale || locale], {
     type: 'language',
   }).of(locale)!
@@ -49,7 +51,7 @@ const LanguageSelector = () => {
                 onClick={() => languageChanged(locale)}
                 className={cn(`relative w-auto cursor-pointer select-none px-4 py-2 text-black hover:bg-zinc-200`)}
               >
-                <span className={cn(`block truncate`, isSelected && 'font-bold text-primary')}>{name}</span>
+                <span className={cn(`block truncate`, isSelected && 'text-primary font-bold')}>{name}</span>
               </div>
             )
           })}

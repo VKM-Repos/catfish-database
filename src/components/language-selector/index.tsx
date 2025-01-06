@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useTranslation } from 'react-i18next'
 import { useCallback, useMemo } from 'react'
 import { Popover, PopoverArrow, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -7,6 +8,7 @@ import { Languages, ChevronDown } from 'lucide-react'
 import i18next from 'i18next'
 
 const getLocaleDisplayName = (locale: string, displayLocale?: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const displayName = new Intl.DisplayNames([displayLocale || locale], {
     type: 'language',
   }).of(locale)!

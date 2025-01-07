@@ -47,7 +47,7 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                     placeholder={rest.placeholder}
                     onChange={onChange}
                     value={value ?? ''}
-                    className={`rounded-[4px] px-3 py-2 font-medium ${
+                    className={`rounded-[4px] px-3 py-2 font-medium focus-visible:ring-0 ${
                       error ? 'border-red-500' : 'border-neutral-2'
                     }  placeholder:text-black/30 ${className}`}
                     disabled={disabled}
@@ -55,7 +55,7 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                     autoComplete="on"
                   />
                   {rest.type === 'email' && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
                       <img src="src/assets/icons/letter.svg" alt="message icon" />
                     </div>
                   )}
@@ -65,7 +65,7 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                       onClick={() => setPasswordVisibility(!isPasswordVisible)}
                     >
                       {isPasswordVisible ? (
-                        <img src="src/assets/icons/eye-closed.svg" alt="eye on icon" />
+                        <img src="src/assets/icons/eye.svg" alt="eye on icon" />
                       ) : (
                         <img src="src/assets/icons/eye-closed.svg" alt="eye on icon" />
                       )}

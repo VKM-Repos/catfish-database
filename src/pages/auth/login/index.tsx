@@ -4,11 +4,11 @@ import PageTransition from 'src/components/animations/page-transition'
 import FormInput from 'src/components/form-input'
 import { Card } from 'src/components/layouts/card'
 import { Container } from 'src/components/layouts/container'
-import { Heading } from 'src/components/layouts/heading'
 import { Form } from 'src/components/ui/form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from 'src/components/ui/button'
+import CardHeader from 'src/components/layouts/card-header'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
@@ -26,15 +26,9 @@ export default function Login() {
 
   return (
     <PageTransition>
-      <Container>
-        <Card className="mx-auto w-full max-w-[30rem] font-inter">
-          <div className="mx-auto flex flex-col items-center gap-6">
-            <div className="mx-auto flex flex-col items-center gap-5">
-              <img src="./src/assets/icons/favicon.svg" alt="Organisation logo" />
-              <Heading className="text-2xl font-bold text-primary-4">F.A.O</Heading>
-            </div>
-            <Heading className="text-xl font-medium text-black/80">Log in to access your account</Heading>
-          </div>
+      <Container className="w-fit">
+        <Card className="mx-auto w-full min-w-[30rem] max-w-screen-xl font-inter" footer={true}>
+          <CardHeader />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <FormInput
@@ -54,10 +48,13 @@ export default function Login() {
               <Button
                 type="submit"
                 variant={form.formState.isValid ? 'primary' : 'ghost'}
-                className="my-4 focus:outline-none"
+                className="my-4 flex gap-2 px-3.5 py-2.5 focus:outline-none"
                 disabled={!form.formState.isValid}
               >
                 Log in
+                <span>
+                  <img src="src/assets/icons/arrow-right.svg" />
+                </span>
               </Button>
             </form>
           </Form>

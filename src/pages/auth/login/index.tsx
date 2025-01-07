@@ -27,7 +27,7 @@ export default function Login() {
   return (
     <PageTransition>
       <Container>
-        <Card className="mx-auto w-full max-w-[30rem]">
+        <Card className="mx-auto w-full max-w-[30rem] font-inter">
           <div className="mx-auto flex flex-col items-center gap-6">
             <div className="mx-auto flex flex-col items-center gap-5">
               <img src="./src/assets/icons/favicon.svg" alt="Organisation logo" />
@@ -36,8 +36,14 @@ export default function Login() {
             <Heading className="text-xl font-medium text-black/80">Log in to access your account</Heading>
           </div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-              <FormInput label="Email address" placeholder="johndoe@email.com" {...form.register('email')} required />
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+              <FormInput
+                label="Email address"
+                type="email"
+                placeholder="johndoe@email.com"
+                {...form.register('email')}
+                required
+              />
               <FormInput
                 label="Password"
                 type="password"

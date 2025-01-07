@@ -54,6 +54,11 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                     readOnly={readOnly}
                     autoComplete="on"
                   />
+                  {rest.type === 'email' && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer">
+                      <img src="src/assets/icons/letter.svg" alt="message icon" />
+                    </div>
+                  )}
                   {rest.type === 'password' && (
                     <div
                       className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer"

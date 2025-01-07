@@ -83,6 +83,9 @@ module.exports = {
           8: 'var(--info-8)',
         },
       },
+      fontFamily: {
+        'inter': ['Inter', 'serif'],
+      },
       backgroundImage: {
        "auth-background": "url('./src/assets/images/background.png')",
       },

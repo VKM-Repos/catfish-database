@@ -9,6 +9,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from 'src/components/ui/button'
 import CardHeader from 'src/components/layouts/card-header'
+import { Checkbox } from 'src/components/ui/checkbox'
+import { Link } from 'react-router-dom'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
@@ -28,7 +30,7 @@ export default function Login() {
     <PageTransition>
       <Container className="w-fit">
         <Card className="mx-auto w-full min-w-[30rem] max-w-screen-xl font-inter" footer={true}>
-          <CardHeader />
+          <CardHeader heading_string="Log in to access your account" />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <FormInput
@@ -56,6 +58,17 @@ export default function Login() {
                   <img src="src/assets/icons/arrow-right.svg" />
                 </span>
               </Button>
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center gap-3">
+                  <Checkbox id="remember" />
+                  <label htmlFor="remember" className="text-xs text-neutral-5">
+                    Remember me
+                  </label>
+                </div>
+                <Link to="/reset-password" className="text-sm text-primary-5 underline">
+                  Forgot password
+                </Link>
+              </div>
             </form>
           </Form>
         </Card>

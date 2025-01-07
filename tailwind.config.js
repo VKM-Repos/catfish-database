@@ -83,6 +83,9 @@ module.exports = {
           8: 'var(--info-8)',
         },
       },
+      backgroundImage: {
+       "auth-background": "url('./src/assets/images/background.png')",
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

@@ -36,7 +36,7 @@ const passwordSchema = z
 
 type PasswordData = z.infer<typeof passwordSchema>
 
-export default function ChoosePassword() {
+export default function ChoosePassword({ handleNext }: { handleNext: () => void }) {
   const { t } = useTranslation('translation')
   const form = useForm<PasswordData>({ resolver: zodResolver(passwordSchema) })
 

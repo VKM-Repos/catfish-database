@@ -36,6 +36,7 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
 
   const onSubmit = (data: ResetData) => {
     console.log(data)
+    handleNext()
   }
 
   return (

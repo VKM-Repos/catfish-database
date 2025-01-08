@@ -9,6 +9,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from 'src/components/ui/button'
 import CardHeader from 'src/components/layouts/card-header'
+import { Link } from 'react-router-dom'
+import { ReactNode } from 'react'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
@@ -21,6 +23,16 @@ export default function ResetPassword() {
 
   const heading = 'Reset your Password'
   const subheading = "Enter your email address, and we'll send you instructions to reset your password."
+  const footerContent: ReactNode = (
+    <span className="text-sm">
+      <span className="text-neutral-5">Remember Password? </span>
+      <span>
+        <Link to="/login" className="font-semibold text-neutral-2">
+          Login
+        </Link>
+      </span>
+    </span>
+  )
 
   const onSubmit = (data: ResetData) => {
     console.log(data)
@@ -29,7 +41,7 @@ export default function ResetPassword() {
   return (
     <PageTransition>
       <Container className="w-fit">
-        <Card className="mx-auto w-full max-w-[29rem]  font-inter" footer={true}>
+        <Card className="mx-auto w-full max-w-[29rem]  font-inter" footer={true} footerContent={footerContent}>
           <CardHeader heading_string={heading} subheading={subheading} />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">

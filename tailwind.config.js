@@ -84,10 +84,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        'inter': ['Inter', 'serif'],
+        inter: ['Inter', 'serif'],
       },
       backgroundImage: {
-       "auth-background": "url('./src/assets/images/background.png')",
+        'auth-background': "url('./src/assets/images/background.png')",
       },
       borderRadius: {
         lg: 'var(--radius)',

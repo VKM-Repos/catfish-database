@@ -4,14 +4,12 @@ Welcome to the frontend repo for the Catfish database project
 
 ## Run
 
-
 ```sh
 yarn
 yarn dev
 ```
 
 We prefer `Yarn` as package manager, If you want to use `pnpm` or `npm`, feel free to use
-
 
 ## Tech Stack
 
@@ -33,7 +31,6 @@ We prefer `Yarn` as package manager, If you want to use `pnpm` or `npm`, feel fr
 - [husky](https://typicode.github.io/husky/#/)/[lint-staged](https://github.com/okonet/lint-staged)
 - [commitlint](https://commitlint.js.org/)
 
-
 ## Project Structure
 
 ```sh
@@ -52,6 +49,4 @@ src
 └── vite-env.d.ts
 ```
 
-
 Enjoy building.
-

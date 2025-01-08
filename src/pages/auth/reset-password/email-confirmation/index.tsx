@@ -12,7 +12,7 @@ export default function Confirmation() {
   const heading = 'Email Sent!'
   const subheading = 'Check your inbox for instructions on how to reset your password.'
   const footerContent: ReactNode = (
-    <div className="text-sm">
+    <div className="flex gap-3 text-sm">
       <span className="text-neutral-5">Didn&apos;t receive an email? </span>
       <span>
         <Link to="/login" className="font-semibold text-neutral-2">

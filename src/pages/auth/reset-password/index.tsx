@@ -27,7 +27,7 @@ export default function ResetPassword() {
     <span className="text-sm">
       <span className="text-neutral-5">Remember Password? </span>
       <span>
-        <Link to="/login" className="font-semibold text-neutral-2">
+        <Link to="/login" className="font-semibold text-neutral-6">
           Login
         </Link>
       </span>

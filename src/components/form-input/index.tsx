@@ -48,20 +48,26 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                     onChange={onChange}
                     value={value ?? ''}
                     className={`rounded-[4px] px-3 py-2 font-medium focus-visible:ring-0 ${
-                      error ? 'border-red-500' : 'border-neutral-2'
+                      error ? 'border-red-500 bg-error-1' : 'border-neutral-2'
                     }  placeholder:text-black/30 ${className}`}
                     disabled={disabled}
                     readOnly={readOnly}
                     autoComplete="on"
                   />
                   {rest.type === 'email' && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 transform">
+                    <div
+                      className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer${
+                        error ? 'border-red-500' : 'border-neutral-2'
+                      }`}
+                    >
                       <img src="src/assets/icons/letter.svg" alt="message icon" />
                     </div>
                   )}
                   {rest.type === 'password' && (
                     <div
-                      className="absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer"
+                      className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer${
+                        error ? 'border-red-500' : 'border-neutral-2'
+                      }`}
                       onClick={() => setPasswordVisibility(!isPasswordVisible)}
                     >
                       {isPasswordVisible ? (

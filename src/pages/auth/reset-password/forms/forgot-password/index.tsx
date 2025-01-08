@@ -58,7 +58,7 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
                 // variant={form.formState.isValid ? 'primary' : 'ghost'}
                 variant="primary"
                 className="my-4 flex gap-2 px-3.5 py-2.5 focus:outline-none"
-                disabled={!form.formState.isValid}
+                // disabled={!form.formState.isValid}
               >
                 Reset password
               </Button>

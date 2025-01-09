@@ -24,8 +24,8 @@ const passwordSchema = z
       .refine((value) => /\d/.test(value), {
         message: 'Password must contain at least one number',
       })
-      .refine((value) => /[@$!%*?&]/.test(value), {
-        message: 'Password must contain at least one special character',
+      .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
+        message: 'Password must contain at least one symbol',
       }),
     confirmPassword: z.string(),
   })

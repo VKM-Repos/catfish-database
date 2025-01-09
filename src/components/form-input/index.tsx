@@ -60,20 +60,28 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                         error ? 'border-red-500' : 'border-neutral-2'
                       }`}
                     >
-                      <img src="src/assets/icons/letter.svg" alt="message icon" />
+                      <img src="/src/assets/icons/letter.svg" alt="message icon" />
                     </div>
                   )}
                   {rest.type === 'password' && (
                     <div
                       className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer${
-                        error ? 'border-red-500' : 'border-neutral-2'
+                        error ? ' border-red-500 text-red-500' : 'border-neutral-2 text-neutral-2'
                       }`}
                       onClick={() => setPasswordVisibility(!isPasswordVisible)}
                     >
                       {isPasswordVisible ? (
-                        <img src="src/assets/icons/eye.svg" alt="eye on icon" />
+                        <img
+                          className={`${error ? 'text-red-500' : 'text-neutral-2'}`}
+                          src="/src/assets/icons/eye.svg"
+                          alt="eye on icon"
+                        />
                       ) : (
-                        <img src="src/assets/icons/eye-closed.svg" alt="eye on icon" />
+                        <img
+                          className={`${error ? 'text-red-500' : 'text-neutral-2'}`}
+                          src="/src/assets/icons/eye-closed.svg"
+                          alt="eye on icon"
+                        />
                       )}
                     </div>
                   )}

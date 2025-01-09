@@ -4,8 +4,8 @@ import PageTransition from 'src/components/animations/page-transition'
 import * as SolarIconSet from 'solar-icon-set'
 import { PageHeader } from 'src/components/layouts/page-header'
 
-export default function AuditLog() {
-  const title = 'Audit Log'
+export default function Profile() {
+  const title = 'Profile'
   const actions = <></> // button goes here
   return (
     <PageTransition>

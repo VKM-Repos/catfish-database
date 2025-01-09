@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from 'src/components/ui/button'
 import CardHeader from 'src/components/layouts/card-header'
 import { Checkbox } from 'src/components/ui/checkbox'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
@@ -21,9 +21,11 @@ type LoginData = z.infer<typeof formSchema>
 export default function Login() {
   const { t } = useTranslation('translation')
   const form = useForm<LoginData>({ resolver: zodResolver(formSchema) })
+  const navigate = useNavigate()
 
   const onSubmit = (data: LoginData) => {
     console.log(data)
+    navigate('/dashboard')
   }
 
   return (

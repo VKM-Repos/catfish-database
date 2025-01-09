@@ -4,21 +4,16 @@ import ForgotPasswordPage from './pages/auth/forgot-password'
 import ResetPasswordPage from './pages/auth/reset-password'
 import AuditLogPage from './pages/dashboard/audit-log'
 import SettingsPage from './pages/dashboard/settings'
+import AccountPage from './pages/dashboard/account'
+import ProfilePage from './pages/dashboard/profile'
 import ReportsPage from './pages/dashboard/reports'
 import DashboardPage from './pages/dashboard'
-// import AnalyticsPage from './pages/dashboard/analytics'
-// import UsersPage from './pages/dashboard/users'
-// import SystemPage from './pages/dashboard/system'
-
-// // Nested Dashboard Pages
-// import UserProfilePage from './pages/dashboard/users/profile'
-// import UserSettingsPage from './pages/dashboard/users/settings'
-// import SystemLogsPage from './pages/dashboard/system/logs'
-// import SystemConfigPage from './pages/dashboard/system/config'
-
-// // Dynamic Pages
-// import UserDetailPage from './pages/dashboard/users/[id]'
-// import SystemDetailPage from './pages/dashboard/system/[id]'
+import HelpCenterPage from './pages/dashboard/help-center'
+import PrivacyPolicyPage from './pages/dashboard/privacy-policy'
+import FarmersPage from './pages/dashboard/farmers'
+import ClusterManagersPage from './pages/dashboard/cluster-managers'
+import ClustersPage from './pages/dashboard/system/clusters'
+import PermissionsPage from './pages/dashboard/system/permissions'
 
 export type CustomComponent = React.ComponentType & {
   getLayout?: (page: React.ReactElement) => React.ReactNode
@@ -32,18 +27,17 @@ export const authRoutes = [
 
 export const dashboardRoutes = [
   { path: '/', Component: DashboardPage as CustomComponent },
-  { path: '/audit-log', Component: AuditLogPage as CustomComponent },
+  { path: '/farmers', Component: FarmersPage as CustomComponent },
+  { path: '/cluster-managers', Component: ClusterManagersPage as CustomComponent },
   { path: '/reports', Component: ReportsPage as CustomComponent },
   { path: '/settings', Component: SettingsPage as CustomComponent },
-  //   { path: '/analytics', Component: AnalyticsPage as CustomComponent },
-  //   { path: '/users', Component: UsersPage as CustomComponent },
-  //   { path: '/users/profile', Component: UserProfilePage as CustomComponent },
-  //   { path: '/users/settings', Component: UserSettingsPage as CustomComponent },
-  //   { path: '/users/:id', Component: UserDetailPage as CustomComponent }, // Dynamic route
-  //   { path: '/system', Component: SystemPage as CustomComponent },
-  //   { path: '/system/logs', Component: SystemLogsPage as CustomComponent },
-  //   { path: '/system/config', Component: SystemConfigPage as CustomComponent },
-  //   { path: '/system/:id', Component: SystemDetailPage as CustomComponent }, // Dynamic route
+  { path: '/account', Component: AccountPage as CustomComponent },
+  { path: '/profile', Component: ProfilePage as CustomComponent },
+  { path: '/help-center', Component: HelpCenterPage as CustomComponent },
+  { path: '/privacy-policy', Component: PrivacyPolicyPage as CustomComponent },
+  { path: '/system/audit-log', Component: AuditLogPage as CustomComponent },
+  { path: '/system/clusters', Component: ClustersPage as CustomComponent },
+  { path: '/system/permissions', Component: PermissionsPage as CustomComponent },
 ]
 
 export const allRoutes = [...authRoutes, ...dashboardRoutes]

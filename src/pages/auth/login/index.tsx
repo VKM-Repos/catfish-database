@@ -16,6 +16,7 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
   password: z.string().min(1, { message: 'Please fill this field' }),
 })
+
 type LoginData = z.infer<typeof formSchema>
 
 export default function Login() {
@@ -52,11 +53,11 @@ export default function Login() {
               <div className="flex items-center justify-between ">
                 <div className="flex items-center gap-3">
                   <Checkbox id="remember" />
-                  <label htmlFor="remember" className="text-neutral-5 text-xs">
+                  <label htmlFor="remember" className="text-xs text-neutral-500">
                     Remember me
                   </label>
                 </div>
-                <Link to="/reset-password" className="text-primary-5 text-sm underline">
+                <Link to="/reset-password" className="text-sm text-primary-500 underline">
                   Forgot password
                 </Link>
               </div>

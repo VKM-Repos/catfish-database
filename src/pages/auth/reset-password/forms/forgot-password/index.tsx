@@ -24,10 +24,10 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
   const heading = 'Reset your Password'
   const subheading = "Enter your email address, and we'll send you instructions to reset your password."
   const footerContent: ReactNode = (
-    <span className="text-sm">
-      <span className="text-neutral-500">Remember Password? </span>
+    <span className="cursor-default text-sm">
+      <span className="text-neutral-400">Remember your password? </span>
       <span>
-        <Link to="/login" className="font-semibold text-neutral-600">
+        <Link to="/login" className="pointer-events-none font-semibold text-neutral-700">
           Login
         </Link>
       </span>

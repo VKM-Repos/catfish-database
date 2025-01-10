@@ -57,7 +57,7 @@ export default function Login() {
                     Remember me
                   </label>
                 </div>
-                <Link to="/reset-password" className="text-sm text-primary-500 underline">
+                <Link to="/forget-password" className="text-sm text-primary-500 underline">
                   Forgot password
                 </Link>
               </div>

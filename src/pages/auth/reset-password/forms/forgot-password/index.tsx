@@ -25,9 +25,9 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
   const subheading = "Enter your email address, and we'll send you instructions to reset your password."
   const footerContent: ReactNode = (
     <span className="text-sm">
-      <span className="text-neutral-5">Remember Password? </span>
+      <span className="text-neutral-500">Remember Password? </span>
       <span>
-        <Link to="/login" className="font-semibold text-neutral-6">
+        <Link to="/login" className="font-semibold text-neutral-600">
           Login
         </Link>
       </span>
@@ -42,7 +42,11 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
   return (
     <PageTransition>
       <Container className="w-fit">
-        <Card className="mx-auto w-full max-w-[29rem]  font-inter" footer={true} footerContent={footerContent}>
+        <Card
+          className="mx-auto flex w-full max-w-[29rem] flex-col gap-6 font-inter"
+          footer={true}
+          footerContent={footerContent}
+        >
           <CardHeader heading_string={heading} subheading={subheading} />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -57,7 +61,7 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
                 type="submit"
                 // variant={form.formState.isValid ? 'primary' : 'ghost'}
                 variant="primary"
-                className="my-4 flex gap-2 px-3.5 py-2.5 focus:outline-none"
+                className="my-4 flex gap-2 focus:outline-none"
                 // disabled={!form.formState.isValid}
               >
                 Reset password

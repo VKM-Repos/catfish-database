@@ -15,9 +15,9 @@ export default function ResetComplete() {
   return (
     <PageTransition>
       <Container className="w-fit">
-        <Card className="mx-auto w-full max-w-[29rem]  font-inter">
+        <Card className="mx-auto w-full max-w-[29rem] font-inter">
           <CardHeader heading_string={heading} subheading={subheading} />
-          <Button variant="primary" className="my-4 flex w-full gap-2 px-3.5 py-2.5 focus:outline-none">
+          <Button variant="primary" className="my-4 flex w-full gap-2 focus:outline-none">
             <Link to="/login">Login</Link>
           </Button>
         </Card>

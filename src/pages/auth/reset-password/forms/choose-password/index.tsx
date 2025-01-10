@@ -52,7 +52,7 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
   return (
     <PageTransition>
       <Container className="w-fit">
-        <Card className="mx-auto w-full max-w-[29rem]  font-inter">
+        <Card className="mx-auto flex w-full max-w-[29rem] flex-col gap-6 font-inter">
           <CardHeader heading_string={heading} subheading={subheading} />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -74,7 +74,7 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
                 type="submit"
                 // variant={form.formState.isValid ? 'primary' : 'ghost'}
                 variant="primary"
-                className="my-4 flex gap-2 px-3.5 py-2.5 focus:outline-none"
+                className="my-4 flex gap-2 focus:outline-none"
               >
                 Reset password
               </Button>

@@ -25,13 +25,13 @@ export default function Login() {
 
   const onSubmit = (data: LoginData) => {
     console.log(data)
-    navigate('/dashboard')
+    navigate('/')
   }
 
   return (
     <PageTransition>
       <Container className="w-fit">
-        <Card className="mx-auto w-full min-w-[30rem] max-w-screen-xl font-inter" footer={true}>
+        <Card className="mx-auto flex w-full min-w-[30rem] max-w-screen-xl flex-col gap-6 font-inter" footer={true}>
           <CardHeader heading_string="Log in to access your account" />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -49,10 +49,21 @@ export default function Login() {
                 {...form.register('password')}
                 required
               />
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center gap-3">
+                  <Checkbox id="remember" />
+                  <label htmlFor="remember" className="text-neutral-5 text-xs">
+                    Remember me
+                  </label>
+                </div>
+                <Link to="/reset-password" className="text-primary-5 text-sm underline">
+                  Forgot password
+                </Link>
+              </div>
               <Button
                 type="submit"
                 variant={form.formState.isValid ? 'primary' : 'ghost'}
-                className="my-4 flex gap-2 px-3.5 py-2.5 focus:outline-none"
+                className="my-4 flex gap-2 !px-4 !py-4 focus:outline-none"
                 disabled={!form.formState.isValid}
               >
                 Log in
@@ -60,17 +71,6 @@ export default function Login() {
                   <img src="src/assets/icons/arrow-right.svg" />
                 </span>
               </Button>
-              <div className="flex items-center justify-between ">
-                <div className="flex items-center gap-3">
-                  <Checkbox id="remember" />
-                  <label htmlFor="remember" className="text-xs text-neutral-5">
-                    Remember me
-                  </label>
-                </div>
-                <Link to="/reset-password" className="text-sm text-primary-5 underline">
-                  Forgot password
-                </Link>
-              </div>
             </form>
           </Form>
         </Card>

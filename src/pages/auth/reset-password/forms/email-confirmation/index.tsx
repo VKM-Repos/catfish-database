@@ -12,10 +12,10 @@ export default function Confirmation() {
   const heading = 'Email Sent!'
   const subheading = 'Check your inbox for instructions on how to reset your password.'
   const footerContent: ReactNode = (
-    <div className="mx-auto flex w-full max-w-fit gap-1 text-sm">
+    <div className="mx-auto flex w-full max-w-fit cursor-default gap-1 text-sm">
       <span className="text-neutral-400">Didn&apos;t receive an email? </span>
       <span>
-        <Link to="/login" className="font-semibold text-neutral-700">
+        <Link to="/login" className="pointer-events-none font-semibold text-neutral-700">
           Resend email
         </Link>
       </span>

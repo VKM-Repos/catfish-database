@@ -27,7 +27,7 @@ export default function ForgotPassword({ handleNext }: { handleNext: () => void 
     <span className="cursor-default text-sm">
       <span className="text-neutral-400">Remember your password? </span>
       <span>
-        <Link to="/login" className="pointer-events-none font-semibold text-neutral-700">
+        <Link to="/login" className="font-semibold text-neutral-700">
           Login
         </Link>
       </span>

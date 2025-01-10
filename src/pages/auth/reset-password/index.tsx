@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ForgotPassword from './forms/forgot-password'
-import Confirmation from './forms/email-confirmation'
 import ChoosePassword from './forms/choose-password'
 import ResetComplete from './forms/reset-complete'
 import { AnimatePresence } from 'framer-motion'
@@ -15,24 +13,10 @@ export default function ResetPassword() {
       setStep(step + 1)
     }
 
-    useEffect(() => {
-      if (step !== 2) return
-
-      const timer = setTimeout(() => {
-        setStep(3)
-      }, 4000)
-
-      return () => clearTimeout(timer)
-    }, [step])
-
     switch (step) {
       case 1:
-        return <ForgotPassword handleNext={handleNext} />
-      case 2:
-        return <Confirmation />
-      case 3:
         return <ChoosePassword handleNext={handleNext} />
-      case 4:
+      case 2:
         return <ResetComplete />
       default:
         return null

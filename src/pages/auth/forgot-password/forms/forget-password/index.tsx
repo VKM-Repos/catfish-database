@@ -17,7 +17,7 @@ const formSchema = z.object({
 })
 type ResetData = z.infer<typeof formSchema>
 
-export default function ForgotPassword({ handleNext }: { handleNext: () => void }) {
+export default function ForgetPassword({ handleNext }: { handleNext: () => void }) {
   const { t } = useTranslation('translation')
   const form = useForm<ResetData>({ resolver: zodResolver(formSchema) })
 

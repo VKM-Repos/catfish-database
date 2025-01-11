@@ -8,7 +8,7 @@ export default function Footer({ className = '', footerContent }: FooterProps) {
     <footer
       className={`mx-auto w-full rounded-sm bg-neutral-100 px-8 py-4 text-center text-sm text-neutral-400 ${className}`}
     >
-      {footerContent || 'Copyright @ FAO 2025'}
+      {footerContent || `Copyright @ FAO ${new Date().getFullYear()}`}
     </footer>
   )
 }

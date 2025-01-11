@@ -11,6 +11,7 @@ import { Button } from 'src/components/ui/button'
 import CardHeader from 'src/components/layouts/card-header'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { Link, useNavigate } from 'react-router-dom'
+import * as SolarIconSet from 'solar-icon-set'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
@@ -69,14 +70,7 @@ export default function Login() {
               >
                 Log in
                 <span>
-                  <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M11.7246 4.55803C11.9687 4.31395 12.3644 4.31395 12.6085 4.55803L17.6085 9.55803C17.8526 9.80211 17.8526 10.1978 17.6085 10.4419L12.6085 15.4419C12.3644 15.686 11.9687 15.686 11.7246 15.4419C11.4806 15.1978 11.4806 14.8021 11.7246 14.558L15.6577 10.625H3.83325C3.48807 10.625 3.20825 10.3451 3.20825 9.99997C3.20825 9.65479 3.48807 9.37497 3.83325 9.37497H15.6577L11.7246 5.44191C11.4806 5.19783 11.4806 4.80211 11.7246 4.55803Z"
-                      fill="currentColor"
-                    />
-                  </svg>
+                  <SolarIconSet.ArrowRight color="currentColor" size={20} iconStyle="Outline" />
                 </span>
               </Button>
             </form>

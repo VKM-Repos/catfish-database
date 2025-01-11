@@ -57,13 +57,7 @@ export default function ForgetPassword({ handleNext }: { handleNext: () => void 
                 {...form.register('email')}
                 required
               />
-              <Button
-                type="submit"
-                // variant={form.formState.isValid ? 'primary' : 'ghost'}
-                variant="primary"
-                className="my-4 flex gap-2 focus:outline-none"
-                // disabled={!form.formState.isValid}
-              >
+              <Button type="submit" variant="primary" className="my-4 flex gap-2 focus:outline-none">
                 Reset password
               </Button>
             </form>

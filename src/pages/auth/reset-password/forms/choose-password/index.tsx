@@ -70,12 +70,7 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
                 {...form.register('confirmPassword')}
                 required
               />
-              <Button
-                type="submit"
-                // variant={form.formState.isValid ? 'primary' : 'ghost'}
-                variant="primary"
-                className="my-4 flex gap-2 focus:outline-none"
-              >
+              <Button type="submit" variant="primary" className="my-4 flex gap-2 focus:outline-none">
                 Reset password
               </Button>
             </form>

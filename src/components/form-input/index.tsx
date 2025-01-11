@@ -61,7 +61,9 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                         error ? 'border-red-500' : 'border-neutral-200'
                       }`}
                     >
-                      <div className={`${error ? 'text-error-500' : 'text-[#444955]'}`}>
+                      <div
+                        className={`${error ? 'text-error-500' : 'text-[#444955]'} flex items-center justify-center`}
+                      >
                         <SolarIconSet.Letter size={20} color="currentColor" iconStyle="Outline" />
                       </div>
                     </div>
@@ -74,11 +76,15 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                       onClick={() => setPasswordVisibility(!isPasswordVisible)}
                     >
                       {isPasswordVisible ? (
-                        <div className={`${error ? 'text-error-500' : 'text-[#444955]'}`}>
+                        <div
+                          className={`${error ? 'text-error-500' : 'text-[#444955]'} flex items-center justify-center`}
+                        >
                           <SolarIconSet.EyeClosed size={20} color="currentColor" iconStyle="Outline" />
                         </div>
                       ) : (
-                        <div className={`${error ? 'text-error-500' : 'text-[#444955]'}`}>
+                        <div
+                          className={`${error ? 'text-error-500' : 'text-[#444955]'} flex items-center justify-center`}
+                        >
                           <SolarIconSet.Eye size={20} color="currentColor" iconStyle="Outline" />
                         </div>
                       )}

@@ -85,6 +85,12 @@ module.exports = {
         },
         hover: '#F0E8F4',
       },
+      fontFamily: {
+        inter: ['Inter', 'serif'],
+      },
+      backgroundImage: {
+        'auth-background': "url('./src/assets/images/background.png')",
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

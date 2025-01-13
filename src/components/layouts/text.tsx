@@ -2,6 +2,7 @@ type TextProps = {
   variant?: 'body' | 'caption' | 'label' | 'subtitle'
   children: React.ReactNode
   className?: string
+  size?: string
 }
 
 export const Text = ({ variant = 'body', children, className = '' }: TextProps) => {
@@ -9,13 +10,13 @@ export const Text = ({ variant = 'body', children, className = '' }: TextProps) 
 
   switch (variant) {
     case 'body':
-      baseStyle = 'text-sm leading-relaxed font-light'
+      baseStyle = 'text-sm leading-relaxed'
       break
     case 'caption':
       baseStyle = 'text-sm text-neutral-500'
       break
     case 'label':
-      baseStyle = 'text-sm font-semibold'
+      baseStyle = 'text-sm font-normal'
       break
     case 'subtitle':
       baseStyle = 'text-lg font-medium'

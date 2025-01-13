@@ -83,6 +83,7 @@ module.exports = {
           700: 'var(--info-700)',
           800: 'var(--info-800)',
         },
+        hover: '#F0E8F4',
       },
       fontFamily: {
         inter: ['Inter', 'serif'],

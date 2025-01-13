@@ -36,8 +36,8 @@ const AnchorButton = React.forwardRef<HTMLAnchorElement, PropsWithChildren<Ancho
         className={cn(
           anchorButtonVariants({ size, className }),
           active
-            ? 'w-full border-2 border-primary-400 bg-none text-primary-600'
-            : 'border-2 border-transparent bg-none hover:bg-primary-200',
+            ? 'w-full border-2 border-primary-500 bg-none text-primary-600'
+            : 'border-2 border-transparent bg-none hover:bg-primary-100',
         )}
         ref={ref}
         {...props}

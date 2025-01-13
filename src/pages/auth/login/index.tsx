@@ -12,6 +12,7 @@ import CardHeader from 'src/components/layouts/card-header'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { Link, useNavigate } from 'react-router-dom'
 import * as SolarIconSet from 'solar-icon-set'
+import { Text } from 'src/components/layouts/text'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
@@ -54,9 +55,9 @@ export default function Login() {
               <div className="flex items-center justify-between ">
                 <div className="flex items-center gap-3">
                   <Checkbox id="remember" />
-                  <label htmlFor="remember" className="text-xs text-neutral-500">
+                  <Text variant="label" className=" text-neutral-400">
                     Remember me
-                  </label>
+                  </Text>
                 </div>
                 <Link to="/forget-password" className="text-sm text-primary-500 underline">
                   Forgot password
@@ -65,13 +66,11 @@ export default function Login() {
               <Button
                 type="submit"
                 variant={form.formState.isValid ? 'primary' : 'ghost'}
-                className="my-4 flex gap-2 !px-4 !py-4 focus:outline-none"
+                className="my-4 flex items-center justify-center gap-2 focus:outline-none"
                 disabled={!form.formState.isValid}
               >
-                Log in
-                <span>
-                  <SolarIconSet.ArrowRight color="currentColor" size={20} iconStyle="Outline" />
-                </span>
+                <Text variant="body">Log in</Text>
+                <SolarIconSet.ArrowRight color="currentColor" size={18} iconStyle="Outline" />
               </Button>
             </form>
           </Form>

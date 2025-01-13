@@ -34,7 +34,7 @@ export function Sidebar() {
                       onClick={() => handleDropdownToggle(label)}
                       className={`${
                         label === path ? 'text-inherit' : 'text-neutral-500'
-                      } flex w-full cursor-pointer items-center justify-between space-x-4 hover:text-black`}
+                      } flex w-full cursor-pointer items-center justify-between space-x-4 hover:text-primary-600`}
                     >
                       <span className="flex items-center justify-start gap-4">
                         <span className="mt-[6px]">{icon}</span>
@@ -63,8 +63,8 @@ export function Sidebar() {
                               <Link
                                 to={path!}
                                 className={`${
-                                  pathname === path ? 'text-inherit' : 'text-neutral-500'
-                                }  flex items-center justify-start space-x-4 hover:text-black`}
+                                  pathname === path ? '!font-semibold text-primary-500' : 'text-neutral-500'
+                                }  flex items-center justify-start space-x-4 hover:text-primary-600`}
                               >
                                 <Text>{label}</Text>
                               </Link>
@@ -80,7 +80,7 @@ export function Sidebar() {
                         to={path}
                         className={`${
                           pathname === path ? ' text-inherit' : 'text-neutral-500'
-                        } flex w-full items-center justify-start space-x-4 whitespace-nowrap hover:text-black`}
+                        } flex w-full items-center justify-start space-x-4 whitespace-nowrap hover:text-primary-600`}
                       >
                         <span className="mt-[6px]">{icon}</span>
                         <Text>{label}</Text>

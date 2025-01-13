@@ -5,6 +5,7 @@ import ResetPasswordPage from './pages/auth/reset-password'
 import AuditLogPage from './pages/dashboard/audit-log'
 import SettingsPage from './pages/dashboard/settings'
 import AccountPage from './pages/dashboard/account'
+import AdminsPage from './pages/dashboard/admins'
 import ProfilePage from './pages/dashboard/profile'
 import ReportsPage from './pages/dashboard/reports'
 import DashboardPage from './pages/dashboard'
@@ -32,6 +33,7 @@ export const dashboardRoutes = [
   { path: '/reports', Component: ReportsPage as CustomComponent },
   { path: '/settings', Component: SettingsPage as CustomComponent },
   { path: '/account', Component: AccountPage as CustomComponent },
+  { path: '/admins', Component: AdminsPage as CustomComponent },
   { path: '/profile', Component: ProfilePage as CustomComponent },
   { path: '/help-center', Component: HelpCenterPage as CustomComponent },
   { path: '/privacy-policy', Component: PrivacyPolicyPage as CustomComponent },

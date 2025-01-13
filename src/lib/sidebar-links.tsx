@@ -47,6 +47,11 @@ export const sideBarLinks: Record<string, SideBarLink[]> = {
       icon: <SolarIconSet.Structure color="currentColor" size={22} iconStyle="Outline" />,
     },
     {
+      label: 'Admins',
+      path: '/admins',
+      icon: <SolarIconSet.ShieldUser color="currentColor" size={22} iconStyle="Outline" />,
+    },
+    {
       label: 'Farmers',
       path: '/farmers',
       icon: <SolarIconSet.Water color="currentColor" size={22} iconStyle="Outline" />,

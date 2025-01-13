@@ -84,6 +84,12 @@ module.exports = {
           800: 'var(--info-800)',
         },
       },
+      fontFamily: {
+        inter: ['Inter', 'serif'],
+      },
+      backgroundImage: {
+        'auth-background': "url('./src/assets/images/background.png')",
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

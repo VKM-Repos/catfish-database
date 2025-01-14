@@ -5,6 +5,7 @@ import { Container } from 'src/components/layouts/container'
 import CardHeader from 'src/components/layouts/card-header'
 import { useNavigate } from 'react-router-dom'
 import { Button } from 'src/components/ui/button'
+import { Text } from 'src/components/layouts/text'
 
 export default function ResetComplete() {
   const { t } = useTranslation('translation')
@@ -23,7 +24,7 @@ export default function ResetComplete() {
             variant="primary"
             className="my-4 flex w-full gap-2 focus:outline-none"
           >
-            Login
+            <Text>Login</Text>
           </Button>
         </Card>
       </Container>

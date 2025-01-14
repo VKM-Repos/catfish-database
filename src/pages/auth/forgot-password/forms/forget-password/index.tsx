@@ -20,6 +20,9 @@ type ResetData = z.infer<typeof formSchema>
 export default function ForgetPassword({ handleNext }: { handleNext: () => void }) {
   const { t } = useTranslation('translation')
   const form = useForm<ResetData>({ resolver: zodResolver(formSchema) })
+  const {
+    formState: { isDirty },
+  } = form
 
   const heading = 'Reset your Password'
   const subheading = "Enter your email address, and we'll send you instructions to reset your password."
@@ -57,7 +60,12 @@ export default function ForgetPassword({ handleNext }: { handleNext: () => void 
                 {...form.register('email')}
                 required
               />
-              <Button type="submit" variant="primary" className="my-4 flex gap-2 focus:outline-none">
+              <Button
+                type="submit"
+                variant={isDirty ? 'primary' : 'ghost'}
+                className="my-4 flex gap-2 focus:outline-none"
+                disabled={!isDirty}
+              >
                 Reset password
               </Button>
             </form>

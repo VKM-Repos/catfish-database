@@ -15,9 +15,6 @@ export default function Settings() {
         <FlexBox direction="col" justify="center" align="start" gap="gap-8" className="w-full cursor-default">
           {/* settings should be font semibold */}
           <PageHeader title={title} actions={actions} />
-          {/* <Center>
-            <SolarIconSet.Database color="#1C274C" size={24} iconStyle="Outline" />
-          </Center> */}
           <Tabs defaultValue="account" className="flex w-full flex-col items-start gap-8">
             <TabsList className="px-3 text-sm font-semibold">
               <TabsTrigger value="account" className="font-semibold">
@@ -28,7 +25,7 @@ export default function Settings() {
             <TabsContent value="account" className="w-full">
               <AccountTab />
             </TabsContent>
-            <TabsContent value="template">
+            <TabsContent value="template" className="w-full">
               <TemplateTab />
             </TabsContent>
           </Tabs>

@@ -20,11 +20,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from 'src/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'src/components/ui/table'
 import * as SolarIconSet from 'solar-icon-set'
+import { DeactivateDialog } from './deactivate-dialog'
+import { ViewClusterManagerDialog } from './view-cluster-manager-dialog'
+import { AddClusterManagerFormDialog } from './add-cluster-manager-form-dialog'
 
 const data: Cluster[] = [
   {
@@ -34,6 +36,7 @@ const data: Cluster[] = [
     email: 'ken99@yahoo.com',
     phone_number: '1-123-456-7890',
     cluster: 'Cluster 1',
+    status: 'Active',
   },
   {
     id: 'jdnkjndsabc',
@@ -42,6 +45,7 @@ const data: Cluster[] = [
     email: 'johndoe@example.com',
     phone_number: '1-123-456-7890',
     cluster: 'Cluster 2',
+    status: 'Deactivated',
   },
   {
     id: '1234556',
@@ -50,6 +54,7 @@ const data: Cluster[] = [
     email: 'janedoe@example.com',
     phone_number: '1-123-456-7890',
     cluster: 'Cluster 3',
+    status: 'Active',
   },
   {
     id: '12345561',
@@ -58,6 +63,7 @@ const data: Cluster[] = [
     email: 'morris@example.com',
     phone_number: '1-123-456-7890',
     cluster: 'Cluster 4',
+    status: 'Deactivated',
   },
 ]
 
@@ -68,6 +74,7 @@ export type Cluster = {
   email: string
   phone_number: string
   cluster: string
+  status: string
 }
 
 export const columns: ColumnDef<Cluster>[] = [
@@ -116,6 +123,25 @@ export const columns: ColumnDef<Cluster>[] = [
     cell: ({ row }) => <div className="capitalize">{row.getValue('cluster')}</div>,
   },
   {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => (
+      <div
+        className={`flex items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${
+          row.getValue('status') == 'Active'
+            ? 'border-success-400 bg-success-100 text-success-500'
+            : 'border-neutral-400 bg-neutral-100 text-neutral-400'
+        }`}
+      >
+        {' '}
+        <div
+          className={`h-2 w-2 rounded-full ${row.getValue('status') == 'Active' ? 'bg-success-500' : 'bg-neutral-400'}`}
+        ></div>{' '}
+        {row.getValue('status')}
+      </div>
+    ),
+  },
+  {
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
@@ -124,21 +150,26 @@ export const columns: ColumnDef<Cluster>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 cursor-pointer p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white" align="end">
-            <DropdownMenuItem className="hover:bg-primary-500 hover:text-white">
-              <SolarIconSet.Eye /> View
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="hover:bg-primary-500 hover:text-white">
+              <ViewClusterManagerDialog />
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="hover:bg-primary-500 hover:text-white">
-              <SolarIconSet.PenNewRound /> Edit
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="hover:bg-primary-500 hover:text-white">
+              <AddClusterManagerFormDialog
+                icon={<SolarIconSet.PenNewRound />}
+                buttonTitle="Edit"
+                buttonVariant="ghost"
+                buttonSize="xs"
+                action="edit"
+              />
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-primary-500 hover:text-white">
-              <SolarIconSet.ForbiddenCircle /> Deactivate User
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="hover:bg-primary-500 hover:text-white">
+              <DeactivateDialog />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

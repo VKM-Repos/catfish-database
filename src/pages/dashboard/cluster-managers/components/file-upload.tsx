@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import * as SolarIconSet from 'solar-icon-set'
+import { Text } from 'src/components/layouts/text'
 import { Button } from 'src/components/ui/button'
 
 const FileUpload = () => {
@@ -61,24 +62,33 @@ const FileUpload = () => {
   return (
     <div className="w-full">
       {!isUploading ? (
-        <div
-          className="flex w-full flex-col items-center justify-center gap-5 rounded-md border border-neutral-100 px-5 py-5 font-light"
-          onClick={handleClick}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <div className="w-fit rounded-full border border-[#651391] px-3 py-2">
-            <SolarIconSet.CloudUpload size={48} color="#651391" />
+        <>
+          <div
+            className="flex w-full flex-col items-center justify-center gap-5 rounded-md border border-neutral-100 px-5 py-5 font-light"
+            onClick={handleClick}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <div className="w-fit rounded-full border border-[#651391] px-3 py-2">
+              <SolarIconSet.CloudUpload size={48} color="#651391" />
+            </div>
+            <p className="text-center text-xs">
+              <span className="font-semibold text-primary-500">Click to upload</span> or drag and drop
+              <br /> CSV (Max 800kb)
+            </p>
+            <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
           </div>
-          <p className="text-center text-sm">
-            <span className="font-semibold text-primary-500">Click to upload</span> or drag and drop
-            <br /> CSV (Max 800kb)
-          </p>
-          <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
-        </div>
+          <Text className="mt-3 w-full text-xs font-normal">
+            {' '}
+            <a download href="#" className="text-primary-500 underline">
+              Click here
+            </a>{' '}
+            to download the database template for your uploads
+          </Text>
+        </>
       ) : (
         <div className="flex flex-col items-center gap-3">
-          <div className="flex w-full items-center justify-between rounded-md border border-neutral-200 px-3 py-4">
+          <div className="flex w-full min-w-[480px] items-center justify-between rounded-md border border-neutral-200 px-3 py-4">
             <div className="flex items-start gap-5 text-sm text-neutral-700">
               <SolarIconSet.File />{' '}
               <span className="-gap-2 flex flex-col">

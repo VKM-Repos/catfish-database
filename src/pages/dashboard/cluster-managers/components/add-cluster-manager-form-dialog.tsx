@@ -13,18 +13,27 @@ import * as SolarIconSet from 'solar-icon-set'
 import { Divider } from 'src/components/layouts/divider'
 import { Input } from 'src/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
-
-export function AddClusterManagerFormDialog() {
+import { Text } from 'src/components/layouts/text'
+type DialogProps = {
+  buttonTitle: string
+  icon: React.ReactNode
+  buttonVariant: 'primary' | 'secondary' | 'neutral' | 'outline' | 'error' | 'ghost' | 'link'
+  buttonSize: 'default' | 'sm' | 'xs' | 'lg' | 'icon'
+  action: string
+}
+export function AddClusterManagerFormDialog({ buttonTitle, icon, buttonVariant, action, buttonSize }: DialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="flex items-center justify-center gap-2 border border-primary-500 bg-primary-500 py-4 text-white hover:bg-[#F0E8F4] hover:text-black">
-          <SolarIconSet.AddCircle /> Add cluster manager
+        <Button className="flex w-full justify-start space-x-2" variant={buttonVariant} size={buttonSize}>
+          {icon} <Text>{buttonTitle}</Text>
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-white">
         <DialogHeader className="p-3 text-center">
-          <DialogTitle className="text-center">Add a cluster manager</DialogTitle>
+          <DialogTitle className="text-center">
+            {action == 'add' ? 'Add a cluster manager' : 'Edit cluster manager'}
+          </DialogTitle>
           <Divider />
         </DialogHeader>
         <div className="flex w-full flex-col items-center gap-7 p-7 ">
@@ -59,12 +68,12 @@ export function AddClusterManagerFormDialog() {
         </div>
         <DialogFooter className="mt-1 flex w-full justify-between bg-neutral-100 px-7 py-4">
           <DialogClose asChild>
-            <Button className="border border-primary-500 font-light hover:bg-[#F0E8F4]" variant="outline" type="button">
-              Back
+            <Button size="sm" variant="outline" type="button">
+              <Text>Back</Text>
             </Button>
           </DialogClose>
-          <Button className="bg-primary-500 font-light text-white hover:bg-[#F0E8F4] hover:text-black" type="submit">
-            Add cluster manager
+          <Button size="sm" variant="primary" type="submit">
+            <Text>{action == 'add' ? 'Add cluster manager' : 'Update'}</Text>
           </Button>
         </DialogFooter>
       </DialogContent>

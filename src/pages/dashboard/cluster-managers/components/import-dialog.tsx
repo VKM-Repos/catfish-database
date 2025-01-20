@@ -2,20 +2,18 @@ import { Button } from 'src/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from 'src/components/ui/dialog'
 import * as SolarIconSet from 'solar-icon-set'
 import FileUpload from './file-upload'
+import { Text } from 'src/components/layouts/text'
 
 export function ImportDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="flex items-center justify-center gap-2 border border-primary-500 py-4 hover:bg-[#F0E8F4]"
-        >
-          <SolarIconSet.CircleBottomUp /> Import
+        <Button className="space-x-2" variant="outline" size="sm">
+          <SolarIconSet.CircleBottomUp /> <Text>Import</Text>
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col items-center justify-center bg-white px-7 py-4 sm:max-w-md">
-        <DialogClose asChild>
+      <DialogContent className="flex w-fit flex-col items-center justify-center bg-white px-7 py-4">
+        <DialogClose className="py-2" asChild>
           <button>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path

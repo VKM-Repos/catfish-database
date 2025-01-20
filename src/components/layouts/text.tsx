@@ -1,5 +1,5 @@
 type TextProps = {
-  variant?: 'body' | 'caption' | 'label' | 'subtitle'
+  variant?: 'body' | 'caption' | 'label' | 'subtitle' | 'heading'
   children: React.ReactNode
   className?: string
   size?: string
@@ -21,6 +21,8 @@ export const Text = ({ variant = 'body', children, className = '' }: TextProps) 
     case 'subtitle':
       baseStyle = 'text-lg font-medium'
       break
+    case 'heading':
+      baseStyle = 'text-lg font-bold'
   }
 
   return <p className={`${baseStyle} ${className}`}>{children}</p>

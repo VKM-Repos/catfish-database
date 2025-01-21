@@ -1,8 +1,8 @@
 import { FlexBox } from 'src/components/layouts/flexbox'
 import { Text } from 'src/components/layouts/text'
 import * as SolarIconSet from 'solar-icon-set'
-import { Dialog, DialogTrigger } from 'src/components/ui/dialog'
 import AddNewTemplate from './add-new-template'
+import DeleteTemplate from './delete-template'
 
 const files = [
   {
@@ -28,11 +28,7 @@ export default function TemplateTab() {
                 <Text className="text-xs text-neutral-400">{file?.size}</Text>
               </FlexBox>
             </FlexBox>
-            <Dialog>
-              <DialogTrigger asChild>
-                <SolarIconSet.TrashBin2 color="#FF0000" iconStyle="Outline" size={16} />
-              </DialogTrigger>
-            </Dialog>
+            <DeleteTemplate />
           </FlexBox>
         </div>
       ))}

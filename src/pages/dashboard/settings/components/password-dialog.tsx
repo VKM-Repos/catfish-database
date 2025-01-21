@@ -65,63 +65,61 @@ export default function PasswordDialog() {
             <Text className="text-primary-400">Change Password</Text>
           </Button>
         </DialogTrigger>
-        <DialogContent>
-          <div className="cursor-default bg-white">
-            <FlexBox direction="col" justify="center" gap="gap-6">
-              <DialogHeader className="w-full border-[0.5px] border-b-neutral-300 px-6 py-3">
-                <DialogTitle className="text-center text-xl font-bold">Change Password</DialogTitle>
-              </DialogHeader>
-              <DialogDescription />
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
-                  <FlexBox direction="col" gap="gap-6" justify="center" className="w-full p-6">
-                    <div className="w-full">
-                      <FormInput
-                        label="Old password"
-                        type="password"
-                        placeholder="Enter old password"
-                        className="!border-neutral-200"
-                        {...form.register('old_password')}
-                        disabled
-                      />
-                    </div>
-                    <div className="w-full">
-                      <FormInput
-                        label="New password"
-                        type="password"
-                        placeholder="Enter new password"
-                        className="!border-neutral-200"
-                        {...form.register('new_password')}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <FormInput
-                        label="Confirm new password"
-                        type="password"
-                        placeholder="Repeat new password"
-                        {...form.register('confirm_password')}
-                        className="!border-neutral-200"
-                      />
-                    </div>
+        <DialogContent className="cursor-default rounded-lg bg-white shadow-dialog">
+          <FlexBox direction="col" justify="center" gap="gap-6">
+            <DialogHeader className="w-full border-[0.5px] border-b-neutral-300 px-6 py-3">
+              <DialogTitle className="text-center text-xl font-bold">Change Password</DialogTitle>
+            </DialogHeader>
+            <DialogDescription />
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+                <FlexBox direction="col" gap="gap-6" justify="center" className="w-full p-6">
+                  <div className="w-full">
+                    <FormInput
+                      label="Old password"
+                      type="password"
+                      placeholder="Enter old password"
+                      className="!border-neutral-200"
+                      {...form.register('old_password')}
+                      disabled
+                    />
+                  </div>
+                  <div className="w-full">
+                    <FormInput
+                      label="New password"
+                      type="password"
+                      placeholder="Enter new password"
+                      className="!border-neutral-200"
+                      {...form.register('new_password')}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <FormInput
+                      label="Confirm new password"
+                      type="password"
+                      placeholder="Repeat new password"
+                      {...form.register('confirm_password')}
+                      className="!border-neutral-200"
+                    />
+                  </div>
+                </FlexBox>
+                <footer
+                  className={`mx-auto w-full rounded-sm !bg-neutral-50 px-0 py-0 text-center text-sm text-neutral-400`}
+                >
+                  <FlexBox justify="between" align="center" className="px-6 py-3">
+                    <Button variant="outline">
+                      <DialogClose>
+                        <Text>Cancel</Text>
+                      </DialogClose>
+                    </Button>
+                    <Button type="submit" variant="primary" disabled={!isDirty}>
+                      <Text>Update Password</Text>
+                    </Button>
                   </FlexBox>
-                  <footer
-                    className={`mx-auto w-full rounded-sm !bg-neutral-50 bg-neutral-100 !px-0 !py-0 px-8 py-4 text-center text-sm text-neutral-400`}
-                  >
-                    <FlexBox justify="between" align="center" className="px-6 py-3">
-                      <Button variant="outline">
-                        <DialogClose>
-                          <Text>Cancel</Text>
-                        </DialogClose>
-                      </Button>
-                      <Button type="submit" variant="primary" disabled={!isDirty}>
-                        <Text>Update Password</Text>
-                      </Button>
-                    </FlexBox>
-                  </footer>
-                </form>
-              </Form>
-            </FlexBox>
-          </div>
+                </footer>
+              </form>
+            </Form>
+          </FlexBox>
         </DialogContent>
       </Dialog>
     </>

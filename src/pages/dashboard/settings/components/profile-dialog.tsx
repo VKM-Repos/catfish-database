@@ -14,7 +14,7 @@ import {
   DialogDescription,
 } from 'src/components/ui/dialog'
 import { Form } from 'src/components/ui/form'
-import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue } from 'src/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 import { Button } from 'src/components/ui/button'
@@ -55,7 +55,7 @@ export default function ProfileDialog() {
             </FlexBox>
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="rounded-lg shadow-dialog">
           <div className="cursor-default bg-white">
             <FlexBox direction="col" justify="center" gap="gap-6">
               <DialogHeader className="w-full border-[0.5px] border-b-neutral-300 px-6 py-3">
@@ -98,7 +98,13 @@ export default function ProfileDialog() {
                             </FlexBox>
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectGroup></SelectGroup>
+                            <SelectGroup>
+                              <SelectItem value="Delta">Delta</SelectItem>
+                              <SelectItem value="Gombe">Gombe</SelectItem>
+                              <SelectItem value="Kwara">Kwara</SelectItem>
+                              <SelectItem value="Ogun">Ogun</SelectItem>
+                              <SelectItem value="Kano">Kano</SelectItem>
+                            </SelectGroup>
                           </SelectContent>
                         </FlexBox>
                       </Select>

@@ -85,6 +85,9 @@ module.exports = {
         },
         hover: '#F0E8F4',
       },
+      boxShadow: {
+        dialog: '0px 4px 16px -8px #0F4B2F29',
+      },
       fontFamily: {
         inter: ['Inter', 'serif'],
       },

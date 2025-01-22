@@ -41,6 +41,19 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
               </FormLabel>
               <FormControl>
                 <div className="relative">
+                  {rest.type === 'old password' && (
+                    <div
+                      className={`absolute left-4 top-1/2 -translate-y-1/2 transform cursor-pointer ${
+                        error ? 'border-red-500' : 'border-neutral-200'
+                      }`}
+                    >
+                      <div
+                        className={`${error ? 'text-error-500' : 'text-[#444955]'} flex items-center justify-center`}
+                      >
+                        <SolarIconSet.Lock size={20} color="currentColor" iconStyle="Outline" />
+                      </div>
+                    </div>
+                  )}
                   <Input
                     {...field}
                     ref={ref}
@@ -57,7 +70,7 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                   />
                   {rest.type === 'email' && (
                     <div
-                      className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer${
+                      className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer ${
                         error ? 'border-red-500' : 'border-neutral-200'
                       }`}
                     >
@@ -70,7 +83,7 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
                   )}
                   {rest.type === 'password' && (
                     <div
-                      className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer${
+                      className={`absolute right-4 top-1/2 -translate-y-1/2 transform cursor-pointer ${
                         error ? ' border-red-500 text-error-500' : 'border-neutral-200 text-neutral-200'
                       }`}
                       onClick={() => setPasswordVisibility(!isPasswordVisible)}

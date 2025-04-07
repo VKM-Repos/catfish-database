@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { FlexBox } from 'src/components/layouts/flexbox'
+import { FlexBox } from 'src/components/ui/flexbox'
 import { Button } from 'src/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from 'src/components/ui/dialog'
 import * as SolarIconSet from 'solar-icon-set'
-import { Text } from 'src/components/layouts/text'
+import { Text } from 'src/components/ui/text'
 import FileUpload from './upload-template-file'
 
 export default function AddNewTemplate() {

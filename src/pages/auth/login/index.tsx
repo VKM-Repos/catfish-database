@@ -1,65 +1,205 @@
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import PageTransition from 'src/components/animations/page-transition'
-import FormInput from 'src/components/form-input'
-import { Card } from 'src/components/layouts/card'
-import { Container } from 'src/components/layouts/container'
-import { Form } from 'src/components/ui/form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from 'src/components/ui/button'
-import CardHeader from 'src/components/layouts/card-header'
-import { Checkbox } from 'src/components/ui/checkbox'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { Button } from 'src/components/ui/button'
+import { Input } from 'src/components/ui/input'
+import { Text } from 'src/components/ui/text'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'src/components/ui/form'
+import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
+import { useAuthStore } from 'src/store/auth.store'
+import { Card, CardHeader, CardContent, CardFooter } from 'src/components/ui/card'
+import { Container } from 'src/components/ui/container'
+import { Logo } from 'src/components/ui/logo'
+import { Heading } from 'src/components/ui/heading'
 import * as SolarIconSet from 'solar-icon-set'
-import { Text } from 'src/components/layouts/text'
+import { paths } from 'src/routes/paths'
+import { Checkbox } from 'src/components/ui/checkbox'
+import { createPostMutationHook } from 'src/api/hooks/usePost'
+import { authCache } from 'src/api/config'
+import { Loader } from 'src/components/ui/loader'
+import { UserRole } from 'src/types'
+import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
 
-const formSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
-  password: z.string().min(1, { message: 'Please fill this field' }),
+const useLogin = createPostMutationHook({
+  endpoint: '/auth/login',
+  requestSchema: loginRequestSchema,
+  responseSchema: loginResponseSchema,
+  requiresAuth: false,
 })
 
-type LoginData = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof loginRequestSchema>
 
-export default function Login() {
-  const { t } = useTranslation('translation')
-  const form = useForm<LoginData>({ resolver: zodResolver(formSchema) })
+export default function LoginPage() {
   const navigate = useNavigate()
+  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const login = useAuthStore((state) => state.login)
 
-  const onSubmit = (data: LoginData) => {
-    console.log(data)
-    navigate('/')
+  const form = useForm<FormValues>({
+    resolver: zodResolver(loginRequestSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  const loginMutation = useLogin()
+
+  const onSubmit = async (values: FormValues) => {
+    try {
+      setError(null)
+
+      // Call the login API
+      const response = await loginMutation.mutateAsync(values)
+
+      // Extract data from response
+      const { userDto, accessToken, refreshToken, expiresAt } = response
+
+      // Update auth cache
+      authCache.setToken(accessToken)
+      authCache.setRefreshToken(refreshToken)
+      authCache.setExpiresAt(expiresAt)
+      authCache.setUser(userDto)
+
+      // Update auth store
+      login(userDto, accessToken, refreshToken, expiresAt)
+
+      console.log('Login response:', response)
+      console.log('Auth store state:', useAuthStore.getState())
+
+      if (userDto.role === UserRole.FARMER) {
+        navigate(paths.dashboard.home.getStarted)
+      } else {
+        navigate(paths.dashboard.root)
+      }
+    } catch (err) {
+      console.log('Login error:', err)
+
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const errorData = axiosError.response?.data
+
+        if (errorData) {
+          setError({
+            title: errorData.error,
+            message: errorData.message,
+          })
+        }
+      }
+    }
+  }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
   }
 
   return (
-    <PageTransition>
-      <Container className="w-fit">
-        <Card className="mx-auto flex w-full min-w-[30rem] max-w-screen-xl flex-col gap-6 font-inter" footer={true}>
-          <CardHeader heading_string="Log in to access your account" />
+    <Container className="w-fit overflow-hidden">
+      <Card className="mx-auto flex min-h-[517px] w-[480px] flex-col gap-2 bg-white p-2 leading-tight tracking-wide lg:min-w-[470px]">
+        <CardHeader className="flex flex-col items-center justify-center gap-y-8">
+          <div className="flex flex-col items-center justify-center">
+            <Logo className="text-primary h-[50px] w-[55px] p-1" />
+            <Heading level={5} className="font-semibold text-primary-500">
+              Catfish Database
+            </Heading>
+          </div>
+          <Heading level={6} weight="normal">
+            Log in to access your account
+          </Heading>
+        </CardHeader>
+        <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <FormInput
-                label="Email address"
-                type="email"
-                placeholder="johndoe@email.com"
-                {...form.register('email')}
-                required
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
+              {error && (
+                <Alert variant="error" tone="filled">
+                  <AlertTitle>{error.title}</AlertTitle>
+                  <AlertDescription>{error.message}</AlertDescription>
+                </Alert>
+              )}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }: { field: any }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Email address<span className="px-1 !text-error-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        icon={
+                          <SolarIconSet.Letter
+                            color={error ? '#EF4444' : 'currentColor'}
+                            size={20}
+                            iconStyle="Outline"
+                          />
+                        }
+                        iconPosition="right"
+                        state={error ? 'error' : 'default'}
+                        type="email"
+                        placeholder="Enter email address"
+                        disabled={loginMutation.isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <FormInput
-                label="Password"
-                type="password"
-                placeholder="********"
-                {...form.register('password')}
-                required
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }: { field: any }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Password<span className="px-1 !text-error-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        icon={
+                          <Button
+                            variant="ghost"
+                            onClick={togglePasswordVisibility}
+                            type="button"
+                            className="h-full w-full p-0"
+                            disabled={loginMutation.isLoading}
+                          >
+                            {showPassword ? (
+                              <SolarIconSet.EyeClosed
+                                color={error ? '#EF4444' : 'currentColor'}
+                                size={20}
+                                iconStyle="Outline"
+                              />
+                            ) : (
+                              <SolarIconSet.Eye
+                                color={error ? '#EF4444' : 'currentColor'}
+                                size={20}
+                                iconStyle="Outline"
+                              />
+                            )}
+                          </Button>
+                        }
+                        iconPosition="right"
+                        state={error ? 'error' : 'default'}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        disabled={loginMutation.isLoading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
               <div className="flex items-center justify-between ">
                 <div className="flex items-center gap-3">
-                  <Checkbox id="remember" />
-                  <Text variant="label" className=" text-neutral-400">
+                  <Checkbox id="remember" disabled={loginMutation.isLoading} />
+                  <Text variant="label" size="base" weight="normal" color="text-neutral-400">
                     Remember me
                   </Text>
                 </div>
-                <Link to="/forget-password" className="text-sm text-primary-500 underline">
+                <Link to={paths.auth.forgotPassword} className="text-sm font-semibold text-primary-500 underline">
                   Forgot password
                 </Link>
               </div>
@@ -67,15 +207,36 @@ export default function Login() {
                 type="submit"
                 variant={form.formState.isValid ? 'primary' : 'ghost'}
                 className="my-4 flex items-center justify-center gap-2 focus:outline-none"
-                disabled={!form.formState.isValid}
+                disabled={!form.formState.isValid || loginMutation.isLoading}
               >
-                <Text variant="body">Log in</Text>
-                <SolarIconSet.ArrowRight color="currentColor" size={18} iconStyle="Outline" />
+                {loginMutation.isLoading ? (
+                  <>
+                    <Loader type="spinner" size={18} />
+                    <Text color="text-inherit" variant="body">
+                      Logging in...
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text color="text-inherit" variant="body">
+                      Log in
+                    </Text>
+                    <SolarIconSet.ArrowRight color="currentColor" size={18} iconStyle="Outline" />
+                  </>
+                )}
               </Button>
             </form>
           </Form>
-        </Card>
-      </Container>
-    </PageTransition>
+        </CardContent>
+        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100">
+          <span className="mt-4 text-sm text-neutral-400">
+            Powered by
+            <a href="https://www.fao.org/fish4acp" className="ml-2 font-semibold text-info-500 underline">
+              FISH4ACP
+            </a>
+          </span>
+        </CardFooter>
+      </Card>
+    </Container>
   )
 }

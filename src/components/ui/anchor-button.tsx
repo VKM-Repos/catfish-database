@@ -6,13 +6,13 @@ import { cn } from 'src/lib/utils'
 import { PropsWithChildren } from 'react'
 
 const anchorButtonVariants = cva(
-  'inline-flex cursor-pointer w-full items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex cursor-pointer w-full items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       size: {
         default: 'h-12 px-4 py-4',
         sm: 'h-8 px-4 text-xs',
-        lg: 'h-12 px-8 text-lg',
+        lg: 'h-12 px-4 text-lg',
       },
     },
     defaultVariants: {

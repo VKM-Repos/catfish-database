@@ -92,7 +92,7 @@ module.exports = {
         inter: ['Inter', 'serif'],
       },
       backgroundImage: {
-        'auth-background': "url('./src/assets/images/background.png')",
+        waves: "url('/src/assets/images/waves.png')",
       },
       borderRadius: {
         lg: 'var(--radius)',

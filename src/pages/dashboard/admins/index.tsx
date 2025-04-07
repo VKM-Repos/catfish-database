@@ -1,20 +1,42 @@
-import { Container } from 'src/components/layouts/container'
-import { Center } from 'src/components/layouts/center'
-import PageTransition from 'src/components/animations/page-transition'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Container } from 'src/components/ui/container'
+import PageTransition from 'src/components/animation/page-transition'
+import { PageHeader } from 'src/components/ui/page-header'
+import { Inline } from 'src/components/ui/inline'
+import { Spacer } from 'src/components/ui/spacer'
+import { Button } from 'src/components/ui/button'
+import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
-import { PageHeader } from 'src/components/layouts/page-header'
+import { paths } from 'src/routes/paths'
+import { ClusterManagersTable } from './components/cluster-managers-table'
 
-export default function Account() {
+export default function AdminsPage() {
   const title = 'Admins'
-  const actions = <></> // button goes here
+  const navigate = useNavigate()
+
+  const openCreateModal = () => {
+    navigate(paths.dashboard.admins.create)
+  }
+
+  const actions = (
+    <Inline>
+      <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
+        <SolarIconSet.AddCircle size={20} />
+        <Text>Add Admins</Text>
+      </Button>
+    </Inline>
+  )
+
   return (
-    <PageTransition>
-      <Container>
-        <PageHeader title={title} actions={actions} />
-        <Center>
-          <SolarIconSet.Database color="#1C274C" size={24} iconStyle="Outline" />
-        </Center>
-      </Container>
-    </PageTransition>
+    <div className="relative">
+      <PageTransition>
+        <Container className="!px-12">
+          <PageHeader title={title} actions={actions} />
+          <Spacer />
+          <ClusterManagersTable />
+        </Container>
+      </PageTransition>
+      <Outlet />
+    </div>
   )
 }

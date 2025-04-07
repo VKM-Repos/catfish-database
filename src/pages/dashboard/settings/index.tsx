@@ -1,9 +1,9 @@
-import { Container } from 'src/components/layouts/container'
-import PageTransition from 'src/components/animations/page-transition'
-import { PageHeader } from 'src/components/layouts/page-header'
+import { Container } from 'src/components/ui/container'
+import PageTransition from 'src/components/animation/page-transition'
+import { PageHeader } from 'src/components/ui/page-header'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs'
 import AccountTab from './components/account-settings-tab'
-import { FlexBox } from 'src/components/layouts/flexbox'
+import { FlexBox } from 'src/components/ui/flexbox'
 import TemplateTab from './components/template-settings-tab'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -20,20 +20,22 @@ export default function Settings() {
 
   return (
     <PageTransition>
-      <Container>
-        <FlexBox direction="col" justify="center" align="start" gap="gap-8" className="w-full cursor-default">
+      <Container className="!px-12">
+        <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
           <PageHeader title={title} />
           <Tabs
             defaultValue={activeTab}
             className="flex w-full flex-col items-start gap-8"
             onValueChange={handleTabChange}
           >
-            <TabsList className="px-3 text-sm font-semibold">
-              <TabsTrigger value="account" className="font-semibold">
-                Account
-              </TabsTrigger>
-              <TabsTrigger value="template">Template</TabsTrigger>
-            </TabsList>
+            <div className="w-full border-b border-b-neutral-200 p-0">
+              <TabsList className="text-sm font-semibold">
+                <TabsTrigger value="account" className="font-semibold">
+                  Account
+                </TabsTrigger>
+                <TabsTrigger value="template">Template</TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="account" className="w-full">
               <AccountTab />
             </TabsContent>

@@ -1,34 +1,42 @@
-import { Container } from 'src/components/layouts/container'
-import PageTransition from 'src/components/animations/page-transition'
-import { PageHeader } from 'src/components/layouts/page-header'
-import { ClusterManagerTable } from './components/cluster-manager-table'
-import { ImportDialog } from './components/import-dialog'
-import { AddClusterManagerFormDialog } from './components/add-cluster-manager-form-dialog'
-import { Inline } from 'src/components/layouts/inline'
-import { Spacer } from 'src/components/layouts/spacer'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Container } from 'src/components/ui/container'
+import PageTransition from 'src/components/animation/page-transition'
+import { PageHeader } from 'src/components/ui/page-header'
+import { Inline } from 'src/components/ui/inline'
+import { Spacer } from 'src/components/ui/spacer'
+import { Button } from 'src/components/ui/button'
+import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
+import { paths } from 'src/routes/paths'
+import { ClusterManagersTable } from './components/cluster-managers-table'
 
-export default function ClusterManagers() {
-  const title = 'Cluster Managers'
+export default function ClusterManagersPage() {
+  const title = 'Cluster managers'
+  const navigate = useNavigate()
+
+  const openCreateModal = () => {
+    navigate(paths.dashboard.clusterManagers.create)
+  }
+
   const actions = (
     <Inline>
-      <ImportDialog />
-      <AddClusterManagerFormDialog
-        icon={<SolarIconSet.AddCircle size={20} />}
-        buttonTitle="Add cluster manager"
-        buttonVariant="primary"
-        buttonSize="sm"
-        action="add"
-      />
+      <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
+        <SolarIconSet.AddCircle size={20} />
+        <Text>Add Cluster Manager</Text>
+      </Button>
     </Inline>
-  ) // button goes here
+  )
+
   return (
-    <PageTransition>
-      <Container>
-        <PageHeader title={title} actions={actions} />
-        <Spacer />
-        <ClusterManagerTable />
-      </Container>
-    </PageTransition>
+    <div className="relative">
+      <PageTransition>
+        <Container className="!px-12">
+          <PageHeader title={title} actions={actions} />
+          <Spacer />
+          <ClusterManagersTable />
+        </Container>
+      </PageTransition>
+      <Outlet />
+    </div>
   )
 }

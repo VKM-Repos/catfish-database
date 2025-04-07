@@ -1,5 +1,5 @@
-import { FlexBox } from 'src/components/layouts/flexbox'
-import { Text } from 'src/components/layouts/text'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import AddNewTemplate from './add-new-template'
 import DeleteTemplate from './delete-template'

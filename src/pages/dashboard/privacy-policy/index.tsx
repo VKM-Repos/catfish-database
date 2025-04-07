@@ -1,12 +1,12 @@
-import { Container } from 'src/components/layouts/container'
-import { Center } from 'src/components/layouts/center'
-import PageTransition from 'src/components/animations/page-transition'
+import { Container } from 'src/components/ui/container'
+import { Center } from 'src/components/ui/center'
+import PageTransition from 'src/components/animation/page-transition'
 import * as SolarIconSet from 'solar-icon-set'
-import { PageHeader } from 'src/components/layouts/page-header'
+import { PageHeader } from 'src/components/ui/page-header'
 
 export default function PrivacyPolicy() {
   const title = 'Privacy Policy'
-  const actions = <></> // button goes here
+  const actions = null
   return (
     <PageTransition>
       <Container>

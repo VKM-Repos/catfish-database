@@ -1,11 +1,14 @@
-import React from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Page } from 'src/components/ui/page'
 
-function AuthLayout({ children }: { children: React.ReactNode }) {
+export function AuthLayout() {
+  const navigate = useNavigate()
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-primary-500 bg-auth-background bg-cover bg-center">
-      {children}
-    </div>
+    <Page>
+      <div className="flex min-h-screen items-center justify-center bg-primary-500 bg-waves bg-cover bg-center p-4">
+        <Outlet />
+      </div>
+    </Page>
   )
 }
-
-export { AuthLayout }

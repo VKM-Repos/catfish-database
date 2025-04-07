@@ -85,11 +85,14 @@ module.exports = {
         },
         hover: '#F0E8F4',
       },
+      boxShadow: {
+        dialog: '0px 4px 16px -8px #0F4B2F29',
+      },
       fontFamily: {
         inter: ['Inter', 'serif'],
       },
       backgroundImage: {
-        'auth-background': "url('./src/assets/images/background.png')",
+        waves: "url('/src/assets/images/waves.png')",
       },
       borderRadius: {
         lg: 'var(--radius)',

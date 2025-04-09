@@ -27,19 +27,19 @@ export const paths = {
       root: '/dashboard/farmers',
       view: (farmerId: string) => `/dashboard/farmers/${farmerId}`,
       create: '/dashboard/farmers/create',
-      edit: (farmerId: string) => `/dashboard/farmers/${farmerId}/edit`,
+      id: (farmerId: string) => `/dashboard/farmers/${farmerId}/edit`,
     },
     admins: {
       root: '/dashboard/admins',
       create: '/dashboard/admins/create',
       view: (adminId: string) => `/dashboard/admins/${adminId}`,
-      edit: (adminId: string) => `/dashboard/admins/${adminId}/edit`,
+      id: (adminId: string) => `/dashboard/admins/${adminId}/edit`,
     },
     clusterManagers: {
       root: '/dashboard/cluster-managers',
       view: (managerId: string) => `/dashboard/cluster-managers/${managerId}`,
       create: '/dashboard/cluster-managers/create',
-      edit: (managerId: string) => `/dashboard/cluster-managers/${managerId}/edit`,
+      id: (managerId: string) => `/dashboard/cluster-managers/${managerId}/edit`,
     },
 
     // Reports Routes

@@ -18,6 +18,7 @@ const roleRoutes: Record<UserRole, string[]> = {
     paths.dashboard.home.root,
     paths.dashboard.clusterManagers.root,
     paths.dashboard.reports.root,
+    paths.dashboard.farmers.root,
     paths.dashboard.profile,
     paths.dashboard.account,
     paths.dashboard.settings,

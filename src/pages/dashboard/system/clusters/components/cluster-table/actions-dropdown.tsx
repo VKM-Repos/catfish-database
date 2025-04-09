@@ -36,7 +36,7 @@ export function ActionsDropdown({ cluster }: ActionsDropdownProps) {
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.edit(cluster.id))}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setIsDeleteOpen(true)}>Delete</DropdownMenuItem>
+          {/* <DropdownMenuItem onSelect={() => setIsDeleteOpen(true)}>Delete</DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
 

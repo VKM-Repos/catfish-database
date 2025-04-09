@@ -18,17 +18,16 @@ const formSchema = z.object({
 })
 type ResetData = z.infer<typeof formSchema>
 
-const useForgotPassword = createPostMutationHook({
-  endpoint: '/auth/forgot-password',
-  requestSchema: formSchema,
-  responseSchema: z.object({ message: z.string() }),
-  requiresAuth: false,
-})
-
 export default function ForgetPassword({ handleNext }: { handleNext: () => void }) {
   const { t } = useTranslation('translation')
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
   const form = useForm<ResetData>({ resolver: zodResolver(formSchema) })
+  const useForgotPassword = createPostMutationHook({
+    endpoint: `/auth/forgot-password?email=${form.watch('email')}`,
+    requestSchema: formSchema,
+    responseSchema: z.any(),
+    requiresAuth: false,
+  })
   const forgotPasswordMutation = useForgotPassword()
 
   const onSubmit = async (data: ResetData) => {

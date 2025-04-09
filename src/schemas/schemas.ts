@@ -7,6 +7,17 @@ const stateSchema = z.object({
   name: z.string(),
 })
 
+// Define the cluster schema
+const clusterSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  state: stateSchema,
+  description: z.string(),
+  context: z.string().nullable(),
+  createdDate: z.string().nullable(),
+  lastModifiedDate: z.string().nullable(),
+})
+
 // Define the user schema
 const userSchema = z.object({
   id: z.string(),
@@ -16,13 +27,25 @@ const userSchema = z.object({
   lastName: z.string(),
   phone: z.string(),
   address: z.string().nullable(),
+  accountNonLocked: z.boolean(),
+  enabled: z.boolean(),
+  banUntil: z.string().nullable(),
   context: z.string().nullable(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
-  cluster: z.any().nullable(),
+  cluster: clusterSchema.nullable(),
 })
 
-// Define the cluster schema
+// Define the paginated response schema
+const paginatedUserResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(userSchema),
+})
+
+// Define the cluster request schema
 const clusterRequestSchema = z.object({
   name: z.string().min(1, 'Cluster name is required'),
   context: z.string().optional(),
@@ -42,6 +65,33 @@ const clusterResponseSchema = z.object({
   lastModifiedDate: z.nullable(z.string()),
   users: z.array(userSchema),
 })
+
+// Define the cluster manager request schema
+const clusterManagerRequestSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  phone: z.string(),
+  clusterId: z.string().min(1, 'Cluster ID is required'),
+  password: z.string().optional(),
+  id: z.string().optional(),
+})
+
+// Define the cluster manager response schema
+const clusterManagerResponseSchema = userSchema
+// Define the cluster manager request schema
+const farmerRequestSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  phone: z.string(),
+  clusterId: z.string().min(1, 'Cluster ID is required'),
+  password: z.string().optional(),
+  id: z.string().optional(),
+})
+
+// Define the cluster manager response schema
+const farmerResponseSchema = userSchema
 
 // Define the login request schema
 const loginRequestSchema = z.object({
@@ -69,4 +119,17 @@ const loginResponseSchema = z.object({
   expiresAt: z.string(),
 })
 
-export { stateSchema, clusterResponseSchema, clusterRequestSchema, userSchema, loginRequestSchema, loginResponseSchema }
+export {
+  stateSchema,
+  clusterManagerResponseSchema,
+  clusterManagerRequestSchema,
+  clusterResponseSchema,
+  clusterRequestSchema,
+  farmerResponseSchema,
+  farmerRequestSchema,
+  userSchema,
+  clusterSchema,
+  paginatedUserResponseSchema,
+  loginRequestSchema,
+  loginResponseSchema,
+}

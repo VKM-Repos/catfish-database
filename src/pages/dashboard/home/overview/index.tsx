@@ -36,35 +36,41 @@ export default function DashboardOverviewPage() {
         <PageHeader title={title} />
         <FlexBox direction="col" justify="center" align="start" gap="gap-8" className="w-full cursor-default">
           <div className="w-full space-y-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card className="p-6">
+            <div className="grid gap-0 md:grid-cols-2 lg:grid-cols-5">
+              <Card className="rounded-none border-neutral-200 p-6">
                 <div className="space-y-2">
-                  <Text className="text-sm text-neutral-500">Total Farmers</Text>
+                  <Text className="text-sm text-neutral-500">Total Fish Supply</Text>
                   <Text className="text-2xl font-bold">1,234</Text>
                 </div>
               </Card>
-              <Card className="p-6">
+              <Card className="rounded-none border-neutral-200 p-6">
                 <div className="space-y-2">
-                  <Text className="text-sm text-neutral-500">Active Clusters</Text>
+                  <Text className="text-sm text-neutral-500">Total cost of production</Text>
+                  <Text className="text-2xl font-bold">1,234</Text>
+                </div>
+              </Card>
+              <Card className="rounded-none border-neutral-200 p-6">
+                <div className="space-y-2">
+                  <Text className="text-sm text-neutral-500">Total feed consumption</Text>
                   <Text className="text-2xl font-bold">56</Text>
                 </div>
               </Card>
-              <Card className="p-6">
+              <Card className="rounded-none border-neutral-200 p-6">
                 <div className="space-y-2">
-                  <Text className="text-sm text-neutral-500">Total Production</Text>
+                  <Text className="text-sm text-neutral-500">Total Fish harvest</Text>
                   <Text className="text-2xl font-bold">45,678 kg</Text>
                 </div>
               </Card>
-              <Card className="p-6">
+              <Card className="rounded-none border-neutral-200 p-6">
                 <div className="space-y-2">
-                  <Text className="text-sm text-neutral-500">Revenue</Text>
+                  <Text className="text-sm text-neutral-500">Mortality Rate</Text>
                   <Text className="text-2xl font-bold">$123,456</Text>
                 </div>
               </Card>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Card className="p-6">
+              <Card className="rounded-none border-neutral-200 p-6">
                 <h2 className="mb-4 text-lg font-semibold">Production Trends</h2>
                 <ChartContainer config={{ production: { label: 'Production (kg)' } }}>
                   <ResponsiveContainer width="100%" height={300}>
@@ -78,7 +84,7 @@ export default function DashboardOverviewPage() {
                   </ResponsiveContainer>
                 </ChartContainer>
               </Card>
-              <Card className="p-6">
+              <Card className="rounded-none border-neutral-200 p-6">
                 <h2 className="mb-4 text-lg font-semibold">Revenue Overview</h2>
                 <ChartContainer config={{ revenue: { label: 'Revenue ($)' } }}>
                   <ResponsiveContainer width="100%" height={300}>

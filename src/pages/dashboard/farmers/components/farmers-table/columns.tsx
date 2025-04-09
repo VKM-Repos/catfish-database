@@ -4,9 +4,9 @@ import { z } from 'zod'
 import { ActionsDropdown } from './actions-dropdown'
 import { userSchema } from 'src/schemas/schemas'
 
-type ClusterManager = z.infer<typeof userSchema>
+type Farmer = z.infer<typeof userSchema>
 
-export const columns: ColumnDef<ClusterManager>[] = [
+export const columns: ColumnDef<Farmer>[] = [
   {
     accessorKey: 'firstName',
     header: 'First Name',
@@ -55,6 +55,6 @@ export const columns: ColumnDef<ClusterManager>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <ActionsDropdown user={row.original} />,
+    cell: ({ row }) => <ActionsDropdown user={row?.original} />,
   },
 ]

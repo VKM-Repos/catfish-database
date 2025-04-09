@@ -8,7 +8,7 @@ import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
-import { ClusterManagersTable } from './components/cluster-managers-table'
+import { FarmersTable } from './components/farmers-table'
 
 export default function FarmersPage() {
   const title = 'Farmers'
@@ -33,7 +33,7 @@ export default function FarmersPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
-          <ClusterManagersTable />
+          <FarmersTable />
         </Container>
       </PageTransition>
       <Outlet />

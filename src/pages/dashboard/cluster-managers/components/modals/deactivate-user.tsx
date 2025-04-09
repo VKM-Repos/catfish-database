@@ -3,15 +3,15 @@ import { Button } from 'src/components/ui/button'
 import { useQueryClient } from '@tanstack/react-query'
 import { createDeleteMutationHook } from 'src/api/hooks/useDelete'
 import { z } from 'zod'
-import { Cluster } from 'src/types/cluster.types'
 import { X } from 'lucide-react'
 import ECLIPSE from 'src/assets/images/ellipse.png'
 import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
 import { useState } from 'react'
+import { User } from 'src/types'
 
 type DeactivateUserDialogProps = {
-  user: Cluster
+  user: User
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -55,7 +55,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
             <Text
               weight="light"
               size="base"
-            >{`You are about to deactivate this user, "${user.name}". This action cannot be undone.`}</Text>
+            >{`You are about to deactivate this user, "${user.firstName}". This action cannot be undone.`}</Text>
             <div className="flex w-full justify-between space-x-2">
               <Button className="w-full" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
                 Cancel

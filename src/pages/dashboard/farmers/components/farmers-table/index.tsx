@@ -3,20 +3,20 @@ import { columns } from './columns'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { paginatedUserResponseSchema } from 'src/schemas/schemas'
 
-export function ClusterManagersTable() {
-  const useGetClusterManagers = createGetQueryHook({
-    endpoint: '/users/cluster-managers',
+export function FarmersTable() {
+  const useGetFarmers = createGetQueryHook({
+    endpoint: '/users/farmers',
     responseSchema: paginatedUserResponseSchema,
-    queryKey: ['cluster-managers'],
+    queryKey: ['farmers'],
   })
-  const { data: cluster_manager, isLoading } = useGetClusterManagers()
+  const { data: farmers, isLoading } = useGetFarmers()
 
-  console.log(cluster_manager)
+  console.log(farmers)
 
   return (
     <DataTable
       columns={columns}
-      data={cluster_manager?.content ?? []}
+      data={farmers?.content ?? []}
       isLoading={isLoading}
       emptyStateMessage="No users found"
     />

@@ -1,4 +1,4 @@
-import { useQuery, UseQueryResult, QueryClient } from '@tanstack/react-query'
+import { useQuery, type UseQueryResult, QueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 import { authCache, axiosInstance } from '../config'
 import { getQueryKey } from '../config/url'

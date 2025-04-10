@@ -22,7 +22,8 @@ export const columns: ColumnDef<Cluster>[] = [
     header: 'Managers',
     cell: ({ row }) => {
       const users = row.original.users
-      const fullName = users.length > 0 ? users.map((user) => `${user.firstName} ${user.lastName}`).join(', ') : '-' // Return a dash if no users
+      const fullName =
+        users && users.length > 0 ? users?.map((user) => `${user.firstName} ${user.lastName}`).join(', ') : '-' // Return a dash if no users
 
       return <Text weight="light">{fullName}</Text>
     },

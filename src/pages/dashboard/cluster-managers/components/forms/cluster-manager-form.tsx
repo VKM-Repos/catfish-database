@@ -5,7 +5,6 @@ import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import { Loader } from 'src/components/ui/loader'
-import * as SolarIconSet from 'solar-icon-set'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
@@ -19,6 +18,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Cluster } from 'src/types/cluster.types'
 import { Grid } from 'src/components/ui/grid'
+import * as SolarIconSet from 'solar-icon-set'
 
 type ClusterManagerValues = z.infer<typeof clusterManagerRequestSchema> & { id?: string }
 
@@ -46,7 +46,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
 
   // Create the update cluster mutation hook
   const useUpdateClusterManager = createPutMutationHook({
-    endpoint: `/clusters/${initialValues?.id}`,
+    endpoint: `/users/${initialValues?.id}`,
     requestSchema: clusterManagerRequestSchema,
     responseSchema: clusterManagerResponseSchema,
   })
@@ -94,7 +94,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
     <>
       <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
         <Heading className="text-center" level={6}>
-          {mode === 'create' ? 'Add cluster manager' : 'Edit cluster manager'}
+          {mode === 'create' ? 'Add a cluster manager' : 'Edit cluster manager'}
         </Heading>
       </div>
       <Form {...form}>
@@ -153,8 +153,11 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
                     value={field.value ? String(field.value) : ''}
                     onValueChange={(value) => field.onChange(value)}
                   >
-                    <SelectTrigger className="font-light !text-neutral-400">
-                      <SelectValue placeholder="Cluster" />
+                    <SelectTrigger className=" font-light !text-neutral-400">
+                      <div className="flex items-center justify-center gap-2">
+                        <SolarIconSet.Signpost color="text-inherit" size={24} iconStyle="Outline" />
+                        <SelectValue placeholder="Cluster" />
+                      </div>
                     </SelectTrigger>
                     <SelectContent>
                       {isLoadingClusters ? (
@@ -208,8 +211,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
                 </>
               ) : (
                 <>
-                  <Text>{mode === 'create' ? 'Create User' : 'Update User'}</Text>
-                  <SolarIconSet.ArrowRight size={18} />
+                  <Text>{mode === 'create' ? 'Create cluster manager' : 'Update cluster manager'}</Text>
                 </>
               )}
             </Button>

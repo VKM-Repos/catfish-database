@@ -2,9 +2,9 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { z } from 'zod'
 import { ActionsDropdown } from './actions-dropdown'
-import { userSchema } from 'src/schemas/schemas'
+import { clusterManagerResponseSchema } from 'src/schemas/schemas'
 
-type ClusterManager = z.infer<typeof userSchema>
+type ClusterManager = z.infer<typeof clusterManagerResponseSchema>
 
 export const columns: ColumnDef<ClusterManager>[] = [
   {

@@ -8,6 +8,9 @@ export interface User {
   lastName: string
   phone: string
   address: string | null
+  accountNonLocked: boolean
+  enabled: boolean
+  banUntil: string | null
   context: string | null
   createdAt: string | null
   updatedAt: string | null

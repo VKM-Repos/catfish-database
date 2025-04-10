@@ -8,12 +8,12 @@ import {
 } from 'src/components/ui/dropdown-menu'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
-import { Cluster } from 'src/types/cluster.types'
 import { DeactivateUserDialog } from '../modals/deactivate-user'
 import { useState } from 'react'
+import { User } from 'src/types'
 
 type ActionsDropdownProps = {
-  user: Cluster
+  user: User
 }
 
 export function ActionsDropdown({ user }: ActionsDropdownProps) {
@@ -30,12 +30,8 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.id(user.id))}>
-            View
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.edit(user.id))}>
-            Edit
-          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Edit</DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate User</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

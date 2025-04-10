@@ -59,7 +59,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
   const useGetClusters = createGetQueryHook({
     endpoint: '/clusters',
     responseSchema: z.array(clusterResponseSchema),
-    queryKey: ['clusters_farmers'],
+    queryKey: ['clusters_farmers  '],
   })
 
   const { data: clusters, isLoading: isLoadingClusters } = useGetClusters()

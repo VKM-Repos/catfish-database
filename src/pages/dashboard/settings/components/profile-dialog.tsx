@@ -5,7 +5,6 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { Dialog, DialogTrigger, DialogContent, DialogClose } from 'src/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 import { Button } from 'src/components/ui/button'
@@ -14,14 +13,14 @@ import { User } from 'src/types'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { Input } from 'src/components/ui/input'
-import { createPutMutationHook } from 'src/api/hooks/usePut'
+import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: 'Please fill this field' }),
   lastName: z.string().min(1, { message: 'Please fill this field' }),
   phone: z.string().min(1, { message: 'Please fill this field' }),
   address: z.string().min(1, { message: 'Please fill this field' }),
-  stateId: z.string().min(1, { message: 'Please fill this field' }),
+  // stateId: z.string().min(1, { message: 'Please fill this field' }),
 })
 
 type ProfileData = z.infer<typeof formSchema>
@@ -47,10 +46,10 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
   })
 
   const useUpdateUser = (userId: string) => {
-    return createPutMutationHook({
-      endpoint: `/api/users/update-profile`,
+    return createPatchMutationHook({
+      endpoint: `/users/update-profile`,
       requestSchema: formSchema,
-      responseSchema: z.object({}),
+      responseSchema: z.string(),
     })()
   }
 
@@ -62,10 +61,10 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: user.firstName,
-      lastName: user.lastName,
+      lastName: user.lastName || '',
       phone: user.phone || '',
       address: user.address || '',
-      stateId: user.stateId || '',
+      // stateId: user.stateId || '',
     },
   })
   const {
@@ -171,7 +170,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
               />
             </div>
             <div className="w-full">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="stateId"
                 render={({ field }) => (
@@ -205,7 +204,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
 
             <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">

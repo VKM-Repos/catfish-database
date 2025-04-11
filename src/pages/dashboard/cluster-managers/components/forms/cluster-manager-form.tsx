@@ -67,15 +67,15 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
       setError(null)
       if (mode === 'create') {
         await createClusterManagerMutation.mutateAsync({ ...values, password: 'Password@123' })
-        queryClient.invalidateQueries(['clusters'])
+        queryClient.invalidateQueries(['cluster-managers'])
       } else if (mode === 'edit' && initialValues?.id) {
         await updateClusterManagerMutation.mutateAsync({ ...values, id: initialValues.id, password: 'Password@123' })
-        queryClient.invalidateQueries(['clusters'])
+        queryClient.invalidateQueries(['cluster-managers'])
       }
       form.reset()
       onSuccess?.()
     } catch (err) {
-      console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
+      console.error(`${mode === 'create' ? 'Create' : 'Update'} user error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: { error: string; message: string } } }
         const errorData = axiosError.response?.data

@@ -6,7 +6,7 @@ import { Dialog, DialogTrigger, DialogContent } from 'src/components/ui/dialog'
 import { z } from 'zod'
 import { Button } from 'src/components/ui/button'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
-import PasswordForm from './forms/password-form'
+import PasswordForm from '../forms/password-form'
 
 const baseSchema = z.object({
   currentPassword: z.string().min(1, { message: 'Current password is required' }),

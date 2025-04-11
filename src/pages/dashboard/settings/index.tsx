@@ -2,9 +2,9 @@ import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs'
-import AccountTab from './components/account-settings-tab'
+import AccountTab from './components/tabs/account-settings-tab'
 import { FlexBox } from 'src/components/ui/flexbox'
-import TemplateTab from './components/template-settings-tab'
+import TemplateTab from './components/tabs/template-settings-tab'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export default function Settings() {
@@ -38,6 +38,9 @@ export default function Settings() {
             </div>
             <TabsContent value="account" className="w-full">
               <AccountTab />
+            </TabsContent>
+            <TabsContent value="template" className="w-full">
+              <TemplateTab />
             </TabsContent>
             <TabsContent value="template" className="w-full">
               <TemplateTab />

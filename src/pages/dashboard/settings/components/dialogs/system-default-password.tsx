@@ -1,12 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Text } from 'src/components/ui/text'
-import { Dialog, DialogTrigger, DialogContent } from 'src/components/ui/dialog'
 import { z } from 'zod'
-import { Button } from 'src/components/ui/button'
-import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import PasswordForm from '../forms/password-form'
+import { Button } from 'src/components/ui/button'
+import { Dialog, DialogContent, DialogTrigger } from 'src/components/ui/dialog'
+import { Text } from 'src/components/ui/text'
 
 const baseSchema = z.object({
   currentPassword: z.string().min(1, { message: 'Current password is required' }),
@@ -38,23 +37,23 @@ const formSchema = baseSchema
 
 type PasswordData = z.infer<typeof formSchema>
 
-export default function ChangePasswordDialog() {
+export default function ChangeSystemPasswordDialog() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
 
-  const updatePasswordMutation = createPatchMutationHook({
-    endpoint: '/users/change-password',
-    requestSchema: baseSchema,
-    responseSchema: z.string(),
-  })()
+  // const updateSystemPasswordMutation = createPatchMutationHook({
+  //   endpoint: '/system/change-password',
+  //   requestSchema: baseSchema,
+  //   responseSchema: z.string(),
+  // })()
 
   const form = useForm<PasswordData>({ resolver: zodResolver(formSchema) })
 
   const onSubmit = async (data: PasswordData) => {
     try {
       setError(null)
-      await updatePasswordMutation.mutateAsync({ currentPassword: data.currentPassword, newPassword: data.newPassword })
+      console.log({ currentPassword: data.currentPassword, newPassword: data.newPassword })
       setStep(2)
     } catch (err) {
       console.error('Error updating password:', err)
@@ -75,11 +74,19 @@ export default function ChangePasswordDialog() {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <PasswordForm form={form} onSubmit={onSubmit} error={error} setOpen={setOpen} title="Change password" />
+        return (
+          <PasswordForm
+            form={form}
+            onSubmit={onSubmit}
+            error={error}
+            setOpen={setOpen}
+            title="Change default password"
+          />
+        )
       case 2:
         return (
           <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg">Password changed successfully!</Text>
+            <Text className="text-lg">System default password changed successfully!</Text>
             <Button
               variant="primary"
               onClick={() => {
@@ -100,7 +107,7 @@ export default function ChangePasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Change Password</Button>
+        <Button variant="outline">Change default password</Button>
       </DialogTrigger>
       <DialogContent className="max-h-fit w-full overflow-hidden px-8 py-4">{renderStep()}</DialogContent>
     </Dialog>

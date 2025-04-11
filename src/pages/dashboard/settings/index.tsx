@@ -6,6 +6,7 @@ import AccountTab from './components/tabs/account-settings-tab'
 import { FlexBox } from 'src/components/ui/flexbox'
 import TemplateTab from './components/tabs/template-settings-tab'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import SystemPasswordTab from './components/tabs/system-password-settings-tab'
 
 export default function Settings() {
   const title = 'Settings'
@@ -30,10 +31,15 @@ export default function Settings() {
           >
             <div className="w-full border-b border-b-neutral-200 p-0">
               <TabsList className="text-sm font-semibold">
-                <TabsTrigger value="account" className="font-semibold">
+                <TabsTrigger value="account" className="data-[state=active]:font-bold">
                   Account
                 </TabsTrigger>
-                <TabsTrigger value="template">Template</TabsTrigger>
+                <TabsTrigger value="template" className="data-[state=active]:font-bold">
+                  Template
+                </TabsTrigger>
+                <TabsTrigger value="system" className="data-[state=active]:font-bold">
+                  System
+                </TabsTrigger>
               </TabsList>
             </div>
             <TabsContent value="account" className="w-full">
@@ -42,8 +48,8 @@ export default function Settings() {
             <TabsContent value="template" className="w-full">
               <TemplateTab />
             </TabsContent>
-            <TabsContent value="template" className="w-full">
-              <TemplateTab />
+            <TabsContent value="system" className="w-full">
+              <SystemPasswordTab />
             </TabsContent>
           </Tabs>
         </FlexBox>

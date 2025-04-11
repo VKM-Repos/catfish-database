@@ -105,7 +105,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: 'id',
+            path: ':id',
             element: (
               <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
                 {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
@@ -113,7 +113,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: 'edit',
+            path: ':id/edit',
             element: (
               <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
                 {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}

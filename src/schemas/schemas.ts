@@ -83,7 +83,6 @@ export const farmerRequestSchema = z.object({
   email: z.string().email(),
   phone: z.string(),
   address: z.string(),
-  state: z.string(),
   clusterId: z.string().min(1, 'Cluster ID is required'),
   password: z.string().optional(),
   id: z.string().optional(),

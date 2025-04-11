@@ -20,13 +20,12 @@ import { useQueryClient } from '@tanstack/react-query'
 import type { Cluster } from 'src/types/cluster.types'
 import { Grid } from 'src/components/ui/grid'
 import { Textarea } from 'src/components/ui/textarea'
-import { states } from 'src/lib/utils'
 
-type ClusterManagerValues = z.infer<typeof farmerRequestSchema> & { id?: string }
+type FarmerValues = z.infer<typeof farmerRequestSchema> & { id?: string }
 
 type ClusterManagerProps = {
   mode: 'create' | 'edit'
-  initialValues?: ClusterManagerValues
+  initialValues?: FarmerValues
   onSuccess?: () => void
   onClose?: () => void
 }
@@ -34,7 +33,7 @@ type ClusterManagerProps = {
 export function FarmersForm({ mode, initialValues, onSuccess, onClose }: ClusterManagerProps) {
   const queryClient = useQueryClient()
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
-  const form = useForm<ClusterManagerValues>({
+  const form = useForm<FarmerValues>({
     resolver: zodResolver(farmerRequestSchema),
     defaultValues: initialValues || {},
   })
@@ -48,7 +47,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
 
   // Create the update cluster mutation hook
   const useUpdateFarmer = createPutMutationHook({
-    endpoint: `/clusters/${initialValues?.id}`,
+    endpoint: `/users/${initialValues?.id}`,
     requestSchema: farmerRequestSchema,
     responseSchema: farmerResponseSchema,
   })
@@ -59,20 +58,20 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
   const useGetClusters = createGetQueryHook({
     endpoint: '/clusters',
     responseSchema: z.array(clusterResponseSchema),
-    queryKey: ['clusters_farmers  '],
+    queryKey: ['clusters_for_farmers  '],
   })
 
   const { data: clusters, isLoading: isLoadingClusters } = useGetClusters()
 
-  const onSubmit = async (values: ClusterManagerValues) => {
+  const onSubmit = async (values: FarmerValues) => {
     try {
       setError(null)
       if (mode === 'create') {
         await createFarmerMutation.mutateAsync({ ...values, password: 'Password@123' })
-        queryClient.invalidateQueries(['clusters'])
+        queryClient.invalidateQueries(['farmers'])
       } else if (mode === 'edit' && initialValues?.id) {
         await updateFarmerMutation.mutateAsync({ ...values, id: initialValues.id, password: 'Password@123' })
-        queryClient.invalidateQueries(['clusters'])
+        queryClient.invalidateQueries(['farmers'])
       }
       form.reset()
       onSuccess?.()
@@ -91,7 +90,6 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
       }
     }
   }
-  console.log(clusters, 'jdjdjj')
 
   return (
     <>
@@ -197,29 +195,6 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
               <FormItem>
                 <FormControl>
                   <Textarea placeholder="Address " {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="state"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Select value={field.value ? field.value : ''} onValueChange={(value) => field.onChange(value)}>
-                    <SelectTrigger className="font-light !text-neutral-400">
-                      <SelectValue placeholder="State" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {states.map((state: string) => (
-                        <SelectItem key={state} value={state}>
-                          {state}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

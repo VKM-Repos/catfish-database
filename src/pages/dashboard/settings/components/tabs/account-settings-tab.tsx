@@ -1,8 +1,8 @@
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Grid } from 'src/components/ui/grid'
 import { Text } from 'src/components/ui/text'
-import ProfileDialog from './profile-dialog'
-import PasswordDialog from './password-dialog'
+import ProfileDialog from '../dialogs/profile-dialog'
+import PasswordDialog from '../dialogs/password-dialog'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { userSchema } from 'src/schemas/schemas'
 import { Loader } from 'src/components/ui/loader'
@@ -14,7 +14,7 @@ const useGetUser = createGetQueryHook({
 })
 
 export default function AccountTab() {
-  const { data: user, isLoading, isError } = useGetUser()
+  const { data: user, isLoading, isError, refetch } = useGetUser()
 
   if (isLoading) {
     return <Loader type="spinner" />

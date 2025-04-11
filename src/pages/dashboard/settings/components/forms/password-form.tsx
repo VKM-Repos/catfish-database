@@ -39,6 +39,9 @@ export default function PasswordForm({ form, onSubmit, error, setOpen }: any) {
                     <Input
                       placeholder="Current Password"
                       type={showCurrentPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      autoCorrect="off"
+                      spellCheck={false}
                       {...field}
                       icon={
                         <Button
@@ -119,7 +122,14 @@ export default function PasswordForm({ form, onSubmit, error, setOpen }: any) {
             )}
           />
           <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
-            <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => {
+                setOpen(false)
+                form.reset()
+              }}
+            >
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={!isDirty}>

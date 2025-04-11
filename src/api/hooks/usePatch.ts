@@ -1,6 +1,6 @@
 import { useMutation, UseMutationResult, QueryClient, UseMutationOptions } from '@tanstack/react-query'
 import { z } from 'zod'
-import { axiosInstance } from '../config'
+import { authCache, axiosInstance } from '../config'
 
 interface CreatePatchMutationHookArgs<RequestSchema extends z.ZodType, ResponseSchema extends z.ZodType> {
   /** The endpoint for the PATCH request */
@@ -22,6 +22,7 @@ interface CreatePatchMutationHookArgs<RequestSchema extends z.ZodType, ResponseS
     variables: z.infer<RequestSchema>,
     queryClient: QueryClient,
   ) => void
+  requiresAuth?: boolean
 }
 
 /**
@@ -49,6 +50,7 @@ export function createPatchMutationHook<
   onSuccess,
   onError,
   onSettled,
+  requiresAuth = true,
 }: CreatePatchMutationHookArgs<RequestSchema, ResponseSchema>) {
   return (routeParams?: RouteParams) => {
     const queryClient = new QueryClient()
@@ -64,12 +66,17 @@ export function createPatchMutationHook<
       }
 
       const validatedData = requestSchema.parse(data)
+      const headers = requiresAuth ? { Authorization: `Bearer ${authCache.getToken()}` } : {}
       return axiosInstance
-        .patch(url, validatedData)
-        .then((response: unknown) => responseSchema.parse(response))
+        .patch(url, validatedData, { headers })
+        .then((response: { data: unknown }) => {
+          console.log('Raw response:', response)
+          return responseSchema.parse(response.data)
+        })
         .catch((error: unknown) => {
           if (error instanceof z.ZodError) {
             console.error('Validation error:', error.format())
+            throw error
           }
           throw error
         })

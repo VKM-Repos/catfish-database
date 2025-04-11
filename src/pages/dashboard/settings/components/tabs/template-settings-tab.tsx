@@ -1,8 +1,8 @@
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
-import AddNewTemplate from './add-new-template'
-import DeleteTemplate from './delete-template'
+import AddNewTemplate from '../dialogs/add-new-template'
+import DeleteTemplate from '../dialogs/delete-template'
 
 const files = [
   {

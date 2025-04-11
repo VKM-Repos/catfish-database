@@ -36,7 +36,9 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.clusterManagers.id(user.id))}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate User</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setMenu(true)}>
+            {user.accountNonLocked ? 'Deactivate User' : 'Activate User'}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

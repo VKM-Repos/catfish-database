@@ -39,10 +39,7 @@ export default function LoginPage() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(loginRequestSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: {},
   })
 
   const loginMutation = useLogin()
@@ -66,17 +63,12 @@ export default function LoginPage() {
       // Update auth store
       login(userDto, accessToken, refreshToken, expiresAt)
 
-      console.log('Login response:', response)
-      console.log('Auth store state:', useAuthStore.getState())
-
       if (userDto.role === UserRole.FARMER) {
         navigate(paths.dashboard.home.getStarted)
       } else {
         navigate(paths.dashboard.root)
       }
     } catch (err) {
-      console.log('Login error:', err)
-
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: { error: string; message: string } } }
         const errorData = axiosError.response?.data

@@ -41,6 +41,8 @@ export default function EditFarmerPage() {
     lastName: farmer?.lastName || '',
     phone: farmer?.phone || '',
     clusterId: farmer?.cluster?.id || '',
+    address: '',
+    state: '',
   }
 
   return (

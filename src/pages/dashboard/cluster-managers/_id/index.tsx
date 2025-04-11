@@ -34,7 +34,7 @@ export default function ClusterManagerDetailsModal() {
         ) : user ? (
           <div className="flex h-full flex-col justify-center space-y-8">
             <Heading className="relative top-0 border-none text-center capitalize" level={6}>
-              {user ? user.firstName : 'Loading...'}
+              Cluster manager details
             </Heading>
             <Grid cols={2} gap="gap-4">
               <div>
@@ -55,6 +55,12 @@ export default function ClusterManagerDetailsModal() {
               <Text>Email</Text>
               <Text weight="light" color="text-neutral-400">
                 {user.email}
+              </Text>
+            </div>
+            <div>
+              <Text>Cluster</Text>
+              <Text weight="light" color="text-neutral-400">
+                {user.cluster.name}
               </Text>
             </div>
             <div>

@@ -42,12 +42,6 @@ export default function ChangeSystemPasswordDialog() {
   const [step, setStep] = useState(1)
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
 
-  // const updateSystemPasswordMutation = createPatchMutationHook({
-  //   endpoint: '/system/change-password',
-  //   requestSchema: baseSchema,
-  //   responseSchema: z.string(),
-  // })()
-
   const form = useForm<PasswordData>({ resolver: zodResolver(formSchema) })
 
   const onSubmit = async (data: PasswordData) => {

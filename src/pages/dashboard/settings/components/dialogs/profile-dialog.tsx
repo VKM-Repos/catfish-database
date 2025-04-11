@@ -18,7 +18,6 @@ const formSchema = z.object({
   lastName: z.string().min(1, { message: 'Please fill this field' }),
   phone: z.string().min(1, { message: 'Please fill this field' }),
   address: z.string().min(1, { message: 'Please fill this field' }),
-  // stateId: z.string().min(1, { message: 'Please fill this field' }),
 })
 
 type ProfileData = z.infer<typeof formSchema>
@@ -63,7 +62,6 @@ export default function ProfileDialog({ user, refetch }: ProfileDialogProps) {
       lastName: user.lastName || '',
       phone: user.phone || '',
       address: user.address || '',
-      // stateId: user.stateId || '',
     },
   })
   const {
@@ -102,7 +100,6 @@ export default function ProfileDialog({ user, refetch }: ProfileDialogProps) {
       lastName: newUser?.lastName || '',
       phone: newUser?.phone || '',
       address: newUser?.address || '',
-      // stateId: newUser?.stateId || '',
     })
   }
 

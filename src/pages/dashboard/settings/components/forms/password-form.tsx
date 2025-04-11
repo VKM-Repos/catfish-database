@@ -7,7 +7,7 @@ import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Label } from 'src/components/ui/label'
 
-export default function PasswordForm({ form, onSubmit, error, setOpen }: any) {
+export default function PasswordForm({ title, form, onSubmit, error, setOpen }: any) {
   const { formState: isDirty } = form
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
@@ -17,7 +17,7 @@ export default function PasswordForm({ form, onSubmit, error, setOpen }: any) {
     <div className="w-full py-[4rem] pb-[6rem]">
       <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
         <Heading className="text-center" level={6}>
-          Change Password
+          {title}
         </Heading>
       </div>
       <Form {...form}>

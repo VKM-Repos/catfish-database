@@ -25,9 +25,10 @@ type ProfileData = z.infer<typeof formSchema>
 
 type ProfileDialogProps = {
   user: User
+  refetch: any
 }
 
-export default function ProfileDialog({ user }: ProfileDialogProps) {
+export default function ProfileDialog({ user, refetch }: ProfileDialogProps) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
@@ -91,10 +92,18 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
     }
   }
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    const { data: newUser } = await refetch()
     setOpen(false)
     setStep(1)
-    reset()
+
+    reset({
+      firstName: newUser?.firstName || '',
+      lastName: newUser?.lastName || '',
+      phone: newUser?.phone || '',
+      address: newUser?.address || '',
+      // stateId: newUser?.stateId || '',
+    })
   }
 
   const renderStep = () => {

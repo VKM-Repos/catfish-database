@@ -14,7 +14,7 @@ const useGetUser = createGetQueryHook({
 })
 
 export default function AccountTab() {
-  const { data: user, isLoading, isError } = useGetUser()
+  const { data: user, isLoading, isError, refetch } = useGetUser()
 
   if (isLoading) {
     return <Loader type="spinner" />
@@ -36,7 +36,7 @@ export default function AccountTab() {
     <FlexBox direction="col" gap="gap-6" className="w-full">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
         <Text className="text-xl font-semibold text-neutral-700">Profile</Text>
-        <ProfileDialog user={user} />
+        <ProfileDialog user={user} refetch={refetch} />
       </FlexBox>
       <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3">
         {profile.map((item) => (

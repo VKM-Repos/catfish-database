@@ -40,7 +40,7 @@ const roleSpecificLinks = {
   farmers: {
     label: 'Farmers',
     path: paths.dashboard.farmers.root,
-    icon: <SolarIconSet.User color="currentColor" size={22} iconStyle="Outline" />,
+    icon: <SolarIconSet.UserHands color="currentColor" size={22} iconStyle="Outline" />,
   },
   system: {
     label: 'System',

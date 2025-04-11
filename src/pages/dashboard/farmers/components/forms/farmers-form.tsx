@@ -40,21 +40,21 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
   })
 
   // Create the create cluster mutation hook
-  const useCreateClusterManager = createPostMutationHook({
-    endpoint: '/users/cluster-manager',
+  const useCreateFarmer = createPostMutationHook({
+    endpoint: '/users/farmer',
     requestSchema: farmerRequestSchema,
     responseSchema: farmerResponseSchema,
   })
 
   // Create the update cluster mutation hook
-  const useUpdateClusterManager = createPutMutationHook({
+  const useUpdateFarmer = createPutMutationHook({
     endpoint: `/clusters/${initialValues?.id}`,
     requestSchema: farmerRequestSchema,
     responseSchema: farmerResponseSchema,
   })
 
-  const createClusterManagerMutation = useCreateClusterManager()
-  const updateClusterManagerMutation = useUpdateClusterManager()
+  const createFarmerMutation = useCreateFarmer()
+  const updateFarmerMutation = useUpdateFarmer()
 
   const useGetClusters = createGetQueryHook({
     endpoint: '/clusters',
@@ -68,10 +68,10 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
     try {
       setError(null)
       if (mode === 'create') {
-        await createClusterManagerMutation.mutateAsync({ ...values, password: 'Password@123' })
+        await createFarmerMutation.mutateAsync({ ...values, password: 'Password@123' })
         queryClient.invalidateQueries(['clusters'])
       } else if (mode === 'edit' && initialValues?.id) {
-        await updateClusterManagerMutation.mutateAsync({ ...values, id: initialValues.id, password: 'Password@123' })
+        await updateFarmerMutation.mutateAsync({ ...values, id: initialValues.id, password: 'Password@123' })
         queryClient.invalidateQueries(['clusters'])
       }
       form.reset()
@@ -233,13 +233,9 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
               type="submit"
               variant="primary"
               className="flex items-center gap-2"
-              disabled={
-                !form.formState.isValid ||
-                createClusterManagerMutation.isLoading ||
-                updateClusterManagerMutation.isLoading
-              }
+              disabled={!form.formState.isValid || createFarmerMutation.isLoading || updateFarmerMutation.isLoading}
             >
-              {createClusterManagerMutation.isLoading || updateClusterManagerMutation.isLoading ? (
+              {createFarmerMutation.isLoading || updateFarmerMutation.isLoading ? (
                 <>
                   <Loader type="spinner" size={18} />
                   <Text>{mode === 'create' ? 'Creating...' : 'Updating...'}</Text>

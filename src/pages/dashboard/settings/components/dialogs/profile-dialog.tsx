@@ -12,6 +12,7 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import ProfileForm from '../forms/profile-form'
+import { useQueryClient } from '@tanstack/react-query'
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: 'Please fill this field' }),
@@ -24,10 +25,10 @@ type ProfileData = z.infer<typeof formSchema>
 
 type ProfileDialogProps = {
   user: User
-  refetch: any
 }
 
-export default function ProfileDialog({ user, refetch }: ProfileDialogProps) {
+export default function ProfileDialog({ user }: ProfileDialogProps) {
+  const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
@@ -73,6 +74,7 @@ export default function ProfileDialog({ user, refetch }: ProfileDialogProps) {
     try {
       setError(null)
       await updateUserMutation.mutateAsync(data)
+      queryClient.invalidateQueries(['user'])
       setStep(2)
     } catch (err) {
       console.error('Error updating user:', err)
@@ -91,15 +93,13 @@ export default function ProfileDialog({ user, refetch }: ProfileDialogProps) {
   }
 
   const handleClose = async () => {
-    const { data: newUser } = await refetch()
     setOpen(false)
     setStep(1)
-
     reset({
-      firstName: newUser?.firstName || '',
-      lastName: newUser?.lastName || '',
-      phone: newUser?.phone || '',
-      address: newUser?.address || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      phone: user?.phone || '',
+      address: user?.address || '',
     })
   }
 

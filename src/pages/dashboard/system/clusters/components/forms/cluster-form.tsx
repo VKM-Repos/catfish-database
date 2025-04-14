@@ -15,9 +15,10 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 's
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { clusterRequestSchema, clusterResponseSchema } from 'src/schemas/schemas'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { ClientErrorType, ServerErrorType } from 'src/types'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
 type ClusterFormValues = z.infer<typeof clusterRequestSchema> & { id?: string }
 
@@ -30,7 +31,7 @@ type ClusterFormProps = {
 
 export function ClusterForm({ mode, initialValues, onSuccess, onClose }: ClusterFormProps) {
   const queryClient = useQueryClient()
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
   const form = useForm<ClusterFormValues>({
     resolver: zodResolver(clusterRequestSchema),
     defaultValues: initialValues || {
@@ -86,13 +87,14 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
     } catch (err) {
       console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
@@ -111,12 +113,7 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <FormField
             control={form.control}
             name="name"

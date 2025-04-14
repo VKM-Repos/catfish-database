@@ -7,7 +7,6 @@ import { Button } from 'src/components/ui/button'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'src/components/ui/form'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useAuthStore } from 'src/store/auth.store'
 import { Card, CardHeader, CardContent, CardFooter } from 'src/components/ui/card'
 import { Container } from 'src/components/ui/container'
@@ -19,8 +18,9 @@ import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { authCache } from 'src/api/config'
 import { Loader } from 'src/components/ui/loader'
-import { UserRole } from 'src/types'
+import { ClientErrorType, ServerErrorType, UserRole } from 'src/types'
 import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
 const useLogin = createPostMutationHook({
   endpoint: '/auth/login',
@@ -33,7 +33,7 @@ type FormValues = z.infer<typeof loginRequestSchema>
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const login = useAuthStore((state) => state.login)
 
@@ -70,13 +70,14 @@ export default function LoginPage() {
       }
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
@@ -104,12 +105,7 @@ export default function LoginPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
-              {error && (
-                <Alert variant="error" tone="filled">
-                  <AlertTitle>{error.title}</AlertTitle>
-                  <AlertDescription>{error.message}</AlertDescription>
-                </Alert>
-              )}
+              {error && <FormValidationErrorAlert error={error} />}
               <FormField
                 control={form.control}
                 name="email"

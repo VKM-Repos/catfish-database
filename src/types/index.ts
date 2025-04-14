@@ -15,3 +15,15 @@ type User = {
   address: string
   stateId: string
 }
+
+export type ServerErrorType = {
+  error: string
+  errors: string[]
+  message: string
+}
+
+export type ClientErrorType = {
+  title: string
+  message: string
+  errors: string[]
+}

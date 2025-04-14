@@ -9,16 +9,16 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
 import { Cluster } from 'src/types/cluster.types'
-import { DeactivateUserDialog } from '../modals/deactivate-user'
+import { DeleteClusterDialog } from '../modals/delete-cluster'
 import { useState } from 'react'
 
 type ActionsDropdownProps = {
-  user: Cluster
+  cluster: Cluster
 }
 
-export function ActionsDropdown({ user }: ActionsDropdownProps) {
+export function ActionsDropdown({ cluster }: ActionsDropdownProps) {
   const navigate = useNavigate()
-  const [menu, setMenu] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   return (
     <>
@@ -30,17 +30,17 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.id(user.id))}>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.id(cluster.id))}>
             View
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.edit(user.id))}>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.edit(cluster.id))}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate User</DropdownMenuItem>
+          {/* <DropdownMenuItem onSelect={() => setIsDeleteOpen(true)}>Delete</DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DeactivateUserDialog user={user} open={menu} onOpenChange={setMenu} />
+      <DeleteClusterDialog cluster={cluster} open={isDeleteOpen} onOpenChange={setIsDeleteOpen} />
     </>
   )
 }

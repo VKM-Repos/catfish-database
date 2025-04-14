@@ -1,22 +1,24 @@
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
-import { z } from 'zod'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { clusterResponseSchema } from 'src/schemas/schemas'
+import { paginatedUserResponseSchema } from 'src/schemas/schemas'
 
-const clustersSchema = z.array(clusterResponseSchema)
-
-// TODO: CHANGE QUERY TO CLUSTER MANAGER, YOU MIGHT WANT TO EDIT THE STRUCTURE OF THE DATA TABLE
-// THAT INCLUDES THE COLUMNS AND SCHEMA
 export function ClusterManagersTable() {
-  const useGetClusters = createGetQueryHook({
-    endpoint: '/clusters',
-    responseSchema: clustersSchema,
-    queryKey: ['clusters'],
+  const useGetClusterManagers = createGetQueryHook({
+    endpoint: '/users/cluster-managers',
+    responseSchema: paginatedUserResponseSchema,
+    queryKey: ['cluster-managers'],
   })
-  const { data: clusters = [], isLoading } = useGetClusters()
+  const { data: cluster_manager, isLoading } = useGetClusterManagers()
 
-  console.log(clusters)
+  console.log(cluster_manager)
 
-  return <DataTable columns={columns} data={clusters} isLoading={isLoading} emptyStateMessage="No clusters found" />
+  return (
+    <DataTable
+      columns={columns}
+      data={cluster_manager?.content ?? []}
+      isLoading={isLoading}
+      emptyStateMessage="No users found"
+    />
+  )
 }

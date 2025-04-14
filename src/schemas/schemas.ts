@@ -6,37 +6,32 @@ export const stateSchema = z.object({
   name: z.string(),
 })
 
-export const userSchema: z.ZodType<any> = z.lazy(() =>
-  z.object({
-    id: z.string(),
-    email: z.string().email(),
-    role: z.enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]),
-    firstName: z.string(),
-    lastName: z.string(),
-    phone: z.string(),
-    address: z.string().nullable().optional(),
-    accountNonLocked: z.boolean(),
-    enabled: z.boolean(),
-    banUntil: z.string().nullable().optional(),
-    context: z.string().nullable().optional(),
-    createdAt: z.string().nullable().optional(),
-    updatedAt: z.string().nullable().optional(),
-    cluster: clusterSchema.nullable().optional(), // Circular reference resolved via z.lazy
-  }),
-)
+export const clusterSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  state: stateSchema,
+  description: z.string(),
+  context: z.string().nullable(),
+  createdDate: z.string().nullable(),
+  lastModifiedDate: z.string().nullable(),
+})
 
-export const clusterSchema: z.ZodType<any> = z.lazy(() =>
-  z.object({
-    id: z.string(),
-    name: z.string(),
-    state: stateSchema,
-    description: z.string(),
-    context: z.string().nullable(),
-    createdDate: z.string().nullable(),
-    lastModifiedDate: z.string().nullable(),
-    users: z.array(userSchema).optional().default([]),
-  }),
-)
+export const userSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  role: z.enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]),
+  firstName: z.string(),
+  lastName: z.string(),
+  phone: z.string(),
+  address: z.string().nullable().optional(),
+  accountNonLocked: z.boolean(),
+  enabled: z.boolean(),
+  banUntil: z.string().nullable().optional(),
+  context: z.string().nullable().optional(),
+  createdAt: z.string().nullable().optional(),
+  updatedAt: z.string().nullable().optional(),
+  cluster: clusterSchema.nullable().optional(),
+})
 
 export const paginatedUserResponseSchema = z.object({
   totalPages: z.number(),
@@ -62,7 +57,6 @@ export const clusterResponseSchema = z.object({
   context: z.nullable(z.string()),
   createdDate: z.nullable(z.string()),
   lastModifiedDate: z.nullable(z.string()),
-  users: z.nullable(z.array(userSchema)),
 })
 
 export const clusterManagerRequestSchema = z.object({

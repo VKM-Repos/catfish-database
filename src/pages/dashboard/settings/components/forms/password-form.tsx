@@ -2,10 +2,10 @@ import { Heading } from 'src/components/ui/heading'
 import * as SolarIconSet from 'solar-icon-set'
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Label } from 'src/components/ui/label'
+import FormValidationErrorAlert from '../form-alert-error'
 
 export default function PasswordForm({ title, form, onSubmit, error, setOpen, loading }: any) {
   const { formState: isDirty } = form
@@ -22,12 +22,7 @@ export default function PasswordForm({ title, form, onSubmit, error, setOpen, lo
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <FormField
             control={form.control}
             name="currentPassword"

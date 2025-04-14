@@ -7,7 +7,7 @@ import { Dialog, DialogTrigger, DialogContent } from 'src/components/ui/dialog'
 import { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 import { Button } from 'src/components/ui/button'
-import { User } from 'src/types'
+import { ClientErrorType, ServerErrorType, User } from 'src/types'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
@@ -31,7 +31,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
 
   const useGetStates = createGetQueryHook({
     endpoint: '/states',
@@ -78,13 +78,14 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
     } catch (err) {
       console.error('Error updating user:', err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData?.errors,
           })
         }
       }

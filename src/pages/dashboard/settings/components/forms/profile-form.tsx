@@ -1,10 +1,10 @@
 import { Heading } from 'src/components/ui/heading'
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { Button } from 'src/components/ui/button'
 import { Loader } from 'src/components/ui/loader'
 import { Text } from 'src/components/ui/text'
+import FormValidationErrorAlert from '../form-alert-error'
 
 export default function ProfileForm({ form, onSubmit, error, setOpen, loading }: any) {
   const {
@@ -20,12 +20,7 @@ export default function ProfileForm({ form, onSubmit, error, setOpen, loading }:
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <div className="grid w-full grid-cols-2 gap-4">
             <FormField
               control={form.control}

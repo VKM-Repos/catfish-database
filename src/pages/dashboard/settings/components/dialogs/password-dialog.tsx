@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { Button } from 'src/components/ui/button'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import PasswordForm from '../forms/password-form'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 
 const baseSchema = z.object({
   currentPassword: z.string().min(1, { message: 'Current password is required' }),
@@ -41,7 +42,7 @@ type PasswordData = z.infer<typeof formSchema>
 export default function ChangePasswordDialog() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
 
   const updatePasswordMutation = createPatchMutationHook({
     endpoint: '/users/change-password',
@@ -59,13 +60,14 @@ export default function ChangePasswordDialog() {
     } catch (err) {
       console.error('Error updating password:', err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData?.errors,
           })
         }
       }

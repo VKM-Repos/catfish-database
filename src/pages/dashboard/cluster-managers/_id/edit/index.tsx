@@ -65,7 +65,7 @@ export default function EditClusterManagerPage() {
               <div className="flex h-[3rem] w-full flex-col items-center justify-center space-y-4">
                 <Heading level={6}>Completed!</Heading>
                 <Text weight="light" size="base">
-                  User updated successfully!
+                  Cluster Manager updated successfully!
                 </Text>
                 <Button variant="primary" onClick={handleClose}>
                   Continue

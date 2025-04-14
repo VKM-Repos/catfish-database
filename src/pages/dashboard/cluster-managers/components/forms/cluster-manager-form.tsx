@@ -192,7 +192,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
           />
           <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Back
             </Button>
             <Button
               type="submit"

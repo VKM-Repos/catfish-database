@@ -58,7 +58,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       default: {
         border: 'border-neutral-200',
         background: 'bg-white',
-        text: 'text-neutral-400',
+        text: 'text-neutral-900',
         placeholder: 'placeholder:text-neutral-400',
         focus: 'focus-visible:ring-primary-500 focus-visible:border-primary-500',
         hover: 'hover:border-primary-300',

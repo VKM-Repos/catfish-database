@@ -7,7 +7,7 @@ import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Label } from 'src/components/ui/label'
 
-export default function PasswordForm({ title, form, onSubmit, error, setOpen }: any) {
+export default function PasswordForm({ title, form, onSubmit, error, setOpen, loading }: any) {
   const { formState: isDirty } = form
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)

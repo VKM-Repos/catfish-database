@@ -75,7 +75,16 @@ export default function ChangePasswordDialog() {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <PasswordForm form={form} onSubmit={onSubmit} error={error} setOpen={setOpen} title="Change password" />
+        return (
+          <PasswordForm
+            form={form}
+            onSubmit={onSubmit}
+            error={error}
+            setOpen={setOpen}
+            title="Change password"
+            loading={updatePasswordMutation.isLoading}
+          />
+        )
       case 2:
         return (
           <div className="my-8 flex w-full flex-col items-center justify-center gap-4">

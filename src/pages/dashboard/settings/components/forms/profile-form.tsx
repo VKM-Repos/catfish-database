@@ -3,8 +3,10 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/compone
 import { Input } from 'src/components/ui/input'
 import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { Button } from 'src/components/ui/button'
+import { Loader } from 'src/components/ui/loader'
+import { Text } from 'src/components/ui/text'
 
-export default function ProfileForm({ form, onSubmit, error, setOpen }: any) {
+export default function ProfileForm({ form, onSubmit, error, setOpen, loading }: any) {
   const {
     formState: { isDirty },
   } = form
@@ -83,8 +85,21 @@ export default function ProfileForm({ form, onSubmit, error, setOpen }: any) {
             <Button variant="outline" type="button" onClick={() => setOpen(false)}>
               Back
             </Button>
-            <Button type="submit" variant="primary" disabled={!isDirty}>
-              Edit Profile
+            <Button type="submit" variant="primary" disabled={!isDirty || loading} className="flex items-center gap-2">
+              {loading ? (
+                <>
+                  <Loader type="spinner" size={18} />
+                  <Text color="text-inherit" variant="body">
+                    Updating
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text color="text-inherit" variant="body">
+                    Edit profile
+                  </Text>
+                </>
+              )}
             </Button>
           </div>
         </form>

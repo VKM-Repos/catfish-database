@@ -53,7 +53,6 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
   }
 
   const updateUserMutation = useUpdateUser(user.id)
-
   const { data: states = [], isLoading: isLoadingStates } = useGetStates()
 
   const form = useForm<ProfileData>({
@@ -106,7 +105,15 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <ProfileForm form={form} onSubmit={onSubmit} error={error} setOpen={setOpen} />
+        return (
+          <ProfileForm
+            form={form}
+            onSubmit={onSubmit}
+            error={error}
+            setOpen={setOpen}
+            loading={updateUserMutation.isLoading}
+          />
+        )
       case 2:
         return (
           <div className="my-4 flex w-full flex-col items-center justify-center gap-4">

@@ -6,6 +6,7 @@ import PasswordForm from '../forms/password-form'
 import { Button } from 'src/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 
 const baseSchema = z.object({
   currentPassword: z.string().min(1, { message: 'Current password is required' }),
@@ -40,7 +41,7 @@ type PasswordData = z.infer<typeof formSchema>
 export default function ChangeSystemPasswordDialog() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
 
   const form = useForm<PasswordData>({ resolver: zodResolver(formSchema) })
 
@@ -52,13 +53,14 @@ export default function ChangeSystemPasswordDialog() {
     } catch (err) {
       console.error('Error updating password:', err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData?.errors,
           })
         }
       }
@@ -75,6 +77,7 @@ export default function ChangeSystemPasswordDialog() {
             error={error}
             setOpen={setOpen}
             title="Change default password"
+            loading={false}
           />
         )
       case 2:

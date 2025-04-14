@@ -4,7 +4,7 @@ import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Loader } from 'src/components/ui/loader'
 import { Text } from 'src/components/ui/text'
-import FormValidationErrorAlert from '../form-alert-error'
+import FormValidationErrorAlert from '../../../../../components/global/form-error-alert'
 import { CustomFormProps } from './types'
 
 export default function ProfileForm({ form, onSubmit, error, setOpen, loading }: CustomFormProps) {

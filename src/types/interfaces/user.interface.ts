@@ -7,13 +7,13 @@ export interface User {
   firstName: string
   lastName: string
   phone: string
-  address: string | null
+  address?: string | null
   accountNonLocked: boolean
   enabled: boolean
-  banUntil: string | null
-  context: string | null
-  createdAt: string | null
-  updatedAt: string | null
+  banUntil?: string | null
+  context?: string | null
+  createdAt?: string | null
+  updatedAt?: string | null
   cluster?: any | null
   stateId?: string
 }

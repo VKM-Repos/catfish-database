@@ -60,7 +60,7 @@ export default function FarmerDetailsModal() {
             <div>
               <Text>Cluster</Text>
               <Text weight="light" color="text-neutral-400">
-                {user.cluster.name}
+                {user.cluster?.name}
               </Text>
             </div>
             <div>

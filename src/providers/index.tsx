@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import SideBarProvider from './sidebar.provider'
 import { Toaster } from 'src/components/ui/toaster'
 import { HelmetProvider } from 'react-helmet-async'
+import { TooltipProvider } from 'src/components/ui/tooltip'
 
 interface ProvidersProps {
   children: React.ReactNode
@@ -16,7 +17,7 @@ const Providers = ({ children }: ProvidersProps) => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <SideBarProvider>
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
         </SideBarProvider>
         <ReactQueryDevtools />

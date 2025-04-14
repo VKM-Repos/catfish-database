@@ -118,7 +118,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
         {step == 2 && (
           <div className="flex flex-col items-center justify-center space-y-4">
             <Text className="text-lg font-semibold">Done!</Text>
-            <Text weight="light">User {isActive ? 'Activated' : 'Deactivated'} successfully</Text>
+            <Text weight="light">Cluster manager {isActive ? 'Activated' : 'Deactivated'} successfully</Text>
             <Button variant="primary" onClick={handleCloseDialog}>
               Close
             </Button>

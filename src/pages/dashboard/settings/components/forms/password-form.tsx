@@ -2,12 +2,15 @@ import { Heading } from 'src/components/ui/heading'
 import * as SolarIconSet from 'solar-icon-set'
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Label } from 'src/components/ui/label'
+import FormValidationErrorAlert from '../../../../../components/global/form-error-alert'
+import { Loader } from 'src/components/ui/loader'
+import { Text } from 'src/components/ui/text'
+import { CustomFormProps } from './types'
 
-export default function PasswordForm({ title, form, onSubmit, error, setOpen }: any) {
+export default function PasswordForm({ title, form, onSubmit, error, setOpen, loading }: CustomFormProps) {
   const { formState: isDirty } = form
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
@@ -22,12 +25,7 @@ export default function PasswordForm({ title, form, onSubmit, error, setOpen }: 
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <FormField
             control={form.control}
             name="currentPassword"
@@ -133,7 +131,20 @@ export default function PasswordForm({ title, form, onSubmit, error, setOpen }: 
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={!isDirty}>
-              Update Password
+              {loading ? (
+                <>
+                  <Loader type="spinner" size={18} />
+                  <Text color="text-inherit" variant="body">
+                    Updating
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text color="text-inherit" variant="body">
+                    Update Password
+                  </Text>
+                </>
+              )}
             </Button>
           </div>
         </form>

@@ -85,7 +85,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
           setError({
             title: errorData.error,
             message: errorData.message,
-            errors: errorData?.errors,
+            errors: errorData.errors ?? null,
           })
         }
       }

@@ -5,8 +5,9 @@ import { Button } from 'src/components/ui/button'
 import { Loader } from 'src/components/ui/loader'
 import { Text } from 'src/components/ui/text'
 import FormValidationErrorAlert from '../form-alert-error'
+import { CustomFormProps } from './types'
 
-export default function ProfileForm({ form, onSubmit, error, setOpen, loading }: any) {
+export default function ProfileForm({ form, onSubmit, error, setOpen, loading }: CustomFormProps) {
   const {
     formState: { isDirty },
   } = form

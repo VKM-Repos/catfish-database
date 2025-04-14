@@ -67,7 +67,7 @@ export default function ChangePasswordDialog() {
           setError({
             title: errorData.error,
             message: errorData.message,
-            errors: errorData?.errors,
+            errors: errorData.errors ?? null,
           })
         }
       }

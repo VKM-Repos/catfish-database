@@ -39,6 +39,7 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
       stateId: 0,
       description: '',
     },
+    mode: 'onChange',
   })
 
   // Create the create cluster mutation hook

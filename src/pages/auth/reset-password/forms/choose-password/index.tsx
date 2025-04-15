@@ -71,7 +71,10 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const form = useForm<PasswordData>({ resolver: zodResolver(passwordSchema) })
+  const form = useForm<PasswordData>({
+    resolver: zodResolver(passwordSchema),
+    mode: 'onChange',
+  })
   const changePasswordMutation = useChangePassword()
   const location = useLocation()
 

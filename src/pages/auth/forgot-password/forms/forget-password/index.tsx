@@ -13,10 +13,12 @@ import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { emailSchema } from 'src/schemas'
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }).min(1, { message: 'Please fill this field' }),
+  email: emailSchema,
 })
+
 type ResetData = z.infer<typeof formSchema>
 
 export default function ForgetPassword({ handleNext }: { handleNext: () => void }) {

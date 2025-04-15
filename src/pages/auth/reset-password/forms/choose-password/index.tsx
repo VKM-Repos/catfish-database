@@ -14,24 +14,11 @@ import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { passwordSchema } from 'src/schemas'
 
-const passwordSchema = z
+const formSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, { message: 'Password must contain at least 8 characters' })
-      .refine((value) => /[A-Z]/.test(value), {
-        message: 'Password must contain at least one uppercase letter',
-      })
-      .refine((value) => /[a-z]/.test(value), {
-        message: 'Password must contain at least one lowercase letter',
-      })
-      .refine((value) => /\d/.test(value), {
-        message: 'Password must contain at least one number',
-      })
-      .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
-        message: 'Password must contain at least one symbol',
-      }),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -39,24 +26,10 @@ const passwordSchema = z
     path: ['confirmPassword'],
   })
 
-type PasswordData = z.infer<typeof passwordSchema>
+type PasswordData = z.infer<typeof formSchema>
 
 const requestSchema = z.object({
-  password: z
-    .string()
-    .min(8, { message: 'Password must contain at least 8 characters' })
-    .refine((value) => /[A-Z]/.test(value), {
-      message: 'Password must contain at least one uppercase letter',
-    })
-    .refine((value) => /[a-z]/.test(value), {
-      message: 'Password must contain at least one lowercase letter',
-    })
-    .refine((value) => /\d/.test(value), {
-      message: 'Password must contain at least one number',
-    })
-    .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
-      message: 'Password must contain at least one symbol',
-    }),
+  password: passwordSchema,
   token: z.string(),
 })
 

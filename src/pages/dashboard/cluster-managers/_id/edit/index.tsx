@@ -13,7 +13,7 @@ import { userSchema } from 'src/schemas/schemas'
 const useGetClusterManager = createGetQueryHook<typeof userSchema, { id: string }>({
   endpoint: '/users/:id',
   responseSchema: userSchema,
-  queryKey: ['cluster'],
+  queryKey: ['user'],
 })
 
 export default function EditClusterManagerPage() {

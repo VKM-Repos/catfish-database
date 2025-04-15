@@ -12,7 +12,7 @@ import { Grid } from 'src/components/ui/grid'
 const useGetClusterManager = createGetQueryHook<typeof clusterManagerResponseSchema, { id: string }>({
   endpoint: '/users/:id',
   responseSchema: clusterManagerResponseSchema,
-  queryKey: ['cluster-manager'],
+  queryKey: ['user'],
 })
 
 export default function ClusterManagerDetailsModal() {

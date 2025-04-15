@@ -28,7 +28,7 @@ export default function ClusterManagersPage() {
   )
 
   return (
-    <div className="relative">
+    <div className="relative pb-[5rem]">
       <PageTransition>
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />

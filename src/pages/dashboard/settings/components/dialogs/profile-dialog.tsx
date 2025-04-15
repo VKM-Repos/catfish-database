@@ -13,16 +13,9 @@ import { Heading } from 'src/components/ui/heading'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import ProfileForm from '../forms/profile-form'
 import { useQueryClient } from '@tanstack/react-query'
-import { phoneSchema } from 'src/schemas'
+import { profileSchema } from 'src/schemas'
 
-const formSchema = z.object({
-  firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
-  lastName: z.string().min(3, { message: 'Last name must not be less than 3 characters' }),
-  phone: phoneSchema,
-  address: z.string().min(3, { message: 'Address must not be less than 3 characters' }),
-})
-
-type ProfileData = z.infer<typeof formSchema>
+type ProfileData = z.infer<typeof profileSchema>
 
 type ProfileDialogProps = {
   user: User
@@ -48,7 +41,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
   const useUpdateUser = (userId: string) => {
     return createPatchMutationHook({
       endpoint: `/users/update-profile`,
-      requestSchema: formSchema,
+      requestSchema: profileSchema,
       responseSchema: z.string(),
     })()
   }
@@ -57,7 +50,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
   const { data: states = [], isLoading: isLoadingStates } = useGetStates()
 
   const form = useForm<ProfileData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: user.firstName,
       lastName: user.lastName || '',

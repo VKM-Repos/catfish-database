@@ -8,6 +8,27 @@ export const stateSchema = z.object({
 
 export const phoneSchema = z.string().regex(/^\d{11}$/, 'Must be an 11-digit number')
 
+export const emailSchema = z
+  .string()
+  .email({ message: 'Please enter a valid email address' })
+  .min(1, { message: 'Please fill this field' })
+
+export const passwordSchema = z
+  .string()
+  .min(8, { message: 'Password must contain at least 8 characters' })
+  .refine((value) => /[A-Z]/.test(value), {
+    message: 'Must contain at least one uppercase letter',
+  })
+  .refine((value) => /[a-z]/.test(value), {
+    message: 'Must contain at least one lowercase letter',
+  })
+  .refine((value) => /\d/.test(value), {
+    message: 'Must contain at least one number',
+  })
+  .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
+    message: 'Must contain at least one symbol',
+  })
+
 export const clusterSchema = z.object({
   id: z.string(),
   name: z.string().min(3, { message: 'Name must not be less than 3 characters' }),
@@ -67,7 +88,7 @@ export const clusterResponseSchema = z.object({
 export const clusterManagerRequestSchema = z.object({
   firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
   lastName: z.string().min(3, { message: 'Last name must not be less than 3 characters' }),
-  email: z.string().email('Please enter a valid email address'),
+  email: emailSchema,
   phone: phoneSchema,
   clusterId: z.string().min(1, 'Cluster ID is required'),
   password: z.string().optional(),
@@ -79,7 +100,7 @@ export const clusterManagerResponseSchema = userSchema
 export const farmerRequestSchema = z.object({
   firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
   lastName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
-  email: z.string().email('Please enter a valid email address'),
+  email: emailSchema,
   phone: phoneSchema,
   address: z.string().min(3, { message: 'Address must not be less than 3 characters' }),
   clusterId: z.string().min(1, 'Cluster ID is required'),
@@ -90,7 +111,7 @@ export const farmerRequestSchema = z.object({
 export const farmerResponseSchema = userSchema
 
 export const loginRequestSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: emailSchema,
   password: z.string().min(1, 'Password is required'),
 })
 
@@ -99,4 +120,16 @@ export const loginResponseSchema = z.object({
   accessToken: z.string(),
   refreshToken: z.string(),
   expiresAt: z.string(),
+})
+
+export const profileSchema = z.object({
+  firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
+  lastName: z.string().min(3, { message: 'Last name must not be less than 3 characters' }),
+  phone: phoneSchema,
+  address: z.string().min(3, { message: 'Address must not be less than 3 characters' }),
+})
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, { message: 'Current password is required' }),
+  newPassword: passwordSchema,
 })

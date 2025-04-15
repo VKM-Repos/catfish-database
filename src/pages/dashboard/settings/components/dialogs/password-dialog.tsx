@@ -8,27 +8,9 @@ import { Button } from 'src/components/ui/button'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import PasswordForm from '../forms/password-form'
 import { ClientErrorType, ServerErrorType } from 'src/types'
+import { changePasswordSchema } from 'src/schemas'
 
-const baseSchema = z.object({
-  currentPassword: z.string().min(1, { message: 'Current password is required' }),
-  newPassword: z
-    .string()
-    .min(8, { message: 'Password must contain at least 8 characters' })
-    .refine((value) => /[A-Z]/.test(value), {
-      message: 'Must contain at least one uppercase letter',
-    })
-    .refine((value) => /[a-z]/.test(value), {
-      message: 'Must contain at least one lowercase letter',
-    })
-    .refine((value) => /\d/.test(value), {
-      message: 'Must contain at least one number',
-    })
-    .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
-      message: 'Must contain at least one symbol',
-    }),
-})
-
-const formSchema = baseSchema
+const formSchema = changePasswordSchema
   .extend({
     confirmPassword: z.string().min(1, { message: 'Please confirm your new password' }),
   })
@@ -46,7 +28,7 @@ export default function ChangePasswordDialog() {
 
   const updatePasswordMutation = createPatchMutationHook({
     endpoint: '/users/change-password',
-    requestSchema: baseSchema,
+    requestSchema: changePasswordSchema,
     responseSchema: z.string(),
   })()
 

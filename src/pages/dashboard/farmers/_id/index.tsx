@@ -9,7 +9,7 @@ import { Button } from 'src/components/ui/button'
 import { clusterManagerResponseSchema } from 'src/schemas'
 import { Grid } from 'src/components/ui/grid'
 
-const useGetClusterManager = createGetQueryHook<typeof clusterManagerResponseSchema, { id: string }>({
+const useGetFarmer = createGetQueryHook<typeof clusterManagerResponseSchema, { id: string }>({
   endpoint: '/users/:id',
   responseSchema: clusterManagerResponseSchema,
   queryKey: ['farmer-details'],
@@ -18,7 +18,7 @@ const useGetClusterManager = createGetQueryHook<typeof clusterManagerResponseSch
 export default function FarmerDetailsModal() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: user, isLoading } = useGetClusterManager({ route: { id: id! } })
+  const { data: user, isLoading } = useGetFarmer({ route: { id: id! } })
 
   if (!id) {
     return null
@@ -34,7 +34,7 @@ export default function FarmerDetailsModal() {
         ) : user ? (
           <div className="flex h-full flex-col justify-center space-y-8">
             <Heading className="relative top-0 border-none text-center capitalize" level={6}>
-              Cluster manager details
+              Farmer details
             </Heading>
             <Grid cols={2} gap="gap-4">
               <div>
@@ -69,6 +69,12 @@ export default function FarmerDetailsModal() {
                 {user.phone}
               </Text>
             </div>
+            <div>
+              <Text>Address</Text>
+              <Text weight="light" color="text-neutral-400">
+                {user.address}
+              </Text>
+            </div>
 
             <div className="flex w-full justify-between space-x-2">
               <Button className="w-full" variant="outline" onClick={() => navigate(paths.dashboard.farmers.root)}>
@@ -77,7 +83,7 @@ export default function FarmerDetailsModal() {
               <Button
                 className="w-full"
                 variant="primary"
-                onClick={() => navigate(paths.dashboard.clusterManagers.id(user.id))}
+                onClick={() => navigate(paths.dashboard.farmers.id(user.id))}
               >
                 Edit
               </Button>

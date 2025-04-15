@@ -15,6 +15,7 @@ const buttonVariants = cva(
         neutral: 'bg-neutral-100 text-neutral-500 shadow-sm hover:bg-neutral-500/80',
         outline:
           'border border-primary-400 bg-transparent shadow-sm hover:bg-primary-100 text-primary-500 hover:text-primary-400',
+        icon: 'bg-transparent shadow-sm hover:bg-primary-100 text-primary-500 hover:text-primary-400',
         error: 'bg-error-500 text-white shadow-sm hover:bg-error-600',
         ghost: ' hover:text-inherit border-none  text-inherit',
         link: 'text-primary underline-offset-4 hover:underline',

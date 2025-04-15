@@ -6,7 +6,6 @@ import { Textarea } from 'src/components/ui/textarea'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import { Loader } from 'src/components/ui/loader'
-import * as SolarIconSet from 'solar-icon-set'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
@@ -192,7 +191,6 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
               ) : (
                 <>
                   <Text>{mode === 'create' ? 'Create Cluster' : 'Update Cluster'}</Text>
-                  <SolarIconSet.ArrowRight size={18} />
                 </>
               )}
             </Button>

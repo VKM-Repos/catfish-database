@@ -14,12 +14,13 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 's
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { farmerResponseSchema, clusterResponseSchema, farmerRequestSchema } from 'src/schemas/schemas'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Cluster } from 'src/types/cluster.types'
 import { Grid } from 'src/components/ui/grid'
 import { Textarea } from 'src/components/ui/textarea'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 
 type FarmerValues = z.infer<typeof farmerRequestSchema> & { id?: string }
 
@@ -32,10 +33,11 @@ type ClusterManagerProps = {
 
 export function FarmersForm({ mode, initialValues, onSuccess, onClose }: ClusterManagerProps) {
   const queryClient = useQueryClient()
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
   const form = useForm<FarmerValues>({
     resolver: zodResolver(farmerRequestSchema),
     defaultValues: initialValues || {},
+    mode: 'onChange',
   })
 
   // Create the create cluster mutation hook
@@ -78,13 +80,14 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
     } catch (err) {
       console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
@@ -100,12 +103,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <Grid cols={2} gap="gap-4">
             <FormField
               control={form.control}
@@ -154,7 +152,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
                     value={field.value ? String(field.value) : ''}
                     onValueChange={(value) => field.onChange(value)}
                   >
-                    <SelectTrigger className="font-light !text-neutral-400">
+                    <SelectTrigger className="font-light">
                       <SelectValue placeholder="Cluster" />
                     </SelectTrigger>
                     <SelectContent>
@@ -194,7 +192,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: Cluster
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea placeholder="Address " {...field} />
+                  <Textarea placeholder="Address " {...field} className="text-neutral-900" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

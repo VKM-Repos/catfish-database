@@ -136,7 +136,7 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
                     value={field.value ? String(field.value) : ''}
                     onValueChange={(value) => field.onChange(Number(value))}
                   >
-                    <SelectTrigger className="font-light !text-neutral-400">
+                    <SelectTrigger className="font-light">
                       <SelectValue placeholder="State" />
                     </SelectTrigger>
                     <SelectContent>
@@ -164,10 +164,10 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea placeholder="Enter description" {...field} />
+                  <Textarea placeholder="Enter description" {...field} className="text-neutral-900" />
                 </FormControl>
                 <FormMessage />
-                <Text align="left" size="base" color="text-neutral-500" weight="light">
+                <Text align="left" size="base" color="text-neutral-900" weight="light">
                   {description.length}/500
                 </Text>
               </FormItem>

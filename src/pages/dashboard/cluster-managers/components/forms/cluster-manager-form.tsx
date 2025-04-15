@@ -135,7 +135,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Enter email" {...field} />
+                  <Input placeholder="Enter email" {...field} disabled={mode === 'edit'} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -151,7 +151,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
                     value={field.value ? String(field.value) : ''}
                     onValueChange={(value) => field.onChange(value)}
                   >
-                    <SelectTrigger className=" font-light !text-neutral-400">
+                    <SelectTrigger className="font-light">
                       <div className="flex items-center justify-center gap-2">
                         <SolarIconSet.Signpost color="text-inherit" size={24} iconStyle="Outline" />
                         <SelectValue placeholder="Cluster" />

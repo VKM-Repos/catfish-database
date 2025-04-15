@@ -162,7 +162,7 @@ export function DataTable<TData>({
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to previous page</span>
-              <SolarIconSet.AltArrowLeft />
+              <SolarIconSet.AltArrowLeft size={20} />
             </Button>
 
             {/* Page numbers - shows up to 5 pages around current page */}
@@ -204,7 +204,7 @@ export function DataTable<TData>({
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to next page</span>
-              <SolarIconSet.AltArrowRight />
+              <SolarIconSet.AltArrowRight size={20} />
             </Button>
           </div>
         </div>

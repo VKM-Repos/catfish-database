@@ -40,6 +40,7 @@ export default function LoginPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(loginRequestSchema),
     defaultValues: {},
+    mode: 'onChange',
   })
 
   const loginMutation = useLogin()

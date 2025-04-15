@@ -22,7 +22,12 @@ type ResetData = z.infer<typeof formSchema>
 export default function ForgetPassword({ handleNext }: { handleNext: () => void }) {
   const { t } = useTranslation('translation')
   const [error, setError] = useState<ClientErrorType | null>(null)
-  const form = useForm<ResetData>({ resolver: zodResolver(formSchema) })
+
+  const form = useForm<ResetData>({
+    resolver: zodResolver(formSchema),
+    mode: 'onChange',
+  })
+
   const useForgotPassword = createPostMutationHook({
     endpoint: `/auth/forgot-password?email=${form.watch('email')}`,
     requestSchema: formSchema,

@@ -6,11 +6,13 @@ export const stateSchema = z.object({
   name: z.string(),
 })
 
+export const phoneSchema = z.string().regex(/^\d{11}$/, 'Must be an 11-digit number')
+
 export const clusterSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  name: z.string().min(3, { message: 'Name must not be less than 3 characters' }),
   state: stateSchema,
-  description: z.string(),
+  description: z.string().min(3, { message: 'Description must not be less than 3 characters' }),
   context: z.string().nullable(),
   createdDate: z.string().nullable(),
   lastModifiedDate: z.string().nullable(),
@@ -42,10 +44,13 @@ export const paginatedUserResponseSchema = z.object({
 })
 
 export const clusterRequestSchema = z.object({
-  name: z.string().min(1, 'Cluster name is required'),
+  name: z.string().min(3, 'Cluster name must not be less than 3 characters'),
   context: z.string().optional(),
   stateId: z.number().int().min(1, 'State ID is required'),
-  description: z.string().min(1, 'Description is required').max(500, 'Description cannot exceed 500 characters'),
+  description: z
+    .string()
+    .min(3, 'Description must not be less than 3 characters')
+    .max(500, 'Description cannot exceed 500 characters'),
   id: z.string().optional(),
 })
 
@@ -60,10 +65,10 @@ export const clusterResponseSchema = z.object({
 })
 
 export const clusterManagerRequestSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
+  firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
+  lastName: z.string().min(3, { message: 'Last name must not be less than 3 characters' }),
+  email: z.string().email('Please enter a valid email address'),
+  phone: phoneSchema,
   clusterId: z.string().min(1, 'Cluster ID is required'),
   password: z.string().optional(),
   id: z.string().optional(),
@@ -72,11 +77,11 @@ export const clusterManagerRequestSchema = z.object({
 export const clusterManagerResponseSchema = userSchema
 
 export const farmerRequestSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  address: z.string(),
+  firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
+  lastName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
+  email: z.string().email('Please enter a valid email address'),
+  phone: phoneSchema,
+  address: z.string().min(3, { message: 'Address must not be less than 3 characters' }),
   clusterId: z.string().min(1, 'Cluster ID is required'),
   password: z.string().optional(),
   id: z.string().optional(),

@@ -18,8 +18,16 @@ export default function FormValidationErrorAlert({ error }: { error: ClientError
 
   return (
     <Alert variant="error" tone="filled">
-      <AlertTitle>{error.message}</AlertTitle>
-      <AlertDescription>{errorArray ?? 'Something went wrong'}</AlertDescription>
+      {errorArray ? (
+        <>
+          <AlertTitle>{error.message}</AlertTitle>
+          <AlertDescription>{errorArray}</AlertDescription>
+        </>
+      ) : (
+        <>
+          <AlertTitle className="mt-1.5 text-xs">{error.message}</AlertTitle>
+        </>
+      )}
     </Alert>
   )
 }

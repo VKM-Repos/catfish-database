@@ -87,15 +87,12 @@ export const router = createBrowserRouter([
       // Farmer Routes
       {
         path: paths.dashboard.farmers.root,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+            {LazyPage(() => import('src/pages/dashboard/farmers'))}
+          </RoleGuard>
+        ),
         children: [
-          {
-            index: true,
-            element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                {LazyPage(() => import('src/pages/dashboard/farmers'))}
-              </RoleGuard>
-            ),
-          },
           {
             path: 'create',
             element: (
@@ -106,19 +103,24 @@ export const router = createBrowserRouter([
           },
           {
             path: ':id',
-            element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
-              </RoleGuard>
-            ),
-          },
-          {
-            path: ':id/edit',
-            element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}
-              </RoleGuard>
-            ),
+            children: [
+              {
+                index: true,
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+                    {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: 'edit',
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+                    {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}
+                  </RoleGuard>
+                ),
+              },
+            ],
           },
         ],
       },

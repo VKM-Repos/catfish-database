@@ -28,7 +28,7 @@ export default function FarmersPage() {
   )
 
   return (
-    <div className="relative">
+    <div className="relative pb-10">
       <PageTransition>
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />

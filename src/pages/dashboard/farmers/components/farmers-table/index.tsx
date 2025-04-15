@@ -5,7 +5,7 @@ import { paginatedUserResponseSchema } from 'src/schemas/schemas'
 
 export function FarmersTable() {
   const useGetFarmers = createGetQueryHook({
-    endpoint: '/users/farmers',
+    endpoint: '/users/farmers?direction=DESC',
     responseSchema: paginatedUserResponseSchema,
     queryKey: ['farmers'],
   })

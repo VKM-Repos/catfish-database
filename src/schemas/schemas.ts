@@ -1,11 +1,12 @@
 import { z } from 'zod'
 import { UserRole } from 'src/types'
+import { useAuthStore } from 'src/store/auth.store'
 
 export const stateSchema = z.object({
   id: z.number(),
   name: z.string(),
 })
-
+const user = useAuthStore.getState().user
 export const userSchema: z.ZodType<any> = z.lazy(() =>
   z.object({
     id: z.string(),
@@ -78,13 +79,29 @@ export const clusterManagerRequestSchema = z.object({
 export const clusterManagerResponseSchema = userSchema
 
 export const farmerRequestSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  address: z.string(),
-  clusterId: z.string().min(1, 'Cluster ID is required'),
+  firstName: z
+    .string()
+    .min(3, 'Field must be at least 3 characters')
+    .max(50, 'Field must not be more than 50 characters'),
+  lastName: z.string().min(3, 'Field must be at least 3 characters'),
+  email: z.string().email().max(50, 'Field must not be more than 50 characters'),
+  phone: z
+    .string()
+    .regex(/^\d+$/, {
+      message: 'Phone number must contain only digits (0-9)',
+    })
+    .min(11, 'Field must be at least 11 digits')
+    .max(11, 'Field must not be more than 11 digit'),
+  address: z
+    .string()
+    .min(5, 'Field must be at least 5 characters')
+    .max(100, 'Field must not be more than 100 characters'),
+  clusterId:
+    user?.role === 'SUPER_ADMIN'
+      ? z.string().min(1, 'Cluster ID is required')
+      : z.string().min(1, 'Cluster ID is required').optional(),
   password: z.string().optional(),
+  role: z.string().optional(),
   id: z.string().optional(),
 })
 

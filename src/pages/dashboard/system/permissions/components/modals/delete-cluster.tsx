@@ -10,8 +10,8 @@ import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
 import { useState } from 'react'
 
-type DeactivateUserDialogProps = {
-  user: Cluster
+type DeleteClusterDialogProps = {
+  cluster: Cluster
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -20,21 +20,21 @@ const responseSchema = z.object({
   success: z.boolean(),
 })
 
-export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUserDialogProps) {
+export function DeleteClusterDialog({ cluster, open, onOpenChange }: DeleteClusterDialogProps) {
   const queryClient = useQueryClient()
   const [step, setStep] = useState(1)
 
-  const useDeactivateUser = createDeleteMutationHook<typeof responseSchema, { id: string }>({
-    endpoint: `/user/${user.id}`,
+  const useDeleteCluster = createDeleteMutationHook<typeof responseSchema, { id: string }>({
+    endpoint: `/clusters/${cluster.id}`,
     responseSchema,
     onSuccess: () => {
-      queryClient.invalidateQueries(['user'])
+      queryClient.invalidateQueries(['clusters'])
       setStep(2)
     },
   })
 
-  const { mutate: deactivateUser, isLoading } = useDeactivateUser({
-    route: { id: user.id },
+  const { mutate: deleteCluster, isLoading } = useDeleteCluster({
+    route: { id: cluster.id },
   })
 
   return (
@@ -48,26 +48,26 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
           <span className="sr-only">Close</span>
         </DialogClose>
         <DialogHeader>
-          <Heading level={5}>{step === 1 ? 'Deactivate User?' : 'Done'}</Heading>
+          <Heading level={5}>{step === 1 ? 'Delete Cluster?' : 'Done'}</Heading>
         </DialogHeader>
         {step === 1 ? (
           <div className="space-y-8">
             <Text
               weight="light"
               size="base"
-            >{`You are about to deactivate this user, "${user.name}". This action cannot be undone.`}</Text>
+            >{`Are you sure you want to delete the cluster "${cluster.name}"? This action cannot be undone.`}</Text>
             <div className="flex w-full justify-between space-x-2">
               <Button className="w-full" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
                 Cancel
               </Button>
-              <Button className="w-full" variant="primary" onClick={() => deactivateUser()} disabled={true}>
-                {isLoading ? 'Deactivating...' : 'Continue'}
+              <Button className="w-full" variant="primary" onClick={() => deleteCluster()} disabled={true}>
+                {isLoading ? 'Deleting...' : 'Continue'}
               </Button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center space-y-4">
-            <Text className="text-lg font-semibold">User deactivated successfully!</Text>
+            <Text className="text-lg font-semibold">Cluster deleted successfully!</Text>
             <Button variant="primary" onClick={() => onOpenChange(false)}>
               Close
             </Button>

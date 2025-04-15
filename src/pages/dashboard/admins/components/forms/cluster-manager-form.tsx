@@ -2,11 +2,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
-import { Textarea } from 'src/components/ui/textarea'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import { Loader } from 'src/components/ui/loader'
-import * as SolarIconSet from 'solar-icon-set'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
@@ -14,115 +12,129 @@ import { z } from 'zod'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 'src/components/ui/select'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
-import { clusterRequestSchema, clusterResponseSchema } from 'src/schemas/schemas'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
+import { clusterManagerRequestSchema, clusterManagerResponseSchema, clusterResponseSchema } from 'src/schemas/schemas'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { Cluster } from 'src/types/cluster.types'
+import { Grid } from 'src/components/ui/grid'
+import * as SolarIconSet from 'solar-icon-set'
+import { ClientErrorType, ServerErrorType } from 'src/types'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
-type ClusterFormValues = z.infer<typeof clusterRequestSchema> & { id?: string }
+type ClusterManagerValues = z.infer<typeof clusterManagerRequestSchema> & { id?: string }
 
-type ClusterFormProps = {
+type ClusterManagerProps = {
   mode: 'create' | 'edit'
-  initialValues?: ClusterFormValues
+  initialValues?: ClusterManagerValues
   onSuccess?: () => void
   onClose?: () => void
 }
 
-export function ClusterForm({ mode, initialValues, onSuccess, onClose }: ClusterFormProps) {
+export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: ClusterManagerProps) {
   const queryClient = useQueryClient()
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
-  const form = useForm<ClusterFormValues>({
-    resolver: zodResolver(clusterRequestSchema),
-    defaultValues: initialValues || {
-      name: '',
-      stateId: 0,
-      description: '',
-    },
+  const [error, setError] = useState<ClientErrorType | null>(null)
+  const form = useForm<ClusterManagerValues>({
+    resolver: zodResolver(clusterManagerRequestSchema),
+    defaultValues: initialValues || {},
   })
 
   // Create the create cluster mutation hook
-  const useCreateCluster = createPostMutationHook({
-    endpoint: '/clusters',
-    requestSchema: clusterRequestSchema,
-    responseSchema: clusterResponseSchema,
+  const useCreateClusterManager = createPostMutationHook({
+    endpoint: '/users/cluster-manager',
+    requestSchema: clusterManagerRequestSchema,
+    responseSchema: clusterManagerResponseSchema,
   })
 
   // Create the update cluster mutation hook
-  const useUpdateCluster = createPutMutationHook({
-    endpoint: `/clusters/${initialValues?.id}`,
-    requestSchema: clusterRequestSchema,
-    responseSchema: clusterResponseSchema,
+  const useUpdateClusterManager = createPutMutationHook({
+    endpoint: `/users/${initialValues?.id}`,
+    requestSchema: clusterManagerRequestSchema,
+    responseSchema: clusterManagerResponseSchema,
   })
 
-  const createClusterMutation = useCreateCluster()
-  const updateClusterMutation = useUpdateCluster()
+  const createClusterManagerMutation = useCreateClusterManager()
+  const updateClusterManagerMutation = useUpdateClusterManager()
 
-  const useGetStates = createGetQueryHook({
-    endpoint: '/states',
-    responseSchema: z.array(
-      z.object({
-        id: z.number(),
-        name: z.string(),
-      }),
-    ),
-    queryKey: ['states'],
+  const useGetClusters = createGetQueryHook({
+    endpoint: '/clusters',
+    responseSchema: z.array(clusterResponseSchema),
+    queryKey: ['clusters'],
   })
 
-  const { data: states = [], isLoading: isLoadingStates } = useGetStates()
+  const { data: clusters = [], isLoading: isLoadingClusters } = useGetClusters()
 
-  const onSubmit = async (values: ClusterFormValues) => {
+  const onSubmit = async (values: ClusterManagerValues) => {
     try {
       setError(null)
       if (mode === 'create') {
-        await createClusterMutation.mutateAsync(values)
-        queryClient.invalidateQueries(['clusters'])
+        await createClusterManagerMutation.mutateAsync({ ...values, password: 'Password@123' })
+        queryClient.invalidateQueries(['cluster-managers'])
       } else if (mode === 'edit' && initialValues?.id) {
-        await updateClusterMutation.mutateAsync({ ...values, id: initialValues.id })
-        queryClient.invalidateQueries(['clusters'])
+        await updateClusterManagerMutation.mutateAsync({ ...values, id: initialValues.id, password: 'Password@123' })
+        queryClient.invalidateQueries(['cluster-managers'])
       }
       form.reset()
       onSuccess?.()
     } catch (err) {
-      console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
+      console.error(`${mode === 'create' ? 'Create' : 'Update'} user error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
     }
   }
 
-  // Watch the description field to get the character count
-  const description = form.watch('description')
-
   return (
     <>
       <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
         <Heading className="text-center" level={6}>
-          {mode === 'create' ? 'Add a new cluster' : 'Edit cluster'}
+          {mode === 'create' ? 'Add a cluster manager' : 'Edit cluster manager'}
         </Heading>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
+          <Grid cols={2} gap="gap-4">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Enter first name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Enter last name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Grid>
           <FormField
             control={form.control}
-            name="name"
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Enter cluster name" {...field} />
+                  <Input placeholder="Enter email" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,26 +142,29 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
           />
           <FormField
             control={form.control}
-            name="stateId"
+            name="clusterId"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <Select
                     value={field.value ? String(field.value) : ''}
-                    onValueChange={(value) => field.onChange(Number(value))}
+                    onValueChange={(value) => field.onChange(value)}
                   >
-                    <SelectTrigger className="font-light !text-neutral-400">
-                      <SelectValue placeholder="State" />
+                    <SelectTrigger className=" font-light !text-neutral-400">
+                      <div className="flex items-center justify-center gap-2">
+                        <SolarIconSet.Signpost color="text-inherit" size={24} iconStyle="Outline" />
+                        <SelectValue placeholder="Cluster" />
+                      </div>
                     </SelectTrigger>
                     <SelectContent>
-                      {isLoadingStates ? (
+                      {isLoadingClusters ? (
                         <SelectItem value="loading" disabled>
-                          <Text>Loading states...</Text>
+                          <Text>Loading clusters...</Text>
                         </SelectItem>
                       ) : (
-                        states.map((state) => (
-                          <SelectItem key={state.id} value={String(state.id)}>
-                            {state.name}
+                        clusters?.map((cluster: Cluster) => (
+                          <SelectItem key={cluster.id} value={String(cluster.id)}>
+                            {cluster.name}
                           </SelectItem>
                         ))
                       )}
@@ -162,38 +177,38 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
           />
           <FormField
             control={form.control}
-            name="description"
+            name="phone"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea placeholder="Enter description" {...field} />
+                  <Input placeholder="Enter phone " {...field} />
                 </FormControl>
                 <FormMessage />
-                <Text align="left" size="base" color="text-neutral-500" weight="light">
-                  {description.length}/500
-                </Text>
               </FormItem>
             )}
           />
           <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Back
             </Button>
             <Button
               type="submit"
               variant="primary"
               className="flex items-center gap-2"
-              disabled={!form.formState.isValid || createClusterMutation.isLoading || updateClusterMutation.isLoading}
+              disabled={
+                !form.formState.isValid ||
+                createClusterManagerMutation.isLoading ||
+                updateClusterManagerMutation.isLoading
+              }
             >
-              {createClusterMutation.isLoading || updateClusterMutation.isLoading ? (
+              {createClusterManagerMutation.isLoading || updateClusterManagerMutation.isLoading ? (
                 <>
                   <Loader type="spinner" size={18} />
                   <Text>{mode === 'create' ? 'Creating...' : 'Updating...'}</Text>
                 </>
               ) : (
                 <>
-                  <Text>{mode === 'create' ? 'Create Cluster' : 'Update Cluster'}</Text>
-                  <SolarIconSet.ArrowRight size={18} />
+                  <Text>{mode === 'create' ? 'Create cluster manager' : 'Update cluster manager'}</Text>
                 </>
               )}
             </Button>

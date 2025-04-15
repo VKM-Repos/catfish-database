@@ -5,13 +5,11 @@ import { paginatedUserResponseSchema } from 'src/schemas/schemas'
 
 export function ClusterManagersTable() {
   const useGetClusterManagers = createGetQueryHook({
-    endpoint: '/users/cluster-managers',
+    endpoint: `/users/cluster-managers?sortBy=firstName&direction=ASC`,
     responseSchema: paginatedUserResponseSchema,
     queryKey: ['cluster-managers'],
   })
   const { data: cluster_manager, isLoading } = useGetClusterManagers()
-
-  console.log(cluster_manager)
 
   return (
     <DataTable

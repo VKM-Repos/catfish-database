@@ -2,30 +2,15 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { z } from 'zod'
 import { Loader } from 'src/components/ui/loader'
 import { paths } from 'src/routes/paths'
 import { Heading } from 'src/components/ui/heading'
 import { Button } from 'src/components/ui/button'
+import { clusterResponseSchema } from 'src/schemas/schemas'
 
-const stateSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-})
-
-const clusterSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().nullable(),
-  state: stateSchema,
-  context: z.string().nullable(),
-  createdDate: z.string().nullable(),
-  lastModifiedDate: z.string().nullable(),
-})
-
-const useGetCluster = createGetQueryHook<typeof clusterSchema, { id: string }>({
+const useGetCluster = createGetQueryHook<typeof clusterResponseSchema, { id: string }>({
   endpoint: '/clusters/:id',
-  responseSchema: clusterSchema,
+  responseSchema: clusterResponseSchema,
   queryKey: ['cluster'],
 })
 

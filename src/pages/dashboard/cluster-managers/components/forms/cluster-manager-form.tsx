@@ -13,12 +13,13 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 's
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { clusterManagerRequestSchema, clusterManagerResponseSchema, clusterResponseSchema } from 'src/schemas/schemas'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Cluster } from 'src/types/cluster.types'
 import { Grid } from 'src/components/ui/grid'
 import * as SolarIconSet from 'solar-icon-set'
+import { ClientErrorType, ServerErrorType } from 'src/types'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
 type ClusterManagerValues = z.infer<typeof clusterManagerRequestSchema> & { id?: string }
 
@@ -31,10 +32,11 @@ type ClusterManagerProps = {
 
 export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: ClusterManagerProps) {
   const queryClient = useQueryClient()
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
   const form = useForm<ClusterManagerValues>({
     resolver: zodResolver(clusterManagerRequestSchema),
     defaultValues: initialValues || {},
+    mode: 'onChange',
   })
 
   // Create the create cluster mutation hook
@@ -77,13 +79,14 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
     } catch (err) {
       console.error(`${mode === 'create' ? 'Create' : 'Update'} user error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
@@ -99,12 +102,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <Grid cols={2} gap="gap-4">
             <FormField
               control={form.control}
@@ -192,7 +190,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
           />
           <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Back
             </Button>
             <Button
               type="submit"

@@ -11,7 +11,7 @@ import { clusterResponseSchema } from 'src/schemas/schemas'
 const useGetCluster = createGetQueryHook<typeof clusterResponseSchema, { id: string }>({
   endpoint: '/clusters/:id',
   responseSchema: clusterResponseSchema,
-  queryKey: ['cluster'],
+  queryKey: ['clusters'],
 })
 
 export default function ClusterDetailsModal() {

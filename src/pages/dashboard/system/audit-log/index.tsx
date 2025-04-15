@@ -1,12 +1,18 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
 import { Spacer } from 'src/components/ui/spacer'
-import { AuditLogTable } from './components/audit-log-table'
+import { paths } from 'src/routes/paths'
+import { ClusterTable } from './components/cluster-table'
 
-export default function AuditLogPage() {
-  const title = 'Audit Log'
+export default function ClustersPage() {
+  const title = 'Audit log'
+  const navigate = useNavigate()
+
+  const openCreateModal = () => {
+    navigate(paths.dashboard.system.clusters.create)
+  }
 
   return (
     <div className="relative">
@@ -14,7 +20,7 @@ export default function AuditLogPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={null} />
           <Spacer />
-          <AuditLogTable />
+          <ClusterTable />
         </Container>
       </PageTransition>
       <Outlet />

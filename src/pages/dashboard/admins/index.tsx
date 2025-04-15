@@ -10,19 +10,19 @@ import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { ClusterManagersTable } from './components/cluster-managers-table'
 
-export default function AdminsPage() {
+export default function ClusterManagersPage() {
   const title = 'Admins'
   const navigate = useNavigate()
 
   const openCreateModal = () => {
-    navigate(paths.dashboard.admins.create)
+    navigate(paths.dashboard.clusterManagers.create)
   }
 
   const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
-        <Text>Add Admins</Text>
+        <Text>Add Admin</Text>
       </Button>
     </Inline>
   )

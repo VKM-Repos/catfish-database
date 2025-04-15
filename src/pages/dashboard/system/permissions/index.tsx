@@ -8,14 +8,14 @@ import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
-import { ClusterManagersTable } from './components/cluster-managers-table'
+import { ClusterTable } from './components/cluster-table'
 
-export default function PermissionsPage() {
+export default function ClustersPage() {
   const title = 'Permissions'
   const navigate = useNavigate()
 
   const openCreateModal = () => {
-    navigate(paths.dashboard.system.permissions.create)
+    navigate(paths.dashboard.system.clusters.create)
   }
 
   const actions = (
@@ -33,7 +33,7 @@ export default function PermissionsPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
-          <ClusterManagersTable />
+          <ClusterTable />
         </Container>
       </PageTransition>
       <Outlet />

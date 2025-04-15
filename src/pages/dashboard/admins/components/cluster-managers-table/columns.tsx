@@ -2,36 +2,56 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { z } from 'zod'
 import { ActionsDropdown } from './actions-dropdown'
-import { clusterResponseSchema } from 'src/schemas/schemas'
+import { clusterManagerResponseSchema } from 'src/schemas/schemas'
 
-type Cluster = z.infer<typeof clusterResponseSchema>
+type ClusterManager = z.infer<typeof clusterManagerResponseSchema>
 
-export const columns: ColumnDef<Cluster>[] = [
+export const columns: ColumnDef<ClusterManager>[] = [
   {
-    accessorKey: 'name',
-    header: 'Name',
-    cell: ({ row }) => <Text weight="light">{row.original.name}</Text>,
+    accessorKey: 'firstName',
+    header: 'First Name',
+    cell: ({ row }) => <Text weight="light">{row.original.firstName}</Text>,
   },
   {
-    accessorKey: 'state',
-    header: 'State',
-    cell: ({ row }) => <Text weight="light">{row.original.state.name}</Text>,
+    accessorKey: 'lastName',
+    header: 'Last Name',
+    cell: ({ row }) => <Text weight="light">{row.original.lastName}</Text>,
   },
   {
-    accessorKey: 'users', // Change to managers
-    header: 'Managers',
-    cell: ({ row }) => {
-      const users = row.original.users
-      const fullName =
-        users && users?.length > 0 ? users?.map((user) => `${user.firstName} ${user.lastName}`).join(', ') : '-' // Return a dash if no users
-
-      return <Text weight="light">{fullName}</Text>
-    },
+    accessorKey: 'email',
+    header: 'Email',
+    cell: ({ row }) => <Text weight="light">{row.original.email}</Text>,
   },
   {
-    accessorKey: 'description',
-    header: 'Description',
-    cell: ({ row }) => <Text weight="light">{row.original.description}</Text>,
+    accessorKey: 'phone',
+    header: 'Phone number',
+    cell: ({ row }) => <Text weight="light">{row.original.phone}</Text>,
+  },
+  {
+    accessorKey: 'cluster',
+    header: 'Cluster',
+    cell: ({ row }) => <Text weight="light">{row.original.cluster?.name}</Text>,
+  },
+  {
+    accessorKey: 'accountNonLocked',
+    header: 'Status',
+    cell: ({ row }) => (
+      <div
+        className={`flex items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${
+          row.getValue('accountNonLocked') == true
+            ? 'border-success-400 bg-success-100 text-success-500'
+            : 'border-neutral-400 bg-neutral-100 text-neutral-400'
+        }`}
+      >
+        {' '}
+        <div
+          className={`h-2 w-2 rounded-full ${
+            row.getValue('accountNonLocked') == true ? 'bg-success-500' : 'bg-neutral-400'
+          }`}
+        ></div>{' '}
+        {row.getValue('accountNonLocked') == true ? 'Active' : 'Deactivated'}
+      </div>
+    ),
   },
   {
     id: 'actions',

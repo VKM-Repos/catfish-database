@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes/paths'
-import { ClusterForm } from '../../components/forms/cluster-manager-form'
+import { ClusterForm } from '../../components/forms/cluster-form'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Loader } from 'src/components/ui/loader'
 import { useState } from 'react'

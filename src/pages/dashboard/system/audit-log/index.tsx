@@ -3,10 +3,10 @@ import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
 import { Spacer } from 'src/components/ui/spacer'
-import { AuditLogTable } from './components/audit-log-table'
+import * as SolarIconSet from 'solar-icon-set'
 
-export default function AuditLogPage() {
-  const title = 'Audit Log'
+export default function ClustersPage() {
+  const title = 'Audit log'
 
   return (
     <div className="relative">
@@ -14,7 +14,7 @@ export default function AuditLogPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={null} />
           <Spacer />
-          <AuditLogTable />
+          <SolarIconSet.Database color="#1C274C" size={24} iconStyle="Outline" />
         </Container>
       </PageTransition>
       <Outlet />

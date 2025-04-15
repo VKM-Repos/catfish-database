@@ -6,6 +6,7 @@ import PasswordDialog from '../dialogs/password-dialog'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { userSchema } from 'src/schemas/schemas'
 import { Loader } from 'src/components/ui/loader'
+import { UserRole } from 'src/types'
 
 const useGetUser = createGetQueryHook({
   endpoint: '/users/me',
@@ -14,7 +15,7 @@ const useGetUser = createGetQueryHook({
 })
 
 export default function AccountTab() {
-  const { data: user, isLoading, isError, refetch } = useGetUser()
+  const { data: user, isLoading, isError } = useGetUser()
 
   if (isLoading) {
     return <Loader type="spinner" />
@@ -29,7 +30,7 @@ export default function AccountTab() {
     { label: 'Email', value: user.email },
     { label: 'Phone Number', value: user.phone },
     { label: 'Last Name', value: user.lastName },
-    { label: 'Role', value: user.role },
+    { label: 'Role', value: removeSymbols(user.role) },
   ]
 
   return (
@@ -58,4 +59,10 @@ export default function AccountTab() {
       </div>
     </FlexBox>
   )
+}
+
+// utility
+function removeSymbols(str: keyof typeof UserRole) {
+  const newStr = str.replace(/[-,[_\]]/g, ' ')
+  return newStr
 }

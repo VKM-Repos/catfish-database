@@ -7,30 +7,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { useLocation } from 'react-router-dom'
 import { Loader } from 'src/components/ui/loader'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
+import { ClientErrorType, ServerErrorType } from 'src/types'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { passwordSchema } from 'src/schemas'
 
-const passwordSchema = z
+const formSchema = z
   .object({
-    password: z
-      .string()
-      .min(8, { message: 'Password must contain at least 8 characters' })
-      .refine((value) => /[A-Z]/.test(value), {
-        message: 'Password must contain at least one uppercase letter',
-      })
-      .refine((value) => /[a-z]/.test(value), {
-        message: 'Password must contain at least one lowercase letter',
-      })
-      .refine((value) => /\d/.test(value), {
-        message: 'Password must contain at least one number',
-      })
-      .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
-        message: 'Password must contain at least one symbol',
-      }),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -38,24 +26,10 @@ const passwordSchema = z
     path: ['confirmPassword'],
   })
 
-type PasswordData = z.infer<typeof passwordSchema>
+type PasswordData = z.infer<typeof formSchema>
 
 const requestSchema = z.object({
-  password: z
-    .string()
-    .min(8, { message: 'Password must contain at least 8 characters' })
-    .refine((value) => /[A-Z]/.test(value), {
-      message: 'Password must contain at least one uppercase letter',
-    })
-    .refine((value) => /[a-z]/.test(value), {
-      message: 'Password must contain at least one lowercase letter',
-    })
-    .refine((value) => /\d/.test(value), {
-      message: 'Password must contain at least one number',
-    })
-    .refine((value) => /[!@#$%^&*(),.?":{}|<>_+\-=/[\]\\/~`']/.test(value), {
-      message: 'Password must contain at least one symbol',
-    }),
+  password: passwordSchema,
   token: z.string(),
 })
 
@@ -68,10 +42,13 @@ const useChangePassword = createPostMutationHook({
 
 export default function ChoosePassword({ handleNext }: { handleNext: () => void }) {
   const { t } = useTranslation('translation')
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const form = useForm<PasswordData>({ resolver: zodResolver(passwordSchema) })
+  const form = useForm<PasswordData>({
+    resolver: zodResolver(passwordSchema),
+    mode: 'onChange',
+  })
   const changePasswordMutation = useChangePassword()
   const location = useLocation()
 
@@ -88,7 +65,7 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
     const token = params.get('token')
 
     if (!token) {
-      setError({ title: 'Error', message: 'Token is missing from the URL.' })
+      setError({ title: 'Error', message: 'Token is missing from the URL.', errors: [''] })
       return
     }
 
@@ -99,13 +76,14 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
     } catch (err) {
       console.error('Change password error:', err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
@@ -124,12 +102,7 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 flex flex-col gap-4">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <FormField
             control={form.control}
             name="password"
@@ -214,7 +187,7 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
           />
           <Button
             type="submit"
-            variant={form.formState.isValid ? 'primary' : 'ghost'}
+            variant={'primary'}
             className="my-4 flex gap-2 focus:outline-none"
             disabled={!form.formState.isValid || changePasswordMutation.isLoading}
           >

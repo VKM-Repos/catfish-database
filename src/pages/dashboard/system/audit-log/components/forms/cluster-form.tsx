@@ -73,11 +73,12 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
   const onSubmit = async (values: ClusterFormValues) => {
     try {
       setError(null)
+      const formData = { ...values, context: values.name }
       if (mode === 'create') {
-        await createClusterMutation.mutateAsync(values)
+        await createClusterMutation.mutateAsync(formData)
         queryClient.invalidateQueries(['clusters'])
       } else if (mode === 'edit' && initialValues?.id) {
-        await updateClusterMutation.mutateAsync({ ...values, id: initialValues.id })
+        await updateClusterMutation.mutateAsync({ ...formData, id: initialValues.id })
         queryClient.invalidateQueries(['clusters'])
       }
       form.reset()
@@ -177,7 +178,7 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
           />
           <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Back
             </Button>
             <Button
               type="submit"

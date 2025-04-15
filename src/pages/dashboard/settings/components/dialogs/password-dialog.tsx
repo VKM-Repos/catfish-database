@@ -50,7 +50,7 @@ export default function ChangePasswordDialog() {
     responseSchema: z.string(),
   })()
 
-  const form = useForm<PasswordData>({ resolver: zodResolver(formSchema) })
+  const form = useForm<PasswordData>({ resolver: zodResolver(formSchema), mode: 'onChange' })
 
   const onSubmit = async (data: PasswordData) => {
     try {

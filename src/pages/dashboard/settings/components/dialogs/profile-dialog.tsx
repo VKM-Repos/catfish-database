@@ -63,6 +63,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
       phone: user.phone || '',
       address: user.address || '',
     },
+    mode: 'onChange',
   })
   const {
     reset,

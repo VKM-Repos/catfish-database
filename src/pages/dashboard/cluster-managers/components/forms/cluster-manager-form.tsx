@@ -36,6 +36,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
   const form = useForm<ClusterManagerValues>({
     resolver: zodResolver(clusterManagerRequestSchema),
     defaultValues: initialValues || {},
+    mode: 'onChange',
   })
 
   // Create the create cluster mutation hook

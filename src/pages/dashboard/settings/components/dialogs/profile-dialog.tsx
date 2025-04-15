@@ -13,12 +13,13 @@ import { Heading } from 'src/components/ui/heading'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import ProfileForm from '../forms/profile-form'
 import { useQueryClient } from '@tanstack/react-query'
+import { phoneSchema } from 'src/schemas'
 
 const formSchema = z.object({
-  firstName: z.string().min(1, { message: 'Please fill this field' }),
-  lastName: z.string().min(1, { message: 'Please fill this field' }),
-  phone: z.string().min(1, { message: 'Please fill this field' }),
-  address: z.string().min(1, { message: 'Please fill this field' }),
+  firstName: z.string().min(3, { message: 'First name must not be less than 3 characters' }),
+  lastName: z.string().min(3, { message: 'Last name must not be less than 3 characters' }),
+  phone: phoneSchema,
+  address: z.string().min(3, { message: 'Address must not be less than 3 characters' }),
 })
 
 type ProfileData = z.infer<typeof formSchema>
@@ -65,10 +66,7 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
     },
     mode: 'onChange',
   })
-  const {
-    reset,
-    formState: { isDirty },
-  } = form
+  const { reset } = form
 
   const onSubmit = async (data: ProfileData) => {
     try {

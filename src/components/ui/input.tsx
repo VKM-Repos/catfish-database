@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { cn } from 'src/lib/utils'
 
-export type InputState = 'default' | 'error' | 'success' | 'disabled'
+export type InputState = 'default' | 'error' | 'success' | 'disabled' | 'plain'
 export type InputTone = 'filled' | 'outline'
 export type IconPosition = 'left' | 'right' | 'both'
 
@@ -51,7 +51,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const isDisabled = state === 'disabled' || disabled
 
     // Base styles for the input
-    const baseStyles = 'flex h-10 w-full rounded-md px-3 py-2 font-light text-base md:text-sm'
+    const baseStyles = 'border flex h-10 w-full rounded-md px-3 py-2 font-light text-base md:text-sm focus:outline-none'
 
     // State-specific styles
     const stateStyles = {
@@ -63,10 +63,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         focus: 'focus-visible:ring-primary-500 focus-visible:border-primary-500',
         hover: 'hover:border-primary-300',
       },
+      plain: {
+        border: 'border-neutral-200',
+        background: 'bg-white',
+        text: 'text-neutral-900',
+        placeholder: 'placeholder:text-neutral-400',
+        focus: 'focus-visible:ring-primary-500 focus-visible:border-none',
+        hover: 'hover:border-none',
+      },
       error: {
         border: 'border-error-500',
         background: 'bg-white',
-        text: 'text-neutral-900',
+        text: 'text-error-500',
         placeholder: 'placeholder:text-neutral-400',
         focus: 'focus-visible:ring-error-500 focus-visible:border-error-500',
         hover: 'hover:border-error-400',

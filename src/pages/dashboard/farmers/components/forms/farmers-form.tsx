@@ -14,13 +14,14 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 's
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
 import { farmerResponseSchema, farmerRequestSchema } from 'src/schemas/schemas'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Cluster } from 'src/types/cluster.types'
 import { Grid } from 'src/components/ui/grid'
 import { Textarea } from 'src/components/ui/textarea'
 import { useAuthStore } from 'src/store/auth.store'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 
 type FarmerValues = z.infer<typeof farmerRequestSchema> & { id?: string }
 
@@ -33,7 +34,7 @@ type FarmerProps = {
 
 export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerProps) {
   const queryClient = useQueryClient()
-  const [error, setError] = useState<{ title: string; message: string } | null>(null)
+  const [error, setError] = useState<ClientErrorType | null>(null)
   const form = useForm<FarmerValues>({
     resolver: zodResolver(farmerRequestSchema),
     defaultValues: initialValues || {},
@@ -97,13 +98,14 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
     } catch (err) {
       console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
 
         if (errorData) {
           setError({
             title: errorData.error,
             message: errorData.message,
+            errors: errorData.errors ?? null,
           })
         }
       }
@@ -119,12 +121,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {error && (
-            <Alert variant="error" tone="filled">
-              <AlertTitle>{error.title}</AlertTitle>
-              <AlertDescription>{error.message}</AlertDescription>
-            </Alert>
-          )}
+          {error && <FormValidationErrorAlert error={error} />}
           <Grid cols={2} gap="gap-4">
             <FormField
               control={form.control}
@@ -159,7 +156,12 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter email" {...field} />
+                  <Input
+                    state={fieldState.error ? 'error' : 'default'}
+                    placeholder="Enter email"
+                    {...field}
+                    disabled={mode === 'edit'}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -177,9 +179,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
                       onValueChange={(value) => field.onChange(value)}
                       // state={fieldState.error ? 'error' : 'default'}
                     >
-                      <SelectTrigger
-                        className={`${fieldState.error ? 'border-error-500' : ''} font-light !text-neutral-400 `}
-                      >
+                      <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light`}>
                         <SelectValue placeholder="Cluster" />
                       </SelectTrigger>
                       <SelectContent>
@@ -220,7 +220,12 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea state={fieldState.error ? 'error' : 'default'} placeholder="Address " {...field} />
+                  <Textarea
+                    state={fieldState.error ? 'error' : 'default'}
+                    placeholder="Address "
+                    {...field}
+                    className="text-neutral-900"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -156,7 +156,12 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter email" {...field} />
+                  <Input
+                    state={fieldState.error ? 'error' : 'default'}
+                    placeholder="Enter email"
+                    {...field}
+                    disabled={mode === 'edit'}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -174,7 +179,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
                       onValueChange={(value) => field.onChange(value)}
                       // state={fieldState.error ? 'error' : 'default'}
                     >
-                      <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light `}>
+                      <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light`}>
                         <SelectValue placeholder="Cluster" />
                       </SelectTrigger>
                       <SelectContent>

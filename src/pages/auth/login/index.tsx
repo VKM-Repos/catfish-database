@@ -193,7 +193,7 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
-                variant={form.formState.isValid ? 'primary' : 'ghost'}
+                variant={'primary'}
                 className="my-4 flex items-center justify-center gap-2 focus:outline-none"
                 disabled={!form.formState.isValid || loginMutation.isLoading}
               >

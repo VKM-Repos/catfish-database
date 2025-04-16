@@ -131,10 +131,7 @@ export const farmerRequestSchema = z.object({
 })
 export const extendedFarmerRequestSchema = (user?: User | null) =>
   farmerRequestSchema.extend({
-    clusterId:
-      user?.role === 'SUPER_ADMIN'
-        ? z.string().min(1, 'Cluster ID is required')
-        : z.string().min(1, 'Cluster ID is required').optional(),
+    clusterId: user?.role === 'SUPER_ADMIN' ? z.string().min(1, 'Cluster ID is required') : z.string().optional(),
   })
 
 export const farmerResponseSchema = userSchema

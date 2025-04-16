@@ -88,15 +88,18 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
         user?.role === 'SUPER_ADMIN'
           ? await createFarmerMutation.mutateAsync({ ...values, role: 'FARMER' })
           : await clusterManagerCreateFarmer.mutateAsync({ ...values })
-        queryClient.invalidateQueries(['farmers', 'farmer-details'])
+        queryClient.invalidateQueries(['farmers'])
+        queryClient.refetchQueries(['farmer-details'])
       } else if (mode === 'edit' && initialValues?.id) {
         await updateFarmerMutation.mutateAsync({
           ...values,
           id: initialValues.id,
           role: 'FARMER',
         })
-        queryClient.invalidateQueries(['farmers', 'farmer-details'])
+        queryClient.invalidateQueries(['farmers'])
+        queryClient.refetchQueries(['farmer-details'])
       }
+
       form.reset()
       onSuccess?.()
     } catch (err) {

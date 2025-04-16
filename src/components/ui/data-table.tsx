@@ -16,6 +16,10 @@ import Skeleton from './skeleton'
 import * as SolarIconSet from 'solar-icon-set'
 import { Button } from './button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
+import { Cluster } from 'src/types/cluster.types'
+import { useAuthStore } from 'src/store/auth.store'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
@@ -35,9 +39,21 @@ export function DataTable<TData>({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState('')
+  const [selectedCluster, setSelectedCluster] = React.useState<string>('')
+
+  const normalizeClusterName = (name: string) => name.replace(/-/g, '')
+
+  const filteredData = React.useMemo(() => {
+    if (!selectedCluster) return data
+    const normalizedSelected = normalizeClusterName(selectedCluster)
+    return data.filter((item) => {
+      const clusterName = (item as any).cluster?.name || ''
+      return normalizeClusterName(clusterName) === normalizedSelected
+    })
+  }, [data, selectedCluster])
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -64,8 +80,15 @@ export function DataTable<TData>({
     },
   })
 
+  const handleClusterChange = (value: string) => {
+    setColumnFilters([])
+    setGlobalFilter('')
+    setSelectedCluster(value)
+    table.setPageIndex(0)
+  }
+
   const renderSkeletonRows = (columns: ColumnDef<TData>[]) => {
-    const skeletonRows = Array.from({ length: 5 }, (_, index) => (
+    return Array.from({ length: 5 }, (_, index) => (
       <TableRow key={`skeleton-${index}`}>
         {columns.map((_, colIndex) => (
           <TableCell key={`skeleton-cell-${index}-${colIndex}`} className="h-12">
@@ -74,8 +97,18 @@ export function DataTable<TData>({
         ))}
       </TableRow>
     ))
-    return skeletonRows
   }
+
+  const user = useAuthStore((state) => state.user)
+  const useGetClusters = createGetQueryHook({
+    endpoint: '/clusters',
+    responseSchema: z.any(),
+    queryKey: ['clusters_for_data_table'],
+    options: {
+      enabled: user?.role === 'SUPER_ADMIN',
+    },
+  })
+  const { data: clusters, isLoading: isLoadingClusters } = useGetClusters()
 
   return (
     <div className="w-full">
@@ -89,7 +122,23 @@ export function DataTable<TData>({
             onChange={(e) => setGlobalFilter(String(e.target.value))}
           />
         </div>
-        <div />
+        <div className="w-[20%]">
+          {user?.role === 'SUPER_ADMIN' && (
+            <Select value={selectedCluster} onValueChange={handleClusterChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="All clusters" />
+              </SelectTrigger>
+              <SelectContent side="top">
+                <SelectItem value=" ">All clusters</SelectItem>
+                {clusters?.map((cluster: Cluster) => (
+                  <SelectItem key={cluster.name} value={cluster.name}>
+                    {cluster.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-md border border-neutral-200">
@@ -98,7 +147,7 @@ export function DataTable<TData>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="">
+                  <TableHead key={header.id}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -127,11 +176,9 @@ export function DataTable<TData>({
         </Table>
       </div>
 
-      {/* Pagination Controls */}
       <div className="mt-4 flex items-center justify-between px-2">
-        {/* Rows per page selector */}
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
+          <p className="text-sm font-medium">Results per page</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
@@ -151,9 +198,7 @@ export function DataTable<TData>({
           </Select>
         </div>
 
-        {/* Page info */}
         <div className="flex items-center space-x-6 lg:space-x-8">
-          {/* Page navigation */}
           <div className="flex items-center space-x-2">
             <Button
               variant="icon"
@@ -165,13 +210,11 @@ export function DataTable<TData>({
               <SolarIconSet.AltArrowLeft size={20} />
             </Button>
 
-            {/* Page numbers - shows up to 5 pages around current page */}
             {Array.from({ length: Math.min(5, table.getPageCount()) }, (_, i) => {
               let pageIndex
               const currentPage = table.getState().pagination.pageIndex
               const pageCount = table.getPageCount()
 
-              // Calculate which pages to show
               if (pageCount <= 5) {
                 pageIndex = i
               } else if (currentPage < 3) {

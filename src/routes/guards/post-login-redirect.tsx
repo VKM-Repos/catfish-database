@@ -12,7 +12,6 @@ export default function PostLoginRedirect() {
   useEffect(() => {
     if (!user) return
 
-    // Only run redirection if we are on the dashboard index route.
     if (location.pathname !== paths.dashboard.root) return
 
     if (user.defaultPassword) {

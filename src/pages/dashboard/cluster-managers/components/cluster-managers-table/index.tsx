@@ -11,6 +11,8 @@ export function ClusterManagersTable() {
   })
   const { data: cluster_manager, isLoading } = useGetClusterManagers()
 
+  console.log(cluster_manager)
+
   return (
     <DataTable
       columns={columns}

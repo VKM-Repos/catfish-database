@@ -59,34 +59,24 @@ export default function NewPasswordForm({ handleNext }: { handleNext: () => void
   const onSubmit = async (data: PasswordData) => {
     try {
       setError(null)
-      // Commit optimistic update: mark defaultPassword as false
       useAuthStore.getState().commitUpdateUser({ defaultPassword: false })
 
-      // Call the change password mutation
       await changePasswordMutation.mutateAsync({
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       })
 
-      // Invalidate the user query so that the GET call to /users/me is triggered
       await queryClient.invalidateQueries(['user'])
 
-      // Optionally, you can immediately refetch:
-      // await queryClient.refetchQueries(['user'])
-
-      // Get the updated user from the query cache
       const updatedUser = queryClient.getQueryData(['user'])
 
-      // Only update the store if updatedUser is defined
       if (updatedUser) {
         useAuthStore.getState().setUser(current_user ?? null)
       }
 
-      // Proceed with the UI flow
       handleNext()
     } catch (err) {
       console.error('Change password error:', err)
-      // Rollback the optimistic update on error
       useAuthStore.getState().rollbackUpdateUser()
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: ServerErrorType } }
@@ -122,7 +112,7 @@ export default function NewPasswordForm({ handleNext }: { handleNext: () => void
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>
-                  New password<span className="px-1 !text-error-500">*</span>
+                  Old password<span className="px-1 !text-error-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -148,7 +138,7 @@ export default function NewPasswordForm({ handleNext }: { handleNext: () => void
                     iconPosition="right"
                     state={error || fieldState.error ? 'error' : 'default'}
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
+                    placeholder="Enter your old password"
                     disabled={changePasswordMutation.isLoading}
                     {...field}
                   />
@@ -163,7 +153,7 @@ export default function NewPasswordForm({ handleNext }: { handleNext: () => void
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>
-                  Confirm new password<span className="px-1 !text-error-500">*</span>
+                  New password<span className="px-1 !text-error-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -189,7 +179,7 @@ export default function NewPasswordForm({ handleNext }: { handleNext: () => void
                     iconPosition="right"
                     state={error || fieldState.error ? 'error' : 'default'}
                     type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Repeat your password"
+                    placeholder="Your new password"
                     disabled={changePasswordMutation.isLoading}
                     {...field}
                   />

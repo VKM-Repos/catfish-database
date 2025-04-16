@@ -37,7 +37,7 @@ export const columns: ColumnDef<ClusterWithUsers>[] = [
                 <Tooltip key={user.id}>
                   <TooltipTrigger>
                     <Avatar className="border border-neutral-200">
-                      <AvatarFallback>
+                      <AvatarFallback className="uppercase">
                         {user.firstName.charAt(0)}
                         {user.lastName.charAt(0)}
                       </AvatarFallback>

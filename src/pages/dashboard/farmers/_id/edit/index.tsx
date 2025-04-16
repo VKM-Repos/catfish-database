@@ -13,7 +13,7 @@ import { FarmersForm } from '../../components/forms/farmers-form'
 const useGetFarmer = createGetQueryHook<typeof userSchema, { id: string }>({
   endpoint: '/users/:id',
   responseSchema: userSchema,
-  queryKey: ['cluster'],
+  queryKey: ['farmer-details'],
 })
 
 export default function EditFarmerPage() {

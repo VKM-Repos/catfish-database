@@ -13,8 +13,8 @@ import { z } from 'zod'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 'src/components/ui/select'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Heading } from 'src/components/ui/heading'
-import { farmerResponseSchema, farmerRequestSchema } from 'src/schemas/schemas'
-import { useState } from 'react'
+import { farmerResponseSchema, farmerRequestSchema, extendedFarmerRequestSchema } from 'src/schemas/schemas'
+import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Cluster } from 'src/types/cluster.types'
 import { Grid } from 'src/components/ui/grid'
@@ -35,13 +35,17 @@ type FarmerProps = {
 export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerProps) {
   const queryClient = useQueryClient()
   const [error, setError] = useState<ClientErrorType | null>(null)
+  const user = useAuthStore((state) => state.user)
+  const [schema, setSchema] = useState(() => extendedFarmerRequestSchema(user))
+  useEffect(() => {
+    setSchema(extendedFarmerRequestSchema(user))
+  }, [user])
   const form = useForm<FarmerValues>({
-    resolver: zodResolver(farmerRequestSchema),
+    resolver: zodResolver(schema),
     defaultValues: initialValues || {},
     mode: 'onChange',
   })
 
-  const user = useAuthStore((state) => state.user)
   // Create the create cluster mutation hook
   const useCreateFarmer = createPostMutationHook({
     endpoint: '/users/users',
@@ -84,15 +88,18 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
         user?.role === 'SUPER_ADMIN'
           ? await createFarmerMutation.mutateAsync({ ...values, role: 'FARMER' })
           : await clusterManagerCreateFarmer.mutateAsync({ ...values })
-        queryClient.invalidateQueries(['farmers', 'farmer-details'])
+        queryClient.invalidateQueries(['farmers'])
+        queryClient.refetchQueries(['farmer-details'])
       } else if (mode === 'edit' && initialValues?.id) {
         await updateFarmerMutation.mutateAsync({
           ...values,
           id: initialValues.id,
           role: 'FARMER',
         })
-        queryClient.invalidateQueries(['farmers', 'farmer-details'])
+        queryClient.invalidateQueries(['farmers'])
+        queryClient.refetchQueries(['farmer-details'])
       }
+
       form.reset()
       onSuccess?.()
     } catch (err) {

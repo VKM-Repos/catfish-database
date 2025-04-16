@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import type * as z from 'zod'
@@ -18,7 +18,7 @@ import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { authCache } from 'src/api/config'
 import { Loader } from 'src/components/ui/loader'
-import { ClientErrorType, ServerErrorType, UserRole } from 'src/types'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
@@ -32,7 +32,6 @@ const useLogin = createPostMutationHook({
 type FormValues = z.infer<typeof loginRequestSchema>
 
 export default function LoginPage() {
-  const navigate = useNavigate()
   const [error, setError] = useState<ClientErrorType | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const login = useAuthStore((state) => state.login)
@@ -63,12 +62,6 @@ export default function LoginPage() {
 
       // Update auth store
       login(userDto, accessToken, refreshToken, expiresAt)
-
-      if (userDto.role === UserRole.FARMER) {
-        navigate(paths.dashboard.home.getStarted)
-      } else {
-        navigate(paths.dashboard.root)
-      }
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: ServerErrorType } }

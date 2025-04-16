@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { UserRole } from 'src/types'
+import { User, UserRole } from 'src/types'
 import { useAuthStore } from 'src/store/auth.store'
 
 export const stateSchema = z.object({
@@ -49,6 +49,7 @@ export const userSchema = z.object({
   phone: z.string(),
   address: z.string().nullable().optional(),
   accountNonLocked: z.boolean(),
+  defaultPassword: z.boolean(),
   enabled: z.boolean(),
   banUntil: z.string().nullable().optional(),
   context: z.string().nullable().optional(),
@@ -98,6 +99,7 @@ export const clusterManagerRequestSchema = z.object({
 
 export const clusterManagerResponseSchema = userSchema
 const user = useAuthStore.getState().user
+console.log(user?.role, '<<<<<<<')
 
 export const farmerRequestSchema = z.object({
   firstName: z
@@ -120,11 +122,20 @@ export const farmerRequestSchema = z.object({
   clusterId:
     user?.role === 'SUPER_ADMIN'
       ? z.string().min(1, 'Cluster ID is required')
+      : user?.role === 'CLUSTER_MANAGER'
+      ? z.string().min(1, 'Cluster ID is required').optional()
       : z.string().min(1, 'Cluster ID is required').optional(),
   password: z.string().optional(),
   role: z.string().optional(),
   id: z.string().optional(),
 })
+export const extendedFarmerRequestSchema = (user?: User | null) =>
+  farmerRequestSchema.extend({
+    clusterId:
+      user?.role === 'SUPER_ADMIN'
+        ? z.string().min(1, 'Cluster ID is required')
+        : z.string().min(1, 'Cluster ID is required').optional(),
+  })
 
 export const farmerResponseSchema = userSchema
 

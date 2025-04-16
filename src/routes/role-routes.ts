@@ -16,6 +16,7 @@ const roleRoutes: Record<UserRole, string[]> = {
   ADMIN: getAllDashboardPaths(paths.dashboard),
   CLUSTER_MANAGER: [
     paths.dashboard.home.root,
+    paths.dashboard.newPassword,
     paths.dashboard.clusterManagers.root,
     paths.dashboard.reports.root,
     paths.dashboard.farmers.root,
@@ -27,6 +28,7 @@ const roleRoutes: Record<UserRole, string[]> = {
   ],
   FARMER: [
     paths.dashboard.home.root,
+    paths.dashboard.newPassword,
     paths.dashboard.home.getStarted,
     paths.dashboard.profile,
     paths.dashboard.account,

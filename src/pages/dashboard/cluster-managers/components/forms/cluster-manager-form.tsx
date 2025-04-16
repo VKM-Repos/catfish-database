@@ -41,7 +41,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
 
   // Create the create cluster mutation hook
   const useCreateClusterManager = createPostMutationHook({
-    endpoint: '/users/cluster-manager',
+    endpoint: '/users/cluster-managers',
     requestSchema: clusterManagerRequestSchema,
     responseSchema: clusterManagerResponseSchema,
   })
@@ -70,9 +70,11 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
       if (mode === 'create') {
         await createClusterManagerMutation.mutateAsync({ ...values, password: 'Password@123' })
         queryClient.invalidateQueries(['cluster-managers'])
+        queryClient.refetchQueries(['user-details'])
       } else if (mode === 'edit' && initialValues?.id) {
         await updateClusterManagerMutation.mutateAsync({ ...values, id: initialValues.id, password: 'Password@123' })
         queryClient.invalidateQueries(['cluster-managers'])
+        queryClient.refetchQueries(['user-details'])
       }
       form.reset()
       onSuccess?.()

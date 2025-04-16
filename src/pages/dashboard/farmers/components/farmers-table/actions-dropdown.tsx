@@ -32,7 +32,7 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View</DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Edit</DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate User</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate Farmer</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

@@ -9,6 +9,7 @@ import { ErrorBoundary } from 'src/components/global/error-boundary'
 import { RoleGuard } from 'src/routes/guards/role-guard'
 import { UserRole } from 'src/types'
 import { AuthGuard } from './guards/auth-guard'
+import PostLoginRedirect from './guards/post-login-redirect'
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
     element: (
       <AuthGuard>
         <DashboardLayout />
+        <PostLoginRedirect />,
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />,
@@ -388,6 +390,10 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.home.newEntry,
         element: LazyPage(() => import('src/pages/dashboard/home/new-entry')),
+      },
+      {
+        path: paths.dashboard.newPassword,
+        element: LazyPage(() => import('src/pages/dashboard/new-password')),
       },
     ],
   },

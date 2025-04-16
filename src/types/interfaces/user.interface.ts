@@ -9,6 +9,7 @@ export interface User {
   phone: string
   address?: string | null
   accountNonLocked: boolean
+  defaultPassword: boolean
   enabled: boolean
   banUntil?: string | null
   context?: string | null

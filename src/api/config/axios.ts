@@ -37,7 +37,7 @@ axiosInstance.interceptors.request.use(
           throw new Error('No refresh token available')
         }
 
-        const response = await axios.post(`${APP_CONFIG.api.baseUrl}/auth/refresh-token`, { refreshToken })
+        const response = await axios.post(`${APP_CONFIG.api.baseUrl}/auth/refresh`, { refreshToken })
         const { accessToken, newRefreshToken, expiresAt: newExpiresAt } = response.data
 
         // Update tokens in storage
@@ -100,15 +100,15 @@ axiosInstance.interceptors.response.use(
           refreshToken,
         })
 
-        const { accessToken, newRefreshToken, expiresAt } = response.data
+        const { accessToken, newRefreshToken, expiresAt, user } = response.data
 
-        // Update tokens in storage
         authCache.setToken(accessToken)
         authCache.setRefreshToken(newRefreshToken)
         authCache.setExpiresAt(expiresAt)
+        authCache.setUser(user)
 
-        // Update auth store
         useAuthStore.getState().setTokens(accessToken, newRefreshToken, expiresAt)
+        useAuthStore.getState().setUser(user)
 
         // Retry the original request
         if (originalRequest) {

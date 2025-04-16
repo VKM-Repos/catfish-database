@@ -8,6 +8,8 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { LoadingScreen } from 'src/components/global/loading-screen'
 import { Heading } from 'src/components/ui/heading'
+import { z } from 'zod'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
 const checkFarmerHasPond = async (farmerId: string): Promise<boolean> => {
   // Simulate API delay
@@ -23,6 +25,13 @@ interface ActionCardProps {
   buttonAction: () => void
   isFirstCard?: boolean
 }
+
+export const useGetPond = createGetQueryHook({
+  endpoint: '/ponds',
+  responseSchema: z.any(),
+  queryKey: ['ponds'],
+  requiresAuth: true,
+})
 
 function ActionCard({ title, description, icon, buttonText, buttonAction, isFirstCard }: ActionCardProps) {
   return (
@@ -140,13 +149,6 @@ export default function GetStarted() {
 
     checkPondStatus()
   }, [user])
-
-  // Redirect non-farmers to dashboard
-  useEffect(() => {
-    if (user && user.role !== 'FARMER') {
-      navigate(paths.dashboard.root)
-    }
-  }, [user, navigate])
 
   if (loading) {
     return <LoadingScreen />

@@ -7,6 +7,8 @@ import { useAuthStore } from 'src/store/auth.store'
 import { paths } from 'src/routes/paths'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { z } from 'zod'
+import { userSchema } from 'src/schemas'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
 const useLogout = createPostMutationHook({
   endpoint: '/auth/revoke',
@@ -17,9 +19,17 @@ const useLogout = createPostMutationHook({
   requiresAuth: true,
 })
 
+export const useGetCurrentUser = createGetQueryHook({
+  endpoint: '/users/me',
+  responseSchema: userSchema,
+  queryKey: ['user'],
+  requiresAuth: true,
+})
+
 const ProfileMenu = () => {
   const navigate = useNavigate()
-  const user = useAuthStore((state) => state.user)
+  const { data: user } = useGetCurrentUser()
+
   const token = useAuthStore((state) => state.accessToken)
   const userName = user ? `${user.firstName} ${user.lastName}` : 'User'
   const fallbackInitial = user?.firstName?.charAt(0).toUpperCase() || 'U'

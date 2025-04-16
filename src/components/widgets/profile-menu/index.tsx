@@ -88,20 +88,23 @@ const ProfileMenu = () => {
           </div>
         </PopoverTrigger>
         <PopoverContent className="relative mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
-          {profileLinks.map(({ label, href, action, icon }) => (
-            <div key={label} className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-100">
-              {icon}
-              {href ? (
-                <Link to={href} className="text-sm font-medium text-neutral-500">
-                  {label}
-                </Link>
-              ) : (
-                <button onClick={action} className="text-sm font-medium text-neutral-500">
-                  {label}
-                </button>
-              )}
-            </div>
-          ))}
+          {profileLinks.map(({ label, href, action, icon }) => {
+            const content = (
+              <div className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-100">
+                {icon}
+                <span className="text-sm font-medium text-neutral-500">{label}</span>
+              </div>
+            )
+            return href ? (
+              <Link key={label} to={href} className="block w-full">
+                {content}
+              </Link>
+            ) : (
+              <button key={label} onClick={action} className="block w-full text-left">
+                {content}
+              </button>
+            )
+          })}
         </PopoverContent>
       </Popover>
 

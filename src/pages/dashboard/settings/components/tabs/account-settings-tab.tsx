@@ -31,6 +31,7 @@ export default function AccountTab() {
     { label: 'Phone Number', value: user.phone },
     { label: 'Last Name', value: user.lastName },
     { label: 'Role', value: removeSymbols(user.role) },
+    { label: 'Address', value: user.address ?? 'No address' },
   ]
 
   return (

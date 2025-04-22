@@ -9,16 +9,26 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { ClusterManagersTable } from './components/cluster-managers-table'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
 export default function ClusterManagersPage() {
   const title = 'Cluster managers'
   const navigate = useNavigate()
 
+  const useGetClusterManagers = createGetQueryHook({
+    endpoint: `/users/cluster-managers?sortBy=firstName&direction=ASC`,
+    responseSchema: z.any(),
+    queryKey: ['cluster-managers'],
+  })
+
   const openCreateModal = () => {
     navigate(paths.dashboard.clusterManagers.create)
   }
 
-  const actions = (
+  const { data: clusterManagers } = useGetClusterManagers()
+
+  const actions = clusterManagers?.content.length > 0 && (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
@@ -33,7 +43,7 @@ export default function ClusterManagersPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
-          <ClusterManagersTable />
+          <ClusterManagersTable useGetClusterManagers={useGetClusterManagers} />
         </Container>
       </PageTransition>
       <Outlet />

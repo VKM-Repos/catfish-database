@@ -9,16 +9,27 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { ClusterTable } from './components/cluster-table'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { clusterResponseSchema } from 'src/schemas'
+import { z } from 'zod'
 
 export default function ClustersPage() {
   const title = 'Clusters'
   const navigate = useNavigate()
 
+  const useGetClusters = createGetQueryHook({
+    endpoint: '/clusters',
+    responseSchema: z.array(clusterResponseSchema),
+    queryKey: ['clusters'],
+  })
+
   const openCreateModal = () => {
     navigate(paths.dashboard.system.clusters.create)
   }
 
-  const actions = (
+  const { data: clusters = [] } = useGetClusters()
+
+  const actions = clusters.length > 0 && (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
@@ -33,7 +44,7 @@ export default function ClustersPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
-          <ClusterTable />
+          <ClusterTable useGetClusters={useGetClusters} />
         </Container>
       </PageTransition>
       <Outlet />

@@ -6,7 +6,7 @@ import PasswordDialog from '../dialogs/password-dialog'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { userSchema } from 'src/schemas/schemas'
 import { Loader } from 'src/components/ui/loader'
-import { UserRole } from 'src/types'
+import { removeSymbols } from 'src/lib/utils'
 
 const useGetUser = createGetQueryHook({
   endpoint: '/users/me',
@@ -38,7 +38,7 @@ export default function AccountTab() {
     <FlexBox direction="col" gap="gap-6" className="w-full">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
         <Text className="text-xl font-semibold text-neutral-700">Profile</Text>
-        <ProfileDialog user={user} />
+        <ProfileDialog current_user={user} />
       </FlexBox>
       <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3">
         {profile.map((item) => (
@@ -60,10 +60,4 @@ export default function AccountTab() {
       </div>
     </FlexBox>
   )
-}
-
-// utility
-function removeSymbols(str: keyof typeof UserRole) {
-  const newStr = str.replace(/[-,[_\]]/g, ' ')
-  return newStr
 }

@@ -21,14 +21,17 @@ export function ClusterTable() {
   const { data: clusterManagerResponse, isLoading: loadingManagers } = useGetClusterManagers()
   const clusterManagers = clusterManagerResponse?.content || []
 
-  if (loadingClusters || loadingManagers) {
-    return <div>Loading...</div>
-  }
-
   const clustersWithManagers: any = clusters.map((cluster) => ({
     ...cluster,
     users: clusterManagers.filter((manager) => manager.cluster?.id === cluster.id),
   }))
 
-  return <DataTable columns={columns} data={clustersWithManagers} emptyStateMessage="No clusters found" />
+  return (
+    <DataTable
+      isLoading={loadingClusters}
+      columns={columns}
+      data={clustersWithManagers}
+      emptyStateMessage="No clusters found"
+    />
+  )
 }

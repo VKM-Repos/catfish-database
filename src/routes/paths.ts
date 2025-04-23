@@ -22,6 +22,7 @@ export const paths = {
     helpCenter: '/dashboard/help-center',
     notifications: '/dashboard/notifications',
     privacyPolicy: '/dashboard/privacy-policy',
+    newPassword: '/dashboard/new-password',
 
     farmers: {
       root: '/dashboard/farmers',

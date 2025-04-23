@@ -49,6 +49,7 @@ export const userSchema = z.object({
   phone: z.string(),
   address: z.string().nullable().optional(),
   accountNonLocked: z.boolean(),
+  defaultPassword: z.boolean(),
   enabled: z.boolean(),
   banUntil: z.string().nullable().optional(),
   context: z.string().nullable().optional(),

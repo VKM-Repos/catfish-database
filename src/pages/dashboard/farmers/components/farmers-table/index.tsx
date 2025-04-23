@@ -1,22 +1,31 @@
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedUserResponseSchema } from 'src/schemas/schemas'
+import EmptyFarmersImg from 'src/assets/images/empty-admin.jpg'
+import EmptyTableState from 'src/components/global/empty-state'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes'
 
-export function FarmersTable() {
-  const useGetFarmers = createGetQueryHook({
-    endpoint: '/users/farmers?direction=DESC',
-    responseSchema: paginatedUserResponseSchema,
-    queryKey: ['farmers'],
-  })
+export function FarmersTable({ useGetFarmers }: any) {
   const { data: farmers, isLoading } = useGetFarmers()
 
+  const navigate = useNavigate()
+
+  const openCreateModal = () => {
+    navigate(paths.dashboard.farmers.create)
+  }
+
   return (
-    <DataTable
-      columns={columns}
-      data={farmers?.content ?? []}
-      isLoading={isLoading}
-      emptyStateMessage="No users found"
-    />
+    <>
+      {farmers && farmers?.content.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={farmers?.content ?? []}
+          isLoading={isLoading}
+          emptyStateMessage="No users found"
+        />
+      ) : (
+        <EmptyTableState image={EmptyFarmersImg} name="farmer" text="a farmer" buttonFunc={openCreateModal} />
+      )}
+    </>
   )
 }

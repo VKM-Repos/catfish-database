@@ -1,19 +1,26 @@
-import React from 'react'
+import { Button } from 'src/components/ui/button'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { Text } from 'src/components/ui/text'
+import * as SolarIconSet from 'solar-icon-set'
 
-type Props = {
+type CurrentState = {
+  name: string
   image: string
-  description: string
-  action: React.ReactNode
+  text: string
+  buttonFunc: () => void
 }
 
-const EmptyState = ({ image, description, action }: Props) => {
+export default function EmptyTableState({ name, image, text, buttonFunc }: CurrentState) {
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <img src={image} alt="Empty State" className="mb-4 h-32 w-32" />
-      <p className="mb-4 text-center text-gray-600">{description}</p>
-      <div>{action}</div>
-    </div>
+    <FlexBox direction="col" gap="gap-5" align="center">
+      <img src={image} alt="Empty state image" className="mb-4 h-32 w-32" />
+      <FlexBox direction="col" gap="gap-3" align="center">
+        <Text className="text-lg font-semibold text-neutral-700">Start by creating {text}</Text>
+        <Button variant="primary" className="flex items-center gap-2" onClick={buttonFunc}>
+          <SolarIconSet.AddCircle size={20} />
+          <Text>Add {name}</Text>
+        </Button>
+      </FlexBox>
+    </FlexBox>
   )
 }
-
-export default EmptyState

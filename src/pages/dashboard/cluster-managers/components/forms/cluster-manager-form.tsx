@@ -41,7 +41,7 @@ export function ClusterManagerForm({ mode, initialValues, onSuccess, onClose }: 
 
   // Create the create cluster mutation hook
   const useCreateClusterManager = createPostMutationHook({
-    endpoint: '/users/cluster-manager',
+    endpoint: '/users/cluster-managers',
     requestSchema: clusterManagerRequestSchema,
     responseSchema: clusterManagerResponseSchema,
   })

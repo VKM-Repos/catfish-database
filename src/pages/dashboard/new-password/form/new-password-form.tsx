@@ -1,56 +1,50 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'src/components/ui/form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
-import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { useLocation } from 'react-router-dom'
 import { Loader } from 'src/components/ui/loader'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
-import { passwordSchema } from 'src/schemas'
+import { changePasswordSchema, userSchema } from 'src/schemas'
+import { createPatchMutationHook } from 'src/api/hooks/usePatch'
+import { useAuthStore } from 'src/store/auth.store'
+import { useQueryClient } from '@tanstack/react-query'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
-const formSchema = z
-  .object({
-    password: passwordSchema,
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  })
+const formSchema = changePasswordSchema
 
 type PasswordData = z.infer<typeof formSchema>
 
-const requestSchema = z.object({
-  password: passwordSchema,
-  token: z.string(),
+const useChangePassword = createPatchMutationHook({
+  endpoint: '/users/change-password',
+  requestSchema: formSchema,
+  responseSchema: z.any(),
+  requiresAuth: true,
 })
 
-const useChangePassword = createPostMutationHook({
-  endpoint: '/auth/reset-password',
-  requestSchema: requestSchema,
-  responseSchema: z.object({ message: z.string() }),
-  requiresAuth: false,
+export const useGetCurrentUser = createGetQueryHook({
+  endpoint: '/users/me',
+  responseSchema: userSchema,
+  queryKey: ['user'],
+  requiresAuth: true,
 })
 
-export default function ChoosePassword({ handleNext }: { handleNext: () => void }) {
-  const { t } = useTranslation('translation')
+export default function NewPasswordForm({ handleNext }: { handleNext: () => void }) {
   const [error, setError] = useState<ClientErrorType | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const queryClient = useQueryClient()
   const form = useForm<PasswordData>({
-    resolver: zodResolver(requestSchema),
+    resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
   const changePasswordMutation = useChangePassword()
-  const location = useLocation()
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -60,21 +54,30 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
     setShowConfirmPassword(!showConfirmPassword)
   }
 
+  const { data: current_user } = useGetCurrentUser()
+
   const onSubmit = async (data: PasswordData) => {
-    const params = new URLSearchParams(location.search)
-    const token = params.get('token')
-
-    if (!token) {
-      setError({ title: 'Error', message: 'Token is missing from the URL.', errors: [''] })
-      return
-    }
-
     try {
       setError(null)
-      await changePasswordMutation.mutateAsync({ password: data.password, token: encodeURIComponent(token) })
+      useAuthStore.getState().commitUpdateUser({ defaultPassword: false })
+
+      await changePasswordMutation.mutateAsync({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      })
+
+      await queryClient.invalidateQueries(['user'])
+
+      const updatedUser = queryClient.getQueryData(['user'])
+
+      if (updatedUser) {
+        useAuthStore.getState().setUser(current_user ?? null)
+      }
+
       handleNext()
     } catch (err) {
       console.error('Change password error:', err)
+      useAuthStore.getState().rollbackUpdateUser()
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
@@ -91,13 +94,13 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
   }
 
   return (
-    <>
-      <div className="mt-[2rem] flex flex-col items-center justify-center gap-4">
-        <Heading level={6} weight="normal">
-          Choose a new password
+    <div className="mx-auto mt-[8rem] h-full w-full max-w-lg">
+      <div className=" flex flex-col items-center justify-center gap-4">
+        <Heading level={5} weight="semibold">
+          Create new password
         </Heading>
-        <Text weight="light" size="base" align="center">
-          Your new password must be at least 8 characters long and include a mix of letters, numbers, and symbols.
+        <Text weight="light" size="base" align="center" className="w-2/3">
+          You’re logging in for the first time. Please create a new password to continue
         </Text>
       </div>
       <Form {...form}>
@@ -105,11 +108,11 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
           {error && <FormValidationErrorAlert error={error} />}
           <FormField
             control={form.control}
-            name="password"
-            render={({ field }) => (
+            name="currentPassword"
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>
-                  New password<span className="px-1 !text-error-500">*</span>
+                  Old password<span className="px-1 !text-error-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -133,9 +136,9 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
                       </Button>
                     }
                     iconPosition="right"
-                    state={error ? 'error' : 'default'}
+                    state={error || fieldState.error ? 'error' : 'default'}
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
+                    placeholder="Enter your old password"
                     disabled={changePasswordMutation.isLoading}
                     {...field}
                   />
@@ -146,11 +149,11 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
           />
           <FormField
             control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
+            name="newPassword"
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>
-                  Confirm new password<span className="px-1 !text-error-500">*</span>
+                  New password<span className="px-1 !text-error-500">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -174,9 +177,9 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
                       </Button>
                     }
                     iconPosition="right"
-                    state={error ? 'error' : 'default'}
+                    state={error || fieldState.error ? 'error' : 'default'}
                     type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Repeat your password"
+                    placeholder="Your new password"
                     disabled={changePasswordMutation.isLoading}
                     {...field}
                   />
@@ -194,14 +197,14 @@ export default function ChoosePassword({ handleNext }: { handleNext: () => void 
             {changePasswordMutation.isLoading ? (
               <>
                 <Loader type="spinner" size={18} />
-                <Text>Changing...</Text>
+                <Text>Updating...</Text>
               </>
             ) : (
-              <Text>Reset password</Text>
+              <Text>Update password</Text>
             )}
           </Button>
         </form>
       </Form>
-    </>
+    </div>
   )
 }

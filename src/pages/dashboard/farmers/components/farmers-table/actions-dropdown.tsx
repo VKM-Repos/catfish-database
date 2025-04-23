@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
 import { DeactivateUserDialog } from '../modals/deactivate-user'
 import { useState } from 'react'
-import { User } from 'src/types'
+import type { User } from 'src/types'
 
 type ActionsDropdownProps = {
   user: User
@@ -32,7 +32,9 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View</DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Edit</DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate Farmer</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setMenu(true)}>
+            {user.accountNonLocked ? 'Deactivate Farmer' : 'Activate Farmer'}{' '}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

@@ -1,14 +1,15 @@
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedUserResponseSchema } from 'src/schemas/schemas'
-import { useNavigate } from 'react-router-dom'
-import { paths } from 'src/routes'
-import EmptyTableState from 'src/components/global/empty-state'
-import EmptyClusterImg from 'src/assets/images/empty-cluster.jpg'
+import { clusterResponseSchema, paginatedUserResponseSchema } from 'src/schemas/schemas'
+import { z } from 'zod'
 
-export function ClusterTable({ useGetClusters }: any) {
-  const navigate = useNavigate()
+export function ClusterTable() {
+  const useGetClusters = createGetQueryHook({
+    endpoint: '/clusters',
+    responseSchema: z.array(clusterResponseSchema),
+    queryKey: ['clusters'],
+  })
 
   const useGetClusterManagers = createGetQueryHook({
     endpoint: '/users/cluster-managers',
@@ -20,26 +21,17 @@ export function ClusterTable({ useGetClusters }: any) {
   const { data: clusterManagerResponse, isLoading: loadingManagers } = useGetClusterManagers()
   const clusterManagers = clusterManagerResponse?.content || []
 
-  if (loadingClusters || loadingManagers) {
-    return <div>Loading...</div>
-  }
-
-  const clustersWithManagers: any = clusters.map((cluster: any) => ({
+  const clustersWithManagers: any = clusters.map((cluster) => ({
     ...cluster,
     users: clusterManagers.filter((manager) => manager.cluster?.id === cluster.id),
   }))
 
-  const openCreateModal = () => {
-    navigate(paths.dashboard.system.clusters.create)
-  }
-
   return (
-    <>
-      {clustersWithManagers && clustersWithManagers.length > 0 ? (
-        <DataTable columns={columns} data={clustersWithManagers} emptyStateMessage="No clusters found" />
-      ) : (
-        <EmptyTableState name="cluster" text="a cluster" image={EmptyClusterImg} buttonFunc={openCreateModal} />
-      )}
-    </>
+    <DataTable
+      isLoading={loadingClusters}
+      columns={columns}
+      data={clustersWithManagers}
+      emptyStateMessage="No clusters found"
+    />
   )
 }

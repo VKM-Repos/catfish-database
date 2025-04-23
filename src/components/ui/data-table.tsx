@@ -1,9 +1,9 @@
 import * as React from 'react'
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -18,14 +18,16 @@ import { Button } from './button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
-import { Cluster } from 'src/types/cluster.types'
+import type { Cluster } from 'src/types/cluster.types'
 import { useAuthStore } from 'src/store/auth.store'
+import { useLocation } from 'react-router-dom'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   isLoading?: boolean
   emptyStateMessage?: string
+  hideClusterFilter?: boolean
 }
 
 export function DataTable<TData>({
@@ -33,6 +35,7 @@ export function DataTable<TData>({
   data,
   isLoading = false,
   emptyStateMessage = 'No results found',
+  hideClusterFilter = false,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -42,14 +45,17 @@ export function DataTable<TData>({
   const [selectedCluster, setSelectedCluster] = React.useState<string>('')
 
   const normalizeClusterName = (name: string) => name.replace(/-/g, '')
-
+  const location = useLocation()
+  const isClustersPage = location.pathname.includes('/clusters')
   const filteredData = React.useMemo(() => {
-    if (!selectedCluster) return data
-    const normalizedSelected = normalizeClusterName(selectedCluster)
-    return data.filter((item) => {
+    if (!selectedCluster || selectedCluster === 'null') return data
+    setColumnFilters([])
+    setGlobalFilter('')
+    const filtered = data.filter((item) => {
       const clusterName = (item as any).cluster?.name || ''
-      return normalizeClusterName(clusterName) === normalizedSelected
+      return clusterName === selectedCluster
     })
+    return filtered
   }, [data, selectedCluster])
 
   const table = useReactTable({
@@ -108,7 +114,7 @@ export function DataTable<TData>({
       enabled: user?.role === 'SUPER_ADMIN',
     },
   })
-  const { data: clusters, isLoading: isLoadingClusters } = useGetClusters()
+  const { data: clusters } = useGetClusters()
 
   return (
     <div className="w-full">
@@ -123,13 +129,13 @@ export function DataTable<TData>({
           />
         </div>
         <div className="w-[20%]">
-          {user?.role === 'SUPER_ADMIN' && (
+          {!hideClusterFilter && !isClustersPage && user?.role === 'SUPER_ADMIN' && (
             <Select value={selectedCluster} onValueChange={handleClusterChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All clusters" />
               </SelectTrigger>
               <SelectContent side="top">
-                <SelectItem value=" ">All clusters</SelectItem>
+                <SelectItem value="null">All clusters</SelectItem>
                 {clusters?.map((cluster: Cluster) => (
                   <SelectItem key={cluster.name} value={cluster.name}>
                     {cluster.name}

@@ -11,8 +11,6 @@ export function FarmersTable() {
   })
   const { data: farmers, isLoading } = useGetFarmers()
 
-  console.log(farmers)
-
   return (
     <DataTable
       columns={columns}

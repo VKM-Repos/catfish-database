@@ -86,6 +86,10 @@ export const router = createBrowserRouter([
         path: paths.dashboard.privacyPolicy,
         element: LazyPage(() => import('src/pages/dashboard/privacy-policy')),
       },
+      {
+        path: paths.dashboard.ponds.root,
+        element: LazyPage(() => import('src/pages/dashboard/ponds')),
+      },
       // Farmer Routes
       {
         path: paths.dashboard.farmers.root,
@@ -394,6 +398,10 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.newPassword,
         element: LazyPage(() => import('src/pages/dashboard/new-password')),
+      },
+      {
+        path: paths.dashboard.ponds.create,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
       },
     ],
   },

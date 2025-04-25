@@ -15,6 +15,10 @@ export const paths: {
     home: string
     management: {
       root: string
+      ponds: {
+        root: string
+        create: string
+      }
       farmers: {
         root: string
         list: string

@@ -159,3 +159,29 @@ export const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, { message: 'Current password is required' }),
   newPassword: passwordSchema,
 })
+
+export const pondSchema = z.object({
+  name: z.string().min(3, { message: 'Pond Name must not be less than 3 characters' }),
+  size: z.string().regex(/^\d+(\.\d+)?$/, "Must be a number followed by 'm²' (e.g., 20 m²)"),
+  waterSource: z.string().min(3, { message: 'Water Source must not be less than 3 characters' }),
+  type: z.string().min(3, { message: 'Pond Type must not be less than 3 characters' }),
+  clusterId: z.string().min(1, 'Cluster ID is required'),
+  latitude: z.string().min(1, 'Cluster ID is required'),
+  longitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Longitude must be a valid number (e.g., 36.8219)',
+  }),
+})
+
+export const fishDetailsSchema = z.object({
+  fishPond: z.string().min(1, { message: 'Please add a pond name' }),
+  fishQuantity: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Fish quantity must be a valid number',
+  }),
+  fishCost: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Fish cost must be a valid number',
+  }),
+  fishDescription: z.string().min(1, { message: 'Description must not be less than 3 characters' }),
+  fishSize: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Fish size must be a valid number',
+  }),
+})

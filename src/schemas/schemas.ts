@@ -162,11 +162,13 @@ export const changePasswordSchema = z.object({
 
 export const pondSchema = z.object({
   name: z.string().min(3, { message: 'Pond Name must not be less than 3 characters' }),
-  size: z.string().regex(/^\d+(\.\d+)?$/, "Must be a number followed by 'm²' (e.g., 20 m²)"),
-  waterSource: z.string().min(3, { message: 'Water Source must not be less than 3 characters' }),
-  type: z.string().min(3, { message: 'Pond Type must not be less than 3 characters' }),
+  size: z.string().regex(/^\d+(\.\d+)?$/, 'Pond size must be a valid number'),
+  waterSource: z.string().min(1, { message: 'Please add a water source' }),
+  type: z.string().min(1, { message: 'Please add pond type' }),
   clusterId: z.string().min(1, 'Cluster ID is required'),
-  latitude: z.string().min(1, 'Cluster ID is required'),
+  latitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Latitude must be a valid number (e.g., -18.211',
+  }),
   longitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Longitude must be a valid number (e.g., 36.8219)',
   }),

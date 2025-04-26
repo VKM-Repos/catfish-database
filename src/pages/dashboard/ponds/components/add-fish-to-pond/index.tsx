@@ -42,8 +42,9 @@ export default function AddFishPond({ handleNext }: { handleNext: () => void }) 
 
   return (
     <FlexBox direction="col" gap="gap-5" align="center" className="w-full">
-      <div className="mb-2 w-full items-start">
+      <div className="mb-2 w-full items-start gap-1">
         <h5 className="text-[1.5rem] font-bold text-[#444955]">Fish Details</h5>
+        <hr className="w-full border border-primary-200" />
       </div>
 
       <Form {...form}>

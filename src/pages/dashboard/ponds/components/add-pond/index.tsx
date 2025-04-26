@@ -5,7 +5,6 @@ import { pondSchema } from 'src/schemas'
 import { z } from 'zod'
 import AddPondDetailsForm from './add-pond-details-form'
 import AddPondLocationForm from './add-pond-location-form'
-import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { usePondStore } from 'src/store/pond.store'
 
@@ -49,15 +48,15 @@ export default function AddPond({ handleNext }: { handleNext: () => void }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8">
-        <div className="mb-2 w-full items-start">
-          <Text className="py-1 text-sm text-[#444955]">Step 1</Text>
+        <div className="flex w-full flex-col items-start gap-1">
           <h5 className="text-[1.5rem] font-bold text-[#444955]">Pond Details</h5>
+          <hr className="w-full border border-primary-200" />
         </div>
         <AddPondDetailsForm form={form} />
 
         <div className="mb-2 w-full items-start">
-          <Text className="py-1 text-sm text-[#444955]">Step 2</Text>
           <h5 className="text-[1.5rem] font-bold text-[#444955]">Pond Location</h5>
+          <hr className="w-full border border-primary-200" />
         </div>
         <AddPondLocationForm form={form} />
 

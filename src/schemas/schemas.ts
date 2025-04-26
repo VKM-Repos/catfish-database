@@ -182,7 +182,7 @@ export const fishDetailsSchema = z.object({
   fishCost: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Fish cost must be a valid number',
   }),
-  fishDescription: z.string().min(1, { message: 'Description must not be less than 3 characters' }),
+  fishDescription: z.string().min(3, { message: 'Description must not be less than 3 characters' }),
   fishSize: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Fish size must be a valid number',
   }),

@@ -1,12 +1,17 @@
+import { UseFormReturn } from 'react-hook-form'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'src/components/ui/select'
 import { Text } from 'src/components/ui/text'
+import { pondSchema } from 'src/schemas'
+import { z } from 'zod'
 
-export default function AddPondDetailsForm({ form }: { form: any }) {
+type PondFormValues = z.infer<typeof pondSchema>
+
+export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
   const waterSources = ['Lake', 'Pond', 'River']
-  const pondTypes = ['Fish ponds', 'Natural ponds']
+  const pondTypes = ['Concrete ponds', 'Tanks', 'Earthen ponds']
   const isWaterSourcesLoading = false
   const isPondTypesLoading = false
 
@@ -35,16 +40,15 @@ export default function AddPondDetailsForm({ form }: { form: any }) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <div className="flex max-h-fit items-center rounded-sm border border-neutral-200">
+                <div className="focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2">
                   <div className="w-full">
                     <Input
                       placeholder="e.g 500 m²"
                       {...field}
-                      className="!w-full  border-[0] px-3 text-sm"
-                      type="number"
+                      className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
-                  <div className="h-full  bg-neutral-100 px-3 py-[.65rem] text-sm text-neutral-500"> m²</div>
+                  <div className="h-full bg-neutral-100 px-3 py-[.65rem] text-sm text-neutral-500">m²</div>
                 </div>
               </FormControl>
               <FormMessage />
@@ -60,7 +64,11 @@ export default function AddPondDetailsForm({ form }: { form: any }) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Select value={field.value ? String(field.value) : ''} onValueChange={(value) => field.onChange(value)}>
+                <Select
+                  value={field.value ? String(field.value) : ''}
+                  onValueChange={(value) => field.onChange(value)}
+                  defaultValue={field.value}
+                >
                   <SelectTrigger className="font-light">
                     <div className="flex items-center justify-center gap-2">
                       <SelectValue placeholder="Select Source" />
@@ -69,7 +77,7 @@ export default function AddPondDetailsForm({ form }: { form: any }) {
                   <SelectContent>
                     {isWaterSourcesLoading ? (
                       <SelectItem value="loading" disabled>
-                        <Text>Loading clusters...</Text>
+                        <Text>Loading sources...</Text>
                       </SelectItem>
                     ) : (
                       waterSources?.map((source, index) => (
@@ -94,7 +102,11 @@ export default function AddPondDetailsForm({ form }: { form: any }) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Select value={field.value ? String(field.value) : ''} onValueChange={(value) => field.onChange(value)}>
+                <Select
+                  value={field.value ? String(field.value) : ''}
+                  onValueChange={(value) => field.onChange(value)}
+                  defaultValue={field.value}
+                >
                   <SelectTrigger className="font-light">
                     <div className="flex items-center justify-center gap-2">
                       <SelectValue placeholder="Select pond type" />
@@ -103,7 +115,7 @@ export default function AddPondDetailsForm({ form }: { form: any }) {
                   <SelectContent>
                     {isPondTypesLoading ? (
                       <SelectItem value="loading" disabled>
-                        <Text>Loading clusters...</Text>
+                        <Text>Loading types...</Text>
                       </SelectItem>
                     ) : (
                       pondTypes?.map((pond, index) => (

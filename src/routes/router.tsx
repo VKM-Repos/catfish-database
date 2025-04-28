@@ -86,11 +86,15 @@ export const router = createBrowserRouter([
         path: paths.dashboard.privacyPolicy,
         element: LazyPage(() => import('src/pages/dashboard/privacy-policy')),
       },
+      // Farmer Routes
       {
         path: paths.dashboard.ponds.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds')),
       },
-      // Farmer Routes
+      {
+        path: `${paths.dashboard.ponds.root}/:id`,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
+      },
       {
         path: paths.dashboard.farmers.root,
         element: (

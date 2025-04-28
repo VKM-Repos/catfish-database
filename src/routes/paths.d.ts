@@ -18,6 +18,7 @@ export const paths: {
       ponds: {
         root: string
         create: string
+        view: (pondId: string) => string
       }
       farmers: {
         root: string

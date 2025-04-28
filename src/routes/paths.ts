@@ -45,6 +45,7 @@ export const paths = {
     ponds: {
       root: '/dashboard/ponds',
       create: '/dashboard/ponds/create',
+      view: (id: string) => `/dashboard/ponds/${id}`,
     },
 
     // Reports Routes

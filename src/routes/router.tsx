@@ -88,6 +88,14 @@ export const router = createBrowserRouter([
       },
       // Farmer Routes
       {
+        path: paths.dashboard.ponds.root,
+        element: LazyPage(() => import('src/pages/dashboard/ponds')),
+      },
+      {
+        path: `${paths.dashboard.ponds.root}/:id`,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
+      },
+      {
         path: paths.dashboard.farmers.root,
         element: (
           <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
@@ -394,6 +402,10 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.newPassword,
         element: LazyPage(() => import('src/pages/dashboard/new-password')),
+      },
+      {
+        path: paths.dashboard.ponds.create,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
       },
     ],
   },

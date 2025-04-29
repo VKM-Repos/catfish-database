@@ -15,6 +15,11 @@ export const paths: {
     home: string
     management: {
       root: string
+      ponds: {
+        root: string
+        create: string
+        view: (pondId: string) => string
+      }
       farmers: {
         root: string
         list: string

@@ -69,7 +69,7 @@ function UnregisteredPondCards({ navigate }: { navigate: (path: string) => void 
         description="Add details of your ponds to start tracking your farm activities."
         icon={<SolarIconSet.Flag color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />}
         buttonText="Register a Pond"
-        buttonAction={() => navigate('/dashboard/ponds/register')}
+        buttonAction={() => navigate('/dashboard/ponds/create')}
         isFirstCard={true}
       />
 

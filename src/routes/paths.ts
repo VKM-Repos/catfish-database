@@ -42,6 +42,11 @@ export const paths = {
       create: '/dashboard/cluster-managers/create',
       id: (id: string) => `/dashboard/cluster-managers/${id}/edit`,
     },
+    ponds: {
+      root: '/dashboard/ponds',
+      create: '/dashboard/ponds/create',
+      view: (id: string) => `/dashboard/ponds/${id}`,
+    },
 
     // Reports Routes
     reports: {

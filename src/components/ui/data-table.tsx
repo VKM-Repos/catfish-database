@@ -28,11 +28,13 @@ interface DataTableProps<TData> {
   isLoading?: boolean
   emptyStateMessage?: string
   hideClusterFilter?: boolean
+  search?: boolean
 }
 
 export function DataTable<TData>({
   columns,
   data,
+  search = true,
   isLoading = false,
   emptyStateMessage = 'No results found',
   hideClusterFilter = false,
@@ -118,34 +120,36 @@ export function DataTable<TData>({
 
   return (
     <div className="w-full">
-      <div className="mb-8 flex h-[80px] items-center justify-between rounded-md bg-neutral-50 px-[24px] py-[20px]">
-        <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
-          <SolarIconSet.MinimalisticMagnifer />
-          <input
-            className="w-[390px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
-            placeholder="Search..."
-            value={globalFilter ?? ''}
-            onChange={(e) => setGlobalFilter(String(e.target.value))}
-          />
+      {search && (
+        <div className="mb-8 flex h-[80px] items-center justify-between rounded-md bg-neutral-50 px-[24px] py-[20px]">
+          <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
+            <SolarIconSet.MinimalisticMagnifer />
+            <input
+              className="w-[390px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
+              placeholder="Search..."
+              value={globalFilter ?? ''}
+              onChange={(e) => setGlobalFilter(String(e.target.value))}
+            />
+          </div>
+          <div className="w-[20%]">
+            {!hideClusterFilter && !isClustersPage && user?.role === 'SUPER_ADMIN' && (
+              <Select value={selectedCluster} onValueChange={handleClusterChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="All clusters" />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  <SelectItem value="null">All clusters</SelectItem>
+                  {clusters?.map((cluster: Cluster) => (
+                    <SelectItem key={cluster.name} value={cluster.name}>
+                      {cluster.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
         </div>
-        <div className="w-[20%]">
-          {!hideClusterFilter && !isClustersPage && user?.role === 'SUPER_ADMIN' && (
-            <Select value={selectedCluster} onValueChange={handleClusterChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="All clusters" />
-              </SelectTrigger>
-              <SelectContent side="top">
-                <SelectItem value="null">All clusters</SelectItem>
-                {clusters?.map((cluster: Cluster) => (
-                  <SelectItem key={cluster.name} value={cluster.name}>
-                    {cluster.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        </div>
-      </div>
+      )}
 
       <div className="overflow-hidden rounded-md border border-neutral-200">
         <Table>

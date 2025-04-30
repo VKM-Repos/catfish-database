@@ -90,6 +90,7 @@ module.exports = {
       },
       fontFamily: {
         inter: ['Inter', 'serif'],
+        clash: ['"Clash Display"', 'sans-serif'],
       },
       backgroundImage: {
         waves: "url('/src/assets/images/waves.png')",

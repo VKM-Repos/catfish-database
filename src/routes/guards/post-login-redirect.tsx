@@ -12,17 +12,21 @@ export default function PostLoginRedirect() {
   useEffect(() => {
     if (!user) return
 
-    // If the user qualifies for a special redirect (defaultPassword or is a farmer)
-    // then redirect no matter where they currently are
+    // Handle password reset first
     if (user.defaultPassword) {
       navigate(paths.dashboard.newPassword, { replace: true })
-    } else if (user.role === UserRole.FARMER) {
-      navigate(paths.dashboard.home.getStarted, { replace: true })
-    } else if (location.pathname === paths.dashboard.root) {
-      // For regular users: only redirect if they are on the default dashboard root.
-      navigate(paths.dashboard.home.overview, { replace: true })
+      return
     }
-  }, [user, navigate, location.pathname])
+
+    // Only process immediately after login
+    const isInitialLogin = location.state?.from?.pathname === paths.auth.login
+
+    if (isInitialLogin) {
+      const targetPath = user.role === UserRole.FARMER ? paths.dashboard.home.getStarted : paths.dashboard.home.overview
+
+      navigate(targetPath, { replace: true })
+    }
+  }, [user, navigate, location.state])
 
   return null
 }

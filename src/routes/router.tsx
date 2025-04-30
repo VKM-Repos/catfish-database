@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
     element: (
       <AuthGuard>
         <DashboardLayout />
-        <PostLoginRedirect />,
+        <PostLoginRedirect />
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />,
@@ -86,15 +86,16 @@ export const router = createBrowserRouter([
         path: paths.dashboard.privacyPolicy,
         element: LazyPage(() => import('src/pages/dashboard/privacy-policy')),
       },
-      // Farmer Routes
+      // ponds Routes
       {
         path: paths.dashboard.ponds.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds')),
       },
-      {
-        path: `${paths.dashboard.ponds.root}/:id`,
-        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
-      },
+      // {
+      //   path: `${paths.dashboard.ponds.root}/:id`,
+      //   element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
+      // },
+      // Farmer Routes
       {
         path: paths.dashboard.farmers.root,
         element: (

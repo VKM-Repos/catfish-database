@@ -17,7 +17,9 @@ const Providers = ({ children }: ProvidersProps) => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <SideBarProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            <div className="font-clash">{children}</div>
+          </TooltipProvider>
           <Toaster />
         </SideBarProvider>
         <ReactQueryDevtools />

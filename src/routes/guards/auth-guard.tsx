@@ -18,6 +18,10 @@ export function AuthGuard({ children }: AuthGuardProps) {
   }
 
   const getFallbackPath = () => {
+    if (user?.defaultPassword) {
+      return paths.dashboard.newPassword
+    }
+
     if (user?.role === UserRole.FARMER) {
       return paths.dashboard.home.getStarted
     }

@@ -51,7 +51,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const isDisabled = state === 'disabled' || disabled
 
     // Base styles for the input
-    const baseStyles = 'border flex h-10 w-full rounded-md px-3 py-2 font-light text-base md:text-sm focus:outline-none'
+    const baseStyles =
+      'border flex h-10 w-full rounded-md font-clash px-3 py-2 font-light text-base md:text-sm focus:outline-none'
 
     // State-specific styles
     const stateStyles = {

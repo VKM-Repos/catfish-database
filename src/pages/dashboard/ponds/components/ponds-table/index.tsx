@@ -15,7 +15,7 @@ export function PondsTable() {
 
   return (
     <>
-      {ponds && ponds.length > 0 ? (
+      {ponds && ponds.length < 0 ? (
         <DataTable columns={columns} data={ponds ?? []} isLoading={isLoading} emptyStateMessage="No ponds found" />
       ) : (
         <EmptyTableState image={EmptyClusterManagerImg} name="pond" text="a pond" buttonFunc={openCreateModal} />

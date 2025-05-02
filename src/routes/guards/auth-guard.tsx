@@ -17,8 +17,19 @@ export function AuthGuard({ children }: AuthGuardProps) {
     return <Navigate to={paths.auth.login} state={{ from: location }} replace />
   }
 
+  const getFallbackPath = () => {
+    if (user?.defaultPassword) {
+      return paths.dashboard.newPassword
+    }
+
+    if (user?.role === UserRole.FARMER) {
+      return paths.dashboard.home.getStarted
+    }
+    return paths.dashboard.home.overview
+  }
+
   if (!hasRouteAccess(user?.role as UserRole, location.pathname)) {
-    return <Navigate to={paths.dashboard.home.overview} replace />
+    return <Navigate to={getFallbackPath()} replace />
   }
 
   return <>{children}</>

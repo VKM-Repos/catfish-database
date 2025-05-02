@@ -37,7 +37,7 @@ export const useGetCurrentUser = createGetQueryHook({
 const ProfileMenu = () => {
   const { data: user } = useGetCurrentUser()
   const token = useAuthStore((state) => state.accessToken)
-  const userName = user ? `${user.firstName} ${user.lastName}` : 'User'
+  const userName = user ? `${user.firstName} ${user.lastName?.charAt(0).toUpperCase()}.` : 'User'
   const fallbackInitial = user?.firstName?.charAt(0).toUpperCase() || 'U'
   const logoutMutation = useLogout()
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false)
@@ -81,7 +81,7 @@ const ProfileMenu = () => {
             <Avatar>
               <AvatarFallback className="text-neutral-600">{fallbackInitial}</AvatarFallback>
             </Avatar>
-            <Text variant="label" color="text-neutral-600" weight="normal">
+            <Text variant="label" color="text-neutral-600" weight="semibold" size="lg" className="capitalize">
               {userName}
             </Text>
             <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
@@ -90,7 +90,7 @@ const ProfileMenu = () => {
         <PopoverContent className="relative mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
           {profileLinks.map(({ label, href, action, icon }) => {
             const content = (
-              <div className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-100">
+              <div className="flex items-center gap-2 rounded-md p-2 hover:bg-primary-100">
                 {icon}
                 <span className="text-sm font-medium text-neutral-500">{label}</span>
               </div>

@@ -185,14 +185,6 @@ export const router = createBrowserRouter([
         ),
         children: [
           {
-            path: 'create',
-            element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                {LazyPage(() => import('src/pages/dashboard/reports'))}
-              </RoleGuard>
-            ),
-          },
-          {
             path: ':id',
             children: [
               {
@@ -407,6 +399,14 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.ponds.create,
         element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
+      },
+      {
+        path: paths.dashboard.reports.createDailyFarmReport(':id'),
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/reports/create/daily-farm-report/_id'))}
+          </RoleGuard>
+        ),
       },
     ],
   },

@@ -132,7 +132,8 @@ export default function GetStarted() {
     return <LoadingScreen />
   }
 
-  const hasPond = ponds.content.length > 0
+  // const hasPond = ponds.content.length > 0
+  const hasPond = true
 
   const pageTitle = hasPond ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 

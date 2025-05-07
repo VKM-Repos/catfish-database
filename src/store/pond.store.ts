@@ -5,13 +5,13 @@ export interface PondInformation {
   name: string
   size: string
   waterSource: string
-  type: string
+  pondType: string
   clusterId: string
   longitude: string
   latitude: string
-  fishPond: string
-  fishQuantity: string
-  fishCost: string
+  pondId: string
+  quantity: string
+  costOfSupply: string
   fishDescription: string
   fishSize: string
 }

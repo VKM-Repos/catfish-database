@@ -6,19 +6,23 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 's
 import { Text } from 'src/components/ui/text'
 import { pondSchema } from 'src/schemas'
 import { z } from 'zod'
+import * as SolarIconSet from 'solar-icon-set'
 
 type PondFormValues = z.infer<typeof pondSchema>
 
 export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
-  const waterSources = ['Lake', 'Pond', 'River']
-  const pondTypes = ['Concrete ponds', 'Tanks', 'Earthen ponds']
+  const waterSources = ['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers']
+  const pondTypes = ['Concrete', 'Earthen']
   const isWaterSourcesLoading = false
   const isPondTypesLoading = false
 
   return (
     <FlexBox gap="gap-5" direction="col" align="center" className="w-full">
       <div className="flex w-full flex-col gap-2">
-        <Text className="text-sm font-medium text-neutral-300">Pond Name</Text>
+        <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+          Pond Name
+          <span className="font-bold text-red-500">*</span>
+        </Text>
         <FormField
           control={form.control}
           name="name"
@@ -33,7 +37,13 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
         />
       </div>
       <div className="flex w-full flex-col gap-2">
-        <Text className="text-sm font-medium text-neutral-300">Pond Size</Text>
+        <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+          Pond Size
+          <span className="gap-2 font-bold text-red-500">*</span>
+          <span className="ml-2">
+            <SolarIconSet.QuestionCircle size={16} />
+          </span>
+        </Text>
         <FormField
           control={form.control}
           name="size"
@@ -48,7 +58,7 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
                       className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
-                  <div className="h-full bg-neutral-100 px-3 py-[.65rem] text-sm text-neutral-500">m²</div>
+                  <div className="h-full bg-[#651391] px-3 py-[.65rem] text-sm text-white">m²</div>
                 </div>
               </FormControl>
               <FormMessage />
@@ -57,7 +67,13 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
         />
       </div>
       <div className="flex w-full flex-col gap-2">
-        <Text className="text-sm font-medium text-neutral-300">Water Source</Text>
+        <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+          Water Source
+          <span className="font-bold text-red-500">*</span>
+          <span className="ml-2">
+            <SolarIconSet.QuestionCircle size={16} />
+          </span>
+        </Text>
         <FormField
           control={form.control}
           name="waterSource"
@@ -95,10 +111,16 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
         />
       </div>
       <div className="flex w-full flex-col gap-2">
-        <Text className="text-sm font-medium text-neutral-300">Pond Type</Text>
+        <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+          Pond Type
+          <span className="font-bold text-red-500">*</span>
+          <span className="ml-2">
+            <SolarIconSet.QuestionCircle size={16} />
+          </span>
+        </Text>
         <FormField
           control={form.control}
-          name="type"
+          name="pondType"
           render={({ field }) => (
             <FormItem>
               <FormControl>

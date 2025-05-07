@@ -8,17 +8,27 @@ import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
-import { ponds, PondsTable } from './components/ponds-table'
+import { PondsTable } from './components/ponds-table'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { paginatedPondResponseSchema } from 'src/schemas'
+
+const useGetPonds = createGetQueryHook({
+  endpoint: '/ponds/farmers/me',
+  responseSchema: paginatedPondResponseSchema,
+  queryKey: ['my-ponds'],
+})
 
 export default function PondsPage() {
   const title = 'Ponds'
   const navigate = useNavigate()
 
   const openCreateModal = () => {
-    navigate(paths.dashboard.ponds.create)
+    navigate(paths.dashboard.ponds.create.addPond)
   }
 
-  const actions = ponds?.length > 0 && (
+  const { data: ponds } = useGetPonds()
+
+  const actions = ponds && ponds?.content.length > 0 && (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />

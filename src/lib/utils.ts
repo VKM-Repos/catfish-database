@@ -55,3 +55,13 @@ export function removeSymbols(str: keyof typeof UserRole) {
   const newStr = str.replace(/[-,[_\]]/g, ' ')
   return newStr
 }
+
+export function formatLatLng(lat: string, lng: string) {
+  const latDirection = parseFloat(lat) >= 0 ? 'N' : 'S'
+  const lngDirection = parseFloat(lng) >= 0 ? 'E' : 'W'
+
+  const formattedLat = `${Math.abs(parseFloat(lat)).toFixed(4)}° ${latDirection}`
+  const formattedLng = `${Math.abs(parseFloat(lng)).toFixed(4)}° ${lngDirection}`
+
+  return `${formattedLat}, ${formattedLng}`
+}

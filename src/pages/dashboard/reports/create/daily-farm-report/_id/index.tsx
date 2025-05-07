@@ -3,8 +3,8 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
-import AddFishPond from 'src/pages/dashboard/ponds/components/add-fish-to-pond'
 import MonitoringForm from '../../../components/forms/monitoring-form'
+import MaintenanceForm from '../../../components/forms/maintenace-form'
 
 export default function CreatePondPage() {
   const [step, setStep] = useState(1)
@@ -13,6 +13,10 @@ export default function CreatePondPage() {
 
   const handleNext = () => {
     setStep(step + 1)
+  }
+
+  const handlePrevious = () => {
+    setStep(step - 1)
   }
 
   const onSubmit = async () => {
@@ -28,9 +32,9 @@ export default function CreatePondPage() {
   const RenderSteps = () => {
     switch (step) {
       case 1:
-        return <MonitoringForm handleNext={handleNext} />
+        return <MonitoringForm handlePrevious={handlePrevious} handleNext={handleNext} />
       case 2:
-        return <AddFishPond handleNext={onSubmit} />
+        return <MaintenanceForm handlePrevious={handlePrevious} handleNext={onSubmit} />
       default:
         return null
     }

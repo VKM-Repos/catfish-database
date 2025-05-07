@@ -200,5 +200,14 @@ export const dailyFeedingSchema = z.object({
   nitrate: z.string().min(1, { message: 'Please add a nitrate' }),
   alkalinity: z.string().min(1, { message: 'Please add a alkalinity' }),
   hardness: z.string().min(1, { message: 'Please add hardness' }),
-  waterQualityObservation: z.string().min(1, { message: 'Add water quality observation' }),
+  waterQualityObservation: z.any(),
+})
+
+export const maintenanceSchema = z.object({
+  maintenance: z.string().min(1, { message: 'Please Select a maintenance' }),
+  cost: z
+    .string()
+    .min(1, { message: 'Cost is field required' })
+    .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
+    .transform(Number),
 })

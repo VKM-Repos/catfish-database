@@ -34,7 +34,7 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
     console.log('Helloo')
   }
   return (
-    <FlexBox gap="gap-5" direction="col" align="start" className="w-full">
+    <FlexBox gap="gap-5" direction="col" align="start" className="w-full rounded-md px-5">
       <div className="flex w-full items-center gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="text-sm font-medium text-neutral-300">Feed Type</Text>

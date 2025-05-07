@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { User, UserRole } from 'src/types'
+import { type User, UserRole } from 'src/types'
 import { useAuthStore } from 'src/store/auth.store'
 
 export const stateSchema = z.object({
@@ -273,4 +273,28 @@ export const paginatedFishBatchResponseSchema = z.object({
   page: z.number(),
   size: z.number(),
   content: z.array(fishBatchResponseSchema),
+})
+
+export const dailyFeedingSchema = z.object({
+  feedType: z.string().min(1, { message: 'Please Select a feed type' }),
+  feedQuantity: z.string().min(1, { message: 'Please add a feeding quantity' }),
+  feedTime: z.string().min(1, { message: 'Please add a feed time' }),
+  dissolvedOxygen: z.string().min(1, { message: 'Please add a dissolved oxygen' }),
+  phLevel: z.string().min(1, { message: 'Please add a PH level' }),
+  temperature: z.string().min(1, { message: 'Please add a temperature' }),
+  ammonia: z.string().min(1, { message: 'Please add a ammonia' }),
+  nitrite: z.string().min(1, { message: 'Please add a nitrite' }),
+  nitrate: z.string().min(1, { message: 'Please add a nitrate' }),
+  alkalinity: z.string().min(1, { message: 'Please add a alkalinity' }),
+  hardness: z.string().min(1, { message: 'Please add hardness' }),
+  waterQualityObservation: z.any(),
+})
+
+export const maintenanceSchema = z.object({
+  maintenance: z.string().min(1, { message: 'Please Select a maintenance' }),
+  cost: z
+    .string()
+    .min(1, { message: 'Cost is field required' })
+    .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
+    .transform(Number),
 })

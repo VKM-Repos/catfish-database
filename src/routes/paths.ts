@@ -56,6 +56,9 @@ export const paths = {
     // Reports Routes
     reports: {
       root: '/dashboard/reports',
+      createDailyFarmReport: (id: string) => `/dashboard/reports/create/daily-farm-report/${id}`,
+      createSamplingReport: (id: string) => `/dashboard/reports/create/daily-sampling-report/${id}`,
+      createHarvestReport: (id: string) => `/dashboard/reports/create/daily-harvest-report/${id}`,
     },
 
     // System Routes

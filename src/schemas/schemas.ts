@@ -161,10 +161,12 @@ export const changePasswordSchema = z.object({
 })
 
 export const pondSchema = z.object({
+  id: z.string().optional(),
+  status: z.string().optional(),
   name: z.string().min(3, { message: 'Pond Name must not be less than 3 characters' }),
   size: z.string().regex(/^\d+(\.\d+)?$/, 'Pond size must be a valid number'),
   waterSource: z.string().min(1, { message: 'Please add a water source' }),
-  type: z.string().min(1, { message: 'Please add pond type' }),
+  pondType: z.string().min(1, { message: 'Please add pond type' }),
   clusterId: z.string().min(1, 'Cluster ID is required'),
   latitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Latitude must be a valid number (e.g., -18.211',
@@ -174,16 +176,101 @@ export const pondSchema = z.object({
   }),
 })
 
+export const pondResponseSchema = z.object({
+  id: z.string().optional(),
+  status: z.string().optional(),
+  name: z.string(),
+  size: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  latitude: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .optional(),
+  longitude: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .optional(),
+  waterSource: z.string(),
+  pondType: z.string(),
+  cluster: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
+  farmer: z.object({
+    id: z.string().optional(),
+    name: z.string().optional(),
+  }),
+  createdAt: z.string().nullable().optional(),
+  updatedAt: z.string().nullable().optional(),
+})
+
+export const paginatedPondResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(pondResponseSchema),
+})
+
 export const fishDetailsSchema = z.object({
-  fishPond: z.string().min(1, { message: 'Please add a pond name' }),
-  fishQuantity: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+  pondId: z.string().min(1, { message: 'Please add a pond name' }),
+  quantity: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Fish quantity must be a valid number',
   }),
-  fishCost: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+  supplier: z.string().min(1, { message: 'Please add a supplier name' }).optional(),
+  singleCost: z
+    .string()
+    .regex(/^[-+]?\d+(\.\d+)?$/, {
+      message: 'Fish cost must be a valid number',
+    })
+    .optional(),
+  costOfSupply: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Fish cost must be a valid number',
   }),
   fishDescription: z.string().min(3, { message: 'Description must not be less than 3 characters' }),
-  fishSize: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
-    message: 'Fish size must be a valid number',
-  }),
+  fishSize: z.string().min(1, { message: 'Please input size of fish' }),
+})
+
+export const fishDetailsResponseSchema = z.object({
+  id: z.string().optional(),
+  pondId: z.string().optional(),
+  quantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  costOfSupply: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
+export const feedingResponseSchema = z.object({
+  id: z.string().optional(),
+  pondId: z.string().optional(),
+  feedType: z.string(),
+  quantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  frequency: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
+export const fishBatchResponseSchema = z.object({
+  id: z.string().optional(),
+  pond: pondResponseSchema,
+  feedings: z.array(feedingResponseSchema),
+  quantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  costOfSupply: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
+export const paginatedFishDetailsResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(fishDetailsResponseSchema),
+})
+
+export const paginatedFishBatchResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(fishBatchResponseSchema),
 })

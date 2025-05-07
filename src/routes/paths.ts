@@ -44,8 +44,13 @@ export const paths = {
     },
     ponds: {
       root: '/dashboard/ponds',
-      create: '/dashboard/ponds/create',
+      create: {
+        root: '/dashboard/ponds/create',
+        addPond: '/dashboard/ponds/create/add-pond',
+        addFishToPond: '/dashboard/ponds/create/add-fish-to-pond',
+      },
       view: (id: string) => `/dashboard/ponds/${id}`,
+      id: (id: string) => `/dashboard/ponds/${id}/edit`,
     },
 
     // Reports Routes

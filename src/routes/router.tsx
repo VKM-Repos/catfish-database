@@ -90,11 +90,18 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.ponds.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds')),
+        children: [
+          {
+            path: `${paths.dashboard.ponds.root}/:id/edit`,
+            element: LazyPage(() => import(`src/pages/dashboard/ponds/_id/edit`)),
+          },
+        ],
       },
-      // {
-      //   path: `${paths.dashboard.ponds.root}/:id`,
-      //   element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
-      // },
+      {
+        path: `${paths.dashboard.ponds.root}/:id`,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
+      },
+
       // Farmer Routes
       {
         path: paths.dashboard.farmers.root,
@@ -405,8 +412,18 @@ export const router = createBrowserRouter([
         element: LazyPage(() => import('src/pages/dashboard/new-password')),
       },
       {
-        path: paths.dashboard.ponds.create,
+        path: paths.dashboard.ponds.create.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
+        children: [
+          {
+            path: paths.dashboard.ponds.create.addPond,
+            element: LazyPage(() => import('src/pages/dashboard/ponds/create/add-pond')),
+          },
+          {
+            path: paths.dashboard.ponds.create.addFishToPond,
+            element: LazyPage(() => import('src/pages/dashboard/ponds/create/add-fish-to-pond')),
+          },
+        ],
       },
     ],
   },

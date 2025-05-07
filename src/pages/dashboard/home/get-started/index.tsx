@@ -58,7 +58,7 @@ function UnregisteredPondCards({ navigate }: { navigate: (path: string) => void 
           </div>
         }
         buttonText="Register a Pond"
-        buttonAction={() => navigate(paths.dashboard.ponds.create)}
+        buttonAction={() => navigate(paths.dashboard.ponds.create.addPond)}
         isFirstCard={true}
       />
 

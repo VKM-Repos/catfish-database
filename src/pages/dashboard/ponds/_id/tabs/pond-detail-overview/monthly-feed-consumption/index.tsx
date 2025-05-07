@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts'
 import { ChartContainer } from 'src/components/ui/chart'
 
 const monthlyFeedConfig = {
@@ -10,12 +10,12 @@ const monthlyFeedConfig = {
 
 export default function MonthlyFeedConsumption() {
   return (
-    <div className="mb-4  w-full rounded-[.875rem] border border-[#8686871A] p-4 shadow-lg">
+    <div className="mb-4 w-full rounded-[.875rem] border border-[#8686871A] p-4 shadow-lg">
       <div className="flex items-center justify-between py-4">
         <p className="text-sm font-semibold">Monthly Feed Consumption (kg)</p>
       </div>
       <ChartContainer config={monthlyFeedConfig}>
-        <BarChart accessibilityLayer data={monthlyFeedData} height={100} barCategoryGap={14}>
+        <BarChart accessibilityLayer data={monthlyFeedData} height={100} barCategoryGap={8} margin={{ left: -40 }}>
           <CartesianGrid horizontal={false} vertical={false} />
           <XAxis
             dataKey="month"
@@ -25,7 +25,16 @@ export default function MonthlyFeedConsumption() {
             tickFormatter={(value) => value.slice(0, 3)}
           />
           <YAxis tick={false} tickLine={false} axisLine={false} />
-          <Bar dataKey="monthlyFeed" fill="#651391" radius={5} />
+          <Bar dataKey="monthlyFeed" fill="#651391" radius={5}>
+            <LabelList
+              dataKey="monthlyFeed"
+              position="insideTop"
+              offset={12}
+              className="fill-white"
+              fontSize={20}
+              formatter={(monthlyFeed: string) => `${monthlyFeed}%`}
+            />
+          </Bar>
         </BarChart>
       </ChartContainer>
     </div>

@@ -12,6 +12,16 @@ import { Text } from 'src/components/ui/text'
 import { StatusBadge } from 'src/components/global/status-badge'
 import MaintenanceLogs from './tabs/maintenance-logs'
 import * as SolarIconSet from 'solar-icon-set'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { pondResponseSchema } from 'src/schemas'
+import { paths } from 'src/routes'
+import { LoadingScreen } from 'src/components/global/loading-screen'
+
+const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>({
+  endpoint: '/ponds/:id',
+  responseSchema: pondResponseSchema,
+  queryKey: ['pond-details-for-farmer'],
+})
 
 export default function PondsDetailsPage() {
   const { id } = useParams<{ id: string }>()
@@ -19,12 +29,21 @@ export default function PondsDetailsPage() {
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'overview'
 
+  const { data: pond, isLoading } = useGetPond({ route: { id: id! } })
+
+  const title = pond?.name
+  const pondId = `#Pond${pond?.id}`
+  const pondStatus = pond?.status === 'Active' ? true : false
+
   const handleTabChange = (tab: string) => {
     navigate(`?tab=${tab}`, { replace: true })
   }
 
-  const title = 'Sunny pond details'
-  const pondStatus = true
+  const handleGoBack = () => {
+    navigate(paths.dashboard.ponds.root)
+  }
+
+  if (isLoading) return <LoadingScreen />
 
   return (
     <div className="relative pb-[5rem]">
@@ -35,8 +54,15 @@ export default function PondsDetailsPage() {
           className="sticky mb-[2rem] mt-4 w-full px-6 py-[.625rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]"
         >
           <FlexBox direction="col" gap="gap-1">
-            <Heading className="!text-[1.875rem] font-semibold">Sunny pond details</Heading>
-            <Text className="text-sm text-neutral-700">#Pond1245678</Text>
+            <FlexBox gap="gap-2" align="center">
+              <button onClick={handleGoBack} className="cursor-pointer">
+                <Text className="text-xs text-[#651391]">Ponds</Text>
+              </button>
+              <SolarIconSet.AltArrowRight color="#651391" size={16} />
+              <Text className="text-xs text-neutral-600">Pond details</Text>
+            </FlexBox>
+            <Heading className="!text-[1.875rem] font-semibold">{title}</Heading>
+            <Text className="text-sm text-neutral-700">{pondId}</Text>
           </FlexBox>
           <StatusBadge status={pondStatus} activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />} />
         </FlexBox>

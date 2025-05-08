@@ -1,9 +1,9 @@
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts'
-import { ChartContainer } from 'src/components/ui/chart'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 
 const monthlyFeedConfig = {
   monthlyFeed: {
-    label: '',
+    label: 'Monthly Feed',
     color: '#651391B2',
   },
 }
@@ -25,6 +25,10 @@ export default function MonthlyFeedConsumption() {
             tickFormatter={(value) => value.slice(0, 3)}
           />
           <YAxis tick={false} tickLine={false} axisLine={false} />
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent indicator="dot" hideLabel={false} className="!min-w-[10rem] bg-white !p-2" />}
+          />
           <Bar dataKey="monthlyFeed" fill="#651391" radius={5}>
             <LabelList
               dataKey="monthlyFeed"

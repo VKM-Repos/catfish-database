@@ -119,29 +119,28 @@ export const router = createBrowserRouter([
               </RoleGuard>
             ),
           },
+        ],
+      },
+      {
+        path: `${paths.dashboard.farmers.root}/:id`,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+            {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
+          </RoleGuard>
+        ),
+        children: [
           {
-            path: ':id',
-            children: [
-              {
-                index: true,
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                    {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
-                  </RoleGuard>
-                ),
-              },
-              {
-                path: 'edit',
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                    {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}
-                  </RoleGuard>
-                ),
-              },
-            ],
+            index: true,
+            path: `${paths.dashboard.farmers.root}/:id/edit`,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+                {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}
+              </RoleGuard>
+            ),
           },
         ],
       },
+
       // Cluster Managers Routes
       {
         path: paths.dashboard.clusterManagers.root,

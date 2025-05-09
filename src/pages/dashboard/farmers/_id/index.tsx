@@ -1,98 +1,98 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { Dialog, DialogContent } from 'src/components/ui/dialog'
-import { Text } from 'src/components/ui/text'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { Loader } from 'src/components/ui/loader'
-import { paths } from 'src/routes/paths'
+import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import PageTransition from 'src/components/animation/page-transition'
+import { Container } from 'src/components/ui/container'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { Spacer } from 'src/components/ui/spacer'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs'
+import FarmDetailOverview from './tabs/farm-detail-overview'
 import { Heading } from 'src/components/ui/heading'
-import { Button } from 'src/components/ui/button'
-import { clusterManagerResponseSchema } from 'src/schemas'
-import { Grid } from 'src/components/ui/grid'
+import { Text } from 'src/components/ui/text'
+import { StatusBadge } from 'src/components/global/status-badge'
+import * as SolarIconSet from 'solar-icon-set'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { farmerResponseSchema } from 'src/schemas'
+import { paths } from 'src/routes'
+import { LoadingScreen } from 'src/components/global/loading-screen'
+import Ponds from './tabs/ponds'
 
-const useGetFarmer = createGetQueryHook<typeof clusterManagerResponseSchema, { id: string }>({
+const useGetFarmer = createGetQueryHook<typeof farmerResponseSchema, { id: string }>({
   endpoint: '/users/:id',
-  responseSchema: clusterManagerResponseSchema,
+  responseSchema: farmerResponseSchema,
   queryKey: ['farmer-details'],
 })
 
-export default function FarmerDetailsModal() {
+export default function FarmDetailsPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: user, isLoading } = useGetFarmer({ route: { id: id! } })
+  const [searchParams] = useSearchParams()
+  const activeTab = searchParams.get('tab') || 'overview'
 
-  if (!id) {
-    return null
+  const { data: farmer, isLoading } = useGetFarmer({ route: { id: id! } })
+
+  const title = `${farmer?.firstName} ${farmer?.lastName}'s Farm`
+
+  const farmStatus = farmer?.accountNonLocked === true ? true : false
+
+  const handleTabChange = (tab: string) => {
+    navigate(`?tab=${tab}`, { replace: true })
   }
 
+  const handleGoBack = () => {
+    navigate(paths.dashboard.farmers.root)
+  }
+
+  if (isLoading) return <LoadingScreen />
+
   return (
-    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.clusterManagers.root)}>
-      <DialogContent className="min-h-[410px] overflow-hidden px-8 py-4">
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader type="dots" size={24} />
-          </div>
-        ) : user ? (
-          <div className="flex h-full flex-col justify-center space-y-8">
-            <Heading className="relative top-0 border-none text-center capitalize" level={6}>
-              Farmer details
-            </Heading>
-            <Grid cols={2} gap="gap-4">
-              <div>
-                <Text>First Name</Text>
-                <Text weight="light" color="text-neutral-400">
-                  {user.firstName}
-                </Text>
+    <div className="relative pb-[5rem]">
+      <PageTransition>
+        <FlexBox
+          justify="between"
+          align="center"
+          className="sticky mb-[2rem] mt-4 w-full px-6 py-[.625rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]"
+        >
+          <FlexBox direction="col" gap="gap-1">
+            <FlexBox gap="gap-2" align="center">
+              <button onClick={handleGoBack} className="cursor-pointer">
+                <Text className="text-xs text-[#651391]">Farmers</Text>
+              </button>
+              <SolarIconSet.AltArrowRight color="#651391" size={16} />
+              <Text className="text-xs text-neutral-600">Farmer details</Text>
+            </FlexBox>
+            <Heading className="!text-[1.875rem] font-semibold">{title}</Heading>
+          </FlexBox>
+          <StatusBadge status={farmStatus} activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />} />
+        </FlexBox>
+        <Spacer />
+        <Container className="!px-12">
+          <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
+            <Tabs
+              defaultValue={activeTab}
+              value={activeTab}
+              className="flex w-full flex-col items-start gap-8"
+              onValueChange={handleTabChange}
+            >
+              <div className="w-full border-b border-b-neutral-200 p-0">
+                <TabsList className="text-sm font-semibold">
+                  <TabsTrigger value="overview" className="data-[state=active]:font-bold">
+                    Overview
+                  </TabsTrigger>
+                  <TabsTrigger value="ponds" className="data-[state=active]:font-bold">
+                    Ponds
+                  </TabsTrigger>
+                </TabsList>
               </div>
-              <div>
-                <Text>Last Name</Text>
-                <Text weight="light" color="text-neutral-400">
-                  {user.lastName}
-                </Text>
-              </div>
-            </Grid>
-
-            <div>
-              <Text>Email</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.email}
-              </Text>
-            </div>
-            <div>
-              <Text>Cluster</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.cluster?.name}
-              </Text>
-            </div>
-            <div>
-              <Text>Phone</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.phone}
-              </Text>
-            </div>
-            <div>
-              <Text>Address</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.address}
-              </Text>
-            </div>
-
-            <div className="flex w-full justify-between space-x-2">
-              <Button className="w-full" variant="outline" onClick={() => navigate(paths.dashboard.farmers.root)}>
-                Cancel
-              </Button>
-              <Button
-                className="w-full"
-                variant="primary"
-                onClick={() => navigate(paths.dashboard.farmers.id(user.id))}
-              >
-                Edit
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <Text>User not found</Text>
-        )}
-      </DialogContent>
-    </Dialog>
+              <TabsContent value="overview" className="w-full">
+                <FarmDetailOverview farmer={farmer!} isLoading={isLoading} />
+              </TabsContent>
+              <TabsContent value="ponds" className="w-full">
+                <Ponds />
+              </TabsContent>
+            </Tabs>
+          </FlexBox>
+        </Container>
+      </PageTransition>
+      <Outlet />
+    </div>
   )
 }

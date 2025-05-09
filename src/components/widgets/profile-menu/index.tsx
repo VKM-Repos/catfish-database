@@ -15,6 +15,7 @@ import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { X } from 'lucide-react'
 import ECLIPSE from 'src/assets/images/ellipse.png'
+import { removeSymbols } from 'src/lib/utils'
 
 // Hook to handle logout API call.
 const useLogout = createPostMutationHook({
@@ -77,13 +78,18 @@ const ProfileMenu = () => {
     <div className="flex items-center">
       <Popover>
         <PopoverTrigger>
-          <div className="flex cursor-pointer items-center gap-2">
+          <div className="flex cursor-pointer items-center gap-4">
             <Avatar>
               <AvatarFallback className="text-neutral-600">{fallbackInitial}</AvatarFallback>
             </Avatar>
-            <Text variant="label" color="text-neutral-600" weight="semibold" size="lg" className="capitalize">
-              {userName}
-            </Text>
+            <div className="flex flex-col">
+              <Text variant="label" color="text-neutral-600" weight="semibold" size="lg" className="capitalize">
+                {userName}
+              </Text>
+              <Text variant="label" color="text-neutral-500" weight="light" size="sm" className="lowercase">
+                {removeSymbols(user?.role ?? 'FARMER')}
+              </Text>
+            </div>
             <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
           </div>
         </PopoverTrigger>

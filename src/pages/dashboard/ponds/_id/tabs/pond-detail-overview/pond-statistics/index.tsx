@@ -61,25 +61,25 @@ export default function PondStatistics() {
 const pondStatCards = [
   {
     color: '#F1A8D3',
-    label: 'Total fish in pond',
+    label: 'Total feed consumed',
     value: '2,000',
     rate: '+2.4%',
   },
   {
     color: '#B9D9FF',
-    label: 'Average weight',
-    value: '320g',
+    label: 'Total cost of feed',
+    value: '₦32,000',
     rate: '-2.4%',
   },
   {
     color: '#F8D082',
-    label: 'Feed conversion ration',
+    label: 'Total weight of fish consumed',
     value: '620kg',
     rate: '+2.4%',
   },
   {
     color: '#A0E8B9',
-    label: 'Survival rate',
+    label: 'Survival Rate',
     value: '76%',
     rate: '+2.4%',
   },

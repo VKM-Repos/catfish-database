@@ -7,7 +7,7 @@ export const columns: ColumnDef<any>[] = [
     id: 'initials',
     header: 'Avatar',
     cell: ({ row }) => {
-      const initials = row.original.pond?.name
+      const initials = row.original.name
         ?.split(' ')
         .filter(Boolean)
         .map((word: string) => word[0])
@@ -24,10 +24,11 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     header: 'Pond Name',
-    accessorFn: (row) => row.pond?.name ?? '—',
+    accessorFn: (row) => row.original.name ?? '—',
     cell: ({ row }) => {
-      const pond = row.original.pond
-      return <Text weight="light">{pond?.name ?? '—'}</Text>
+      const pond = row.original
+
+      return <Text weight="light">{pond.name ?? '—'}</Text>
     },
   },
   {
@@ -46,10 +47,10 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
   },
   {
-    accessorFn: (row) => row.pond?.status ?? 'Active',
+    accessorFn: (row) => row.original?.status ?? 'Active',
     header: 'Pond Status',
     cell: ({ row }) => {
-      const status = row.original.pond.status ?? 'Active'
+      const status = row.original.status ?? 'Active'
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${
@@ -69,6 +70,6 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <ActionsDropdown pond={row.original?.pond} />,
+    cell: ({ row }) => <ActionsDropdown pond={row.original} />,
   },
 ]

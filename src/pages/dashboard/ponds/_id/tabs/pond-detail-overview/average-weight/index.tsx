@@ -1,5 +1,6 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
-import { ChartContainer } from 'src/components/ui/chart'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
+import * as SolarIconSet from 'solar-icon-set'
 
 const averageWeightConfig = {
   averageWeight: {
@@ -13,7 +14,9 @@ export default function AverageWeight() {
     <div className="h-full w-full rounded-[.875rem] border border-[#8686871A] p-4 shadow-lg md:w-[60%]">
       <div className="flex w-full items-center justify-between py-4">
         <p className="w-full whitespace-nowrap text-sm font-semibold">Average Weight</p>
-        <div className="flex w-full items-center justify-end gap-2">..</div>
+        <div className="flex w-full cursor-pointer items-center justify-end gap-2">
+          <SolarIconSet.MenuDots size={24} iconStyle="Bold" />
+        </div>
       </div>
       <ChartContainer config={averageWeightConfig}>
         <AreaChart
@@ -40,6 +43,10 @@ export default function AverageWeight() {
               <stop offset="100%" stopColor="#651391" stopOpacity={0} />
             </linearGradient>
           </defs>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent indicator="dot" hideLabel={false} className="!min-w-[10rem] bg-white" />}
+          />
           <Area dataKey="averageWeight" type="linear" stroke="#651391" fill="url(#colorWeight)" />
         </AreaChart>
       </ChartContainer>

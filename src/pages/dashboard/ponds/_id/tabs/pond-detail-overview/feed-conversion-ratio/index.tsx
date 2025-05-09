@@ -1,4 +1,5 @@
 import GaugeChart from 'react-gauge-chart'
+import * as SolarIconSet from 'solar-icon-set'
 
 export default function FeedConversionRatio() {
   const value = 0.98
@@ -35,7 +36,10 @@ export default function FeedConversionRatio() {
   return (
     <div className="mb-4 flex min-h-full w-full flex-col gap-12 rounded-[.875rem] border border-[#8686871A] p-4 shadow-lg md:w-[45%]">
       <div className="flex items-center justify-between py-4">
-        <p className="text-sm font-semibold">Feed Conversion Ratio</p>
+        <p className="w-full text-sm font-semibold">Feed Conversion Ratio</p>
+        <div className="flex w-full cursor-pointer items-center justify-end gap-2">
+          <SolarIconSet.MenuDots size={24} iconStyle="Bold" />
+        </div>
       </div>
 
       <div className="flex flex-col justify-between">

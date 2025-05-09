@@ -30,8 +30,8 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View Farm</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Add Pond</DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setMenu(true)}>
             {user.accountNonLocked ? 'Deactivate Farmer' : 'Activate Farmer'}{' '}
           </DropdownMenuItem>

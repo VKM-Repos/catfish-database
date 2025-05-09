@@ -30,6 +30,10 @@ export default function FarmersPage() {
 
   const actions = farmers && farmers?.content.length > 0 && (
     <Inline>
+      <Button variant="outline" className="flex items-center gap-2 border-primary-400">
+        <SolarIconSet.CircleBottomUp color="#651391" size={20} iconStyle="Outline" />
+        <Text className="text-primary-400">Import</Text>
+      </Button>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
         <Text>Add Farmers</Text>

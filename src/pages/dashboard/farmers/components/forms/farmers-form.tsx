@@ -5,7 +5,6 @@ import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import { Loader } from 'src/components/ui/loader'
-import * as SolarIconSet from 'solar-icon-set'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
@@ -123,7 +122,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
     <>
       <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
         <Heading className="text-center" level={6}>
-          {mode === 'create' ? 'Add a farmer' : 'Edit a farmer'}
+          {mode === 'create' ? 'Add a farmer' : ' Edit farmer’s info'}
         </Heading>
       </div>
       <Form {...form}>
@@ -262,8 +261,7 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
                 </>
               ) : (
                 <>
-                  <Text>{mode === 'create' ? 'Add farmer' : 'Update farmer'}</Text>
-                  <SolarIconSet.ArrowRight size={18} />
+                  <Text>{mode === 'create' ? 'Add' : 'Update'}</Text>
                 </>
               )}
             </Button>

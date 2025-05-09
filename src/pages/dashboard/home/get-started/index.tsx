@@ -57,9 +57,22 @@ function UnregisteredPondCards({ navigate }: { navigate: (path: string) => void 
             <SolarIconSet.Flag color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />
           </div>
         }
-        buttonText="Register a Pond"
+        buttonText="Register a pond"
         buttonAction={() => navigate(paths.dashboard.ponds.create.addPond)}
         isFirstCard={true}
+      />
+
+      <ActionCard
+        title="Add fish to your pond"
+        description="Now tell us what fish you added. This helps us track feeding, sampling, and harvesting later."
+        icon={
+          <div className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-primary-100 text-primary-600">
+            <SolarIconSet.Waterdrop color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />
+          </div>
+        }
+        buttonText="Add fish to pond"
+        buttonAction={() => navigate(paths.dashboard.ponds.create.addFishToPond)}
+        isFirstCard={false}
       />
 
       <ActionCard
@@ -132,8 +145,7 @@ export default function GetStarted() {
     return <LoadingScreen />
   }
 
-  // const hasPond = ponds.content.length > 0
-  const hasPond = true
+  const hasPond = ponds.content.length > 0
 
   const pageTitle = hasPond ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 

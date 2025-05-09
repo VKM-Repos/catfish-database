@@ -21,7 +21,7 @@ export default function NewPasswordPage() {
   }
   const handleRedirect = () => {
     setIsDialogOpen(false)
-    navigate(paths.dashboard.home.root)
+    navigate(paths.dashboard.home.overview)
   }
 
   return (

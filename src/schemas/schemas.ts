@@ -277,8 +277,9 @@ export const paginatedFishBatchResponseSchema = z.object({
 
 export const dailyFeedingSchema = z.object({
   feedType: z.string().min(1, { message: 'Please Select a feed type' }),
+  pelletSize: z.string().min(1, { message: 'Please enter a pellet size' }),
   feedQuantity: z.string().min(1, { message: 'Please add a feeding quantity' }),
-  feedTime: z.string().min(1, { message: 'Please add a feed time' }),
+  feedTime: z.string().min(1, { message: 'Please select feeding time' }),
   dissolvedOxygen: z.string().min(1, { message: 'Please add a dissolved oxygen' }),
   phLevel: z.string().min(1, { message: 'Please add a PH level' }),
   temperature: z.string().min(1, { message: 'Please add a temperature' }),
@@ -287,7 +288,9 @@ export const dailyFeedingSchema = z.object({
   nitrate: z.string().min(1, { message: 'Please add a nitrate' }),
   alkalinity: z.string().min(1, { message: 'Please add a alkalinity' }),
   hardness: z.string().min(1, { message: 'Please add hardness' }),
-  waterQualityObservation: z.any(),
+  waterQualityObservation: z.string().min(10, {
+    message: 'Water quality observation must be at least 10 characters.',
+  }),
 })
 
 export const maintenanceSchema = z.object({
@@ -297,4 +300,35 @@ export const maintenanceSchema = z.object({
     .min(1, { message: 'Cost is field required' })
     .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
     .transform(Number),
+})
+
+export const samplingSchema = z.object({
+  numberOfFishSampled: z.string().min(1, { message: 'Please Select a feed type' }),
+  weightOfFishSampled: z.string().min(1, { message: 'Please enter a pellet size' }),
+  avgWeightFishSampled: z.string().min(1, { message: 'Please add a feeding quantity' }),
+  totalWeightGain: z.string().min(1, { message: 'Please add a feed time' }),
+  totalFeedConsumed: z.string().min(1, { message: 'Please add a dissolved oxygen' }),
+  numberOfFishMortalityRecorded: z.string().min(1, { message: 'Please add a PH level' }),
+  disease: z.string().min(1, { message: 'Please add a temperature' }),
+  diseaseObservation: z.string().min(1, { message: 'Please add a ammonia' }),
+  behavior: z.string().min(1, { message: 'Please add a nitrite' }),
+  observation: z.string().min(1, { message: 'Please add a nitrate' }),
+})
+
+export const sortingSchema = z.object({
+  splitOccur: z.boolean(),
+  transfer: z.boolean(),
+  harvest: z.boolean(),
+  numberOfFishMovedByTransfer: z.string(),
+  destinationPond: z.string(),
+  numberOfFishHarvest: z.string(),
+})
+
+export const harvestSchema = z.object({
+  numberOfFishHarvested: z.string(),
+  avgWeightOfFishHarvested: z.string(),
+  totalWeightHarvested: z.string(),
+  totalAmountSold: z.string(),
+  harvestObservation: z.string(),
+  harvestedBy: z.string(),
 })

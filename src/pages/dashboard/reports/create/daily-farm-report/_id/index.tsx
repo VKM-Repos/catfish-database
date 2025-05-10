@@ -5,6 +5,14 @@ import { usePondStore } from 'src/store/pond.store'
 import { useNavigate } from 'react-router-dom'
 import MonitoringForm from '../../../components/forms/monitoring-form'
 import MaintenanceForm from '../../../components/forms/maintenace-form'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from 'src/components/ui/breadcrumb'
+import { Text } from 'src/components/ui/text'
 
 export default function CreatePondPage() {
   const [step, setStep] = useState(1)
@@ -41,10 +49,14 @@ export default function CreatePondPage() {
   }
 
   return (
-    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
-      <Stepper step={step} />
-      <RenderSteps />
-    </FlexBox>
+    <>
+      <FlexBox className="mx-10">
+        <CustomBreadcrumb />
+      </FlexBox>
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-10 w-full max-w-[60%]">
+        <RenderSteps />
+      </FlexBox>
+    </>
   )
 }
 
@@ -75,5 +87,25 @@ const Stepper = ({ step }: { step: number }) => {
         </FlexBox>
       </div>
     </div>
+  )
+}
+
+const CustomBreadcrumb = () => {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Text className="text-primary-500">Daily Farm Report</Text>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink>
+            <Text>New Entry</Text>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 }

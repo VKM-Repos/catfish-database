@@ -9,6 +9,8 @@ import { Form, FormField, FormItem, FormControl, FormMessage, FormLabel } from '
 import * as SolarIconSet from 'solar-icon-set'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes'
 
 type FormValues = {
   pondId: string
@@ -18,9 +20,12 @@ type ReportModalProps = {
   title: string
   open: boolean
   onOpenChange: (open: boolean) => void
+  redirect: string
 }
 
-export function ReportModal({ title, open, onOpenChange }: ReportModalProps) {
+export function ReportModal({ title, open, redirect, onOpenChange }: ReportModalProps) {
+  const navigate = useNavigate()
+
   const useGetPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
@@ -37,7 +42,18 @@ export function ReportModal({ title, open, onOpenChange }: ReportModalProps) {
   const handleProceed = (values: FormValues) => {
     if (!values.pondId) return
     // Perform action using values.pondId
-    onOpenChange(false)
+    switch (redirect) {
+      case 'daily-farm-report':
+        navigate(paths.dashboard.reports.createDailyFarmReport(values.pondId))
+        break
+      case 'daily-sampling-report':
+        navigate(paths.dashboard.reports.createSamplingReport(values.pondId))
+        break
+      case 'daily-harvest-report':
+        navigate(paths.dashboard.reports.createHarvestReport(values.pondId))
+        break
+    }
+    if (redirect === 'daily-farm-report') onOpenChange(false)
   }
 
   return (

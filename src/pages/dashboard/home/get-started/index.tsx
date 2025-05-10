@@ -93,7 +93,12 @@ function RegisteredPondCards({ navigate }: { navigate: (path: string) => void })
         isFirstCard={true}
       />
 
-      <ReportModal title="Daily Farm Report" open={farmReportOpen} onOpenChange={setFarmReportOpen} />
+      <ReportModal
+        title="Daily Farm Report"
+        open={farmReportOpen}
+        redirect="daily-farm-report"
+        onOpenChange={setFarmReportOpen}
+      />
 
       <ActionCard
         title="Sampling Report"
@@ -103,7 +108,12 @@ function RegisteredPondCards({ navigate }: { navigate: (path: string) => void })
         buttonAction={() => setSamplingReportOpen(true)}
       />
 
-      <ReportModal title="Sampling Report" open={samplingReportOpen} onOpenChange={setSamplingReportOpen} />
+      <ReportModal
+        title="Sampling Report"
+        open={samplingReportOpen}
+        redirect="daily-sampling-report"
+        onOpenChange={setSamplingReportOpen}
+      />
 
       <ActionCard
         title="Harvest Report"
@@ -113,7 +123,12 @@ function RegisteredPondCards({ navigate }: { navigate: (path: string) => void })
         buttonAction={() => setHarvestReportOpen(true)}
       />
 
-      <ReportModal title="Harvest Report" open={harvestReportOpen} onOpenChange={setHarvestReportOpen} />
+      <ReportModal
+        title="Harvest Report"
+        open={harvestReportOpen}
+        redirect="daily-harvest-report"
+        onOpenChange={setHarvestReportOpen}
+      />
     </>
   )
 }

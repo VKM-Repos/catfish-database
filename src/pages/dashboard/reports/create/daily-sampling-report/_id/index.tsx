@@ -3,13 +3,13 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
-import MonitoringForm from '../../../components/forms/monitoring-form'
-import MaintenanceForm from '../../../components/forms/maintenace-form'
+import SamplingIndexForm from '../../../components/forms/sampling/sampling-report-index-form'
+import { SortingForm } from '../../../components/forms/sorting/sorting-from'
 import {
   Breadcrumb,
+  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbList,
   BreadcrumbSeparator,
 } from 'src/components/ui/breadcrumb'
 import { Text } from 'src/components/ui/text'
@@ -21,6 +21,7 @@ export default function CreatePondPage() {
 
   const handleNext = () => {
     setStep(step + 1)
+    console.log('next')
   }
 
   const handlePrevious = () => {
@@ -40,9 +41,9 @@ export default function CreatePondPage() {
   const RenderSteps = () => {
     switch (step) {
       case 1:
-        return <MonitoringForm handlePrevious={handlePrevious} handleNext={handleNext} />
+        return <SamplingIndexForm handlePrevious={handlePrevious} handleNext={handleNext} />
       case 2:
-        return <MaintenanceForm handlePrevious={handlePrevious} handleNext={onSubmit} />
+        return <SortingForm handlePrevious={handlePrevious} handleNext={onSubmit} />
       default:
         return null
     }
@@ -53,7 +54,8 @@ export default function CreatePondPage() {
       <FlexBox className="mx-10">
         <CustomBreadcrumb />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-10 w-full max-w-[60%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+        <Stepper step={step} />
         <RenderSteps />
       </FlexBox>
     </>
@@ -64,7 +66,13 @@ const Stepper = ({ step }: { step: number }) => {
   return (
     <div className="w-full">
       <div className="mx-auto flex max-w-[80%] items-center justify-center">
-        <FlexBox gap="gap-[.625rem]" align="center" className="w-full max-w-fit rounded-[4rem] border p-[.625rem]">
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${
+            step === 1 || step > 1 ? 'border-primary-500' : ''
+          } p-[.625rem]`}
+        >
           <span
             className={`${
               step >= 1 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
@@ -72,10 +80,14 @@ const Stepper = ({ step }: { step: number }) => {
           >
             1
           </span>
-          <p className={`${step >= 1 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Monitoring</p>
+          <p className={`${step >= 1 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Sampling</p>
         </FlexBox>
-        <hr className="w-full max-w-[1/5]" />
-        <FlexBox gap="gap-[.625rem]" align="center" className="w-full max-w-fit rounded-[4rem]  border p-[.625rem]">
+        <hr className={`w-full max-w-[1/5] border ${step > 1 ? 'border-primary-500' : ''}`} />
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${step > 1 ? 'border-primary-500' : ''} p-[.625rem]`}
+        >
           <span
             className={`${
               step === 2 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
@@ -83,7 +95,7 @@ const Stepper = ({ step }: { step: number }) => {
           >
             2
           </span>
-          <p className={`${step === 2 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Maintenance</p>
+          <p className={`${step === 2 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Sorting</p>
         </FlexBox>
       </div>
     </div>
@@ -96,7 +108,7 @@ const CustomBreadcrumb = () => {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink>
-            <Text className="text-primary-500">Daily Farm Report</Text>
+            <Text className="text-primary-500">Sampling Report</Text>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />

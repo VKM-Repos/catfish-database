@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: `${paths.dashboard.ponds.root}/:id/edit`,
-            element: LazyPage(() => import(`src/pages/dashboard/ponds/_id/edit`)),
+            element: LazyPage(() => import('src/pages/dashboard/ponds/_id/edit')),
           },
         ],
       },
@@ -421,6 +421,22 @@ export const router = createBrowserRouter([
         element: (
           <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
             {LazyPage(() => import('src/pages/dashboard/reports/create/daily-farm-report/_id'))}
+          </RoleGuard>
+        ),
+      },
+      {
+        path: paths.dashboard.reports.createSamplingReport(':id'),
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/reports/create/daily-sampling-report/_id'))}
+          </RoleGuard>
+        ),
+      },
+      {
+        path: paths.dashboard.reports.createHarvestReport(':id'),
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/reports/create/daily-harvest-report/_id'))}
           </RoleGuard>
         ),
       },

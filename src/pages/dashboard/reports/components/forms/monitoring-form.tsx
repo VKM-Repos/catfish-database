@@ -6,8 +6,10 @@ import type { z } from 'zod'
 import { Button } from 'src/components/ui/button'
 import DailyFeedingDetailsForm from './daily-feeding-details-form'
 import DailyWaterQuality from './daily-water-quality'
-import { CreateReportDialog } from '../modals/create-report-modal'
 import { useState } from 'react'
+import { CreateReportDialog } from '../modals/create-report-modal'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes'
 
 type PondData = z.infer<typeof dailyFeedingSchema>
 
@@ -19,12 +21,14 @@ export default function MonitoringForm({
   handlePrevious: () => void
 }) {
   const [openDialog, setOpenDialog] = useState(false)
+  const navigate = useNavigate()
+
   const form = useForm<PondData>({
     resolver: zodResolver(dailyFeedingSchema),
     defaultValues: {
       feedType: '',
       pelletSize: '',
-      feedQuantity: '',
+      feedQuantity: 0,
       feedTime: '',
       dissolvedOxygen: '',
       phLevel: '',
@@ -38,7 +42,7 @@ export default function MonitoringForm({
     },
     mode: 'onChange',
   })
-
+  const { reset } = form
   const onSubmit = async (values: z.infer<typeof dailyFeedingSchema>) => {
     try {
       console.log(values)
@@ -50,7 +54,7 @@ export default function MonitoringForm({
 
   return (
     <>
-      <CreateReportDialog open={openDialog} onOpenChange={setOpenDialog} />
+      <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8   pb-0.5">
           <div className="flex w-full flex-col items-start gap-1 ">
@@ -76,7 +80,12 @@ export default function MonitoringForm({
           </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">
-            <Button type="button" onClick={handlePrevious} variant="outline" className="flex items-center gap-2">
+            <Button
+              type="button"
+              onClick={() => navigate(paths.dashboard.home.getStarted)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
               Cancel
             </Button>
             <Button

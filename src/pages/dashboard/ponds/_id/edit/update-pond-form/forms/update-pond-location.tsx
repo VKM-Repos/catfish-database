@@ -46,7 +46,7 @@ export default function UpdatePondLocationForm({ form }: { form: UseFormReturn<P
               <FormItem className="w-full">
                 <FormControl>
                   <div className=" focus-within:ring-offset-background flex max-h-fit w-full items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2">
-                    <div className="flex h-full items-center gap-2 bg-[#651391] px-3 py-[.65rem] text-sm text-white">
+                    <div className="flex h-full items-center gap-2 bg-neutral-100 px-3 py-[.65rem] text-sm">
                       Longitude
                     </div>
                     <div className="w-full">
@@ -69,7 +69,7 @@ export default function UpdatePondLocationForm({ form }: { form: UseFormReturn<P
               <FormItem className="w-full">
                 <FormControl>
                   <div className="focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2">
-                    <div className="h-full bg-[#651391] px-3 py-[.65rem] text-sm text-white">Latitude</div>
+                    <div className="text-s h-full bg-neutral-100 px-3 py-[.65rem]">Latitude</div>
                     <div className="w-full">
                       <Input
                         placeholder="e.g 110.84933"

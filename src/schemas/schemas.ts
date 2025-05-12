@@ -288,6 +288,14 @@ export const paginatedFishBatchResponseSchema = z.object({
   content: z.array(fishBatchResponseSchema),
 })
 
+export const paginatedFeedingResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(feedingResponseSchema),
+})
+
 export const dailyFeedingSchema = z.object({
   feedType: z.string().min(1, { message: 'Please Select a feed type' }),
   pelletSize: z.string().min(1, { message: 'Please enter a pellet size' }),

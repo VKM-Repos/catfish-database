@@ -7,9 +7,9 @@ import { paths } from 'src/routes'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { paginatedFishBatchResponseSchema, paginatedPondResponseSchema } from 'src/schemas'
 import { mergePondsWithTotalFishQuantity } from 'src/lib/utils'
+import { LoadingScreen } from 'src/components/global/loading-screen'
 
 export function PondsTable() {
-  const isLoading = false
   const navigate = useNavigate()
 
   const openCreateModal = () => {
@@ -28,15 +28,17 @@ export function PondsTable() {
     queryKey: ['my-ponds'],
   })
 
-  const { data: fishBatches } = useGetFishBatches()
-  const { data: ponds } = useFetchPonds()
+  const { data: fishBatches, isLoading: isFishBatchesLoading } = useGetFishBatches()
+  const { data: ponds, isLoading: isPondsLoading } = useFetchPonds()
+
+  if (isPondsLoading || isFishBatchesLoading) return <LoadingScreen />
 
   const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
 
   return (
     <>
       {totalPonds && totalPonds.length > 0 ? (
-        <DataTable columns={columns} data={totalPonds ?? []} isLoading={isLoading} emptyStateMessage="No ponds found" />
+        <DataTable columns={columns} data={totalPonds ?? []} emptyStateMessage="No ponds found" />
       ) : (
         <EmptyTableState image={EmptyClusterManagerImg} name="pond" text="a pond" buttonFunc={openCreateModal} />
       )}

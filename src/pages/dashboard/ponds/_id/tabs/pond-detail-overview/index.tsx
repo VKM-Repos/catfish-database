@@ -2,7 +2,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Grid } from 'src/components/ui/grid'
 import { Text } from 'src/components/ui/text'
-import ActivityLogTable from './activity-log'
 import PondStatistics from './pond-statistics'
 import AverageWeight from './average-weight'
 import FeedConversionRatio from './feed-conversion-ratio'
@@ -74,7 +73,6 @@ export default function PondDetailOverview() {
         </Grid>
       )}
       <PondStatistics />
-      <ActivityLogTable />
       <section className="flex w-full flex-col items-center justify-center gap-3 md:flex-row md:items-stretch">
         <AverageWeight />
         <FeedConversionRatio />

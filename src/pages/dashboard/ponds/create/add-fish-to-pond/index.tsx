@@ -15,7 +15,6 @@ import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { Loader } from 'src/components/ui/loader'
 import { useNavigate } from 'react-router-dom'
-import { paths } from 'src/routes'
 import { useQueryClient } from '@tanstack/react-query'
 import CancelPrompt from '../prompts/cancel-prompt'
 import PromptNewFish from '../prompts/prompt-new-fish'
@@ -47,7 +46,7 @@ export default function AddFishPond() {
   const [openCancelPrompt, setOpenCancelPrompt] = useState(false)
 
   const pondNames = ponds?.content.map((pond) => pond.name) || ['']
-  const fishSizes = ['Fingerling', 'Fry', 'Post-fingerling', 'Juvenile', 'Jumbo', 'Table size', 'Broodstock', 'Adult']
+  const fishSizes = ['Fingerling', 'Fry', 'Post-fingerling', 'Juvenile']
 
   const form = useForm({
     resolver: zodResolver(fishDetailsSchema),
@@ -97,8 +96,9 @@ export default function AddFishPond() {
         pondId: selectedPond?.id as string,
       })
 
-      queryClient.refetchQueries(['fish-batches'])
+      queryClient.refetchQueries(['my-fish-batches'])
       queryClient.refetchQueries(['my-ponds'])
+      queryClient.refetchQueries(['fish-batches'])
 
       setOpen(true)
     } catch (err) {
@@ -106,7 +106,6 @@ export default function AddFishPond() {
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
-        console.log(errorData)
         if (errorData) {
           setError({
             title: errorData?.error,
@@ -120,7 +119,7 @@ export default function AddFishPond() {
 
   const handleCancelYes = () => {
     setOpenCancelPrompt(false)
-    navigate(paths.dashboard.ponds.root)
+    navigate(-1)
   }
 
   const handleCancelNo = () => {
@@ -135,7 +134,7 @@ export default function AddFishPond() {
   const handleNoConditionOnClose = () => {
     form.reset()
     setOpen(false)
-    navigate(paths.dashboard.ponds.root)
+    navigate(-1)
   }
 
   if (isLoading) return <LoadingScreen />
@@ -169,7 +168,7 @@ export default function AddFishPond() {
                 type="submit"
                 variant="primary"
                 className="flex items-center gap-2"
-                // disabled={!form.formState.isValid}
+                disabled={!form.formState.isValid}
               >
                 {createFishBatch.isLoading ? (
                   <>
@@ -181,7 +180,7 @@ export default function AddFishPond() {
                 ) : (
                   <>
                     <Text color="text-inherit" variant="body">
-                      Save
+                      Continue
                     </Text>
                   </>
                 )}

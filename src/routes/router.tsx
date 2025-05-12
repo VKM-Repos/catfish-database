@@ -90,16 +90,16 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.ponds.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds')),
+      },
+      {
+        path: `${paths.dashboard.ponds.root}/:id`,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
         children: [
           {
             path: `${paths.dashboard.ponds.root}/:id/edit`,
             element: LazyPage(() => import('src/pages/dashboard/ponds/_id/edit')),
           },
         ],
-      },
-      {
-        path: `${paths.dashboard.ponds.root}/:id`,
-        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
       },
 
       // Farmer Routes

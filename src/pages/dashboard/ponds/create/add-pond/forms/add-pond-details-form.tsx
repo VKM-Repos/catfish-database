@@ -49,7 +49,6 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
             <Text className="flex items-center gap-2 text-xs font-medium text-neutral-700">
               Length
               <span className="gap-2 font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={14} />
             </Text>
             <FormField
               control={form.control}
@@ -65,7 +64,7 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
                           className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
                       </div>
-                      <div className="h-full rounded-r-md bg-[#651391] px-3 py-[.65rem] text-sm text-white">L</div>
+                      <div className="h-full rounded-r-md bg-neutral-100 px-3 py-[.65rem] text-sm">L</div>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -77,7 +76,6 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
             <Text className="flex items-center gap-2 text-xs font-medium text-neutral-700">
               Breadth
               <span className="gap-2 font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={14} />
             </Text>
             <FormField
               control={form.control}
@@ -93,7 +91,7 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
                           className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
                       </div>
-                      <div className="h-full rounded-r-md bg-[#651391] px-3 py-[.65rem] text-sm text-white">B</div>
+                      <div className="h-full rounded-r-md bg-neutral-100 px-3 py-[.65rem] text-sm">B</div>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -105,7 +103,6 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
             <Text className="flex items-center gap-2 text-xs font-medium text-neutral-700">
               Height
               <span className="gap-2 font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={14} />
             </Text>
             <FormField
               control={form.control}
@@ -121,7 +118,7 @@ export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondF
                           className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
                       </div>
-                      <div className="h-full rounded-r-md bg-[#651391] px-3 py-[.65rem] text-sm text-white">H</div>
+                      <div className="h-full rounded-r-md bg-neutral-100 px-3 py-[.65rem] text-sm">H</div>
                     </div>
                   </FormControl>
                   <FormMessage />

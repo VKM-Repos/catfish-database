@@ -20,11 +20,13 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
             control={form.control}
             name="quantity"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="!space-y-0">
                 <FormControl>
                   <Input placeholder="Input number of fish added to pond" {...field} type="number" />
                 </FormControl>
-                <FormMessage />
+                <div className={`relative min-h-fit `}>
+                  <FormMessage className="absolute transition-opacity duration-200" />
+                </div>
               </FormItem>
             )}
           />
@@ -39,7 +41,7 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
             control={form.control}
             name="fishSize"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="!space-y-0">
                 <FormControl>
                   <Select
                     value={field.value ? String(field.value) : ''}
@@ -60,7 +62,9 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormMessage />
+                <div className={`relative min-h-fit `}>
+                  <FormMessage className="absolute transition-opacity duration-200" />
+                </div>
               </FormItem>
             )}
           />

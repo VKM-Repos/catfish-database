@@ -4,30 +4,98 @@ import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
 import type { samplingSchema } from 'src/schemas'
+import * as SolarIconSet from 'solar-icon-set'
 
 import type { z } from 'zod'
-import { useRef } from 'react'
+import { useEffect } from 'react'
 
 type SamplingFormValues = z.infer<typeof samplingSchema>
 
 export default function SamplingWeightForm({ form }: { form: UseFormReturn<SamplingFormValues> }) {
-  const timeInputRef = useRef<HTMLInputElement>(null)
+  const { watch, setValue } = form
 
-  const handleIconClick = () => {
-    timeInputRef.current?.showPicker()
+  const weightOfFishSampled = watch('weightOfFishSampled')
+  const numberOfFishSampled = watch('numberOfFishSampled')
+
+  useEffect(() => {
+    if (weightOfFishSampled && numberOfFishSampled) {
+      const weight: any = weightOfFishSampled
+      const count: any = numberOfFishSampled
+
+      if (!Number.isNaN(weight) && !Number.isNaN(count) && count > 0) {
+        const avg = (weight / count).toFixed(2)
+        setValue('avgWeightFishSampled', avg)
+      }
+    }
+  }, [weightOfFishSampled, numberOfFishSampled, setValue])
+  const handleIncrement = (fieldName: keyof SamplingFormValues) => {
+    // biome-ignore lint/style/useNumberNamespace: <explanation>
+    const currentValue = parseFloat(form.getValues(fieldName) || '0')
+    // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
+    if (!isNaN(currentValue)) {
+      const newValue = (currentValue + 1).toString()
+      form.setValue(fieldName, newValue)
+    }
+  }
+
+  const handleDecrement = (fieldName: keyof SamplingFormValues) => {
+    // biome-ignore lint/style/useNumberNamespace: <explanation>
+    const currentValue = parseFloat(form.getValues(fieldName) || '0')
+    // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
+    if (!isNaN(currentValue) && currentValue > 0) {
+      const newValue = (currentValue - 1).toString()
+      form.setValue(fieldName, newValue)
+    }
   }
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full rounded-md px-5">
-      <div className="flex w-full items-center gap-5">
+      <div className="flex w-full items-start gap-5">
         <div className="flex w-full flex-col gap-2">
-          <Text className="text-sm font-medium text-neutral-500">Number of Fish Sampled</Text>
+          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+            Number of Fish Sampled
+            {/* <span className="font-bold text-red-500">*</span> */}
+            <SolarIconSet.QuestionCircle size={16} />
+            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
+          </Text>
+
           <FormField
             control={form.control}
             name="numberOfFishSampled"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Input total number of fish used for sample data" {...field} />
+                  <div
+                    className={
+                      'focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
+                    }
+                  >
+                    <div className="w-full">
+                      <Input
+                        placeholder="Input total number of fish used for sample data"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '')
+                          field.onChange(value)
+                        }}
+                        className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                      />
+                    </div>
+                    <div
+                      className={
+                        'flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 text-xs'
+                      }
+                    >
+                      <SolarIconSet.AltArrowUp
+                        onClick={() => handleIncrement('numberOfFishSampled')}
+                        className="cursor-pointer"
+                      />
+                      <div className="w-full border border-l-0 border-r-0 border-t-0 border-neutral-200 " />
+                      <SolarIconSet.AltArrowDown
+                        onClick={() => handleDecrement('numberOfFishSampled')}
+                        className="cursor-pointer"
+                      />
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -35,14 +103,50 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
           />
         </div>
         <div className="flex w-full flex-col gap-2">
-          <Text className="text-sm font-medium text-neutral-500">Weight of Fish Sampled</Text>
+          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+            Weight of Fish Sampled
+            {/* <span className="font-bold text-red-500">*</span> */}
+            <SolarIconSet.QuestionCircle size={16} />
+            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
+          </Text>
           <FormField
             control={form.control}
             name="weightOfFishSampled"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Input number of Deaths recorded" {...field} />
+                  <div
+                    className={
+                      'focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
+                    }
+                  >
+                    <div className="w-full">
+                      <Input
+                        placeholder="Input weight of fish"
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, '')
+                          field.onChange(value)
+                        }}
+                        className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                      />
+                    </div>
+                    <div
+                      className={
+                        'flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 text-xs'
+                      }
+                    >
+                      <SolarIconSet.AltArrowUp
+                        onClick={() => handleIncrement('weightOfFishSampled')}
+                        className="cursor-pointer"
+                      />
+                      <div className="w-full border border-l-0 border-r-0 border-t-0 border-neutral-200 " />
+                      <SolarIconSet.AltArrowDown
+                        onClick={() => handleDecrement('weightOfFishSampled')}
+                        className="cursor-pointer"
+                      />
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -50,16 +154,21 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
           />
         </div>
       </div>
-      <div className="flex w-full items-center gap-5">
+      <div className="flex w-full items-start gap-5">
         <div className="flex w-full flex-col gap-2">
-          <Text className="text-sm font-medium text-neutral-500">Avg. Weight of Fish Sampled</Text>
+          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+            Avg. Weight of Fish Sampled
+            {/* <span className="font-bold text-red-500">*</span> */}
+            <SolarIconSet.QuestionCircle size={16} />
+            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
+          </Text>
           <FormField
             control={form.control}
             name="avgWeightFishSampled"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Input  avg. Weigh of sample" {...field} />
+                  <Input placeholder="Input  avg. Weigh of sample" inputMode="numeric" readOnly {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -67,14 +176,26 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
           />
         </div>
         <div className="flex w-full flex-col gap-2">
-          <Text className="text-sm font-medium text-neutral-500">Total Weight gain</Text>
+          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+            Total Weight gain
+            {/* <span className="font-bold text-red-500">*</span> */}
+            <SolarIconSet.QuestionCircle size={16} />
+            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
+          </Text>
           <FormField
             control={form.control}
             name="totalWeightGain"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Current Weight Gain" {...field} />
+                  <Input
+                    placeholder="Current Weight Gain"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      field.onChange(value)
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

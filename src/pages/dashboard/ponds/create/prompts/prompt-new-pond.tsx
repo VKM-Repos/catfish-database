@@ -10,6 +10,7 @@ type PromptProps = {
   setOpen: (open: boolean) => void
   handleYesConditionOnClose: () => void
   handleNoConditionOnClose: () => void
+  pondCreated: boolean
 }
 
 export default function PromptNewPond({
@@ -17,6 +18,7 @@ export default function PromptNewPond({
   setOpen,
   handleYesConditionOnClose,
   handleNoConditionOnClose,
+  pondCreated,
 }: PromptProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -45,7 +47,7 @@ export default function PromptNewPond({
               onClick={handleNoConditionOnClose}
               className="w-full font-semibold text-primary-500"
             >
-              No, I will do that later
+              {pondCreated ? 'No, I will do that later' : 'Add fish to pond'}
             </Button>
           </FlexBox>
         </FlexBox>

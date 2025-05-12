@@ -17,8 +17,16 @@ type ActionsDropdownProps = {
 }
 
 export function ActionsDropdown({ user }: ActionsDropdownProps) {
-  const navigate = useNavigate()
   const [menu, setMenu] = useState(false)
+  const navigate = useNavigate()
+
+  const redirectToPond = () => {
+    const navigatePath = user.id
+      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(user.id)}&clusterId=${user?.cluster.id}`
+      : paths.dashboard.ponds.create.addPond
+
+    navigate(navigatePath)
+  }
 
   return (
     <>
@@ -31,7 +39,7 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View Farm</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Add Pond</DropdownMenuItem>
+          <DropdownMenuItem onClick={redirectToPond}>Add Pond</DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setMenu(true)}>
             {user.accountNonLocked ? 'Deactivate Farmer' : 'Activate Farmer'}{' '}
           </DropdownMenuItem>

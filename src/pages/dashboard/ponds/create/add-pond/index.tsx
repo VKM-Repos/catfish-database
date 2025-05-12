@@ -14,29 +14,39 @@ import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { Loader } from 'src/components/ui/loader'
 import { useQueryClient } from '@tanstack/react-query'
 import CancelPrompt from '../prompts/cancel-prompt'
 import PromptNewPond from '../prompts/prompt-new-pond'
+import { useAuthStore } from 'src/store/auth.store'
 
 type PondData = z.infer<typeof pondSchema>
 
-const useFetchCurrentCluster = createGetQueryHook({
-  endpoint: '/clusters/me',
-  responseSchema: z.any(),
-  queryKey: ['cluster_for_current_farmer'],
-})
+const useCreatePondMutation = (farmerId?: string | null) => {
+  const createPondByFarmer = createPostMutationHook({
+    endpoint: '/ponds/farmers',
+    requestSchema: pondSchema,
+    responseSchema: pondResponseSchema,
+  })
 
-const useCreatePond = createPostMutationHook({
-  endpoint: '/ponds/farmers',
-  requestSchema: pondSchema,
-  responseSchema: pondResponseSchema,
-})
+  const createPondByAdmin = createPostMutationHook({
+    endpoint: '/ponds/cluster-managers',
+    requestSchema: pondSchema,
+    responseSchema: z.any(),
+  })
+
+  const farmerMutation = createPondByFarmer()
+  const adminMutation = createPondByAdmin()
+
+  return farmerId ? adminMutation : farmerMutation
+}
 
 export default function AddPond() {
   const { pondData, setPondStore } = usePondStore()
+
+  const { user } = useAuthStore()
 
   const [error, setError] = useState<ClientErrorType | null>()
   const [open, setOpen] = useState(false)
@@ -44,7 +54,33 @@ export default function AddPond() {
 
   const navigate = useNavigate()
 
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const farmerId = searchParams.get('farmerId')
+  const clusterId = searchParams.get('clusterId')
+
+  const createPondMutation = useCreatePondMutation(farmerId)
+
+  const useFetchCurrentCluster = createGetQueryHook({
+    endpoint: '/clusters/me',
+    responseSchema: z.any(),
+    queryKey: ['cluster_for_current_farmer'],
+    options: {
+      enabled: user?.role === 'FARMER',
+    },
+  })
+
+  const useGetPonds = createGetQueryHook({
+    endpoint: '/ponds/farmers/me',
+    responseSchema: z.any(),
+    queryKey: ['my-ponds'],
+    options: {
+      enabled: user?.role === 'FARMER',
+    },
+  })
+
   const { data: current_cluster } = useFetchCurrentCluster()
+  const { data: ponds = [] } = useGetPonds()
 
   const queryClient = useQueryClient()
 
@@ -59,9 +95,10 @@ export default function AddPond() {
       height: '',
       waterSource: '',
       pondType: '',
-      clusterId: current_cluster?.id ?? '',
+      clusterId: current_cluster?.id ? current_cluster?.id : clusterId,
       longitude: '',
       latitude: '',
+      ...(farmerId && { farmerId }),
     },
     mode: 'onChange',
   })
@@ -80,8 +117,6 @@ export default function AddPond() {
     }
   }, [form.setValue, total])
 
-  const createPondMutation = useCreatePond()
-
   const onSubmit = async (values: z.infer<typeof pondSchema>) => {
     try {
       setError(null)
@@ -90,9 +125,10 @@ export default function AddPond() {
         ...values,
       })
 
-      await createPondMutation.mutateAsync({
-        ...values,
-      })
+      const mutationData = farmerId ? { ...values, farmerId } : { ...values }
+
+      await createPondMutation.mutateAsync(mutationData)
+
       queryClient.refetchQueries(['my-ponds'])
       queryClient.refetchQueries(['fish-batches'])
 
@@ -128,10 +164,17 @@ export default function AddPond() {
     setOpen(false)
   }
 
+  const pondCreated = ponds.totalElements > 1
+
   const handleNoConditionOnClose = () => {
     form.reset()
     setOpen(false)
-    navigate(paths.dashboard.ponds.root)
+
+    user?.role !== 'FARMER'
+      ? navigate(-1)
+      : pondCreated
+      ? navigate(paths.dashboard.ponds.root)
+      : navigate(paths.dashboard.ponds.create.addFishToPond)
   }
 
   useEffect(() => {
@@ -203,6 +246,7 @@ export default function AddPond() {
       />
       <PromptNewPond
         open={open}
+        pondCreated={pondCreated}
         setOpen={setOpen}
         handleNoConditionOnClose={handleNoConditionOnClose}
         handleYesConditionOnClose={handleYesConditionOnClose}

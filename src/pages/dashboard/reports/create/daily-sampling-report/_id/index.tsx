@@ -4,7 +4,7 @@ import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
 import SamplingIndexForm from '../../../components/forms/sampling/sampling-report-index-form'
-import { SortingForm } from '../../../components/forms/sorting/sorting-from'
+import { SortingForm } from '../../../components/forms/sorting/sorting-form'
 import {
   Breadcrumb,
   BreadcrumbList,

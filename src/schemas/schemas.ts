@@ -186,6 +186,7 @@ export const pondSchema = z.object({
   longitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Longitude must be a valid number (e.g., 36.8219)',
   }),
+  farmerId: z.string().optional(),
 })
 
 export const pondResponseSchema = z.object({

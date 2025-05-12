@@ -10,6 +10,8 @@ import { Heading } from 'src/components/ui/heading'
 import { z } from 'zod'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { ReportModal } from './report-modal'
+import { useAuthStore } from 'src/store/auth.store'
+import { Dialog, DialogClose, DialogContent, DialogHeader } from 'src/components/ui/dialog'
 
 interface ActionCardProps {
   title: string
@@ -18,6 +20,11 @@ interface ActionCardProps {
   buttonText: string
   buttonAction: () => void
   isFirstCard?: boolean
+}
+
+interface UnregisteredPondAndBatchCardsProps {
+  navigate: (path: string) => void
+  hasPond: boolean
 }
 
 function ActionCard({ title, description, icon, buttonText, buttonAction, isFirstCard }: ActionCardProps) {
@@ -46,7 +53,9 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
 }
 
 // Component for unregistered pond state
-function UnregisteredPondCards({ navigate }: { navigate: (path: string) => void }) {
+function UnregisteredPondAndBatchCards({ navigate, hasPond }: UnregisteredPondAndBatchCardsProps) {
+  const [showPondError, setShowPondError] = useState(false)
+
   return (
     <>
       <ActionCard
@@ -71,7 +80,13 @@ function UnregisteredPondCards({ navigate }: { navigate: (path: string) => void 
           </div>
         }
         buttonText="Add fish to pond"
-        buttonAction={() => navigate(paths.dashboard.ponds.create.addFishToPond)}
+        buttonAction={() => {
+          if (hasPond) {
+            navigate(paths.dashboard.ponds.create.addFishToPond)
+          } else {
+            setShowPondError(true)
+          }
+        }}
         isFirstCard={false}
       />
 
@@ -86,12 +101,33 @@ function UnregisteredPondCards({ navigate }: { navigate: (path: string) => void 
         buttonText="Visit help center"
         buttonAction={() => navigate(paths.dashboard.helpCenter)}
       />
+
+      <Dialog open={showPondError} onOpenChange={setShowPondError}>
+        <DialogContent className="flex h-fit w-[450px]  overflow-hidden p-4">
+          <DialogHeader className="absolute left-0 flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
+            <Heading level={6}> Pond Required</Heading>
+
+            <DialogClose className="flex justify-end">
+              <SolarIconSet.CloseCircle color="text-inherit" size={24} iconStyle="Outline" />
+            </DialogClose>
+          </DialogHeader>
+          <div className="mt-[5rem] flex w-full flex-col items-center justify-center gap-y-4 ">
+            <SolarIconSet.Danger color="red" size={48} />
+            <Text className="text-center">You need to create a pond first before adding fish.</Text>
+            <DialogClose className="flex justify-end">
+              <Button size="lg" variant="primary">
+                OK
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
 
 // Component for registered pond state
-function RegisteredPondCards({ navigate }: { navigate: (path: string) => void }) {
+function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) => void }) {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
   const [samplingReportOpen, setSamplingReportOpen] = useState(false)
   const [harvestReportOpen, setHarvestReportOpen] = useState(false)
@@ -148,23 +184,34 @@ function RegisteredPondCards({ navigate }: { navigate: (path: string) => void })
 
 export default function GetStarted() {
   const navigate = useNavigate()
+  const { user } = useAuthStore()
   const useGetPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
   })
 
-  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
+  const useGetFishBatches = createGetQueryHook({
+    endpoint: `/fish-batches?farmerId=${user?.id}`,
+    responseSchema: z.any(),
+    queryKey: ['my-batches'],
+  })
 
-  if (isLoadingPonds) {
+  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
+  const { data: fishBatches = [], isLoading: isLoadingFishBatches } = useGetFishBatches()
+
+  if (isLoadingPonds || isLoadingFishBatches) {
     return <LoadingScreen />
   }
 
-  const hasPond = ponds.content.length > 0
+  const hasPond = ponds.totalElements > 0
+  const hasBatches = fishBatches.totalElements > 0
+  const hasPondAndBatch = hasPond && hasBatches
+  const pageTitle = hasPondAndBatch ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 
-  const pageTitle = hasPond ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
-
-  const pageDescription = hasPond ? 'What report do you want to submit today?' : 'Get Started with Your Farm Management'
+  const pageDescription = hasPondAndBatch
+    ? 'What report do you want to submit today?'
+    : 'Get Started with Your Farm Management'
 
   return (
     <div className="container mx-auto flex max-w-7xl flex-col gap-6 px-3 py-8">
@@ -178,7 +225,11 @@ export default function GetStarted() {
       </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-5">
-        {!hasPond ? <UnregisteredPondCards navigate={navigate} /> : <RegisteredPondCards navigate={navigate} />}
+        {!hasPondAndBatch ? (
+          <UnregisteredPondAndBatchCards navigate={navigate} hasPond={hasPond} />
+        ) : (
+          <RegisteredPondAndBatchCards navigate={navigate} />
+        )}
       </div>
 
       <div className="mx-auto mt-12 w-fit border-b border-primary-400 p-2 text-center">

@@ -29,7 +29,7 @@ export default function BatchPondSelection({ form, pondNames }: { form: UseFormR
       </div>
       <div className="flex w-full flex-col gap-2">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
-          Select the pond to which you want to add the field
+          Select the pond to which you want to add the fish
           <span className="gap-2 font-bold text-red-500">*</span>
           <SolarIconSet.QuestionCircle size={16} />
         </Text>

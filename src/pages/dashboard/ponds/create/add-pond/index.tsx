@@ -187,7 +187,7 @@ export default function AddPond() {
               ) : (
                 <>
                   <Text color="text-inherit" variant="body">
-                    Save
+                    Continue
                   </Text>
                 </>
               )}

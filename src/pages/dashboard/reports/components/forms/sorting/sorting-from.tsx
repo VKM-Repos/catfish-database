@@ -18,32 +18,35 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
     resolver: zodResolver(sortingSchema),
     defaultValues: {
       splitOccur: false,
-      transfer: false,
+      transferOccur: false,
+      harvestOccur: false,
+      transfers: [
+        {
+          numberOfFishMoved: '0',
+          destinationPond: '',
+        },
+      ],
       harvest: false,
     },
   })
 
-  // Watch the harvest and transfer fields
-  const harvestValue = form.watch('harvest')
-  const transferValue = form.watch('transfer')
+  const harvestOccurValue = form.watch('harvestOccur')
+  const transferOccurValue = form.watch('transferOccur')
 
-  // Effect to ensure harvest and transfer are mutually exclusive
   useEffect(() => {
-    if (harvestValue && transferValue) {
-      form.setValue('transfer', false)
+    if (harvestOccurValue && transferOccurValue) {
+      form.setValue('transferOccur', false)
     }
-  }, [harvestValue, transferValue, form])
+  }, [form, harvestOccurValue, transferOccurValue])
 
-  // Effect to ensure transfer and harvest are mutually exclusive
   useEffect(() => {
-    if (transferValue && harvestValue) {
-      form.setValue('harvest', false)
+    if (harvestOccurValue && transferOccurValue) {
+      form.setValue('harvestOccur', false)
     }
-  }, [transferValue, harvestValue, form])
+  }, [harvestOccurValue, transferOccurValue, form])
 
   function onSubmit(data: z.infer<typeof sortingSchema>) {
     console.log(data)
-    // handleNext()
   }
 
   return (
@@ -76,8 +79,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                         onCheckedChange={(checked) => {
                           field.onChange(checked)
                           if (!checked) {
-                            form.setValue('transfer', false)
-                            form.setValue('harvest', false)
+                            form.setValue('transferOccur', false)
+                            form.setValue('harvestOccur', false)
                           }
                         }}
                       />
@@ -92,7 +95,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
               <div className="item-center flex gap-5">
                 <FormField
                   control={form.control}
-                  name="transfer"
+                  name="transferOccur"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -103,7 +106,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                             onCheckedChange={(checked) => {
                               field.onChange(checked)
                               if (checked) {
-                                form.setValue('harvest', false)
+                                form.setValue('harvestOccur', false)
                               }
                             }}
                           />
@@ -118,7 +121,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
 
                 <FormField
                   control={form.control}
-                  name="harvest"
+                  name="harvestOccur"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -132,7 +135,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                             onCheckedChange={(checked) => {
                               field.onChange(checked)
                               if (checked) {
-                                form.setValue('transfer', false)
+                                form.setValue('transferOccur', false)
                               }
                             }}
                           />
@@ -147,8 +150,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
 
           {form.getValues('splitOccur') && (
             <div className="mt-10">
-              {form.getValues('transfer') && <TransferForm form={form} />}
-              {form.getValues('harvest') && <FishHarvestForm form={form} />}
+              {form.getValues('transferOccur') && <TransferForm form={form} />}
+              {form.getValues('harvestOccur') && <FishHarvestForm form={form} />}
             </div>
           )}
         </div>

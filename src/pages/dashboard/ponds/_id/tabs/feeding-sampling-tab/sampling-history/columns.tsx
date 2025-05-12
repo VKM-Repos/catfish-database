@@ -10,13 +10,13 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.date}</Text>,
   },
   {
-    accessorKey: 'fishPopulation',
+    accessorKey: 'census',
     header: () => (
       <div title="Fish population" className="w-[4rem] truncate font-bold">
         Fish population
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.fishPopulation}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.census}</Text>,
   },
   {
     accessorKey: 'sampleSize',
@@ -28,16 +28,16 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.sampleSize}</Text>,
   },
   {
-    accessorKey: 'averageWeight',
+    accessorKey: 'averageWeightToFish',
     header: () => (
       <div title="Average weight" className="font-bold">
         Average weight
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.averageWeight}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.averageWeightToFish}</Text>,
   },
   {
-    accessorKey: 'averageWeightGain',
+    accessorKey: 'weightGain',
     header: () => (
       <div title="Average weight gain" className="w-[4rem] truncate font-bold">
         Average weight gain
@@ -57,14 +57,23 @@ export const columns: ColumnDef<any>[] = [
         Split triggered
       </div>
     ),
-    cell: ({ row }) => (
-      <StatusBadge
-        status={row.original.splitTriggered}
-        activeText="Yes"
-        inactiveText="No"
-        inactiveBg="bg-error-100 border-[#FF0000] text-[#FF0000]"
-      />
-    ),
+    cell: ({ row }) => {
+      const split = row.original.splitTriggered
+      return (
+        <>
+          {split ? (
+            <StatusBadge
+              status={row.original.splitTriggered}
+              activeText="Yes"
+              inactiveText="No"
+              inactiveBg="bg-error-100 border-[#FF0000] text-[#FF0000]"
+            />
+          ) : (
+            <Text weight="light">--</Text>
+          )}
+        </>
+      )
+    },
   },
   {
     accessorKey: 'fishMoved',
@@ -73,7 +82,7 @@ export const columns: ColumnDef<any>[] = [
         No. of fish moved
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.fishMoved}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.fishMoved ?? '-'}</Text>,
   },
   {
     accessorKey: 'destinationPond',
@@ -82,7 +91,7 @@ export const columns: ColumnDef<any>[] = [
         Destination pond
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.destinationPond}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.destinationPond ?? '-'}</Text>,
   },
   {
     accessorKey: 'reason',

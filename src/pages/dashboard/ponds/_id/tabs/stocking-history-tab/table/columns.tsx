@@ -1,30 +1,31 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
+import { formatDate } from 'src/lib/date'
 
 export const columns: ColumnDef<any>[] = [
   {
-    accessorKey: 'date',
+    accessorKey: 'createdAt',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{row.original.date}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'quantity',
     header: 'Quantity',
-    cell: ({ row }) => <Text weight="light">{row.original.quantity}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.quantity ?? '—'}</Text>,
   },
   {
-    accessorKey: 'averageWeight',
+    accessorKey: 'weight',
     header: 'Average weight',
-    cell: ({ row }) => <Text weight="light">{row.original.averageWeight}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.weight ?? '—'}</Text>,
   },
   {
-    accessorKey: 'averageSize',
+    accessorKey: 'size',
     header: 'Average Size',
-    cell: ({ row }) => <Text weight="light">{row.original.averageSize}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.size ?? '—'}</Text>,
   },
   {
-    accessorKey: 'supplyCost',
+    accessorKey: 'costOfSupply',
     header: 'Supply Cost',
-    cell: ({ row }) => <Text weight="light">{row.original.supplyCost}</Text>,
+    cell: ({ row }) => <Text weight="light">₦{row.original.costOfSupply ?? '-'}</Text>,
   },
 ]

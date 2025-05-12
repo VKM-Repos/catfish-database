@@ -1,12 +1,22 @@
+import { useNavigate } from 'react-router-dom'
 import { Button } from 'src/components/ui/button'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
+import { paths } from 'src/routes'
 
 type CreateReportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  resetForm: () => void
 }
 
-export function CreateReportDialog({ open, onOpenChange }: CreateReportDialogProps) {
+export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateReportDialogProps) {
+  const navigate = useNavigate()
+
+  const handleCancel = () => {
+    onOpenChange(false)
+    navigate(paths.dashboard.home.getStarted)
+    resetForm()
+  }
   return (
     <Dialog open={open}>
       <DialogContent className="overflow-hidden p-8">
@@ -17,12 +27,7 @@ export function CreateReportDialog({ open, onOpenChange }: CreateReportDialogPro
           </p>
         </div>
         <Button>Yes, submit another report</Button>
-        <Button
-          type="button"
-          onClick={() => onOpenChange(false)}
-          variant="link"
-          className="font-semibold text-primary-500"
-        >
+        <Button type="button" onClick={handleCancel} variant="link" className="font-semibold text-primary-500">
           No , I will do this later
         </Button>
       </DialogContent>

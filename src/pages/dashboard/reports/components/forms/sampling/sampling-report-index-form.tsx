@@ -4,13 +4,14 @@ import { Form } from 'src/components/ui/form'
 import { samplingSchema } from 'src/schemas'
 import type { z } from 'zod'
 import { Button } from 'src/components/ui/button'
-import { CreateReportDialog } from '../../modals/create-report-modal'
 import { useState } from 'react'
 import SamplingWeightForm from './sampling-weight-from'
 import FeedConsumedForm from './feed-consumed-form'
 import MortalityRateForm from './mortality-rate-form'
 import DiseaseForm from './disease-form'
 import FishBehaviorForm from './fish-bevahior-form'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes'
 
 type SamplingData = z.infer<typeof samplingSchema>
 
@@ -21,6 +22,8 @@ export default function SamplingIndexForm({
   handleNext: () => void
   handlePrevious: () => void
 }) {
+  const navigate = useNavigate()
+
   const [openDialog, setOpenDialog] = useState(false)
   const form = useForm<SamplingData>({
     resolver: zodResolver(samplingSchema),
@@ -50,7 +53,7 @@ export default function SamplingIndexForm({
 
   return (
     <>
-      <CreateReportDialog open={openDialog} onOpenChange={setOpenDialog} />
+      {/* <CreateReportDialog open={openDialog} onOpenChange={setOpenDialog} /> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8 pb-0.5">
           <div className="w-full">
@@ -121,7 +124,12 @@ export default function SamplingIndexForm({
           </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">
-            <Button type="button" onClick={handlePrevious} variant="outline" className="flex items-center gap-2">
+            <Button
+              type="button"
+              onClick={() => navigate(paths.dashboard.home.getStarted)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
               Cancel
             </Button>
             <Button

@@ -4,7 +4,7 @@ import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
 import SamplingIndexForm from '../../../components/forms/sampling/sampling-report-index-form'
-import { SortingForm } from '../../../components/forms/sorting/sorting-from'
+import { SortingForm } from '../../../components/forms/sorting/sorting-form'
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -54,7 +54,7 @@ export default function CreatePondPage() {
       <FlexBox className="mx-10">
         <CustomBreadcrumb />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[60%]">
         <Stepper step={step} />
         <RenderSteps />
       </FlexBox>
@@ -64,7 +64,7 @@ export default function CreatePondPage() {
 
 const Stepper = ({ step }: { step: number }) => {
   return (
-    <div className="w-full">
+    <div className="w-[50%]">
       <div className="mx-auto flex max-w-[80%] items-center justify-center">
         <FlexBox
           gap="gap-[.625rem]"

@@ -3,7 +3,7 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
-import { SortingForm } from '../../../components/forms/sorting/sorting-from'
+import { SortingForm } from '../../../components/forms/sorting/sorting-form'
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -54,7 +54,7 @@ export default function CreatePondPage() {
       <FlexBox className="mx-10">
         <CustomBreadcrumb />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[60%]">
         <RenderSteps />
       </FlexBox>
     </>

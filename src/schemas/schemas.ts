@@ -321,16 +321,20 @@ export const paginatedSamplingResponseSchema = z.object({
 export const dailyFeedingSchema = z.object({
   feedType: z.string().min(1, { message: 'Please Select a feed type' }),
   pelletSize: z.string().min(1, { message: 'Please enter a pellet size' }),
-  feedQuantity: z.string().min(1, { message: 'Please add a feeding quantity' }),
+  feedQuantity: z
+    .string()
+    .min(1, { message: 'Please add a feeding quantity' })
+    .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
+    .transform(Number),
   feedTime: z.string().min(1, { message: 'Please select feeding time' }),
-  dissolvedOxygen: z.string().min(1, { message: 'Please add a dissolved oxygen' }),
-  phLevel: z.string().min(1, { message: 'Please add a PH level' }),
-  temperature: z.string().min(1, { message: 'Please add a temperature' }),
-  ammonia: z.string().min(1, { message: 'Please add a ammonia' }),
-  nitrite: z.string().min(1, { message: 'Please add a nitrite' }),
-  nitrate: z.string().min(1, { message: 'Please add a nitrate' }),
-  alkalinity: z.string().min(1, { message: 'Please add a alkalinity' }),
-  hardness: z.string().min(1, { message: 'Please add hardness' }),
+  dissolvedOxygen: z.string().optional(),
+  phLevel: z.string().optional(),
+  temperature: z.string().optional(),
+  ammonia: z.string().optional(),
+  nitrite: z.string().optional(),
+  nitrate: z.string().optional(),
+  alkalinity: z.string().optional(),
+  hardness: z.string().optional(),
   waterQualityObservation: z.string().min(10, {
     message: 'Water quality observation must be at least 10 characters.',
   }),
@@ -348,20 +352,29 @@ export const maintenanceSchema = z.object({
 export const samplingSchema = z.object({
   numberOfFishSampled: z.string().min(1, { message: 'Please Select a feed type' }),
   weightOfFishSampled: z.string().min(1, { message: 'Please enter a pellet size' }),
-  avgWeightFishSampled: z.string().min(1, { message: 'Please add a feeding quantity' }),
+  avgWeightFishSampled: z.string().optional(),
   totalWeightGain: z.string().min(1, { message: 'Please add a feed time' }),
   totalFeedConsumed: z.string().min(1, { message: 'Please add a dissolved oxygen' }),
   numberOfFishMortalityRecorded: z.string().min(1, { message: 'Please add a PH level' }),
-  disease: z.string().min(1, { message: 'Please add a temperature' }),
-  diseaseObservation: z.string().min(1, { message: 'Please add a ammonia' }),
-  behavior: z.string().min(1, { message: 'Please add a nitrite' }),
-  observation: z.string().min(1, { message: 'Please add a nitrate' }),
+  disease: z.string().optional(),
+  diseaseObservation: z.string().optional(),
+  behavior: z.string().optional(),
+  observation: z.string().optional(),
 })
 
 export const sortingSchema = z.object({
   splitOccur: z.boolean(),
-  transfer: z.boolean(),
+  transfers: z
+    .array(
+      z.object({
+        numberOfFishMoved: z.string().optional(),
+        destinationPond: z.string().optional(),
+      }),
+    )
+    .optional(),
   harvest: z.boolean(),
+  transferOccur: z.boolean(),
+  harvestOccur: z.boolean(),
   numberOfFishMovedByTransfer: z.string(),
   destinationPond: z.string(),
   numberOfFishHarvest: z.string(),

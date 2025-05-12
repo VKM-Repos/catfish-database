@@ -3,7 +3,7 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
-import { SortingForm } from '../../../components/forms/sorting/sorting-from'
+import { SortingForm } from '../../../components/forms/sorting/sorting-form'
 import {
   Breadcrumb,
   BreadcrumbList,

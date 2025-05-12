@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import PageTransition from 'src/components/animation/page-transition'
 import { Container } from 'src/components/ui/container'
 import { FlexBox } from 'src/components/ui/flexbox'
@@ -10,7 +10,6 @@ import StockingHistory from './tabs/stocking-history-tab'
 import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
 import { StatusBadge } from 'src/components/global/status-badge'
-import MaintenanceLogs from './tabs/maintenance-logs'
 import * as SolarIconSet from 'solar-icon-set'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { pondResponseSchema } from 'src/schemas'
@@ -84,10 +83,7 @@ export default function PondsDetailsPage() {
                     Stocking history
                   </TabsTrigger>
                   <TabsTrigger value="feeding-sampling" className="data-[state=active]:font-bold">
-                    Feeding, sampling & harvest logs
-                  </TabsTrigger>
-                  <TabsTrigger value="maintenance-logs" className="data-[state=active]:font-bold">
-                    Maintenance logs
+                    Feeding & Sampling
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -100,12 +96,10 @@ export default function PondsDetailsPage() {
               <TabsContent value="feeding-sampling" className="w-full">
                 <FeedingSampling />
               </TabsContent>
-              <TabsContent value="maintenance-logs" className="w-full">
-                <MaintenanceLogs />
-              </TabsContent>
             </Tabs>
           </FlexBox>
         </Container>
+        <Outlet />
       </PageTransition>
     </div>
   )

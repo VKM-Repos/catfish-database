@@ -32,7 +32,7 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
                 </div>
               </FormControl>
               <div className={`relative min-h-fit`}>
-                <FormMessage className="absolute transition-opacity duration-200" />
+                <FormMessage className="absolute my-2 transition-opacity duration-200" />
               </div>
             </FormItem>
           )}

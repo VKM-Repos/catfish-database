@@ -54,7 +54,7 @@ export default function CreatePondPage() {
       <FlexBox className="mx-10">
         <CustomBreadcrumb />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[60%]">
         <RenderSteps />
       </FlexBox>
     </>

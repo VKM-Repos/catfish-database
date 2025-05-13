@@ -1,5 +1,9 @@
-import GaugeChart from 'react-gauge-chart'
+import { ChartHeader } from 'src/components/global/chart-header'
+import { Button } from 'src/components/ui/button'
+import { Card } from 'src/components/ui/card'
 import * as SolarIconSet from 'solar-icon-set'
+import * as React from 'react'
+import GaugeChart from 'react-gauge-chart'
 
 export default function FeedConversionRatio() {
   const value = 0.98
@@ -34,15 +38,17 @@ export default function FeedConversionRatio() {
   const range = calculateRange(value)
 
   return (
-    <div className="mb-4 flex min-h-full w-full flex-col gap-12 rounded-[.875rem] border border-[#8686871A] p-4 shadow-lg md:w-[45%]">
-      <div className="flex items-center justify-between py-4">
-        <p className="w-full text-sm font-semibold">Feed Conversion Ratio</p>
-        <div className="flex w-full cursor-pointer items-center justify-end gap-2">
-          <SolarIconSet.MenuDots size={24} iconStyle="Bold" />
-        </div>
-      </div>
-
+    <Card className="h-[30rem] w-full rounded-[.875rem] border border-neutral-200 p-4 md:w-[60%]">
+      <ChartHeader
+        title={'Feed conversion ratio'}
+        action={
+          <Button variant="ghost" className="rotate-90">
+            <SolarIconSet.MenuDots color="#A1A4AA" size={28} iconStyle="Bold" />
+          </Button>
+        }
+      />
       <div className="flex flex-col justify-between">
+        ≈
         <GaugeChart
           className="min-h-fit"
           nrOfLevels={420}
@@ -59,6 +65,6 @@ export default function FeedConversionRatio() {
           ))}
         </p>
       </div>
-    </div>
+    </Card>
   )
 }

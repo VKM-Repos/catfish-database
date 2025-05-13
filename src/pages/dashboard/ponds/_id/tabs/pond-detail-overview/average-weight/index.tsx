@@ -1,6 +1,9 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
+import { Card } from 'src/components/ui/card'
+import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
+import { ChartHeader } from 'src/components/global/chart-header'
 
 const averageWeightConfig = {
   averageWeight: {
@@ -11,13 +14,15 @@ const averageWeightConfig = {
 
 export default function AverageWeight() {
   return (
-    <div className="h-full w-full rounded-[.875rem] border border-[#8686871A] p-4 shadow-lg md:w-[60%]">
-      <div className="flex w-full items-center justify-between py-4">
-        <p className="w-full whitespace-nowrap text-sm font-semibold">Average Weight</p>
-        <div className="flex w-full cursor-pointer items-center justify-end gap-2">
-          <SolarIconSet.MenuDots size={24} iconStyle="Bold" />
-        </div>
-      </div>
+    <Card className="h-[30rem] w-full rounded-[.875rem] border border-neutral-200 p-4 md:w-[60%]">
+      <ChartHeader
+        title={'Average Weight'}
+        action={
+          <Button variant="ghost" className="rotate-90">
+            <SolarIconSet.MenuDots color="#A1A4AA" size={28} iconStyle="Bold" />
+          </Button>
+        }
+      />
       <ChartContainer config={averageWeightConfig}>
         <AreaChart
           accessibilityLayer
@@ -25,6 +30,8 @@ export default function AverageWeight() {
           margin={{
             left: 12,
             right: 12,
+            top: 12,
+            bottom: 12,
           }}
         >
           <CartesianGrid vertical={false} strokeDasharray="10 10" />
@@ -50,7 +57,7 @@ export default function AverageWeight() {
           <Area dataKey="averageWeight" type="linear" stroke="#651391" fill="url(#colorWeight)" />
         </AreaChart>
       </ChartContainer>
-    </div>
+    </Card>
   )
 }
 

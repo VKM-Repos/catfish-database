@@ -20,7 +20,12 @@ export default function CancelPrompt({
 }: CancelPromptProps) {
   return (
     <Dialog open={openCancelPrompt} onOpenChange={setOpenCancelPrompt}>
-      <DialogContent className="max-h-fit w-fit overflow-hidden px-[2.5rem] py-[3.75rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]">
+      <DialogContent
+        className="max-h-fit w-fit overflow-hidden px-[2.5rem] py-[3.75rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]"
+        onInteractOutside={(e) => {
+          e.preventDefault()
+        }}
+      >
         <VisuallyHidden>
           <DialogTitle>Cancel current process</DialogTitle>
           <DialogDescription>This prompt cancels this process and loses unsaved changes</DialogDescription>

@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import CancelPrompt from '../prompts/cancel-prompt'
 import PromptNewPond from '../prompts/prompt-new-pond'
 import { useAuthStore } from 'src/store/auth.store'
+import { scrollToTop } from 'src/lib/utils'
 
 type PondData = z.infer<typeof pondSchema>
 
@@ -145,6 +146,7 @@ export default function AddPond() {
             message: errorData?.message,
             errors: errorData?.errors ?? null,
           })
+          scrollToTop()
         }
       }
     }

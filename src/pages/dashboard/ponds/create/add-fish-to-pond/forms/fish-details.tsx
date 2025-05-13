@@ -25,7 +25,7 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
                   <Input placeholder="Input number of fish added to pond" {...field} type="number" />
                 </FormControl>
                 <div className={`relative min-h-fit `}>
-                  <FormMessage className="absolute transition-opacity duration-200" />
+                  <FormMessage className="absolute my-2 transition-opacity duration-200" />
                 </div>
               </FormItem>
             )}
@@ -63,7 +63,7 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
                   </Select>
                 </FormControl>
                 <div className={`relative min-h-fit `}>
-                  <FormMessage className="absolute transition-opacity duration-200" />
+                  <FormMessage className="absolute my-2 transition-opacity duration-200" />
                 </div>
               </FormItem>
             )}

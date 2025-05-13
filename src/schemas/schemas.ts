@@ -180,11 +180,11 @@ export const pondSchema = z.object({
   waterSource: z.string().min(1, { message: 'Please add a water source' }),
   pondType: z.string().min(1, { message: 'Please add pond type' }),
   clusterId: z.string().min(1, 'Cluster ID is required'),
-  latitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
-    message: 'Latitude must be a valid number (e.g., -18.211',
+  latitude: z.string().regex(/^-?(90(\.0+)?|[0-8]?\d(\.\d+)?)$/, {
+    message: 'Latitude must be a valid number between -90 and 90 (e.g., -18.211',
   }),
-  longitude: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
-    message: 'Longitude must be a valid number (e.g., 36.8219)',
+  longitude: z.string().regex(/^-?(180(\.0+)?|1[0-7]\d(\.\d+)?|[0-9]?\d(\.\d+)?|[1-9]\d(\.\d+)?)$/, {
+    message: 'Longitude must be a valid number between 180 and -180(e.g., 36.8219)',
   }),
   farmerId: z.string().optional(),
 })
@@ -273,6 +273,20 @@ export const fishBatchResponseSchema = z.object({
   updatedAt: z.string(),
 })
 
+export const samplingResponseSchema = z.object({
+  id: z.string().optional(),
+  fishBatchId: z.string().optional(),
+  census: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  sample: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  weight: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  mortality: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  averageWeightToFish: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  weightGain: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  feedConsumed: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
 export const paginatedFishDetailsResponseSchema = z.object({
   totalPages: z.number(),
   totalElements: z.number(),
@@ -295,6 +309,14 @@ export const paginatedFeedingResponseSchema = z.object({
   page: z.number(),
   size: z.number(),
   content: z.array(feedingResponseSchema),
+})
+
+export const paginatedSamplingResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(samplingResponseSchema),
 })
 
 export const dailyFeedingSchema = z.object({

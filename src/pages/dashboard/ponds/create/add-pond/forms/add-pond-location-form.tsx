@@ -13,26 +13,46 @@ import { Loader } from 'src/components/ui/loader'
 type PondFormValues = z.infer<typeof pondSchema>
 
 export default function AddPondLocationForm({ form }: { form: UseFormReturn<PondFormValues> }) {
-  const [error, setError] = useState<string | null>(null)
+  const [positionError, setPositionError] = useState<string | null>(null)
   const [positionLoading, setPositionLoading] = useState(false)
 
   const handleGetLocation = () => {
+    const MIN_LOADING_TIME = 800
+    const start = Date.now()
+
     setPositionLoading(true)
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          form.setValue('latitude', String(position.coords.latitude))
-          form.setValue('longitude', String(position.coords.longitude))
-          setPositionLoading(false)
-          setError(null)
+          const elapsed = Date.now() - start
+          const remaining = Math.max(MIN_LOADING_TIME - elapsed, 0)
+
+          setTimeout(() => {
+            form.setValue('latitude', String(position.coords.latitude))
+            form.setValue('longitude', String(position.coords.longitude))
+            form.trigger(['latitude', 'longitude'])
+
+            setPositionLoading(false)
+            setPositionError(null)
+          }, remaining)
         },
         (error) => {
-          setError(error.message)
+          const elapsed = Date.now() - start
+          const remaining = Math.max(MIN_LOADING_TIME - elapsed, 0)
+
+          setTimeout(() => {
+            setPositionLoading(false)
+            setPositionError(error.message)
+          }, remaining)
+          alert(positionError)
         },
       )
     } else {
-      setError('Geolocation is not supported by this browser.')
+      setTimeout(() => {
+        setPositionLoading(false)
+        setPositionError('Geolocation is not supported by this browser.')
+      }, MIN_LOADING_TIME)
     }
   }
 
@@ -57,7 +77,7 @@ export default function AddPondLocationForm({ form }: { form: UseFormReturn<Pond
           )}
         />
       </div>
-      <FlexBox justify="between" align="end" className="mb-3">
+      <FlexBox justify="between" align="end" className="mb-3 w-full flex-col md:!flex-row">
         <FlexBox gap="gap-4" className="w-full flex-col md:!flex-row">
           <div className="flex w-full flex-col gap-2">
             <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
@@ -127,7 +147,7 @@ export default function AddPondLocationForm({ form }: { form: UseFormReturn<Pond
           variant="primary"
           type="button"
           onClick={handleGetLocation}
-          className="flex h-fit min-w-[9rem] items-center gap-2"
+          className="flex h-fit w-full items-center gap-2 md:max-w-[9rem]"
           disabled={positionLoading}
         >
           {positionLoading ? (
@@ -143,11 +163,6 @@ export default function AddPondLocationForm({ form }: { form: UseFormReturn<Pond
             </Text>
           )}
         </Button>
-        {error && (
-          <Text color="text-inherit" variant="body">
-            Get coordinates
-          </Text>
-        )}
       </FlexBox>
     </FlexBox>
   )

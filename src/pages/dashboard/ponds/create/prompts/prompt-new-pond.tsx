@@ -22,7 +22,12 @@ export default function PromptNewPond({
 }: PromptProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-h-fit w-fit overflow-hidden px-[2.5rem] py-[3.75rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]">
+      <DialogContent
+        className="max-h-fit w-fit overflow-hidden px-[2.5rem] py-[3.75rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]"
+        onInteractOutside={(e) => {
+          e.preventDefault()
+        }}
+      >
         <VisuallyHidden>
           <DialogTitle>Prompt new pond?</DialogTitle>
           <DialogDescription>

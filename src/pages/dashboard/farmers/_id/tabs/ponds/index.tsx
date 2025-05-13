@@ -5,22 +5,34 @@ import { PondsTable } from './table'
 import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes'
+import { paginatedPondResponseSchema } from 'src/schemas'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
 export default function Ponds() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
+  const useFetchPonds = createGetQueryHook({
+    endpoint: `/ponds?farmerId=${id}`,
+    responseSchema: paginatedPondResponseSchema,
+    queryKey: ['all-ponds'],
+  })
+  const { data: ponds } = useFetchPonds()
+
+  const farmer = ponds?.content.find((farmer) => farmer.farmer.id === id)
+
+  const redirectPath = () => {
+    const navigatePath = id
+      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${farmer?.cluster.id}`
+      : paths.dashboard.ponds.create.addPond
+    navigate(navigatePath)
+  }
+
   return (
     <FlexBox direction="col" gap="gap-6" className="w-full">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
         <Text className="text-xl font-semibold text-neutral-700">Ponds</Text>
-        <Button
-          variant="outline"
-          className="border-primary-400"
-          onClick={() => {
-            navigate(paths.dashboard.ponds.create.addPond)
-          }}
-        >
+        <Button variant="outline" className="border-primary-400" onClick={redirectPath}>
           <FlexBox gap="gap-3" align="center">
             <SolarIconSet.AddCircle color="#651391" size={20} iconStyle="Outline" />
             <Text className="text-primary-400">Add pond</Text>

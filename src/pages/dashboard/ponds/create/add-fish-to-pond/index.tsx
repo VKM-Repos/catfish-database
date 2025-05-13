@@ -26,7 +26,7 @@ import CostDetailsForm from './forms/cost-details'
 const useGetFarmerPonds = createGetQueryHook<typeof paginatedPondResponseSchema, { id: string }>({
   endpoint: '/ponds/farmers/me',
   responseSchema: paginatedPondResponseSchema,
-  queryKey: ['my-ponds-as-a-farmer'],
+  queryKey: ['my-ponds'],
 })
 
 const useCreateFishBatch = createPostMutationHook({

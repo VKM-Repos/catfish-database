@@ -25,6 +25,7 @@ const roleRoutes: Record<UserRole, string[]> = {
     paths.dashboard.settings,
     paths.dashboard.helpCenter,
     paths.dashboard.privacyPolicy,
+    paths.dashboard.ponds.root,
   ],
   FARMER: [
     paths.dashboard.home.root,

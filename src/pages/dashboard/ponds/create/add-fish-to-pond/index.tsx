@@ -22,6 +22,7 @@ import BatchPondSelection from './forms/batch-pond-selection'
 import FishDetailsForm from './forms/fish-details'
 import SupplierInfoForm from './forms/supplier-info'
 import CostDetailsForm from './forms/cost-details'
+import { scrollToTop } from 'src/lib/utils'
 
 const useGetFarmerPonds = createGetQueryHook<typeof paginatedPondResponseSchema, { id: string }>({
   endpoint: '/ponds/farmers/me',
@@ -112,6 +113,7 @@ export default function AddFishPond() {
             message: errorData?.message,
             errors: errorData?.errors ?? null,
           })
+          scrollToTop()
         }
       }
     }

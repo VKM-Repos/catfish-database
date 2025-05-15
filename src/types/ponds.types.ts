@@ -3,8 +3,8 @@ export type pondResponseType = {
   status?: string
   name: string
   size: string
-  latitude?: string
-  longitude?: string
+  latitude?: string | null
+  longitude?: string | null
   waterSource: string
   pondType: string
   cluster: {

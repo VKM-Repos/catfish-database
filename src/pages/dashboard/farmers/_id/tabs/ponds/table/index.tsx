@@ -8,6 +8,7 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { mergePondsWithTotalFishQuantity } from 'src/lib/utils'
 import { z } from 'zod'
 import { useAuthStore } from 'src/store/auth.store'
+import { paginatedPondResponseSchema } from 'src/schemas'
 
 export function PondsTable() {
   const { id } = useParams<{ id: string }>()
@@ -21,28 +22,33 @@ export function PondsTable() {
     queryKey: ['fish-batches'],
   })
 
-  const useFetchPonds = createGetQueryHook({
-    endpoint: `/ponds/clusters/me?farmerId=${id}`,
-    responseSchema: z.any(),
+  const useFetchClusterManagerPonds = createGetQueryHook({
+    endpoint: `/ponds/clusters/me`,
+    responseSchema: paginatedPondResponseSchema,
     queryKey: ['all-ponds'],
     options: {
       enabled: user?.role === 'CLUSTER_MANAGER',
     },
   })
+
   const useFetchPondsByAdmin = createGetQueryHook({
-    endpoint: `/ponds?farmerId=${id}`,
-    responseSchema: z.any(),
+    endpoint: `/ponds`,
+    responseSchema: paginatedPondResponseSchema,
     queryKey: ['all-ponds'],
     options: {
       enabled: user?.role === 'SUPER_ADMIN',
     },
   })
 
-  const { data: fishBatches } = useGetFishBatches()
-  const { data: ponds } = useFetchPonds()
-  const { data: ponds_admin } = useFetchPondsByAdmin()
+  const args = { query: { farmerId: id } }
 
-  const totalPonds = (ponds || ponds_admin) && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
+  const { data: clusterManagerPonds } = useFetchClusterManagerPonds(args)
+  const { data: adminPonds } = useFetchPondsByAdmin(args)
+  const { data: fishBatches } = useGetFishBatches()
+
+  const ponds = user?.role === 'CLUSTER_MANAGER' ? clusterManagerPonds : adminPonds
+
+  const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
 
   const farmer = ponds?.content.find((farmer: any) => farmer.farmer.id === id)
 

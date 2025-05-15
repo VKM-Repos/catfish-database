@@ -46,10 +46,10 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
   },
   {
-    accessorFn: (row) => row.original?.status ?? 'Active',
+    accessorFn: (row) => row.original.status ?? (row.original.quantity == 0 ? 'Inactive' : 'Inactive'),
     header: 'Pond Status',
     cell: ({ row }) => {
-      const status = row.original.status ?? 'Active'
+      const status = row.original.quantity == 0 ? 'Inactive' : 'Active'
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${

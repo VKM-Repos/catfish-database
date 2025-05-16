@@ -1,17 +1,18 @@
-import { ColumnDef } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { ReportActionsDropdown } from '../../../components/actions-dropdown'
+import { extractTimeFromISO, formatDate } from 'src/lib/date'
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'date',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{row.original.date}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'time',
     header: 'time',
-    cell: ({ row }) => <Text weight="light">{row.original.date}</Text>,
+    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'feedType',
@@ -24,49 +25,9 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.pelletSize}</Text>,
   },
   {
-    accessorKey: 'feedQuantity',
+    accessorKey: 'quantity',
     header: 'Quantity (kg)',
-    cell: ({ row }) => <Text weight="light">{row.original.feedQuantity}</Text>,
-  },
-  {
-    accessorKey: 'dissolveOxygen',
-    header: 'Diss. oxygen',
-    cell: ({ row }) => <Text weight="light">{row.original.dissolveOxygen}</Text>,
-  },
-  {
-    accessorKey: 'phLevel',
-    header: 'pH',
-    cell: ({ row }) => <Text weight="light">{row.original.phLevel}</Text>,
-  },
-  {
-    accessorKey: 'temperature',
-    header: 'Temp.',
-    cell: ({ row }) => <Text weight="light">{row.original.temperature}</Text>,
-  },
-  {
-    accessorKey: 'ammonia',
-    header: 'Ammonia',
-    cell: ({ row }) => <Text weight="light">{row.original.ammonia}</Text>,
-  },
-  {
-    accessorKey: 'nitrite',
-    header: 'Nitrate',
-    cell: ({ row }) => <Text weight="light">{row.original.nitrite}</Text>,
-  },
-  {
-    accessorKey: 'nitrate',
-    header: 'Nitrate',
-    cell: ({ row }) => <Text weight="light">{row.original.feedType}</Text>,
-  },
-  {
-    accessorKey: 'alkalinity',
-    header: 'Alkalinity',
-    cell: ({ row }) => <Text weight="light">{row.original.nitrate}</Text>,
-  },
-  {
-    accessorKey: 'hardness',
-    header: 'Hardness',
-    cell: ({ row }) => <Text weight="light">{row.original.hardness}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.quantity}</Text>,
   },
   {
     id: 'actions',

@@ -15,6 +15,7 @@ type PondFormValues = z.infer<typeof dailyFeedingSchema>
 export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
   const timeInputRef = useRef<HTMLInputElement>(null)
   const feeds = [
+    'PELLETS',
     'Skretting',
     'Coppens',
     'TopFeeds',
@@ -167,7 +168,7 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
                     <Input
                       placeholder="input quantity in kg"
                       {...field}
-                      className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                       onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9]/g, '')
                         field.onChange(value)

@@ -4,12 +4,11 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
-import { Textarea } from 'src/components/ui/textarea'
-import type { dailyFeedingSchema } from 'src/schemas'
+import type { dailyWaterQualitySchema } from 'src/schemas'
 import type { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 
-type DailyWaterQuality = z.infer<typeof dailyFeedingSchema>
+type DailyWaterQuality = z.infer<typeof dailyWaterQualitySchema>
 
 export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyWaterQuality> }) {
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
@@ -367,14 +366,14 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
           />
         </div>
       </div>
-      <div className="flex w-full flex-col gap-2">
+      {/* <div className="flex w-full flex-col gap-2">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
           Water Quality Observations <span className="font-bold text-red-500">*</span>
           <SolarIconSet.QuestionCircle size={16} />
         </Text>
         <FormField
           control={form.control}
-          name="waterQualityObservation"
+          name="observation"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -406,7 +405,7 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
             </FormItem>
           )}
         />
-      </div>
+      </div> */}
     </FlexBox>
   )
 }

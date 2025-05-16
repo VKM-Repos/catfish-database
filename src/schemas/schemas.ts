@@ -322,14 +322,12 @@ export const paginatedSamplingResponseSchema = z.object({
 })
 
 export const dailyFeedingSchema = z.object({
-  feedType: z.string().min(1, { message: 'Please Select a feed type' }),
-  pelletSize: z.string().min(1, { message: 'Please enter a pellet size' }),
-  feedQuantity: z
-    .string()
-    .min(1, { message: 'Please add a feeding quantity' })
-    .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
-    .transform(Number),
-  feedTime: z.string().min(1, { message: 'Please select feeding time' }),
+  feedType: z.string().optional(),
+  pelletSize: z.string().optional(),
+  feedQuantity: z.any().optional(),
+  // .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
+  // .transform(Number),
+  feedTime: z.string().optional(),
   dissolvedOxygen: z.string().optional(),
   phLevel: z.string().optional(),
   temperature: z.string().optional(),
@@ -338,9 +336,22 @@ export const dailyFeedingSchema = z.object({
   nitrate: z.string().optional(),
   alkalinity: z.string().optional(),
   hardness: z.string().optional(),
-  waterQualityObservation: z.string().min(10, {
-    message: 'Water quality observation must be at least 10 characters.',
-  }),
+  waterQualityObservation: z.string().optional(),
+  // .min(10, {
+  //   message: 'Water quality observation must be at least 10 characters.',
+  // }),
+})
+
+export const dailyWaterQualitySchema = z.object({
+  dissolvedOxygen: z.string().optional(),
+  phLevel: z.string().optional(),
+  temperature: z.string().optional(),
+  ammonia: z.string().optional(),
+  nitrite: z.string().optional(),
+  nitrate: z.string().optional(),
+  alkalinity: z.string().optional(),
+  hardness: z.string().optional(),
+  observation: z.string().optional(),
 })
 
 export const maintenanceSchema = z.object({

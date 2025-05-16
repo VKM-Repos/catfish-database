@@ -11,13 +11,14 @@ import { Text } from 'src/components/ui/text'
 
 type UpdatePondProps = {
   form: UseFormReturn<any>
+  setOpen: (open: boolean) => void
   error: ClientErrorType | null
   loading: boolean
 }
 
-export default function UpdatePondForm({ form, error, loading }: UpdatePondProps) {
+export default function UpdatePondForm({ form, error, loading, setOpen }: UpdatePondProps) {
   return (
-    <div className="w-full min-w-[46.25rem] py-[4rem] pb-[6rem]">
+    <div className="w-full min-w-[46.25rem] pb-[2rem] pt-[4rem]">
       <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
         <Heading className="text-center" level={6}>
           Edit pond info
@@ -36,28 +37,39 @@ export default function UpdatePondForm({ form, error, loading }: UpdatePondProps
           <hr className="w-full border border-primary-200" />
         </div>
         <UpdatePondLocationForm form={form} />
-
-        <Button
-          type="submit"
-          variant="primary"
-          className="flex min-w-[9rem] items-center gap-2"
-          disabled={!form.formState.isValid}
-        >
-          {loading ? (
-            <>
-              <Loader type="spinner" size={18} />
-              <Text color="text-inherit" variant="body">
-                Updating
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text color="text-inherit" variant="body">
-                Save
-              </Text>
-            </>
-          )}
-        </Button>
+        <FlexBox justify="between" align="center" className="w-full">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex min-w-[9rem] items-center gap-2"
+            onClick={() => {
+              setOpen(false)
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="flex min-w-[9rem] items-center gap-2"
+            disabled={!form.formState.isValid}
+          >
+            {loading ? (
+              <>
+                <Loader type="spinner" size={18} />
+                <Text color="text-inherit" variant="body">
+                  Updating
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text color="text-inherit" variant="body">
+                  Continue
+                </Text>
+              </>
+            )}
+          </Button>
+        </FlexBox>
       </FlexBox>
     </div>
   )

@@ -25,6 +25,7 @@ const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>
 
 export default function UpdatePondPage() {
   const [step, setStep] = useState(1)
+
   const navigate = useNavigate()
 
   const queryClient = useQueryClient()
@@ -95,7 +96,12 @@ export default function UpdatePondPage() {
         return (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <UpdatePondForm form={form} error={error} loading={updatePondMutation.isLoading} />
+              <UpdatePondForm
+                setOpen={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}
+                form={form}
+                error={error}
+                loading={updatePondMutation.isLoading}
+              />
             </form>
           </Form>
         )
@@ -123,7 +129,12 @@ export default function UpdatePondPage() {
 
   return (
     <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}>
-      <DialogContent className="max-h-[40rem] min-w-fit overflow-hidden   !overflow-y-scroll px-8 py-4">
+      <DialogContent
+        className={`max-h-[40rem] min-w-fit overflow-hidden ${step === 1 && '!overflow-y-scroll'} px-8 py-4`}
+        onInteractOutside={(e) => {
+          e.preventDefault()
+        }}
+      >
         {renderSteps()}
       </DialogContent>
     </Dialog>

@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
+import ActionsDropdown from './actions-dropdown'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -66,5 +67,9 @@ export const columns: ColumnDef<any>[] = [
         </div>
       )
     },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <ActionsDropdown pond={row?.original} />,
   },
 ]

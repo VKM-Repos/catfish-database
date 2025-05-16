@@ -136,7 +136,7 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
       <ActionCard
         title="Daily Farm Report"
         description="Keep track of your farm’s daily activities. Submit details like the amount of feed used and water quality readings."
-        icon={<img src="/src/assets/images/daily-farm-report.svg" alt="Farm Report" />}
+        icon={<img src="/public/assets/images/daily-farm-report.svg" alt="Farm Report" />}
         buttonText="Submit Daily Farm Report"
         buttonAction={() => setFarmReportOpen(true)}
         isFirstCard={true}
@@ -152,7 +152,7 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
       <ActionCard
         title="Sampling Report"
         description="Record important details from your sampling operation, including fish weight, mortality, total feed consumed, and current stock."
-        icon={<img src="/src/assets/images/sampling-report.svg" alt="Sampling Report" />}
+        icon={<img src="/public/assets/images/sampling-report.svg" alt="Sampling Report" />}
         buttonText="Submit Sampling Report"
         buttonAction={() => setSamplingReportOpen(true)}
       />
@@ -167,7 +167,7 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
       <ActionCard
         title="Harvest Report"
         description="Record your farm’s harvest and sales. Submit data on cost of feed, labor, maintenance, and sales revenue."
-        icon={<img src="/src/assets/images/harvest-report.svg" alt="Harvest Report" />}
+        icon={<img src="/public/assets/images/harvest-report.svg" alt="Harvest Report" />}
         buttonText="Submit Harvest Report"
         buttonAction={() => setHarvestReportOpen(true)}
       />

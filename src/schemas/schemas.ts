@@ -197,11 +197,13 @@ export const pondResponseSchema = z.object({
   latitude: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))
-    .optional(),
+    .optional()
+    .nullable(),
   longitude: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))
-    .optional(),
+    .optional()
+    .nullable(),
   waterSource: z.string(),
   pondType: z.string(),
   cluster: z.object({

@@ -131,6 +131,7 @@ export default function AddPond() {
       await createPondMutation.mutateAsync(mutationData)
 
       queryClient.refetchQueries(['my-ponds'])
+      queryClient.refetchQueries(['all-ponds'])
       queryClient.refetchQueries(['fish-batches'])
 
       setOpen(true)
@@ -154,7 +155,7 @@ export default function AddPond() {
 
   const handleCancelYes = () => {
     setOpenCancelPrompt(false)
-    navigate(paths.dashboard.ponds.root)
+    farmerId ? navigate(paths.dashboard.farmers.view(farmerId)) : navigate(paths.dashboard.ponds.root)
   }
 
   const handleCancelNo = () => {
@@ -175,8 +176,8 @@ export default function AddPond() {
     user?.role !== 'FARMER'
       ? navigate(-1)
       : pondCreated
-      ? navigate(paths.dashboard.ponds.root)
-      : navigate(paths.dashboard.ponds.create.addFishToPond)
+      ? navigate(paths.dashboard.ponds.create.addFishToPond)
+      : navigate(paths.dashboard.ponds.root)
   }
 
   useEffect(() => {

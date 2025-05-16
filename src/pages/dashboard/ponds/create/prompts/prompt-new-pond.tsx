@@ -52,7 +52,7 @@ export default function PromptNewPond({
               onClick={handleNoConditionOnClose}
               className="w-full font-semibold text-primary-500"
             >
-              {pondCreated ? 'No, I will do that later' : 'Add fish to pond'}
+              {pondCreated ? 'Add fish to pond' : 'No, I will do that later'}
             </Button>
           </FlexBox>
         </FlexBox>

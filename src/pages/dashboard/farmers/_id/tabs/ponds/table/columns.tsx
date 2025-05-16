@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
+import ActionsDropdown from './actions-dropdown'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -46,10 +47,10 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
   },
   {
-    accessorFn: (row) => row.original?.status ?? 'Active',
+    accessorFn: (row) => row.original.status ?? (row.original.quantity == 0 ? 'Inactive' : 'Inactive'),
     header: 'Pond Status',
     cell: ({ row }) => {
-      const status = row.original.status ?? 'Active'
+      const status = row.original.quantity == 0 ? 'Inactive' : 'Active'
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${
@@ -66,5 +67,9 @@ export const columns: ColumnDef<any>[] = [
         </div>
       )
     },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <ActionsDropdown pond={row?.original} />,
   },
 ]

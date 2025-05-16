@@ -2,37 +2,29 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { Button } from 'src/components/ui/button'
-import { Dialog, DialogContent } from 'src/components/ui/dialog'
+import { Dialog, DialogContent, DialogTrigger } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
-import UpdatePondForm from './update-pond-form'
+import UpdatePondForm from 'src/pages/dashboard/ponds/_id/edit/update-pond-form'
 import { z } from 'zod'
 import { pondResponseSchema, pondSchema } from 'src/schemas'
-import { useNavigate, useParams } from 'react-router-dom'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { Form } from 'src/components/ui/form'
 import { useQueryClient } from '@tanstack/react-query'
-import { paths } from 'src/routes'
+import { pondResponseType } from 'src/types/ponds.types'
 
 type PondData = z.infer<typeof pondSchema>
 
-const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>({
-  endpoint: '/ponds/:id',
-  responseSchema: pondResponseSchema,
-  queryKey: ['pond-details-for-farmer'],
-})
+type UpdatePondPageProps = {
+  pond: pondResponseType
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
 
-export default function UpdatePondPage() {
+export default function UpdatePondPage({ pond, open, onOpenChange }: UpdatePondPageProps) {
   const [step, setStep] = useState(1)
 
-  const navigate = useNavigate()
-
   const queryClient = useQueryClient()
-
-  const { id } = useParams<{ id: string }>()
-
-  const { data: pond } = useGetPond({ route: { id: id! } })
 
   const initialValues = {
     id: pond?.id || '',
@@ -68,9 +60,8 @@ export default function UpdatePondPage() {
       await updatePondMutation.mutateAsync({
         ...values,
       })
-      queryClient.invalidateQueries(['pond-details-for-farmer'])
-      queryClient.refetchQueries(['pond-details-for-farmer'])
-      queryClient.refetchQueries(['my-ponds'])
+      queryClient.refetchQueries(['all-ponds'])
+      queryClient.refetchQueries(['farmer-details'])
       setStep(2)
     } catch (error) {
       console.error(error)
@@ -97,7 +88,7 @@ export default function UpdatePondPage() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <UpdatePondForm
-                setOpen={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}
+                setOpen={() => onOpenChange(false)}
                 form={form}
                 error={error}
                 loading={updatePondMutation.isLoading}
@@ -112,7 +103,7 @@ export default function UpdatePondPage() {
             <Button
               variant="primary"
               onClick={() => {
-                navigate(`${paths.dashboard.ponds.root}/${id}`)
+                onOpenChange(false)
                 setTimeout(() => {
                   setStep(1)
                 }, 1000)
@@ -128,7 +119,16 @@ export default function UpdatePondPage() {
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger
+        asChild
+        onClick={() => {
+          onOpenChange(true)
+          console.log(open)
+        }}
+      >
+        Edit Pond
+      </DialogTrigger>
       <DialogContent
         className={`max-h-[40rem] min-w-fit overflow-hidden ${step === 1 && '!overflow-y-scroll'} px-8 py-4`}
         onInteractOutside={(e) => {

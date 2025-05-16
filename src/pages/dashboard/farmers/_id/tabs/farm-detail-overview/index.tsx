@@ -34,7 +34,7 @@ export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
   return (
     <FlexBox direction="col" gap="gap-6" className="w-full">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Text className="text-xl font-semibold text-neutral-700">Profile</Text>
+        <Text className="text-xl font-semibold text-neutral-700">Farmer&apos;s info</Text>
         <Button
           variant="outline"
           className="border-primary-400"

@@ -8,8 +8,9 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { mergePondsWithTotalFishQuantity } from 'src/lib/utils'
 import { z } from 'zod'
 import { useAuthStore } from 'src/store/auth.store'
+import { paginatedPondResponseSchema } from 'src/schemas'
 
-export function PondsTable() {
+export function PondsTable({ clusterId }: { clusterId: string }) {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuthStore()
   const isLoading = false
@@ -21,34 +22,37 @@ export function PondsTable() {
     queryKey: ['fish-batches'],
   })
 
-  const useFetchPonds = createGetQueryHook({
-    endpoint: `/ponds/clusters/me?farmerId=${id}`,
-    responseSchema: z.any(),
+  const useFetchClusterManagerPonds = createGetQueryHook({
+    endpoint: `/ponds/clusters/me`,
+    responseSchema: paginatedPondResponseSchema,
     queryKey: ['all-ponds'],
     options: {
       enabled: user?.role === 'CLUSTER_MANAGER',
     },
   })
+
   const useFetchPondsByAdmin = createGetQueryHook({
-    endpoint: `/ponds?farmerId=${id}`,
-    responseSchema: z.any(),
+    endpoint: `/ponds`,
+    responseSchema: paginatedPondResponseSchema,
     queryKey: ['all-ponds'],
     options: {
       enabled: user?.role === 'SUPER_ADMIN',
     },
   })
 
+  const args = { query: { farmerId: id } }
+
+  const { data: clusterManagerPonds } = useFetchClusterManagerPonds(args)
+  const { data: adminPonds } = useFetchPondsByAdmin(args)
   const { data: fishBatches } = useGetFishBatches()
-  const { data: ponds } = useFetchPonds()
-  const { data: ponds_admin } = useFetchPondsByAdmin()
 
-  const totalPonds = (ponds || ponds_admin) && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
+  const ponds = user?.role === 'CLUSTER_MANAGER' ? clusterManagerPonds : adminPonds
 
-  const farmer = ponds?.content.find((farmer: any) => farmer.farmer.id === id)
+  const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
 
   const redirectPath = () => {
     const navigatePath = id
-      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${farmer?.cluster.id}`
+      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${clusterId}`
       : paths.dashboard.ponds.create.addPond
 
     navigate(navigatePath)

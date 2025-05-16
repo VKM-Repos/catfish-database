@@ -5,7 +5,7 @@ import { PondsTable } from './table'
 import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes'
-import { paginatedPondResponseSchema } from 'src/schemas'
+import { farmerResponseSchema, paginatedPondResponseSchema } from 'src/schemas'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { useAuthStore } from 'src/store/auth.store'
 
@@ -32,18 +32,25 @@ export default function Ponds() {
     },
   })
 
+  const useGetFarmer = createGetQueryHook<typeof farmerResponseSchema, { id: string }>({
+    endpoint: '/users/:id',
+    responseSchema: farmerResponseSchema,
+    queryKey: ['farmer-details'],
+  })
+
   const args = { query: { farmerId: id } }
 
   const { data: clusterManagerPonds } = useFetchClusterManagerPonds(args)
   const { data: adminPonds } = useFetchPondsByAdmin(args)
+  const { data: farmer } = useGetFarmer({ route: { id: id! } })
 
   const ponds = user?.role === 'CLUSTER_MANAGER' ? clusterManagerPonds : adminPonds
 
-  const farmer = ponds?.content.find((pond) => pond.farmer?.id?.trim() === id?.trim())
+  const clusterId = farmer?.cluster?.id ?? ''
 
   const redirectPath = () => {
     const navigatePath = id
-      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${farmer?.cluster.id}`
+      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${clusterId}`
       : paths.dashboard.ponds.create.addPond
     navigate(navigatePath)
   }
@@ -61,7 +68,7 @@ export default function Ponds() {
           </Button>
         )}
       </FlexBox>
-      <PondsTable />
+      <PondsTable clusterId={clusterId} />
     </FlexBox>
   )
 }

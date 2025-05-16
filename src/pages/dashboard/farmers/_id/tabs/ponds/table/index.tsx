@@ -10,7 +10,7 @@ import { z } from 'zod'
 import { useAuthStore } from 'src/store/auth.store'
 import { paginatedPondResponseSchema } from 'src/schemas'
 
-export function PondsTable() {
+export function PondsTable({ clusterId }: { clusterId: string }) {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuthStore()
   const isLoading = false
@@ -50,11 +50,9 @@ export function PondsTable() {
 
   const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
 
-  const farmer = ponds?.content.find((farmer: any) => farmer.farmer.id === id)
-
   const redirectPath = () => {
     const navigatePath = id
-      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${farmer?.cluster.id}`
+      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(id)}&clusterId=${clusterId}`
       : paths.dashboard.ponds.create.addPond
 
     navigate(navigatePath)

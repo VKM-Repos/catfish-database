@@ -63,7 +63,13 @@ export default function PondsDetailsPage() {
             <Heading className="!text-[1.875rem] font-semibold">{title}</Heading>
             <Text className="text-sm text-neutral-700">{pondId}</Text>
           </FlexBox>
-          <StatusBadge status={pondStatus} activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />} />
+          <StatusBadge
+            status={pondStatus}
+            activeText="Active"
+            inactiveText="Inactive"
+            activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
+            inactiveIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
+          />
         </FlexBox>
         <Spacer />
         <Container className="!px-12">

@@ -176,8 +176,8 @@ export default function AddPond() {
     user?.role !== 'FARMER'
       ? navigate(-1)
       : pondCreated
-      ? navigate(paths.dashboard.ponds.root)
-      : navigate(paths.dashboard.ponds.create.addFishToPond)
+      ? navigate(paths.dashboard.ponds.create.addFishToPond)
+      : navigate(paths.dashboard.ponds.root)
   }
 
   useEffect(() => {

@@ -17,6 +17,10 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
     navigate(paths.dashboard.home.getStarted)
     resetForm()
   }
+  const addReport = () => {
+    onOpenChange(false)
+    resetForm()
+  }
   return (
     <Dialog open={open}>
       <DialogContent className="overflow-hidden p-8">
@@ -26,7 +30,7 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
             Your report for today has been captured, do you want to submit another one today?
           </p>
         </div>
-        <Button>Yes, submit another report</Button>
+        <Button onClick={addReport}>Yes, submit another report</Button>
         <Button type="button" onClick={handleCancel} variant="link" className="font-semibold text-primary-500">
           No , I will do this later
         </Button>

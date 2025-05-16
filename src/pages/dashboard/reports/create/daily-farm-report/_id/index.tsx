@@ -40,7 +40,7 @@ export default function CreatePondPage() {
   const RenderSteps = () => {
     switch (step) {
       case 1:
-        return <MonitoringForm handlePrevious={handlePrevious} handleNext={handleNext} />
+        return <MonitoringForm />
       case 2:
         return <MaintenanceForm handlePrevious={handlePrevious} handleNext={onSubmit} />
       default:

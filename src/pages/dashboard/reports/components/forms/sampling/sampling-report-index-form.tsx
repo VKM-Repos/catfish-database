@@ -4,14 +4,15 @@ import { Form } from 'src/components/ui/form'
 import { samplingSchema } from 'src/schemas'
 import type { z } from 'zod'
 import { Button } from 'src/components/ui/button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SamplingWeightForm from './sampling-weight-from'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes'
+import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import FeedConsumedForm from './feed-consumed-form'
 import MortalityRateForm from './mortality-rate-form'
 import DiseaseForm from './disease-form'
 import FishBehaviorForm from './fish-bevahior-form'
-import { useNavigate } from 'react-router-dom'
-import { paths } from 'src/routes'
 
 type SamplingData = z.infer<typeof samplingSchema>
 
@@ -23,37 +24,74 @@ export default function SamplingIndexForm({
   handlePrevious: () => void
 }) {
   const navigate = useNavigate()
-
   const [openDialog, setOpenDialog] = useState(false)
+
+  const {
+    numberOfFishSampled,
+    weightOfFishSampled,
+    avgWeightFishSampled,
+    totalWeightGain,
+    totalFeedConsumed,
+    numberOfFishMortalityRecorded,
+    disease,
+    diseaseObservation,
+    behavior,
+    observation,
+    updateProperty,
+    reset,
+  } = useFishSamplingStore()
+
   const form = useForm<SamplingData>({
     resolver: zodResolver(samplingSchema),
     defaultValues: {
-      numberOfFishSampled: '',
-      weightOfFishSampled: '',
-      avgWeightFishSampled: '',
-      totalWeightGain: '',
-      totalFeedConsumed: '',
-      numberOfFishMortalityRecorded: '',
-      disease: '',
-      diseaseObservation: '',
-      behavior: '',
-      observation: '',
+      numberOfFishSampled,
+      weightOfFishSampled,
+      avgWeightFishSampled,
+      totalWeightGain,
+      totalFeedConsumed,
+      numberOfFishMortalityRecorded,
+      disease,
+      diseaseObservation,
+      behavior,
+      observation,
     },
     mode: 'onChange',
   })
 
+  useEffect(() => {
+    const subscription = form.watch((values) => {
+      if (values) {
+        // biome-ignore lint/complexity/noForEach: <explanation>
+        Object.entries(values).forEach(([key, value]) => {
+          updateProperty(key as keyof SamplingData, value || '')
+        })
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [form, updateProperty])
+
   const onSubmit = async (values: z.infer<typeof samplingSchema>) => {
     try {
-      console.log(values)
+      console.log('Submitting:', values)
+
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      Object.entries(values).forEach(([key, value]) => {
+        updateProperty(key as keyof SamplingData, value || '')
+      })
+
       handleNext()
     } catch (error) {
       console.error(error)
     }
   }
 
+  const handleCancel = () => {
+    reset()
+    navigate(paths.dashboard.home.getStarted)
+  }
+
   return (
     <>
-      {/* <CreateReportDialog open={openDialog} onOpenChange={setOpenDialog} /> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8 pb-0.5">
           <div className="w-full">
@@ -67,7 +105,6 @@ export default function SamplingIndexForm({
               <SamplingWeightForm form={form} />
             </div>
           </div>
-
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
               <div className="p-5">
@@ -81,6 +118,7 @@ export default function SamplingIndexForm({
               <FeedConsumedForm form={form} />
             </div>
           </div>
+
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
               <div className="p-5">
@@ -94,7 +132,6 @@ export default function SamplingIndexForm({
               <MortalityRateForm form={form} />
             </div>
           </div>
-
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
               <div className="p-5">
@@ -124,12 +161,7 @@ export default function SamplingIndexForm({
           </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">
-            <Button
-              type="button"
-              onClick={() => navigate(paths.dashboard.home.getStarted)}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
+            <Button type="button" onClick={handleCancel} variant="outline" className="flex items-center gap-2">
               Cancel
             </Button>
             <Button

@@ -18,6 +18,7 @@ import { LoadingScreen } from 'src/components/global/loading-screen'
 import { useParams } from 'react-router-dom'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType, ServerErrorType } from 'src/types'
+import { ConfirmSamplingSubmission } from '../../modals/confirm-sampling-submission'
 
 export function SortingForm({ handlePrevious }: { handlePrevious: () => void; handleNext: () => void }) {
   const { id } = useParams<{ id: string }>()
@@ -53,6 +54,9 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
     observation,
   }
   const [openDialog, setOpenDialog] = useState(false)
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
+  const [formData, setFormData] = useState<z.infer<typeof sortingSchema> | null>(null)
+  const [samplingData, setSamplingData] = useState<any>(null)
 
   const form = useForm<z.infer<typeof sortingSchema>>({
     resolver: zodResolver(sortingSchema),
@@ -69,14 +73,14 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
 
   const createSamplingReport = useSamplingReport()
 
-  const onSubmit = async (data: z.infer<typeof sortingSchema>) => {
+  const validateForm = (data: z.infer<typeof sortingSchema>) => {
     // Validate reason is required when split occurs
     if (data.splitOccur && !data.reason) {
       form.setError('reason', {
         type: 'manual',
         message: 'Reason is required when split occurs',
       })
-      return
+      return false
     }
 
     // Additional validation for transfer
@@ -87,7 +91,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
           type: 'manual',
           message: 'At least one batch is required for transfer',
         })
-        return
+        return false
       }
 
       // Validate each batch has destinationPond and numberOfFishMoved
@@ -98,36 +102,55 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
           type: 'manual',
           message: 'All batches must have destination pond and number of fish moved',
         })
-        return
+        return false
       }
     }
+    return true
+  }
+
+  const prepareSamplingData = (data: z.infer<typeof sortingSchema>) => {
+    return {
+      pondId: id,
+      census: 12,
+      sample: Number.parseInt(samplingForm.numberOfFishSampled),
+      weight: Number.parseInt(samplingForm.weightOfFishSampled),
+      mortality: Number.parseInt(samplingForm.numberOfFishMortalityRecorded),
+      averageWeightToFish: Number.parseInt(samplingForm.avgWeightFishSampled),
+      weightGain: Number.parseInt(samplingForm.totalWeightGain),
+      feedConsumed: Number.parseInt(samplingForm.totalFeedConsumed),
+      behaviourObserve: samplingForm.observation,
+      diseaseObserve: samplingForm.diseaseObservation,
+      diseaseType: samplingForm.disease,
+      behaviorType: samplingForm.behavior,
+      splitOccur: data.splitOccur,
+      reason: data.reason?.toUpperCase(),
+      splitInfo: {
+        batches: data.batches?.map((batch) => ({
+          ...batch,
+          quantity: Number(batch.quantity),
+        })),
+      },
+    }
+  }
+
+  const onSubmit = async (data: z.infer<typeof sortingSchema>) => {
+    if (!validateForm(data)) return
+
+    setFormData(data)
+    const preparedData = prepareSamplingData(data)
+    setSamplingData(preparedData)
+    setOpenConfirmDialog(true)
+  }
+
+  const handleConfirmSubmission = async () => {
     try {
-      const samplingData = {
-        pondId: id,
-        census: 12,
-        sample: Number.parseInt(samplingForm.numberOfFishSampled),
-        weight: Number.parseInt(samplingForm.weightOfFishSampled),
-        mortality: Number.parseInt(samplingForm.numberOfFishMortalityRecorded),
-        averageWeightToFish: Number.parseInt(samplingForm.avgWeightFishSampled),
-        weightGain: Number.parseInt(samplingForm.totalWeightGain),
-        feedConsumed: Number.parseInt(samplingForm.totalFeedConsumed),
-        behaviourObserve: samplingForm.observation,
-        diseaseObserve: samplingForm.diseaseObservation,
-        diseaseType: samplingForm.disease,
-        behaviorType: samplingForm.behavior,
-        splitOccur: data.splitOccur,
-        reason: data.reason?.toUpperCase(),
-        splitInfo: {
-          batches: data.batches?.map((batch) => ({
-            ...batch,
-            quantity: Number(batch.quantity),
-          })),
-        },
-      }
-      // console.log(samplingData, '<<<<')
+      if (!samplingData) return
+
       await createSamplingReport.mutateAsync(samplingData)
+      setOpenConfirmDialog(false)
       setOpenDialog(true)
     } catch (err) {
+      setOpenConfirmDialog(false)
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: ServerErrorType } }
         const errorData = axiosError.response?.data
@@ -142,13 +165,14 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
       }
     }
   }
+
   if (createSamplingReport.isLoading) {
     return <LoadingScreen />
   }
-
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={form.reset} onOpenChange={setOpenDialog} />
+      <ConfirmSamplingSubmission open={openConfirmDialog} onOpenChange={handleConfirmSubmission} />
       {error && <FormValidationErrorAlert error={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">

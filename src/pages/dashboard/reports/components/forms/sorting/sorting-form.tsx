@@ -3,63 +3,153 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from 'src/components/ui/button'
-import { Checkbox } from 'src/components/ui/checkbox'
-import { Form, FormControl, FormDescription, FormField, FormItem } from 'src/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from 'src/components/ui/form'
 import { Switch } from 'src/components/ui/switch'
-import { Text } from 'src/components/ui/text'
 import { sortingSchema } from 'src/schemas'
-import type { z } from 'zod'
-import { useEffect, useState } from 'react' // Import useEffect
+import { z } from 'zod'
+import { useState } from 'react'
+import { CreateReportDialog } from '../../modals/create-report-modal'
+import { RadioGroup, RadioGroupItem } from 'src/components/ui/radio-group'
 import TransferForm from './transfer-form'
 import FishHarvestForm from './fish-harvest-form'
-import { CreateReportDialog } from '../../modals/create-report-modal'
+import { useFishSamplingStore } from 'src/store/fish-sampling.store'
+import { createPostMutationHook } from 'src/api/hooks/usePost'
+import { LoadingScreen } from 'src/components/global/loading-screen'
+import { useParams } from 'react-router-dom'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 
 export function SortingForm({ handlePrevious }: { handlePrevious: () => void; handleNext: () => void }) {
+  const { id } = useParams<{ id: string }>()
+  const [error, setError] = useState<ClientErrorType | null>()
+  const useSamplingReport = createPostMutationHook({
+    endpoint: '/samplings',
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+  const {
+    numberOfFishSampled,
+    weightOfFishSampled,
+    avgWeightFishSampled,
+    totalWeightGain,
+    totalFeedConsumed,
+    numberOfFishMortalityRecorded,
+    disease,
+    diseaseObservation,
+    behavior,
+    observation,
+  } = useFishSamplingStore()
+
+  const samplingForm = {
+    numberOfFishSampled,
+    weightOfFishSampled,
+    avgWeightFishSampled,
+    totalWeightGain,
+    totalFeedConsumed,
+    numberOfFishMortalityRecorded,
+    disease,
+    diseaseObservation,
+    behavior,
+    observation,
+  }
   const [openDialog, setOpenDialog] = useState(false)
 
   const form = useForm<z.infer<typeof sortingSchema>>({
     resolver: zodResolver(sortingSchema),
     defaultValues: {
       splitOccur: false,
-      transferOccur: false,
-      harvestOccur: false,
-      transfers: [
-        {
-          numberOfFishMoved: '0',
-          destinationPond: '',
-        },
-      ],
-      harvest: false,
+      reason: undefined,
+      batches: [],
     },
+    mode: 'onChange',
   })
-  const { reset } = form
 
-  const harvestOccurValue = form.watch('harvestOccur')
-  const transferOccurValue = form.watch('transferOccur')
+  const splitOccur = form.watch('splitOccur')
+  const reason = form.watch('reason')
 
-  useEffect(() => {
-    if (harvestOccurValue && transferOccurValue) {
-      form.setValue('transferOccur', false)
+  const createSamplingReport = useSamplingReport()
+
+  const onSubmit = async (data: z.infer<typeof sortingSchema>) => {
+    // Validate reason is required when split occurs
+    if (data.splitOccur && !data.reason) {
+      form.setError('reason', {
+        type: 'manual',
+        message: 'Reason is required when split occurs',
+      })
+      return
     }
-  }, [form, harvestOccurValue, transferOccurValue])
 
-  useEffect(() => {
-    if (harvestOccurValue && transferOccurValue) {
-      form.setValue('harvestOccur', false)
+    // Additional validation for transfer
+    if (data.reason === 'transfer') {
+      // Validate at least one batch exists
+      if (!data.batches || data.batches.length === 0) {
+        form.setError('batches', {
+          type: 'manual',
+          message: 'At least one batch is required for transfer',
+        })
+        return
+      }
+
+      // Validate each batch has destinationPond and numberOfFishMoved
+      const invalidBatches = data.batches.filter((batch) => !batch.pondId || !batch.quantity)
+
+      if (invalidBatches.length > 0) {
+        form.setError('batches', {
+          type: 'manual',
+          message: 'All batches must have destination pond and number of fish moved',
+        })
+        return
+      }
     }
-  }, [harvestOccurValue, transferOccurValue, form])
+    try {
+      const samplingData = {
+        pondId: id,
+        census: 12,
+        sample: Number.parseInt(samplingForm.numberOfFishSampled),
+        weight: Number.parseInt(samplingForm.weightOfFishSampled),
+        mortality: Number.parseInt(samplingForm.numberOfFishMortalityRecorded),
+        averageWeightToFish: Number.parseInt(samplingForm.avgWeightFishSampled),
+        weightGain: Number.parseInt(samplingForm.totalWeightGain),
+        feedConsumed: Number.parseInt(samplingForm.totalFeedConsumed),
+        behaviourObserve: samplingForm.observation,
+        diseaseObserve: samplingForm.diseaseObservation,
+        diseaseType: samplingForm.disease,
+        behaviorType: samplingForm.behavior,
+        splitOccur: data.splitOccur,
+        reason: data.reason?.toUpperCase(),
+        splitInfo: {
+          batches: data.batches?.map((batch) => ({
+            ...batch,
+            quantity: Number(batch.quantity),
+          })),
+        },
+      }
+      // console.log(samplingData, '<<<<')
+      await createSamplingReport.mutateAsync(samplingData)
+      setOpenDialog(true)
+    } catch (err) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: ServerErrorType } }
+        const errorData = axiosError.response?.data
 
-  function onSubmit(data: z.infer<typeof sortingSchema>) {
-    console.log('hellooo')
-
-    setOpenDialog(true)
-    console.log(data)
+        if (errorData) {
+          setError({
+            title: errorData?.error,
+            message: errorData?.message,
+            errors: errorData?.errors ?? null,
+          })
+        }
+      }
+    }
+  }
+  if (createSamplingReport.isLoading) {
+    return <LoadingScreen />
   }
 
   return (
     <>
-      <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
-
+      <CreateReportDialog open={openDialog} resetForm={form.reset} onOpenChange={setOpenDialog} />
+      {error && <FormValidationErrorAlert error={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
@@ -70,6 +160,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                 capture the details.
               </p>
             </div>
+
             <div className="space-y-4 rounded-lg border border-neutral-200 p-5">
               <FormField
                 control={form.control}
@@ -84,16 +175,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <span>No</span>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked)
-                            if (!checked) {
-                              form.setValue('transferOccur', false)
-                              form.setValue('harvestOccur', false)
-                            }
-                          }}
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                         <span>Yes</span>
                       </div>
                     </FormControl>
@@ -101,70 +183,64 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                 )}
               />
 
-              {form.getValues('splitOccur') && (
-                <div className="item-center flex gap-5">
-                  <FormField
-                    control={form.control}
-                    name="transferOccur"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="flex items-center gap-3">
-                            <Checkbox
-                              id="transfer"
-                              checked={field.value}
-                              onCheckedChange={(checked) => {
-                                field.onChange(checked)
-                                if (checked) {
-                                  form.setValue('harvestOccur', false)
-                                }
-                              }}
-                            />
-                            <Text variant="label" size="base" weight="normal" color="text-neutral-400">
-                              Transfer
-                            </Text>
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="harvestOccur"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="flex items-center gap-3">
-                            <Text variant="label" size="base" weight="normal" color="text-neutral-400">
-                              Harvest
-                            </Text>
-                            <Checkbox
-                              id="harvest"
-                              checked={field.value}
-                              onCheckedChange={(checked) => {
-                                field.onChange(checked)
-                                if (checked) {
-                                  form.setValue('transferOccur', false)
-                                }
-                              }}
-                            />
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              {splitOccur && (
+                <FormField
+                  control={form.control}
+                  name="reason"
+                  render={({ field }) => (
+                    <FormItem className="space-y-3">
+                      <FormLabel>
+                        Reason for split: <span className="text-xl text-error-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex items-center space-x-2"
+                          required
+                        >
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="transfer" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Transfer</FormLabel>
+                          </FormItem>
+                          <FormItem className="flex items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <RadioGroupItem value="harvest" />
+                            </FormControl>
+                            <FormLabel className="font-normal">Harvest</FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormControl>
+                      {form.formState.errors.reason && (
+                        <p className="text-sm font-medium text-error-500">{form.formState.errors.reason.message}</p>
+                      )}
+                    </FormItem>
+                  )}
+                />
               )}
             </div>
 
-            {form.getValues('splitOccur') && (
+            {splitOccur && reason && (
               <div className="mt-10">
-                {form.getValues('transferOccur') && <TransferForm form={form} />}
-                {form.getValues('harvestOccur') && <FishHarvestForm form={form} />}
+                {reason === 'transfer' && (
+                  <div>
+                    <TransferForm form={form} />
+                    {form.formState.errors.batches && (
+                      <p className="text-sm font-medium text-error-500">{form.formState.errors.batches.message}</p>
+                    )}
+                  </div>
+                )}
+                {reason === 'harvest' && (
+                  <div>
+                    <FishHarvestForm form={form} />
+                  </div>
+                )}
               </div>
             )}
           </div>
+
           <div className="flex justify-between bg-neutral-100 p-5">
             <Button variant={'outline'} onClick={handlePrevious}>
               Back

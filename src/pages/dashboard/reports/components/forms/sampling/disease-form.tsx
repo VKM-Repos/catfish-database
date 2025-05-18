@@ -8,7 +8,7 @@ import * as SolarIconSet from 'solar-icon-set'
 
 import type { z } from 'zod'
 import { useRef } from 'react'
-import { Select, SelectContent, SelectTrigger, SelectValue } from 'src/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 
 type SamplingFormValues = z.infer<typeof samplingSchema>
 
@@ -18,6 +18,20 @@ export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingForm
   const handleIconClick = () => {
     timeInputRef.current?.showPicker()
   }
+  const diseases = [
+    'BACTERIAL',
+    'No Signs of Disease',
+    'Fin Rot',
+    'Columnaris (Cottonmouth Disease)',
+    'Ich (Ichthyophthirius multifiliis) / White Spot',
+    'Yellow or Red Ulcer Disease',
+    'Gill Flukes (Monogenean Parasites)',
+    'Mouth Rot',
+    'Tail Rot',
+    'Fungal Infection Swim Bladder Disorder',
+    'Dropsy (Bloating/Ascites)',
+    'External Parasites',
+  ]
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full rounded-md px-5">
       <div className="flex w-full items-center gap-5">
@@ -45,21 +59,15 @@ export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingForm
                       </div>
                     </SelectTrigger>
                     <SelectContent>
-                      {/* {isWaterSourcesLoading ? (
-                        <SelectItem value="loading" disabled>
-                          <Text>Loading feeds...</Text>
+                      {diseases?.map((disease) => (
+                        <SelectItem
+                          className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
+                          key={disease}
+                          value={disease}
+                        >
+                          {disease}
                         </SelectItem>
-                      ) : (
-                        feeds?.map((feed) => (
-                          <SelectItem
-                            className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
-                            key={feed}
-                            value={feed}
-                          >
-                            {feed}
-                          </SelectItem>
-                        ))
-                      )} */}
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -85,6 +93,7 @@ export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingForm
                     className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 px-2 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
                   >
                     <span>
+                      {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
                       <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           fillRule="evenodd"

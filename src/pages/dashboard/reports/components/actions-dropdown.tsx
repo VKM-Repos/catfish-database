@@ -9,7 +9,6 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
 // import { DeactivateUserDialog } from '../modals/deactivate-user'
-import { useState } from 'react'
 import type { User } from 'src/types'
 import * as SolarIconSet from 'solar-icon-set'
 
@@ -19,7 +18,6 @@ type ActionsDropdownProps = {
 
 export function ReportActionsDropdown({ user }: ActionsDropdownProps) {
   const navigate = useNavigate()
-  const [menu, setMenu] = useState(false)
 
   return (
     <>
@@ -31,19 +29,14 @@ export function ReportActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.reports.view(user.id))}>
             <SolarIconSet.Eye /> View
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.reports.editFeedingReport(user.id))}>
             <SolarIconSet.Pen2 /> Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>
-            <SolarIconSet.TrashBin2 /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {/* <DeactivateUserDialog user={user} open={menu} onOpenChange={setMenu} /> */}
     </>
   )
 }

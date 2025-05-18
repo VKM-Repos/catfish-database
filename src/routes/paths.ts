@@ -59,6 +59,13 @@ export const paths = {
       createDailyFarmReport: (id: string) => `/dashboard/reports/create/daily-farm-report/${id}`,
       createSamplingReport: (id: string) => `/dashboard/reports/create/daily-sampling-report/${id}`,
       createHarvestReport: (id: string) => `/dashboard/reports/create/daily-harvest-report/${id}`,
+      view: (id: string) => `/dashboard/reports/${id}`,
+      viewFeedingReport: (id: string) => `/dashboard/reports/${id}/feeding-report`,
+      viewSamplingReport: (id: string) => `/dashboard/reports/${id}/sampling-report`,
+      viewHarvestReport: (id: string) => `/dashboard/reports/${id}/harvest-report`,
+      editFeedingReport: (id: string) => `/dashboard/reports/${id}/edit/feeding-report`,
+      editSamplingReport: (id: string) => `/dashboard/reports/${id}/edit/sampling-report`,
+      editHarvestReport: (id: string) => `/dashboard/reports/${id}/edit/harvest-report`,
     },
 
     // System Routes

@@ -1,94 +1,65 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { Dialog, DialogContent } from 'src/components/ui/dialog'
-import { Text } from 'src/components/ui/text'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { Loader } from 'src/components/ui/loader'
-import { paths } from 'src/routes/paths'
-import { Heading } from 'src/components/ui/heading'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { Button } from 'src/components/ui/button'
-import { clusterManagerResponseSchema } from 'src/schemas'
+import { Dialog, DialogContent } from 'src/components/ui/dialog'
+import { FlexBox } from 'src/components/ui/flexbox'
 import { Grid } from 'src/components/ui/grid'
-
-const useGetClusterManager = createGetQueryHook<typeof clusterManagerResponseSchema, { id: string }>({
-  endpoint: '/users/:id',
-  responseSchema: clusterManagerResponseSchema,
-  queryKey: ['cluster-manager'],
-})
+import { Text } from 'src/components/ui/text'
+import { formatDate } from 'src/lib/date'
+import { paths } from 'src/routes/paths'
 
 export default function FeedingReportsDetailsModal() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: user, isLoading } = useGetClusterManager({ route: { id: id! } })
+  const { state } = useLocation()
 
-  if (!id) {
-    return null
-  }
+  const samplingData = state?.samplingData
+  console.log(samplingData)
+  const samplingReport = [
+    { label: 'Date', value: samplingData?.createdAt ? formatDate(samplingData?.createdAt) : '-' },
+    { label: 'Number of Fish Sampled', value: samplingData?.sample ?? '-' },
+    { label: 'Weight of Fish Sampled', value: samplingData?.weight ?? '-' },
+    { label: 'Avg. Weight of Fish Sampled', value: samplingData?.averageWeightToFish ?? '-' },
+    { label: 'Total Weight gain', value: samplingData?.weightGain ?? '-' },
+    { label: 'Mortality', value: samplingData?.mortality ?? '-' },
+  ]
+  if (!id) return null
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.reports.root)}>
-      <DialogContent className="min-h-[410px] overflow-hidden px-8 py-4">
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader type="dots" size={24} />
-          </div>
-        ) : user ? (
-          <div className="flex h-full flex-col justify-center space-y-8">
-            <Heading className="relative top-0 border-none text-center capitalize" level={6}>
-              Cluster manager details
-            </Heading>
-            <Grid cols={2} gap="gap-4">
-              <div>
-                <Text>First Name</Text>
-                <Text weight="light" color="text-neutral-400">
-                  {user.firstName}
-                </Text>
-              </div>
-              <div>
-                <Text>Last Name</Text>
-                <Text weight="light" color="text-neutral-400">
-                  {user.lastName}
-                </Text>
-              </div>
+    <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.reports.root}?tab=sampling-report`)}>
+      <DialogContent className="min-h-[410px] min-w-[740px] overflow-hidden px-8 py-4">
+        {state?.samplingData ? (
+          <FlexBox direction="col" gap="gap-6" className="w-full py-4">
+            <FlexBox justify="center" align="center" className="w-full">
+              <Text className="text-xl font-semibold text-neutral-700">View Record</Text>
+            </FlexBox>
+
+            <Text className="w-full border-b border-b-neutral-200 text-base font-semibold text-neutral-700">
+              Sampling
+            </Text>
+            <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3">
+              {samplingReport.map((item) => (
+                <FlexBox key={item.label} gap="gap-2" direction="col">
+                  <Text variant="body" size="base" color="text-neutral-500" weight="semibold">
+                    {item.label}
+                  </Text>
+                  <Text variant="body" size="base" color="text-neutral-500" weight="light">
+                    {item.value}
+                  </Text>
+                </FlexBox>
+              ))}
             </Grid>
-
-            <div>
-              <Text>Email</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.email}
-              </Text>
-            </div>
-            <div>
-              <Text>Cluster</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.cluster?.name}
-              </Text>
-            </div>
-            <div>
-              <Text>Phone</Text>
-              <Text weight="light" color="text-neutral-400">
-                {user.phone}
-              </Text>
-            </div>
-
-            <div className="flex w-full justify-between space-x-2">
+            <div className="mt-6 flex w-full justify-between space-x-2">
               <Button
                 className="w-full"
                 variant="outline"
-                onClick={() => navigate(paths.dashboard.clusterManagers.root)}
+                onClick={() => navigate(`${paths.dashboard.reports.root}?tab=sampling-report`)}
               >
                 Cancel
               </Button>
-              <Button
-                className="w-full"
-                variant="primary"
-                onClick={() => navigate(paths.dashboard.clusterManagers.id(user.id))}
-              >
-                Edit
-              </Button>
             </div>
-          </div>
+          </FlexBox>
         ) : (
-          <Text>User not found</Text>
+          <Text>Data not found</Text>
         )}
       </DialogContent>
     </Dialog>

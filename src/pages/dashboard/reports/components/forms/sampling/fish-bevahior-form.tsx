@@ -8,7 +8,7 @@ import type { samplingSchema } from 'src/schemas'
 import type { z } from 'zod'
 import { useRef } from 'react'
 import * as SolarIconSet from 'solar-icon-set'
-import { Select, SelectContent, SelectTrigger, SelectValue } from 'src/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 
 type SamplingFormValues = z.infer<typeof samplingSchema>
 
@@ -18,6 +18,20 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
   const handleIconClick = () => {
     timeInputRef.current?.showPicker()
   }
+
+  const fishBehaviorOptions = [
+    'NORMAL',
+    'Normal Activity',
+    'Lethargic/Slow Movement',
+    'Gasping at Surface (Air Gulping)',
+    'Erratic/Spinning Swimming',
+    'Flashing/Rubbing Against Surfaces',
+    'Loss of Appetite',
+    'Increased Aggression/Fin Nipping',
+    'Schooling/Clumping Together',
+    'Isolation from School',
+    'Abnormal Floating/Sinking',
+  ]
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full rounded-md px-5">
       <div className="flex w-full items-center gap-5">
@@ -41,25 +55,19 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
                   >
                     <SelectTrigger className="font-light">
                       <div className="flex items-center justify-center gap-2">
-                        <SelectValue placeholder="Select Fish Behavior" />
+                        <SelectValue placeholder="Select Disease found" />
                       </div>
                     </SelectTrigger>
                     <SelectContent>
-                      {/* {isWaterSourcesLoading ? (
-                        <SelectItem value="loading" disabled>
-                          <Text>Loading feeds...</Text>
+                      {fishBehaviorOptions?.map((disease) => (
+                        <SelectItem
+                          className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
+                          key={disease}
+                          value={disease}
+                        >
+                          {disease}
                         </SelectItem>
-                      ) : (
-                        feeds?.map((feed) => (
-                          <SelectItem
-                            className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
-                            key={feed}
-                            value={feed}
-                          >
-                            {feed}
-                          </SelectItem>
-                        ))
-                      )} */}
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -81,9 +89,7 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <div
-                    className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 px-2 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
-                  >
+                  <div className="focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 px-2 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2">
                     <span>
                       <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path

@@ -8,17 +8,16 @@ import {
 } from 'src/components/ui/dropdown-menu'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
-import { DeactivateUserDialog } from '../modals/deactivate-user'
-import { useState } from 'react'
-import { User } from 'src/types'
+// import { DeactivateUserDialog } from '../modals/deactivate-user'
+import type { User } from 'src/types'
+import * as SolarIconSet from 'solar-icon-set'
 
 type ActionsDropdownProps = {
   user: User
 }
 
-export function ActionsDropdown({ user }: ActionsDropdownProps) {
+export function FeedingReportActionsDropdown({ user }: ActionsDropdownProps) {
   const navigate = useNavigate()
-  const [menu, setMenu] = useState(false)
 
   return (
     <>
@@ -30,19 +29,14 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.clusterManagers.view(user.id))}>
-            View
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.reports.viewFeedingReport(user.id))}>
+            <SolarIconSet.Eye /> View
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.clusterManagers.id(user.id))}>
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>
-            {user.accountNonLocked ? 'Deactivate User' : 'Activate User'}
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.reports.editFeedingReport(user.id))}>
+            <SolarIconSet.Pen2 /> Edit
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <DeactivateUserDialog user={user} open={menu} onOpenChange={setMenu} />
     </>
   )
 }

@@ -7,10 +7,11 @@ import { Text } from 'src/components/ui/text'
 import type { dailyWaterQualitySchema } from 'src/schemas'
 import type { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
+import { Textarea } from 'src/components/ui/textarea'
 
-type DailyWaterQuality = z.infer<typeof dailyWaterQualitySchema>
+type WaterQualityFormValues = z.infer<typeof dailyWaterQualitySchema>
 
-export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyWaterQuality> }) {
+export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQualityFormValues> }) {
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
 
   const handleInputChange = (fieldName: string, value: string) => {
@@ -21,7 +22,7 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
   }
 
   return (
-    <FlexBox gap="gap-2" direction="col" className="w-full space-y-3 px-5">
+    <FlexBox gap="gap-2" direction="col" className="w-full space-y-3">
       <div className="flex h-full w-full items-start gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
@@ -239,50 +240,6 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
         </div>
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-            Nitrate
-            <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
-          </Text>
-          <FormField
-            control={form.control}
-            name="nitrate"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div
-                    className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border ${
-                      activeInputs.nitrate ? 'bg-neutral-100' : ''
-                    } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
-                  >
-                    <div className="w-full">
-                      <Input
-                        placeholder="Input value"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e)
-                          handleInputChange('nitrate', e.target.value)
-                        }}
-                        className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                      />
-                    </div>
-                    <div
-                      className={`h-10 rounded-br-md rounded-tr-md px-3 py-[.65rem] text-xs ${
-                        activeInputs.nitrate ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-400'
-                      }`}
-                    >
-                      mg/L
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
-      <div className="flex w-full items-start gap-5">
-        <div className="flex w-full flex-col gap-2">
-          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Alkalinity
             <SolarIconSet.QuestionCircle size={16} />
             <Text className="font-light text-neutral-500">(Optional)</Text>
@@ -323,6 +280,8 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
             )}
           />
         </div>
+      </div>
+      <div className="flex w-full items-start gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Hardness
@@ -366,7 +325,7 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
           />
         </div>
       </div>
-      {/* <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full flex-col gap-2">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
           Water Quality Observations <span className="font-bold text-red-500">*</span>
           <SolarIconSet.QuestionCircle size={16} />
@@ -405,7 +364,7 @@ export default function DailyWaterQuality({ form }: { form: UseFormReturn<DailyW
             </FormItem>
           )}
         />
-      </div> */}
+      </div>
     </FlexBox>
   )
 }

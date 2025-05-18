@@ -1,10 +1,19 @@
 import { useState } from 'react'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { usePondStore } from 'src/store/pond.store'
 
-import { useNavigate } from 'react-router-dom'
-import MonitoringForm from '../../../components/forms/monitoring-form'
-import MaintenanceForm from '../../../components/forms/maintenace-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Form, FormControl, FormDescription, FormField, FormItem } from 'src/components/ui/form'
+import { dailyFeedingSchema, dailyWaterQualitySchema } from 'src/schemas'
+import { z } from 'zod'
+import { Button } from 'src/components/ui/button'
+import { useNavigate, useParams } from 'react-router-dom'
+import { paths } from 'src/routes'
+import { createPostMutationHook } from 'src/api/hooks/usePost'
+import { Switch } from 'src/components/ui/switch'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { ClientErrorType, ServerErrorType } from 'src/types'
+import { scrollToTop } from 'src/lib/utils'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,38 +22,100 @@ import {
   BreadcrumbSeparator,
 } from 'src/components/ui/breadcrumb'
 import { Text } from 'src/components/ui/text'
+import { CreateReportDialog } from '../../../components/modals/create-report-modal'
+import FishFeedingForm from '../../../components/forms/feeding-report/fish-feeding-form'
+import WaterQualityForm from '../../../components/forms/feeding-report/water-quality-form'
+import { useQueryClient } from '@tanstack/react-query'
 
-export default function CreatePondPage() {
-  const [step, setStep] = useState(1)
-  const { pondData, resetPondStore } = usePondStore()
+type FormData = z.infer<typeof dailyFeedingSchema> & z.infer<typeof dailyWaterQualitySchema>
+
+export default function CreateDailyFeedingReportPage() {
+  const [openDialog, setOpenDialog] = useState(false)
+  const [error, setError] = useState<ClientErrorType | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
-  const handleNext = () => {
-    setStep(step + 1)
-  }
+  const { id } = useParams<{ id: string }>()
+  const useCreateDailyFeeding = createPostMutationHook({
+    endpoint: '/feeding-water-qualities',
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
 
-  const handlePrevious = () => {
-    setStep(step - 1)
-  }
+  const form = useForm<FormData>({
+    resolver: zodResolver(dailyFeedingSchema.merge(dailyWaterQualitySchema)),
+    defaultValues: {
+      feedType: '',
+      pelletSize: '',
+      feedQuantity: 0,
+      feedTime: '',
+      dissolvedOxygen: '',
+      phLevel: '',
+      temperature: '',
+      ammonia: '',
+      nitrite: '',
+      nitrate: '',
+      alkalinity: '',
+      hardness: '',
+      recordWaterQuality: false,
+      observation: '',
+    },
+    mode: 'onChange',
+  })
 
-  const onSubmit = async () => {
+  const { reset } = form
+  const createDailyFeeding = useCreateDailyFeeding()
+
+  const onSubmit = async (values: FormData) => {
+    setError(null)
+    setIsSubmitting(true)
     try {
-      console.log(pondData)
-      navigate('/dashboard/ponds')
-      resetPondStore()
-    } catch (error) {
-      console.error(error)
-    }
-  }
+      const feedingData = {
+        pondId: id,
+        feedType: values.feedType?.toUpperCase(),
+        pelletSize: values.pelletSize ? Number(values.pelletSize.replace('mm', '')) : null,
+        quantity: Number(values.feedQuantity),
+        // feedTime: values.feedTime,
+      }
 
-  const RenderSteps = () => {
-    switch (step) {
-      case 1:
-        return <MonitoringForm />
-      case 2:
-        return <MaintenanceForm handlePrevious={handlePrevious} handleNext={onSubmit} />
-      default:
-        return null
+      const waterQualityData = {
+        dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
+        phLevel: values.phLevel ? Number(values.phLevel) : null,
+        temperature: values.temperature ? Number(values.temperature) : null,
+        ammonia: values.ammonia ? Number(values.ammonia) : null,
+        nitrite: values.nitrite ? Number(values.nitrite) : null,
+        alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
+        hardness: values.hardness ? Number(values.hardness) : null,
+        frequency: 'DAILY',
+        // observation: values.observation ? values.observation : null,
+        observation: 'EXCELLENT',
+      }
+
+      const formData = { ...feedingData, ...waterQualityData }
+      console.log('Submit', formData)
+      await createDailyFeeding.mutateAsync(formData)
+
+      queryClient.refetchQueries(['feeding-water-quality'])
+
+      setOpenDialog(true)
+    } catch (error) {
+      console.error('Submission error:', error)
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: ServerErrorType } }
+        const errorData = axiosError.response?.data
+        if (errorData) {
+          setError({
+            title: errorData?.error,
+            message: errorData?.message,
+            errors: errorData?.errors ?? null,
+          })
+          scrollToTop()
+        }
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -54,39 +125,86 @@ export default function CreatePondPage() {
         <CustomBreadcrumb />
       </FlexBox>
       <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-10 w-full max-w-[60%]">
-        <RenderSteps />
+        <>
+          <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
+          {error && <FormValidationErrorAlert error={error} />}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8 pb-0.5">
+              {/* Daily Feeding Section */}
+              <div className="flex w-full flex-col items-start gap-1">
+                <div className="py-5">
+                  <h5 className="text-[1.5rem] font-bold text-[#444955]">Daily Feeding</h5>
+                  <p className="text-xs font-medium">
+                    Log today&lsquo;s feed type, amount, and feeding time to track your fish nutrition
+                  </p>
+                </div>
+              </div>
+              <div className="w-full rounded-lg border border-neutral-300 p-5">
+                <FishFeedingForm form={form} />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="recordWaterQuality"
+                render={({ field }) => (
+                  <FormItem className="flex w-full flex-col items-start justify-between shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormDescription className="flex items-center gap-1">
+                        Do you want to record Water Quality? <span className="text-xl text-error-500">*</span>
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <div className="flex items-center gap-2">
+                        <span>No</span>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <span>Yes</span>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              {/* Water Quality Section */}
+              <div className="w-full">
+                {form.getValues('recordWaterQuality') && (
+                  <div className="">
+                    <div className="mb-2 w-full items-start">
+                      <div className="py-5">
+                        <h5 className="text-[1.5rem] font-bold text-[#444955]">Daily Water Quality</h5>
+                        <p className="text-xs font-medium">Record key water parameters to monitor pond health.</p>
+                      </div>
+                    </div>
+                    <div className="w-full rounded-lg border border-neutral-300 p-5">
+                      <WaterQualityForm form={form} />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Form Actions */}
+              <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">
+                <Button
+                  type="button"
+                  onClick={() => navigate(paths.dashboard.home.getStarted)}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="flex items-center gap-2"
+                  disabled={!form.formState.isValid || isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Continue'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </>
       </FlexBox>
     </>
-  )
-}
-
-const Stepper = ({ step }: { step: number }) => {
-  return (
-    <div className="w-full">
-      <div className="mx-auto flex max-w-[80%] items-center justify-center">
-        <FlexBox gap="gap-[.625rem]" align="center" className="w-full max-w-fit rounded-[4rem] border p-[.625rem]">
-          <span
-            className={`${
-              step >= 1 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
-            } flex h-5  w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
-          >
-            1
-          </span>
-          <p className={`${step >= 1 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Monitoring</p>
-        </FlexBox>
-        <hr className="w-full max-w-[1/5]" />
-        <FlexBox gap="gap-[.625rem]" align="center" className="w-full max-w-fit rounded-[4rem]  border p-[.625rem]">
-          <span
-            className={`${
-              step === 2 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
-            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
-          >
-            2
-          </span>
-          <p className={`${step === 2 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Maintenance</p>
-        </FlexBox>
-      </div>
-    </div>
   )
 }
 
@@ -95,7 +213,7 @@ const CustomBreadcrumb = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink>
+          <BreadcrumbLink href={paths.dashboard.home.getStarted}>
             <Text className="text-primary-500">Daily Farm Report</Text>
           </BreadcrumbLink>
         </BreadcrumbItem>

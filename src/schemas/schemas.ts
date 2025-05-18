@@ -343,6 +343,7 @@ export const dailyFeedingSchema = z.object({
 })
 
 export const dailyWaterQualitySchema = z.object({
+  recordWaterQuality: z.boolean().optional(),
   dissolvedOxygen: z.string().optional(),
   phLevel: z.string().optional(),
   temperature: z.string().optional(),

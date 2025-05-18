@@ -10,12 +10,12 @@ import * as SolarIconSet from 'solar-icon-set'
 import type { z } from 'zod'
 import { useRef, useState } from 'react'
 
-type PondFormValues = z.infer<typeof dailyFeedingSchema>
+type FishFeedingFormValues = z.infer<typeof dailyFeedingSchema>
 
-export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
+export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeedingFormValues> }) {
   const timeInputRef = useRef<HTMLInputElement>(null)
   const feeds = [
-    'PELLETS',
+    'Pellets',
     'Skretting',
     'Coppens',
     'TopFeeds',
@@ -42,7 +42,7 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
     }))
   }
   return (
-    <FlexBox gap="gap-5" direction="col" align="start" className="w-full space-y-3 rounded-md px-5">
+    <FlexBox gap="gap-5" direction="col" align="start" className="w-full space-y-3 rounded-md">
       <div className="flex w-full items-start gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
@@ -55,11 +55,7 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Select
-                    value={field.value ? String(field.value) : ''}
-                    onValueChange={(value) => field.onChange(value)}
-                    defaultValue={field.value}
-                  >
+                  <Select value={field.value || ''} onValueChange={(v) => field.onChange(v)}>
                     <SelectTrigger className="font-light">
                       <div className="flex items-center justify-center gap-2">
                         <div>
@@ -117,11 +113,7 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Select
-                    value={field.value ? String(field.value) : ''}
-                    onValueChange={(value) => field.onChange(value)}
-                    defaultValue={field.value}
-                  >
+                  <Select value={field.value || ''} onValueChange={(v) => field.onChange(v)}>
                     <SelectTrigger className="font-light">
                       <div className="flex items-center justify-center gap-2">
                         <SolarIconSet.Weigher />
@@ -182,7 +174,8 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
           />
         </div>
       </div>
-      <div className="flex w-[32%] flex-col gap-2">
+
+      {/* <div className="flex w-[32%] flex-col gap-2">
         <Text className="text-md flex items-center gap-2 font-semibold text-neutral-700">
           Feeding Time <span className="font-bold text-red-500">*</span>
           <SolarIconSet.QuestionCircle size={16} />
@@ -216,7 +209,6 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
                  focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden "
                     />
                   </div>
-                  {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
                   <div
                     className={`h-10 cursor-pointer rounded-br-md rounded-tr-md px-3 py-[.65rem] text-xs ${
                       activeInputs.feedTime ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-400'
@@ -231,7 +223,7 @@ export default function DailyFeedingDetailsForm({ form }: { form: UseFormReturn<
             </FormItem>
           )}
         />
-      </div>
+      </div> */}
     </FlexBox>
   )
 }

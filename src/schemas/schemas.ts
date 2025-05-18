@@ -353,22 +353,46 @@ export const samplingSchema = z.object({
 
 export const sortingSchema = z.object({
   splitOccur: z.boolean(),
-  transfers: z
-    .array(
-      z.object({
-        numberOfFishMoved: z.string().optional(),
-        destinationPond: z.string().optional(),
-      }),
-    )
-    .optional(),
-  harvest: z.boolean(),
-  transferOccur: z.boolean(),
-  harvestOccur: z.boolean(),
-  numberOfFishMovedByTransfer: z.string(),
-  destinationPond: z.string(),
-  numberOfFishHarvest: z.string(),
+  reason: z.string().optional(),
+  batches: z.array(
+    z.object({
+      pondId: z.string().optional(),
+      quantity: z.any().optional(),
+    }),
+  ),
+  numberOfFishHarvest: z.string().optional(),
 })
+// export const sortingSchema = z.object({
+//   splitOccur: z.boolean(),
+//   reason: z
+//     .string()
+//     .optional()
+//     .superRefine((val, ctx) => {
+//       console.log(ctx, val)
 
+//       if (ctx.path[0]. && !val) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.custom,
+//           message: 'Reason is required when split occurred',
+//         })
+//       }
+//     }),
+//   batches: z
+//     .array(
+//       z.object({
+//         numberOfFishMoved: z.number().min(1, 'Number of fish moved is required'),
+//         destinationPond: z.string().min(1, 'Destination pond is required'),
+//       }),
+//     )
+//     .superRefine((val, ctx) => {
+//       if (ctx.parent.reason === 'transfer' && (!val || val.length === 0)) {
+//         ctx.addIssue({
+//           code: z.ZodIssueCode.custom,
+//           message: 'Batch details are required for transfers',
+//         })
+//       }
+//     }),
+// })
 export const harvestSchema = z.object({
   numberOfFishHarvested: z.string(),
   avgWeightOfFishHarvested: z.string(),

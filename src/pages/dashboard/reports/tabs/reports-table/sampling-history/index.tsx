@@ -2,95 +2,57 @@ import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
+import { Inline } from 'src/components/ui/inline'
+import { Button } from 'src/components/ui/button'
+import * as SolarIconSet from 'solar-icon-set'
+import { useState } from 'react'
+import { Heading } from 'src/components/ui/heading'
+import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
 
 export default function SamplingReportsTable() {
+  const [farmReportOpen, setFarmReportOpen] = useState(false)
+
+  const useGetSamplingReports = createGetQueryHook({
+    endpoint: '/samplings',
+    responseSchema: z.any(),
+    queryKey: ['sampling-reports-table'],
+  })
+  const { data: samplingReports } = useGetSamplingReports()
+  const openModal = () => {
+    setFarmReportOpen(true)
+  }
+  const title = 'Sampling reports'
+  const actions = samplingReports && samplingReports?.content.length > 0 && (
+    <Inline>
+      <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
+        <SolarIconSet.AddCircle size={20} />
+        <Text>Submit sampling report</Text>
+      </Button>
+    </Inline>
+  )
   return (
-    <FlexBox direction="col" gap="gap-6" className="w-full">
-      <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Text className="text-xl font-semibold text-neutral-700">Sampling reports</Text>
+    <>
+      <FlexBox direction="col" gap="gap-6" className="w-full">
+        <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
+          <Heading level={6}>{title}</Heading>
+          {actions && <div>{actions}</div>}
+        </FlexBox>
+        <DataTable
+          search={false}
+          columns={columns}
+          data={samplingReports?.content ?? []}
+          isLoading={false}
+          emptyStateMessage="No sampling reports found"
+        />
       </FlexBox>
-      <DataTable
-        search={false}
-        columns={columns}
-        data={samplingHistory ?? []}
-        isLoading={false}
-        emptyStateMessage="No sampling reports found"
+      <ReportModal
+        title="Sampling Report"
+        open={farmReportOpen}
+        redirect="daily-sampling-report"
+        onOpenChange={setFarmReportOpen}
       />
-    </FlexBox>
+    </>
   )
 }
-
-export const samplingHistory = [
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: true,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: 'Harvest',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: true,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: 'Transfer',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-]

@@ -3,13 +3,13 @@ import { columns } from './columns'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedSamplingResponseSchema } from 'src/schemas'
 import { Loader } from 'src/components/ui/loader'
+import { z } from 'zod'
 
 export default function SamplingHistory() {
   const useGetSamplings = createGetQueryHook({
     endpoint: '/samplings',
-    responseSchema: paginatedSamplingResponseSchema,
+    responseSchema: z.any(),
     queryKey: ['samplings'],
   })
 
@@ -32,78 +32,3 @@ export default function SamplingHistory() {
     </FlexBox>
   )
 }
-
-export const samplingHistory = [
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: true,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: 'Harvest',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: true,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: 'Transfer',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-  {
-    date: '02/04/2025',
-    fishPopulation: '2500',
-    sampleSize: '30',
-    averageWeight: '340g',
-    averageWeightGain: '1.5mm',
-    mortality: '5',
-    splitTriggered: false,
-    fishMoved: '500',
-    destinationPond: 'Back Tank',
-    reason: '-',
-  },
-]

@@ -16,6 +16,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
 
   const weightOfFishSampled = watch('weightOfFishSampled')
   const numberOfFishSampled = watch('numberOfFishSampled')
+  const avgWeightFishSampled = watch('avgWeightFishSampled')
 
   useEffect(() => {
     if (weightOfFishSampled && numberOfFishSampled) {
@@ -28,6 +29,17 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
       }
     }
   }, [weightOfFishSampled, numberOfFishSampled, setValue])
+
+  useEffect(() => {
+    if (avgWeightFishSampled) {
+      const avgWeight: any = avgWeightFishSampled
+
+      if (!Number.isNaN(avgWeight)) {
+        const avg = (avgWeight - 0).toFixed(2)
+        setValue('totalWeightGain', avg)
+      }
+    }
+  }, [avgWeightFishSampled, setValue])
   const handleIncrement = (fieldName: keyof SamplingFormValues) => {
     // biome-ignore lint/style/useNumberNamespace: <explanation>
     const currentValue = parseFloat(form.getValues(fieldName) || '0')
@@ -105,9 +117,9 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Weight of Fish Sampled
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
+            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -190,6 +202,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 <FormControl>
                   <Input
                     placeholder="Current Weight Gain"
+                    readOnly
                     {...field}
                     onChange={(e) => {
                       const value = e.target.value.replace(/[^0-9]/g, '')

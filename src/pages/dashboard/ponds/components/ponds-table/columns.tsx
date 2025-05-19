@@ -32,9 +32,9 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: 'quantity',
+    accessorKey: 'latestQuantity',
     header: 'Fish Quantity',
-    cell: ({ row }) => <Text weight="light">{row.original.quantity ?? '—'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.latestQuantity ?? '—'}</Text>,
   },
   {
     accessorKey: 'weight',

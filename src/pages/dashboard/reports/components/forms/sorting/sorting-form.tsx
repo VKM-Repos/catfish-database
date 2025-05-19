@@ -113,7 +113,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
       pondId: id,
       census: 12,
       sample: Number.parseInt(samplingForm.numberOfFishSampled),
-      weight: Number.parseInt(samplingForm.weightOfFishSampled),
+      weight: 10,
       mortality: Number.parseInt(samplingForm.numberOfFishMortalityRecorded),
       averageWeightToFish: Number.parseInt(samplingForm.avgWeightFishSampled),
       weightGain: Number.parseInt(samplingForm.totalWeightGain),

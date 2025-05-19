@@ -366,7 +366,7 @@ export const maintenanceSchema = z.object({
 
 export const samplingSchema = z.object({
   numberOfFishSampled: z.string().min(1, { message: 'Please Select a feed type' }),
-  weightOfFishSampled: z.string().min(1, { message: 'Please enter a pellet size' }),
+  weightOfFishSampled: z.string().optional(),
   avgWeightFishSampled: z.string().optional(),
   totalWeightGain: z.string().min(1, { message: 'Please add a feed time' }),
   totalFeedConsumed: z.string().min(1, { message: 'Please add a dissolved oxygen' }),

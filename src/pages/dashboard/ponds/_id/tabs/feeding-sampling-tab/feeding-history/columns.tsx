@@ -4,9 +4,9 @@ import { formatDate } from 'src/lib/date'
 
 export const columns: ColumnDef<any>[] = [
   {
-    accessorKey: 'date',
+    accessorKey: 'createdAt',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original.date)}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'feedType',
@@ -18,7 +18,7 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'quantity',
     header: 'Quantity type(kg)',
-    cell: ({ row }) => <Text weight="light">{row.original.quantityType}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.quantity ?? ''}</Text>,
   },
   {
     accessorKey: 'frequency',

@@ -124,7 +124,6 @@ export default function UpdatePondPage({ pond, open, onOpenChange }: UpdatePondP
         asChild
         onClick={() => {
           onOpenChange(true)
-          console.log(open)
         }}
       >
         Edit Pond

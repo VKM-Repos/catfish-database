@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import EmptyClusterManagerImg from 'src/assets/images/empty-cluster-manager.jpg'
 import { paths } from 'src/routes'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedFishBatchResponseSchema, paginatedPondResponseSchema } from 'src/schemas'
 import { mergePondsWithTotalFishQuantity } from 'src/lib/utils'
 import { LoadingScreen } from 'src/components/global/loading-screen'
+import { z } from 'zod'
 
 export function PondsTable() {
   const navigate = useNavigate()
@@ -18,13 +18,13 @@ export function PondsTable() {
 
   const useGetFishBatches = createGetQueryHook({
     endpoint: '/fish-batches',
-    responseSchema: paginatedFishBatchResponseSchema,
+    responseSchema: z.any(),
     queryKey: ['fish-batches'],
   })
 
   const useFetchPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
-    responseSchema: paginatedPondResponseSchema,
+    responseSchema: z.any(),
     queryKey: ['my-ponds'],
   })
 

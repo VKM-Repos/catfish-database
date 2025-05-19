@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from 'clsx'
 import { UserRole } from 'src/types'
-import { paginatedFishBatchResponseType, paginatedPondResponseType } from 'src/types/ponds.types'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -67,17 +66,14 @@ export function formatLatLng(lat: string, lng: string) {
   return `${formattedLat}, ${formattedLng}`
 }
 
-export function mergePondsWithTotalFishQuantity(
-  ponds: paginatedPondResponseType,
-  batches: paginatedFishBatchResponseType,
-) {
+export function mergePondsWithTotalFishQuantity(ponds: any, batches: any) {
   return ponds?.content.map((pond) => {
     const relatedBatches = batches?.content.filter((batch) => batch.pond.id === pond.id)
-    const quantity = relatedBatches.reduce((sum, b) => sum + (Number(b.quantity) || 0), 0)
+    const latestQuantity = relatedBatches.reduce((sum, b) => sum + (Number(b.latestQuantity) || 0), 0)
 
     return {
       ...pond,
-      quantity,
+      latestQuantity,
     }
   })
 }

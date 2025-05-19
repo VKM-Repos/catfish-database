@@ -67,9 +67,9 @@ export function formatLatLng(lat: string, lng: string) {
 }
 
 export function mergePondsWithTotalFishQuantity(ponds: any, batches: any) {
-  return ponds?.content.map((pond) => {
-    const relatedBatches = batches?.content.filter((batch) => batch.pond.id === pond.id)
-    const latestQuantity = relatedBatches.reduce((sum, b) => sum + (Number(b.latestQuantity) || 0), 0)
+  return ponds?.content.map((pond: any) => {
+    const relatedBatches = batches?.content.filter((batch: any) => batch.pond.id === pond.id)
+    const latestQuantity = relatedBatches.reduce((sum: any, b: any) => sum + (Number(b.latestQuantity) || 0), 0)
 
     return {
       ...pond,

@@ -11,8 +11,8 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'sample',
     header: () => (
-      <div title="No. fish Sampled" className="w-[4rem] truncate font-semibold">
-        No. fish Sampled
+      <div title="Number of fish sampled" className="w-[4rem] truncate font-semibold">
+        Fish sampled
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.sample}</Text>,
@@ -20,8 +20,8 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'weight',
     header: () => (
-      <div title="Wgt fish Sampled" className="w-[4rem] truncate font-semibold">
-        Wgt fish Sampled
+      <div title="Weight of fish sampled" className="w-[4rem] truncate font-semibold">
+        Weight
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.weight}</Text>,
@@ -30,7 +30,7 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'averageWeightToFish',
     header: () => (
       <div title="Average weight" className="font-semibold">
-        Avg. wgt
+        Average weight
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.averageWeightToFish}</Text>,
@@ -38,8 +38,8 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'weightGain',
     header: () => (
-      <div title="Total wgt gain" className="w-[4rem] truncate font-semibold">
-        Total wgt gain
+      <div title="Total weight gain" className="w-[4rem] truncate font-semibold">
+        Total weight gain
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.weightGain}</Text>,
@@ -51,7 +51,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'mortality',
-    header: 'Mort',
+    header: 'Mortality',
     cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
   },
   // {

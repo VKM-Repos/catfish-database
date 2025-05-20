@@ -12,7 +12,9 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'feedType',
     header: 'Feed Type',
     cell: ({ row }) => (
-      <Text weight="light">{row.original.feedType?.charAt(0).toUpperCase() + row.original.feedType.slice(1)}</Text>
+      <Text weight="light">
+        {row.original.feedType?.charAt(0).toUpperCase() + row.original.feedType.slice(1).toLowerCase()}
+      </Text>
     ),
   },
   {
@@ -23,6 +25,10 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'frequency',
     header: 'Feeding times',
-    cell: ({ row }) => <Text weight="light">{row.original.frequency}</Text>,
+    cell: ({ row }) => (
+      <Text weight="light">
+        {row.original.frequency?.charAt(0).toUpperCase() + row.original.frequency.slice(1).toLowerCase()}
+      </Text>
+    ),
   },
 ]

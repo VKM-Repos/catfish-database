@@ -34,6 +34,7 @@ export type fishBatchResponseType = {
   pond: pondResponseType
   feedings: feedingResponseType[]
   quantity: string
+  active?: boolean
   latestQuantity: string
   costOfSupply: string
   createdAt?: string | null

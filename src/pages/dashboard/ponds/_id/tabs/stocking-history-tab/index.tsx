@@ -36,7 +36,7 @@ export default function StockingHistory() {
     <Inline>
       <Button variant="outline" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
-        <Text>Add new batch</Text>
+        <Text weight="semibold">Add new batch</Text>
       </Button>
     </Inline>
   )

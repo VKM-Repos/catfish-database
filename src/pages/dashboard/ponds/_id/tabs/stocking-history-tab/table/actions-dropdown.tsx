@@ -29,7 +29,7 @@ export default function ActionsDropdown({ batch }: { batch: fishBatchResponseTyp
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>Edit</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <ViewBatchDetails open={openView} onOpenChange={setOpenView} batch={batch} />
+      <ViewBatchDetails open={openView} setOpenEdit={setOpenEdit} onOpenChange={setOpenView} batch={batch} />
       <EditBatchDetails open={openEdit} onOpenChange={setOpenEdit} batch={batch} />
     </>
   )

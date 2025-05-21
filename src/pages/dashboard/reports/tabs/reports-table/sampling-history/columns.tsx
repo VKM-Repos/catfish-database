@@ -2,6 +2,9 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { formatDate } from 'src/lib/date'
 import { SamplingReportActionsDropdown } from './actions-dropdown'
+import { StatusBadge } from 'src/components/global/status-badge'
+import { getInitials } from 'src/lib/utils'
+import * as SolarIconSet from 'solar-icon-set'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -54,6 +57,82 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'mortality',
     header: 'Mort',
     cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
+  },
+  {
+    accessorKey: 'splitOccur',
+    header: () => (
+      <div title="Split triggered" className="w-[4rem] truncate font-bold">
+        Split triggered
+      </div>
+    ),
+    cell: ({ row }) => {
+      const status = !(row.original.harvest === null && row.original.destinationBatches.length < 1)
+      return (
+        <StatusBadge
+          status={status}
+          activeText="Yes"
+          inactiveText="No"
+          inactiveBg="bg-error-100 border-[#FF0000] text-[#FF0000]"
+        />
+      )
+    },
+  },
+  {
+    accessorKey: 'destinationBatches',
+    header: () => (
+      <div title="Dest. pond" className="w-[4rem] truncate font-bold">
+        Dest. pond
+      </div>
+    ),
+    cell: ({ row }) => {
+      const batches = row.original.destinationBatches || []
+
+      return (
+        <div className="flex gap-1">
+          {batches.slice(0, 2).map((dest: any) => (
+            <span
+              className="rounded-md border-2 border-neutral-300 bg-neutral-200 px-1 py-1 font-semibold"
+              key={dest?.id}
+            >
+              {getInitials(dest.pond.name)}
+            </span>
+          ))}
+          {batches.length > 2 && (
+            <span className="rounded-md border-2 border-neutral-300 bg-neutral-200 px-1 py-1 font-semibold">
+              +{batches.length - 2}
+            </span>
+          )}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: 'reason',
+    header: () => (
+      <div title="Reason" className="w-[4rem] truncate font-bold">
+        Reason
+      </div>
+    ),
+    cell: ({ row }) => {
+      const reasonBool = row.original.harvest !== null
+
+      return (
+        <>
+          {row.original.destinationBatches.length > 0 || row.original.harvest !== null ? (
+            <StatusBadge
+              status={reasonBool}
+              activeText="Harvest"
+              inactiveText="Transfer"
+              activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
+              inactiveIcon={<SolarIconSet.MapArrowRight color="currentColor" size={16} />}
+              inactiveBg="bg-[#E5E7FF] text-[#000AFF] border-[#000AFF]"
+            />
+          ) : (
+            ''
+          )}
+        </>
+      )
+    },
   },
   // {
   //   accessorKey: 'splitTriggered',

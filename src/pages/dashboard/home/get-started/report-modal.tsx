@@ -11,6 +11,7 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
+import { useAuthStore } from 'src/store/auth.store'
 
 type FormValues = {
   pondId: string
@@ -25,13 +26,26 @@ type ReportModalProps = {
 
 export function ReportModal({ title, open, redirect, onOpenChange }: ReportModalProps) {
   const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
 
   const useGetPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
+    options: {
+      enabled: user?.role === 'FARMER',
+    },
   })
 
+  const useGetPondByClusterManager = createGetQueryHook({
+    endpoint: '/ponds/clusters/me',
+    responseSchema: z.any(),
+    queryKey: ['ponds_for_cluster_manager'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
+  })
+  const { data: clustersManagerPonds = [], isLoading: isLoadingClustersManagerPonds } = useGetPondByClusterManager()
   const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
 
   const form = useForm<FormValues>({
@@ -86,12 +100,23 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                         </div>
                       </SelectTrigger>
                       <SelectContent>
-                        {isLoadingPonds ? (
+                        {user?.role === 'FARMER' && isLoadingPonds ? (
                           <SelectItem value="loading" disabled>
                             <Text>Loading ponds...</Text>
                           </SelectItem>
                         ) : (
-                          ponds.content.map((pond: any) => (
+                          ponds.content?.map((pond: any) => (
+                            <SelectItem key={pond.id} value={pond.id}>
+                              {pond.name}
+                            </SelectItem>
+                          ))
+                        )}
+                        {isLoadingClustersManagerPonds ? (
+                          <SelectItem value="loading" disabled>
+                            <Text>Loading ponds...</Text>
+                          </SelectItem>
+                        ) : (
+                          clustersManagerPonds.content?.map((pond: any) => (
                             <SelectItem key={pond.id} value={pond.id}>
                               {pond.name}
                             </SelectItem>

@@ -34,7 +34,7 @@ export default function SamplingReportsTable() {
   )
   return (
     <>
-      <FlexBox direction="col" gap="gap-6" className="w-full">
+      <FlexBox direction="col" gap="gap-6" className="mb-10 w-full">
         <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
           <Heading level={6}>{title}</Heading>
           {actions && <div>{actions}</div>}

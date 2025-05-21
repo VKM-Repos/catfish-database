@@ -265,14 +265,54 @@ export const feedingResponseSchema = z.object({
   updatedAt: z.string(),
 })
 
+export const fishBatchSchema = z.object({
+  quantity: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Fish quantity must be a valid number',
+  }),
+  singleCost: z
+    .string()
+    .regex(/^[-+]?\d+(\.\d+)?$/, {
+      message: 'Fish cost must be a valid number',
+    })
+    .optional(),
+  costOfSupply: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Fish cost must be a valid number',
+  }),
+  active: z.boolean(),
+})
+
 export const fishBatchResponseSchema = z.object({
   id: z.string().optional(),
   pond: pondResponseSchema,
   feedings: z.array(feedingResponseSchema),
+  active: z.boolean().optional(),
   quantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  latestQuantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
   costOfSupply: z.union([z.string(), z.number()]).transform((val) => String(val)),
   createdAt: z.string(),
   updatedAt: z.string(),
+})
+
+export const newPondResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  size: z.number(),
+  waterSource: z.string(),
+  pondType: z.string(),
+  clusterName: z.string(),
+  farmerName: z.string(),
+})
+
+export const newFishBatchResponseSchema = z.object({
+  id: z.string(),
+  pondId: z.string(),
+  quantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  latestQuantity: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  costOfSupply: z.number(),
+  active: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  pond: newPondResponseSchema,
 })
 
 export const samplingResponseSchema = z.object({

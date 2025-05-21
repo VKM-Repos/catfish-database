@@ -62,8 +62,9 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
     resolver: zodResolver(sortingSchema),
     defaultValues: {
       splitOccur: false,
-      reason: undefined,
+      reason: 'SAMPLING',
       batches: [],
+      numberOfFishToHarvest: '',
     },
     mode: 'onChange',
   })
@@ -130,6 +131,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
           quantity: Number(batch.quantity),
         })),
       },
+      numberOfFishToHarvest: Number(data.numberOfFishToHarvest),
     }
   }
 

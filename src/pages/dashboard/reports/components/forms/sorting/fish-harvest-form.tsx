@@ -35,7 +35,7 @@ export default function FishHarvestForm({ form }: { form: UseFormReturn<SortingF
           </Text>
           <FormField
             control={form.control}
-            name="numberOfFishHarvest"
+            name="numberOfFishToHarvest"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

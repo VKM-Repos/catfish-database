@@ -386,7 +386,7 @@ export const sortingSchema = z.object({
       quantity: z.any().optional(),
     }),
   ),
-  numberOfFishHarvest: z.string().optional(),
+  numberOfFishToHarvest: z.string().optional(),
 })
 // export const sortingSchema = z.object({
 //   splitOccur: z.boolean(),

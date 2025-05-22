@@ -32,9 +32,9 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: 'quantity',
+    accessorKey: 'latestQuantity',
     header: 'Fish Quantity',
-    cell: ({ row }) => <Text weight="light">{row.original.quantity ?? '—'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.latestQuantity ?? '—'}</Text>,
   },
   {
     accessorKey: 'weight',
@@ -47,10 +47,10 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
   },
   {
-    accessorFn: (row) => row.original.status ?? (row.original.quantity == 0 ? 'Inactive' : 'Inactive'),
+    accessorFn: (row) => row.original.status,
     header: 'Pond Status',
     cell: ({ row }) => {
-      const status = row.original.quantity == 0 ? 'Inactive' : 'Active'
+      const status = row.original.latestQuantity === 0 ? 'Inactive' : 'Active'
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${

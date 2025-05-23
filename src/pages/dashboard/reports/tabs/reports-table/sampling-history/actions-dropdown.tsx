@@ -39,6 +39,15 @@ export function SamplingReportActionsDropdown({ samplingData }: ActionsDropdownP
           >
             <SolarIconSet.Eye /> View
           </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              navigate(paths.dashboard.reports.editSamplingReport(samplingData.id), {
+                state: { samplingData },
+              })
+            }
+          >
+            <SolarIconSet.Pen2 /> Edit
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

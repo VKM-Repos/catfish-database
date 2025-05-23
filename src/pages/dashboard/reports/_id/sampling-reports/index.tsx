@@ -13,7 +13,6 @@ export default function FeedingReportsDetailsModal() {
   const { state } = useLocation()
 
   const samplingData = state?.samplingData
-  console.log(samplingData)
   const samplingReport = [
     { label: 'Date', value: samplingData?.createdAt ? formatDate(samplingData?.createdAt) : '-' },
     { label: 'Number of Fish Sampled', value: samplingData?.sample ?? '-' },
@@ -21,6 +20,10 @@ export default function FeedingReportsDetailsModal() {
     { label: 'Avg. Weight of Fish Sampled', value: samplingData?.averageWeightToFish ?? '-' },
     { label: 'Total Weight gain', value: samplingData?.weightGain ?? '-' },
     { label: 'Mortality', value: samplingData?.mortality ?? '-' },
+    { label: 'Disease', value: samplingData?.diseaseType ?? '-' },
+    { label: 'Disease Observation', value: samplingData?.diseaseObserve ?? '-' },
+    { label: 'Behavior', value: samplingData?.behaviorType ?? '-' },
+    { label: 'Behavior Observation', value: samplingData?.behaviourObserve ?? '-' },
   ]
   if (!id) return null
 

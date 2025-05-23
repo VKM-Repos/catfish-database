@@ -4,7 +4,7 @@ import { paths } from 'src/routes/paths'
 import { useState } from 'react'
 import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
-import UpdateFeedingReportForm from './update-feeding-report-form'
+import UpdateSamplingReportForm from './update-sampling-report-form'
 
 export default function EditFeedingReportPage() {
   const { id } = useParams<{ id: string }>()
@@ -18,17 +18,15 @@ export default function EditFeedingReportPage() {
   const RenderSteps = () => {
     switch (step) {
       case 1:
-        return (
-          <UpdateFeedingReportForm setStep={setStep} onCancel={() => navigate(`${paths.dashboard.reports.root}`)} />
-        )
+        return <UpdateSamplingReportForm setStep={setStep} />
       case 2:
         return (
           <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Feeding report updated successfully!</Text>
+            <Text className="text-lg font-semibold">Sampling report updated successfully!</Text>
             <Button
               variant="primary"
               onClick={() => {
-                navigate(`${paths.dashboard.reports.viewFeedingReport(id)}`)
+                navigate(`${paths.dashboard.reports.root}?tab=sampling-report`)
                 setTimeout(() => {
                   setStep(1)
                 }, 1000)
@@ -44,7 +42,7 @@ export default function EditFeedingReportPage() {
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.reports.root)}>
+    <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.reports.root}?tab=sampling-report`)}>
       <DialogContent
         onInteractOutside={(e) => {
           e.preventDefault()

@@ -318,37 +318,6 @@ export const router = createBrowserRouter([
                 {LazyPage(() => import('src/pages/dashboard/system/permissions'))}
               </RoleGuard>
             ),
-            children: [
-              {
-                path: 'create',
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                    {LazyPage(() => import('src/pages/dashboard/system/permissions/create'))}
-                  </RoleGuard>
-                ),
-              },
-              {
-                path: ':id',
-                children: [
-                  {
-                    index: true,
-                    element: (
-                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                        {LazyPage(() => import('src/pages/dashboard/system/permissions/_id'))}
-                      </RoleGuard>
-                    ),
-                  },
-                  {
-                    path: 'edit',
-                    element: (
-                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                        {LazyPage(() => import('src/pages/dashboard/system/permissions/_id/edit'))}
-                      </RoleGuard>
-                    ),
-                  },
-                ],
-              },
-            ],
           },
           {
             path: paths.dashboard.system.auditLog.root,

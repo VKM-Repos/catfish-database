@@ -27,7 +27,7 @@ const moduleNameMap: Record<string, string> = {
   maintenance: 'Maintenance',
 }
 
-const permissionTypes = ['access', 'edit', 'view', 'delete', 'create'] as const
+const permissionTypes = ['access', 'view', 'create', 'edit', 'delete'] as const
 
 export const createColumns = ({ handleToggle }: ColumnFactoryProps): ColumnDef<PermissionRow>[] => [
   {

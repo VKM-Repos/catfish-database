@@ -159,3 +159,18 @@ export const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, { message: 'Current password is required' }),
   newPassword: passwordSchema,
 })
+
+// export const auditShema = z.object({
+//   id: z.string().uuid(),
+//   timestamp: z.string().datetime(), // or z.date() if you want to parse to Date object
+//   actionType: z.string(),
+//   entityType: z.string(),
+//   entityId: z.string().uuid(),
+//   userId: z.string().uuid(),
+//   username: z.string(),
+//   oldValue: z.record(z.unknown()), // or z.any() for completely flexible objects
+//   newValue: z.record(z.unknown()), // or z.any()
+//   description: z.string(),
+//   ipAddress: z.string(),
+//   userAgent: z.string(),
+// })

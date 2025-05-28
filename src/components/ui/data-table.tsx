@@ -20,11 +20,13 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import { Cluster } from 'src/types/cluster.types'
 import { useAuthStore } from 'src/store/auth.store'
+import { Text } from 'src/components/ui/text'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   isLoading?: boolean
+  showFilter?: boolean
   emptyStateMessage?: string
 }
 
@@ -32,6 +34,7 @@ export function DataTable<TData>({
   columns,
   data,
   isLoading = false,
+  showFilter = false,
   emptyStateMessage = 'No results found',
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -123,7 +126,14 @@ export function DataTable<TData>({
           />
         </div>
         <div className="w-[20%]">
-          {user?.role === 'SUPER_ADMIN' && (
+          {user?.role === 'SUPER_ADMIN' && showFilter ? (
+            // <Inline>
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => console.log('test')}>
+              <SolarIconSet.Filter size={20} />
+              <Text>Show Filters</Text>
+            </Button>
+          ) : (
+            // </Inline>
             <Select value={selectedCluster} onValueChange={handleClusterChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="All clusters" />
@@ -139,6 +149,22 @@ export function DataTable<TData>({
             </Select>
           )}
         </div>
+
+        {/* <div>
+          <Select value={selectedCluster} onValueChange={handleClusterChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="All clusters" />
+            </SelectTrigger>
+            <SelectContent side="top">
+              <SelectItem value=" ">All clusters</SelectItem>
+              {clusters?.map((cluster: Cluster) => (
+                <SelectItem key={cluster.name} value={cluster.name}>
+                  {cluster.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div> */}
       </div>
 
       <div className="overflow-hidden rounded-md border border-neutral-200">

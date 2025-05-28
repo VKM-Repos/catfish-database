@@ -299,14 +299,14 @@ export const router = createBrowserRouter([
               </RoleGuard>
             ),
             children: [
-              {
-                path: 'create',
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                    {LazyPage(() => import('src/pages/dashboard/system/audit-log/create'))}
-                  </RoleGuard>
-                ),
-              },
+              // {
+              //   path: 'create',
+              //   element: (
+              //     <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+              //       {LazyPage(() => import('src/pages/dashboard/system/audit-log/create'))}
+              //     </RoleGuard>
+              //   ),
+              // },
               {
                 path: ':id',
                 children: [
@@ -318,14 +318,14 @@ export const router = createBrowserRouter([
                       </RoleGuard>
                     ),
                   },
-                  {
-                    path: 'edit',
-                    element: (
-                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                        {LazyPage(() => import('src/pages/dashboard/system/audit-log/_id/edit'))}
-                      </RoleGuard>
-                    ),
-                  },
+                  // {
+                  //   path: 'edit',
+                  //   element: (
+                  //     <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                  //       {LazyPage(() => import('src/pages/dashboard/system/audit-log/_id/edit'))}
+                  //     </RoleGuard>
+                  //   ),
+                  // },
                 ],
               },
             ],

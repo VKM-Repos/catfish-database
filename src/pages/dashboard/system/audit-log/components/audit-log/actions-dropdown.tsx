@@ -8,15 +8,14 @@ import {
 } from 'src/components/ui/dropdown-menu'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
-import { Cluster } from 'src/types/cluster.types'
-import { DeleteClusterDialog } from '../modals/delete-cluster'
 import { useState } from 'react'
+import { Audit } from 'src/types/audit.types'
 
 type ActionsDropdownProps = {
-  cluster: Cluster
+  audit: Audit
 }
 
-export function ActionsDropdown({ cluster }: ActionsDropdownProps) {
+export function ActionsDropdown({ audit }: ActionsDropdownProps) {
   const navigate = useNavigate()
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
@@ -30,17 +29,13 @@ export function ActionsDropdown({ cluster }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.id(cluster.id))}>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.auditLog.id(audit.id))}>
             View
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.clusters.edit(cluster.id))}>
-            Edit
-          </DropdownMenuItem>
-          {/* <DropdownMenuItem onSelect={() => setIsDeleteOpen(true)}>Delete</DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DeleteClusterDialog cluster={cluster} open={isDeleteOpen} onOpenChange={setIsDeleteOpen} />
+      {/* <DeleteClusterDialog cluster={audit} open={isDeleteOpen} onOpenChange={setIsDeleteOpen} /> */}
     </>
   )
 }

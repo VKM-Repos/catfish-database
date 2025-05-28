@@ -11,17 +11,19 @@ import ECLIPSE from 'src/assets/images/ellipse.png'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import * as SolarIconSet from 'solar-icon-set'
+import { useAuthStore } from 'src/store/auth.store'
 
 export default function NewPasswordPage() {
   const navigate = useNavigate()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const { user } = useAuthStore()
 
   const handleNext = () => {
     setIsDialogOpen(true)
   }
   const handleRedirect = () => {
     setIsDialogOpen(false)
-    navigate(paths.dashboard.home.root)
+    user?.role === 'FARMER' ? navigate(paths.dashboard.home.getStarted) : navigate(paths.dashboard.home.overview)
   }
 
   return (

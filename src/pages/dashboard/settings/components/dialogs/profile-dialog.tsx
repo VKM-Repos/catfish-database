@@ -14,18 +14,22 @@ import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import ProfileForm from '../forms/profile-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { profileSchema } from 'src/schemas'
+import { useAuthStore } from 'src/store/auth.store'
+import { roleQueryMap } from 'src/lib/utils'
 
 type ProfileData = z.infer<typeof profileSchema>
 
 type ProfileDialogProps = {
-  user: User
+  current_user: User
 }
 
-export default function ProfileDialog({ user }: ProfileDialogProps) {
+export default function ProfileDialog({ current_user }: ProfileDialogProps) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
   const [error, setError] = useState<ClientErrorType | null>(null)
+
+  const { user } = useAuthStore()
 
   const useGetStates = createGetQueryHook({
     endpoint: '/states',
@@ -46,16 +50,16 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
     })()
   }
 
-  const updateUserMutation = useUpdateUser(user.id)
+  const updateUserMutation = useUpdateUser(current_user.id)
   const { data: states = [], isLoading: isLoadingStates } = useGetStates()
 
   const form = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: user.firstName,
-      lastName: user.lastName || '',
-      phone: user.phone || '',
-      address: user.address || '',
+      firstName: current_user.firstName,
+      lastName: current_user.lastName || '',
+      phone: current_user.phone || '',
+      address: current_user.address || '',
     },
     mode: 'onChange',
   })
@@ -66,6 +70,11 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
       setError(null)
       await updateUserMutation.mutateAsync(data)
       queryClient.invalidateQueries(['user'])
+
+      if (user?.role && roleQueryMap[user.role]) {
+        queryClient.refetchQueries(roleQueryMap[user.role])
+      }
+
       setStep(2)
     } catch (err) {
       console.error('Error updating user:', err)
@@ -88,10 +97,10 @@ export default function ProfileDialog({ user }: ProfileDialogProps) {
     setOpen(false)
     setStep(1)
     reset({
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      phone: user?.phone || '',
-      address: user?.address || '',
+      firstName: current_user?.firstName || '',
+      lastName: current_user?.lastName || '',
+      phone: current_user?.phone || '',
+      address: current_user?.address || '',
     })
   }
 

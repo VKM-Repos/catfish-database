@@ -3,6 +3,10 @@ import { columns } from './columns'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { clusterResponseSchema, paginatedUserResponseSchema } from 'src/schemas/schemas'
 import { z } from 'zod'
+import EmptyTableState from 'src/components/global/empty-state'
+import EmptyFarmersImg from 'src/assets/images/empty-admin.jpg'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes'
 
 export function ClusterTable() {
   const useGetClusters = createGetQueryHook({
@@ -21,14 +25,27 @@ export function ClusterTable() {
   const { data: clusterManagerResponse, isLoading: loadingManagers } = useGetClusterManagers()
   const clusterManagers = clusterManagerResponse?.content || []
 
-  if (loadingClusters || loadingManagers) {
-    return <div>Loading...</div>
-  }
-
   const clustersWithManagers: any = clusters.map((cluster) => ({
     ...cluster,
     users: clusterManagers.filter((manager) => manager.cluster?.id === cluster.id),
   }))
+  const navigate = useNavigate()
 
-  return <DataTable columns={columns} data={clustersWithManagers} emptyStateMessage="No clusters found" />
+  const openCreateModal = () => {
+    navigate(paths.dashboard.farmers.create)
+  }
+  return (
+    <>
+      {clustersWithManagers && clustersWithManagers.length > 0 ? (
+        <DataTable
+          isLoading={loadingClusters}
+          columns={columns}
+          data={clustersWithManagers}
+          emptyStateMessage="No clusters found"
+        />
+      ) : (
+        <EmptyTableState image={EmptyFarmersImg} name="farmer" text="a farmer" buttonFunc={openCreateModal} />
+      )}
+    </>
+  )
 }

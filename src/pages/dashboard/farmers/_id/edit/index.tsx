@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
-import { paths } from 'src/routes/paths'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Loader } from 'src/components/ui/loader'
 import { useState } from 'react'
@@ -31,7 +30,7 @@ export default function EditFarmerPage() {
   }
 
   const handleClose = () => {
-    navigate(paths.dashboard.farmers.root)
+    navigate(-1)
   }
 
   // Ensure clusterId is included in the initial values
@@ -47,7 +46,7 @@ export default function EditFarmerPage() {
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.farmers.root)}>
+    <Dialog open={true} onOpenChange={() => navigate(-1)}>
       <DialogContent className="max-w-[478px] overflow-hidden p-8">
         {isLoading ? (
           <div className="flex justify-center py-8">

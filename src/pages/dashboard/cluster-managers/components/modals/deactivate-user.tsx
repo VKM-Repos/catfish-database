@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { User } from 'src/types'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
-const DEACTIVATE_DAYS = 12
+const DEACTIVATE_DAYS = 120000
 
 type DeactivateUserDialogProps = {
   user: User

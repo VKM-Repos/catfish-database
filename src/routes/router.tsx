@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
     element: (
       <AuthGuard>
         <DashboardLayout />
-        <PostLoginRedirect />,
+        <PostLoginRedirect />
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />,
@@ -86,6 +86,22 @@ export const router = createBrowserRouter([
         path: paths.dashboard.privacyPolicy,
         element: LazyPage(() => import('src/pages/dashboard/privacy-policy')),
       },
+      // ponds Routes
+      {
+        path: paths.dashboard.ponds.root,
+        element: LazyPage(() => import('src/pages/dashboard/ponds')),
+      },
+      {
+        path: `${paths.dashboard.ponds.root}/:id`,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/_id')),
+        children: [
+          {
+            path: `${paths.dashboard.ponds.root}/:id/edit`,
+            element: LazyPage(() => import('src/pages/dashboard/ponds/_id/edit')),
+          },
+        ],
+      },
+
       // Farmer Routes
       {
         path: paths.dashboard.farmers.root,
@@ -103,29 +119,28 @@ export const router = createBrowserRouter([
               </RoleGuard>
             ),
           },
+        ],
+      },
+      {
+        path: `${paths.dashboard.farmers.root}/:id`,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+            {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
+          </RoleGuard>
+        ),
+        children: [
           {
-            path: ':id',
-            children: [
-              {
-                index: true,
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                    {LazyPage(() => import('src/pages/dashboard/farmers/_id'))}
-                  </RoleGuard>
-                ),
-              },
-              {
-                path: 'edit',
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
-                    {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}
-                  </RoleGuard>
-                ),
-              },
-            ],
+            index: true,
+            path: `${paths.dashboard.farmers.root}/:id/edit`,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER]}>
+                {LazyPage(() => import('src/pages/dashboard/farmers/_id/edit'))}
+              </RoleGuard>
+            ),
           },
         ],
       },
+
       // Cluster Managers Routes
       {
         path: paths.dashboard.clusterManagers.root,
@@ -176,14 +191,6 @@ export const router = createBrowserRouter([
         ),
         children: [
           {
-            path: 'create',
-            element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                {LazyPage(() => import('src/pages/dashboard/reports'))}
-              </RoleGuard>
-            ),
-          },
-          {
             path: ':id',
             children: [
               {
@@ -197,10 +204,62 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: 'edit',
+                path: paths.dashboard.reports.viewFeedingReport(':id'),
                 element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                    {LazyPage(() => import('src/pages/dashboard/reports/_id/edit'))}
+                  <RoleGuard
+                    allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}
+                  >
+                    {LazyPage(() => import('src/pages/dashboard/reports/_id/feeding-reports'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: paths.dashboard.reports.viewSamplingReport(':id'),
+                element: (
+                  <RoleGuard
+                    allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}
+                  >
+                    {LazyPage(() => import('src/pages/dashboard/reports/_id/sampling-reports'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: paths.dashboard.reports.viewHarvestReport(':id'),
+                element: (
+                  <RoleGuard
+                    allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}
+                  >
+                    {LazyPage(() => import('src/pages/dashboard/reports/_id/harvest-reports'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: paths.dashboard.reports.editFeedingReport(':id'),
+                element: (
+                  <RoleGuard
+                    allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}
+                  >
+                    {LazyPage(() => import('src/pages/dashboard/reports/_id/edit/feeding-reports'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: paths.dashboard.reports.editSamplingReport(':id'),
+                element: (
+                  <RoleGuard
+                    allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}
+                  >
+                    {LazyPage(() => import('src/pages/dashboard/reports/_id/edit/sampling-reports'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: paths.dashboard.reports.editHarvestReport(':id'),
+                element: (
+                  <RoleGuard
+                    allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}
+                  >
+                    {LazyPage(() => import('src/pages/dashboard/reports/_id/edit/harvest-reports'))}
                   </RoleGuard>
                 ),
               },
@@ -259,37 +318,6 @@ export const router = createBrowserRouter([
                 {LazyPage(() => import('src/pages/dashboard/system/permissions'))}
               </RoleGuard>
             ),
-            children: [
-              {
-                path: 'create',
-                element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                    {LazyPage(() => import('src/pages/dashboard/system/permissions/create'))}
-                  </RoleGuard>
-                ),
-              },
-              {
-                path: ':id',
-                children: [
-                  {
-                    index: true,
-                    element: (
-                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                        {LazyPage(() => import('src/pages/dashboard/system/permissions/_id'))}
-                      </RoleGuard>
-                    ),
-                  },
-                  {
-                    path: 'edit',
-                    element: (
-                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-                        {LazyPage(() => import('src/pages/dashboard/system/permissions/_id/edit'))}
-                      </RoleGuard>
-                    ),
-                  },
-                ],
-              },
-            ],
           },
           {
             path: paths.dashboard.system.auditLog.root,
@@ -394,6 +422,44 @@ export const router = createBrowserRouter([
       {
         path: paths.dashboard.newPassword,
         element: LazyPage(() => import('src/pages/dashboard/new-password')),
+      },
+      {
+        path: paths.dashboard.ponds.create.root,
+        element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
+        children: [
+          {
+            path: paths.dashboard.ponds.create.addPond,
+            element: LazyPage(() => import('src/pages/dashboard/ponds/create/add-pond')),
+          },
+          {
+            path: paths.dashboard.ponds.create.addFishToPond,
+            element: LazyPage(() => import('src/pages/dashboard/ponds/create/add-fish-to-pond')),
+          },
+        ],
+      },
+      {
+        path: paths.dashboard.reports.createDailyFarmReport(':id'),
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/reports/create/daily-farm-report/_id'))}
+          </RoleGuard>
+        ),
+      },
+      {
+        path: paths.dashboard.reports.createSamplingReport(':id'),
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/reports/create/daily-sampling-report/_id'))}
+          </RoleGuard>
+        ),
+      },
+      {
+        path: paths.dashboard.reports.createHarvestReport(':id'),
+        element: (
+          <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLUSTER_MANAGER, UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/reports/create/daily-harvest-report/_id'))}
+          </RoleGuard>
+        ),
       },
     ],
   },

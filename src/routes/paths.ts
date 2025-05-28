@@ -42,10 +42,30 @@ export const paths = {
       create: '/dashboard/cluster-managers/create',
       id: (id: string) => `/dashboard/cluster-managers/${id}/edit`,
     },
+    ponds: {
+      root: '/dashboard/ponds',
+      create: {
+        root: '/dashboard/ponds/create',
+        addPond: '/dashboard/ponds/create/add-pond',
+        addFishToPond: '/dashboard/ponds/create/add-fish-to-pond',
+      },
+      view: (id: string) => `/dashboard/ponds/${id}`,
+      id: (id: string) => `/dashboard/ponds/${id}/edit`,
+    },
 
     // Reports Routes
     reports: {
       root: '/dashboard/reports',
+      createDailyFarmReport: (id: string) => `/dashboard/reports/create/daily-farm-report/${id}`,
+      createSamplingReport: (id: string) => `/dashboard/reports/create/daily-sampling-report/${id}`,
+      createHarvestReport: (id: string) => `/dashboard/reports/create/daily-harvest-report/${id}`,
+      view: (id: string) => `/dashboard/reports/${id}`,
+      viewFeedingReport: (id: string) => `/dashboard/reports/${id}/feeding-report`,
+      viewSamplingReport: (id: string) => `/dashboard/reports/${id}/sampling-report`,
+      viewHarvestReport: (id: string) => `/dashboard/reports/${id}/harvest-report`,
+      editFeedingReport: (id: string) => `/dashboard/reports/${id}/edit/feeding-report`,
+      editSamplingReport: (id: string) => `/dashboard/reports/${id}/edit/sampling-report`,
+      editHarvestReport: (id: string) => `/dashboard/reports/${id}/edit/harvest-report`,
     },
 
     // System Routes

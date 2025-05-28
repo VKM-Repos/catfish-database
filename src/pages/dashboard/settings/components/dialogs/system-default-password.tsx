@@ -8,29 +8,67 @@ import { Dialog, DialogContent, DialogTrigger } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { changePasswordSchema } from 'src/schemas'
+import { createPutMutationHook } from 'src/api/hooks/usePut'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
-const formSchema = changePasswordSchema
-  .extend({
-    confirmPassword: z.string().min(1, { message: 'Please confirm your new password' }),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Passwords must match',
-    path: ['confirmPassword'],
-  })
-
-type PasswordData = z.infer<typeof formSchema>
+type UpdateConfigBody = {
+  value: string
+  description?: string
+}
 
 export default function ChangeSystemPasswordDialog() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(1)
   const [error, setError] = useState<ClientErrorType | null>(null)
 
+  const useGetSystemConfiguration = createGetQueryHook({
+    endpoint: `configurations?key=DEFAULT_PASSWORD`,
+    responseSchema: z.any(),
+    queryKey: ['system-configuration'],
+  })
+  const { data: config, isLoading } = useGetSystemConfiguration()
+
+  const configItem = config?.content?.[0]
+  const configId = configItem?.id
+  const configDescription = configItem?.description
+  const configCurrentPassword = configItem?.value
+
+  const formSchema = changePasswordSchema
+    .extend({
+      confirmPassword: z.string().min(1, { message: 'Please confirm your new password' }),
+      currentPassword: z.string().min(1, { message: 'Please enter your current password' }),
+    })
+    .refine((data) => !configCurrentPassword || data.currentPassword === configCurrentPassword, {
+      message: 'Current password is incorrect',
+      path: ['currentPassword'],
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: 'Passwords must match',
+      path: ['confirmPassword'],
+    })
+
+  type PasswordData = z.infer<typeof formSchema>
+
   const form = useForm<PasswordData>({ resolver: zodResolver(formSchema) })
 
+  const changeDefaultPasswordMutation = createPutMutationHook({
+    endpoint: configId ? `configurations/${configId}` : '',
+    requestSchema: z.object({ value: z.string(), description: z.string().optional() }),
+    responseSchema: z.any(),
+  })()
+
   const onSubmit = async (data: PasswordData) => {
+    if (!configId) {
+      setError({ title: 'Error', message: 'Configuration not loaded', errors: [] })
+      return
+    }
     try {
       setError(null)
-      console.log({ currentPassword: data.currentPassword, newPassword: data.newPassword })
+      const body: UpdateConfigBody = {
+        value: data.newPassword,
+        description: configDescription,
+      }
+      await changeDefaultPasswordMutation.mutateAsync(body)
       setStep(2)
     } catch (err) {
       console.error('Error updating password:', err)
@@ -59,7 +97,7 @@ export default function ChangeSystemPasswordDialog() {
             error={error}
             setOpen={setOpen}
             title="Change default password"
-            loading={false}
+            loading={isLoading || changeDefaultPasswordMutation.isLoading}
           />
         )
       case 2:

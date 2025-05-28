@@ -10,15 +10,23 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
 import { DeactivateUserDialog } from '../modals/deactivate-user'
 import { useState } from 'react'
-import { User } from 'src/types'
+import type { User } from 'src/types'
 
 type ActionsDropdownProps = {
   user: User
 }
 
 export function ActionsDropdown({ user }: ActionsDropdownProps) {
-  const navigate = useNavigate()
   const [menu, setMenu] = useState(false)
+  const navigate = useNavigate()
+
+  const redirectToPond = () => {
+    const navigatePath = user.id
+      ? `${paths.dashboard.ponds.create.addPond}?farmerId=${encodeURIComponent(user.id)}&clusterId=${user?.cluster.id}`
+      : paths.dashboard.ponds.create.addPond
+
+    navigate(navigatePath)
+  }
 
   return (
     <>
@@ -30,9 +38,11 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.id(user.id))}>Edit</DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setMenu(true)}>Deactivate Farmer</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.farmers.view(user.id))}>View Farm</DropdownMenuItem>
+          <DropdownMenuItem onClick={redirectToPond}>Add Pond</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => setMenu(true)}>
+            {user.accountNonLocked ? 'Deactivate Farmer' : 'Activate Farmer'}{' '}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 

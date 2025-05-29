@@ -26,6 +26,7 @@ interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   isLoading?: boolean
+  showFilter?: boolean
   emptyStateMessage?: string
   hideClusterFilter?: boolean
   search?: boolean
@@ -36,6 +37,7 @@ export function DataTable<TData>({
   data,
   search = true,
   isLoading = false,
+  showFilter = false,
   emptyStateMessage = 'No results found',
   hideClusterFilter = false,
 }: DataTableProps<TData>) {
@@ -149,6 +151,47 @@ export function DataTable<TData>({
             )}
           </div>
         </div>
+        // <div className="w-[20%]">
+        //   {user?.role === 'SUPER_ADMIN' && showFilter ? (
+        //     // <Inline>
+        //     <Button variant="outline" className="flex items-center gap-2" onClick={() => console.log('test')}>
+        //       <SolarIconSet.Filter size={20} />
+        //       <Text>Show Filters</Text>
+        //     </Button>
+        //   ) : (
+        //     // </Inline>
+        //     <Select value={selectedCluster} onValueChange={handleClusterChange}>
+        //       <SelectTrigger className="w-full">
+        //         <SelectValue placeholder="All clusters" />
+        //       </SelectTrigger>
+        //       <SelectContent side="top">
+        //         <SelectItem value=" ">All clusters</SelectItem>
+        //         {clusters?.map((cluster: Cluster) => (
+        //           <SelectItem key={cluster.name} value={cluster.name}>
+        //             {cluster.name}
+        //           </SelectItem>
+        //         ))}
+        //       </SelectContent>
+        //     </Select>
+        //   )}
+        // </div>
+
+        //  <div>
+        //   <Select value={selectedCluster} onValueChange={handleClusterChange}>
+        //     <SelectTrigger className="w-full">
+        //       <SelectValue placeholder="All clusters" />
+        //     </SelectTrigger>
+        //     <SelectContent side="top">
+        //       <SelectItem value=" ">All clusters</SelectItem>
+        //       {clusters?.map((cluster: Cluster) => (
+        //         <SelectItem key={cluster.name} value={cluster.name}>
+        //           {cluster.name}
+        //         </SelectItem>
+        //       ))}
+        //     </SelectContent>
+        //   </Select>
+        // </div>
+        // </div>
       )}
 
       <div className="overflow-hidden rounded-md border border-neutral-200">

@@ -4,6 +4,9 @@ Welcome to the frontend repo for the Catfish database project
 
 ## Run
 
+18.20.8
+npm run dev
+
 ```sh
 yarn
 yarn dev
@@ -52,31 +55,41 @@ src
 ## Vite Configuration
 
 ### Application
+
 - VITE_APP_NAME=Catfish Database
 - VITE_APP_VERSION=1.0.0
 - VITE_APP_ENV=development
 
 ### API Configuration
+
 - VITE_API_BASE_URL=http://ec2-34-239-49-92.compute-1.amazonaws.com/api
 - VITE_API_TIMEOUT=30000
 - VITE_USE_FAKE_BACKEND=false
 
 ### Authentication
+
 - VITE_AUTH_TOKEN_KEY=access_token
 - VITE_AUTH_REFRESH_TOKEN_KEY=refresh_token
 - VITE_AUTH_TOKEN_EXPIRY=3600
 
 ### Routing
+
 - VITE_REDIRECT_QUERY_PARAM=r
 - VITE_DEFAULT_ROUTE=/
 
 ### Feature Flags
+
 - VITE_ENABLE_ANALYTICS=false
 - VITE_ENABLE_LOGGING=true
 - VITE_ENABLE_ERROR_TRACKING=false
 
 ### UI Configuration
+
 - VITE_THEME=light
 - VITE_ENABLE_ANIMATIONS=true
 - VITE_DATE_FORMAT=YYYY-MM-DD
 - VITE_TIME_FORMAT=HH:mm:ss
+
+### Swagger
+
+http://ec2-34-239-49-92.compute-1.amazonaws.com/swagger-ui/index.html

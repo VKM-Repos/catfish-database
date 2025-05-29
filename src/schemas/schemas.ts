@@ -419,14 +419,16 @@ export const samplingSchema = z.object({
 
 export const sortingSchema = z.object({
   splitOccur: z.boolean(),
-  reason: z.string().optional(),
+  reason: z.any().optional(),
   batches: z.array(
     z.object({
       pondId: z.string().optional(),
       quantity: z.any().optional(),
     }),
   ),
-  numberOfFishToHarvest: z.string().optional(),
+  quantity: z.any(),
+  totalWeightHarvested: z.any(),
+  costPerKg: z.any(),
 })
 // export const sortingSchema = z.object({
 //   splitOccur: z.boolean(),
@@ -461,9 +463,6 @@ export const sortingSchema = z.object({
 // })
 export const harvestSchema = z.object({
   numberOfFishHarvested: z.string(),
-  avgWeightOfFishHarvested: z.string(),
   totalWeightHarvested: z.string(),
-  totalAmountSold: z.string(),
-  harvestObservation: z.string(),
-  harvestedBy: z.string(),
+  costPerKg: z.string(),
 })

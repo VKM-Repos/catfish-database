@@ -15,7 +15,7 @@ export default function SamplingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
 
   const useGetSamplingReports = createGetQueryHook({
-    endpoint: '/samplings',
+    endpoint: '/samplings/me',
     responseSchema: z.any(),
     queryKey: ['sampling-reports-table'],
   })

@@ -19,6 +19,8 @@ import { useParams } from 'react-router-dom'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { ConfirmSamplingSubmission } from '../../modals/confirm-sampling-submission'
+import { useFishHarvestStore } from 'src/store/fish-harvest-store'
+import { useSplitStore } from 'src/store/split-store'
 
 export function SortingForm({ handlePrevious }: { handlePrevious: () => void; handleNext: () => void }) {
   const { id } = useParams<{ id: string }>()
@@ -40,7 +42,9 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
     behavior,
     observation,
   } = useFishSamplingStore()
+  const { quantity, totalWeightHarvested, costPerKg, clearStore } = useFishHarvestStore()
 
+  const { splitOccur: splitOccurInStore, reason: reasonInStore, setSplitOccur, setReason } = useSplitStore()
   const samplingForm = {
     numberOfFishSampled,
     weightOfFishSampled,
@@ -57,17 +61,19 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
   const [formData, setFormData] = useState<z.infer<typeof sortingSchema> | null>(null)
   const [samplingData, setSamplingData] = useState<any>(null)
-
   const form = useForm<z.infer<typeof sortingSchema>>({
     resolver: zodResolver(sortingSchema),
     defaultValues: {
-      splitOccur: false,
-      reason: 'SAMPLING',
+      splitOccur: splitOccurInStore,
+      reason: reasonInStore,
       batches: [],
-      numberOfFishToHarvest: '',
+      quantity: quantity,
+      totalWeightHarvested: totalWeightHarvested,
+      costPerKg: costPerKg,
     },
     mode: 'onChange',
   })
+  const { setValue } = form
 
   const splitOccur = form.watch('splitOccur')
   const reason = form.watch('reason')
@@ -131,7 +137,11 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
           quantity: Number(batch.quantity),
         })),
       },
-      numberOfFishToHarvest: Number(data.numberOfFishToHarvest),
+      harvestCreate: {
+        quantity: Number(data.quantity),
+        totalWeightHarvested: Number(data.totalWeightHarvested),
+        costPerKg: Number(data.costPerKg),
+      },
     }
   }
 
@@ -149,6 +159,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
       if (!samplingData) return
 
       await createSamplingReport.mutateAsync(samplingData)
+
       setOpenConfirmDialog(false)
       setOpenDialog(true)
     } catch (err) {
@@ -201,7 +212,18 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                     <FormControl>
                       <div className="flex items-center gap-2">
                         <span>No</span>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={(value) => {
+                            field.onChange(value)
+                            if (!value) {
+                              setValue('reason', 'sampling')
+                              clearStore()
+                              setValue('batches', [])
+                            }
+                            setSplitOccur(value)
+                          }}
+                        />
                         <span>Yes</span>
                       </div>
                     </FormControl>
@@ -220,7 +242,10 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                       </FormLabel>
                       <FormControl>
                         <RadioGroup
-                          onValueChange={field.onChange}
+                          onValueChange={(value) => {
+                            field.onChange(value)
+                            setReason(value || 'sampling')
+                          }}
                           defaultValue={field.value}
                           className="flex items-center space-x-2"
                           required
@@ -239,7 +264,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
-                      {form.formState.errors.reason && (
+                      {typeof form.formState.errors.reason?.message === 'string' && (
                         <p className="text-sm font-medium text-error-500">{form.formState.errors.reason.message}</p>
                       )}
                     </FormItem>

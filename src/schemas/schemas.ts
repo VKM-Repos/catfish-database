@@ -255,6 +255,31 @@ export const fishDetailsResponseSchema = z.object({
   updatedAt: z.string(),
 })
 
+export const feedTypeSchema = z.object({
+  type: z.string().min(1, { message: 'Please enter the brand of feed' }),
+  sizeInMm: z.string().min(1, { message: 'Please select a pellet size' }),
+  quantityInKg: z.string().min(1, { message: 'Please enter the quantity of feed' }),
+  totalCost: z
+    .string()
+    .regex(/^[-+]?\d+(\.\d+)?$/, {
+      message: 'Total cost must be a valid number',
+    })
+    .optional(),
+  costPerKg: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Feed cost per kg must be a valid number',
+  }),
+})
+
+export const feedTypeResponseSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  sizeInMm: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  quantityInKg: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  costPerKg: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
 export const feedingResponseSchema = z.object({
   id: z.string().optional(),
   pondId: z.string().optional(),

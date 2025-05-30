@@ -61,7 +61,13 @@ export default function FarmDetailsPage() {
             </FlexBox>
             <Heading className="!text-[1.875rem] font-semibold">{title}</Heading>
           </FlexBox>
-          <StatusBadge status={farmStatus} activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />} />
+          <StatusBadge
+            status={farmStatus}
+            activeText="Active"
+            inactiveText="Deactivated"
+            activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
+            inactiveIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
+          />
         </FlexBox>
         <Spacer />
         <Container className="!px-12">

@@ -164,18 +164,9 @@ export const pondSchema = z.object({
   id: z.string().optional(),
   status: z.string().optional(),
   name: z.string().min(3, { message: 'Pond Name must not be less than 3 characters' }),
-  length: z
-    .string()
-    .regex(/^\d+(\.\d+)?$/, 'Pond length must be a valid number')
-    .optional(),
-  breadth: z
-    .string()
-    .regex(/^\d+(\.\d+)?$/, 'Pond breadth must be a valid number')
-    .optional(),
-  height: z
-    .string()
-    .regex(/^\d+(\.\d+)?$/, 'Pond height must be a valid number')
-    .optional(),
+  length: z.string().regex(/^\d+(\.\d+)?$/, 'Pond length must be a valid number'),
+  breadth: z.string().regex(/^\d+(\.\d+)?$/, 'Pond breadth must be a valid number'),
+  height: z.string().regex(/^\d+(\.\d+)?$/, 'Pond height must be a valid number'),
   size: z.string().regex(/^\d+(\.\d+)?$/, 'Pond size must be a valid number'),
   waterSource: z.string().min(1, { message: 'Please add a water source' }),
   pondType: z.string().min(1, { message: 'Please add pond type' }),

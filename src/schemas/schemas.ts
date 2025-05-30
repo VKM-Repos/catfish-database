@@ -194,6 +194,18 @@ export const pondResponseSchema = z.object({
   status: z.string().optional(),
   name: z.string(),
   size: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  length: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .optional(),
+  breadth: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .optional(),
+  height: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .optional(),
   latitude: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))

@@ -3,6 +3,9 @@ export type pondResponseType = {
   status?: string
   name: string
   size: string
+  length: string
+  breadth: string
+  height: string
   latitude?: string | null
   longitude?: string | null
   waterSource: string

@@ -424,6 +424,10 @@ export const router = createBrowserRouter([
         element: LazyPage(() => import('src/pages/dashboard/new-password')),
       },
       {
+        path: paths.dashboard.feeds.create.root,
+        element: LazyPage(() => import('src/pages/dashboard/feeds/create')),
+      },
+      {
         path: paths.dashboard.ponds.create.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
         children: [

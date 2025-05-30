@@ -90,16 +90,28 @@ function UnregisteredPondAndBatchCards({ navigate, hasPond }: UnregisteredPondAn
         isFirstCard={false}
       />
 
+      {/* <ActionCard
+          title="Need Help?"
+          description="Find answers to common questions or get in touch with support."
+          icon={
+            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-primary-100 text-primary-600">
+              <SolarIconSet.Lightbulb color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />
+            </div>
+          }
+          buttonText="Visit help center"
+          buttonAction={() => navigate(paths.dashboard.helpCenter)}
+        /> */}
+
       <ActionCard
-        title="Need Help?"
-        description="Find answers to common questions or get in touch with support."
+        title="Register your feed types"
+        description="Add each type of feed available on your farm. These entries will populate the feed options in your daily feeding forms."
         icon={
           <div className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-primary-100 text-primary-600">
-            <SolarIconSet.Lightbulb color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />
+            <SolarIconSet.MoneyBag color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />
           </div>
         }
-        buttonText="Visit help center"
-        buttonAction={() => navigate(paths.dashboard.helpCenter)}
+        buttonText="Register your feeds"
+        buttonAction={() => navigate(paths.dashboard.feeds.create.root)}
       />
 
       <Dialog open={showPondError} onOpenChange={setShowPondError}>
@@ -225,7 +237,7 @@ export default function GetStarted() {
       </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-5">
-        {!hasPondAndBatch ? (
+        {hasPondAndBatch ? (
           <UnregisteredPondAndBatchCards navigate={navigate} hasPond={hasPond} />
         ) : (
           <RegisteredPondAndBatchCards navigate={navigate} />

@@ -77,7 +77,11 @@ export default function RegisterFeedTypes() {
   const onSubmit = async (values: z.infer<typeof feedTypeSchema>) => {
     try {
       setError(null)
-      console.log(values)
+      const mutationData = {
+        ...values,
+        sizeInMm: values.sizeInMm.replace('mm', ''),
+      }
+      await createFeedTypeMutation.mutateAsync(mutationData)
     } catch (err) {
       console.error('Error adding feed type:', err)
       if (err && typeof err === 'object' && 'response' in err) {
@@ -116,12 +120,7 @@ export default function RegisterFeedTypes() {
   }
 
   return (
-    <FlexBox
-      direction="col"
-      gap="gap-5"
-      align="center"
-      className="mx-auto w-full max-w-[50%] rounded-lg border border-neutral-200 px-6 py-3"
-    >
+    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
       <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full text-center">
         <h1 className="flex items-center gap-2 text-[1.5rem] font-bold">
           Register your feed types{' '}
@@ -133,143 +132,144 @@ export default function RegisterFeedTypes() {
       </FlexBox>
       <>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col gap-10 rounded-lg py-3">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col gap-10 ">
             {error && <FormValidationErrorAlert error={error} />}
-            <div className="flex w-full flex-col items-start gap-1">
-              <h5 className="text-[1.5rem] font-bold text-[#444955]">Feed Details</h5>
-              <hr className="w-full border border-primary-200" />
+            <div className="flex w-full flex-col gap-10 rounded-lg border border-neutral-200 px-6 pb-8 pt-3">
+              <div className="flex w-full flex-col items-start gap-1">
+                <h5 className="text-[1.5rem] font-bold text-[#444955]">Feed Details</h5>
+                <hr className="w-full border border-primary-200" />
+              </div>
+              <Grid cols={3} gap="gap-2" className="!grid-cols-1 md:!grid-cols-3">
+                <FlexBox direction="col" gap="gap-2">
+                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                    Feed Type
+                    <span className="font-bold text-red-500">*</span>
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </Text>
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <div className="w-full">
+                            <Input placeholder="Enter the brand of feed" {...field} />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FlexBox>
+                <FlexBox direction="col" gap="gap-2" className="w-full">
+                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                    Pellet size
+                    <span className="font-bold text-red-500">*</span>
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </Text>
+                  <FormField
+                    control={form.control}
+                    name="sizeInMm"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Select value={field.value || ''} onValueChange={(v) => field.onChange(v)}>
+                            <SelectTrigger className="w-full font-light">
+                              <div className="flex items-center justify-center gap-2">
+                                <SolarIconSet.Weigher />
+                                <SelectValue placeholder="Select Pellet size" />
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {pelletsSize?.map((pellet) => (
+                                <SelectItem key={pellet} value={pellet}>
+                                  {pellet}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FlexBox>
+                <FlexBox direction="col" gap="gap-2">
+                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                    Feed Quantity
+                    <span className="font-bold text-red-500">*</span>
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </Text>
+                  <FormField
+                    control={form.control}
+                    name="quantityInKg"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <div className="w-full">
+                            <Input placeholder="Input quantity in kg" {...field} />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </FlexBox>
+              </Grid>
+
+              <FlexBox gap="gap-4" className="w-full flex-col md:!flex-row">
+                <div className="flex w-full flex-col gap-2">
+                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                    {' '}
+                    Total cost (₦)
+                    <span className="font-bold text-red-500">*</span>
+                  </Text>
+                  <FormField
+                    control={form.control}
+                    name="totalCost"
+                    render={({ field }) => (
+                      <FormItem className="w-full !space-y-0">
+                        <FormControl>
+                          <div className="w-full">
+                            <Input placeholder="Input cost of feed" {...field} />
+                          </div>
+                        </FormControl>
+                        <div className={`relative min-h-fit`}>
+                          <FormMessage className="absolute mt-2 transition-opacity duration-200" />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex w-full flex-col gap-2">
+                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                    Cost per kg (₦)
+                    <span className="font-bold text-red-500">*</span>
+                  </Text>
+                  <FormField
+                    control={form.control}
+                    name="costPerKg"
+                    render={({ field }) => (
+                      <FormItem className="w-full !space-y-0">
+                        <FormControl>
+                          <div className="w-full">
+                            <Input placeholder="0" {...field} className="bg-neutral-200 !text-black" disabled />
+                          </div>
+                        </FormControl>
+                        <div className={`relative min-h-fit`}>
+                          <FormMessage className="absolute mt-2 transition-opacity duration-200" />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </FlexBox>
             </div>
-            <Grid cols={3} gap="gap-2" className="!grid-cols-1 md:!grid-cols-3">
-              <FlexBox direction="col" gap="gap-2">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  Feed Type
-                  <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="w-full">
-                          <Input placeholder="Enter the brand of feed" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </FlexBox>
-              <FlexBox direction="col" gap="gap-2" className="w-full">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  Pellet size
-                  <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="sizeInMm"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Select value={field.value || ''} onValueChange={(v) => field.onChange(v)}>
-                          <SelectTrigger className="w-full font-light">
-                            <div className="flex items-center justify-center gap-2">
-                              <SolarIconSet.Weigher />
-                              <SelectValue placeholder="Select Pellet size" />
-                            </div>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {pelletsSize?.map((pellet) => (
-                              <SelectItem key={pellet} value={pellet}>
-                                {pellet}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </FlexBox>
-              <FlexBox direction="col" gap="gap-2">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  Feed Quantity
-                  <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="quantityInKg"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <div className="w-full">
-                          <Input placeholder="Input quantity in kg" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </FlexBox>
-            </Grid>
-
-            <FlexBox gap="gap-4" className="w-full flex-col md:!flex-row">
-              <div className="flex w-full flex-col gap-2">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  {' '}
-                  Total cost (₦)
-                  <span className="font-bold text-red-500">*</span>
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="totalCost"
-                  render={({ field }) => (
-                    <FormItem className="w-full !space-y-0">
-                      <FormControl>
-                        <div className="w-full">
-                          <Input placeholder="Input cost of feed" {...field} />
-                        </div>
-                      </FormControl>
-                      <div className={`relative min-h-fit`}>
-                        <FormMessage className="absolute mt-2 transition-opacity duration-200" />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex w-full flex-col gap-2">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  Cost per kg (₦)
-                  <span className="font-bold text-red-500">*</span>
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="costPerKg"
-                  render={({ field }) => (
-                    <FormItem className="w-full !space-y-0">
-                      <FormControl>
-                        <div className="w-full">
-                          <Input placeholder="0" {...field} className="bg-neutral-200 !text-black" disabled />
-                        </div>
-                      </FormControl>
-                      <div className={`relative min-h-fit`}>
-                        <FormMessage className="absolute mt-2 transition-opacity duration-200" />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </FlexBox>
-
             <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">
               <Button
                 type="button"
                 variant="outline"
-                className="flex items-center gap-2 font-medium text-primary-500"
+                className="flex items-center gap-2 bg-white font-medium text-primary-500"
                 onClick={() => {
                   setOpenCancelPrompt(true)
                 }}

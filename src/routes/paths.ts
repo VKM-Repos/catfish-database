@@ -79,7 +79,7 @@ export const paths = {
       },
       auditLog: {
         root: '/dashboard/system/audit-log',
-        create: '/dashboard/system/audit-log/create',
+        // create: '/dashboard/system/audit-log/create',
         id: (id: string) => `/dashboard/system/audit-log/${id}`,
       },
       clusters: {

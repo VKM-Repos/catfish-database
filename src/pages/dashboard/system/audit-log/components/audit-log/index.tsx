@@ -5,7 +5,7 @@ import { paginatedAuditResponseSchema } from 'src/schemas/auditLogSchema'
 
 export function AuditLogTable() {
   const useGetAuditsLog = createGetQueryHook({
-    endpoint: '/audit-logs?direction=DESC',
+    endpoint: '/audit-logs?direction=ASC',
     responseSchema: paginatedAuditResponseSchema,
     queryKey: ['audits'],
   })
@@ -18,8 +18,9 @@ export function AuditLogTable() {
       columns={columns}
       data={audits?.content ?? []}
       isLoading={isLoading}
-      showFilter={true}
+      // showFilter={true}
       emptyStateMessage="No audits found"
+      hideClusterFilter={true}
     />
   )
 }

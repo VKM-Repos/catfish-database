@@ -52,6 +52,11 @@ export const paths = {
       view: (id: string) => `/dashboard/ponds/${id}`,
       id: (id: string) => `/dashboard/ponds/${id}/edit`,
     },
+    feeds: {
+      create: {
+        root: '/dashboard/feeds/create',
+      },
+    },
 
     // Reports Routes
     reports: {

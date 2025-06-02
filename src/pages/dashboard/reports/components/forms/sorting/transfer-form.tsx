@@ -11,14 +11,16 @@ import { useFieldArray } from 'react-hook-form'
 import { useEffect } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useFishSortingStore } from 'src/store/fish-sorting.store'
+import { paths } from 'src/routes'
 
 type SortingFormValues = z.infer<typeof sortingSchema>
 
 export default function TransferForm({ form }: { form: UseFormReturn<SortingFormValues> }) {
   const { formData, setFormData } = useFishSortingStore()
   const { watch, reset, control } = form
+  const navigate = useNavigate()
 
   // Update store when form changes
   useEffect(() => {
@@ -165,6 +167,15 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
                                 </SelectItem>
                               ))
                             )}
+                            <button
+                              onClick={() => navigate(paths.dashboard.ponds.create.addPond)}
+                              type="button"
+                              className="w-full"
+                            >
+                              <span className="flex items-center gap-2 px-7 py-1 text-sm hover:bg-primary-100">
+                                <SolarIconSet.AddCircle /> Add another pond
+                              </span>
+                            </button>
                           </SelectContent>
                         </Select>
                       </FormControl>

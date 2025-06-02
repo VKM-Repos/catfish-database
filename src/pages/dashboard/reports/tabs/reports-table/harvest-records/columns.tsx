@@ -1,111 +1,43 @@
-import { ColumnDef } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { StatusBadge } from 'src/components/global/status-badge'
-import * as SolarIconSet from 'solar-icon-set'
+import { formatDate } from 'src/lib/date'
+import { HarvestReportActionsDropdown } from './actions-dropdown'
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'date',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{row.original.date}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
   },
   {
-    accessorKey: 'fishPopulation',
+    accessorKey: 'quantity',
     header: () => (
-      <div title="Fish population" className="w-[4rem] truncate font-bold">
-        Fish population
+      <div title="Quantity" className="w-[4rem] truncate font-bold">
+        Quantity
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.fishPopulation}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.quantity}</Text>,
   },
   {
-    accessorKey: 'sampleSize',
+    accessorKey: 'totalWeightHarvested',
     header: () => (
-      <div title="Sample size" className="w-[4rem] truncate font-bold">
-        Sample size
+      <div title="Total weight harvested" className="w-[4rem] truncate font-bold">
+        Total weight harvested
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.sampleSize}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.totalWeightHarvested}</Text>,
   },
   {
-    accessorKey: 'averageWeight',
+    accessorKey: 'costPerKg',
     header: () => (
-      <div title="Average weight" className="font-bold">
-        Average weight
+      <div title="Cost per KG" className="font-bold">
+        Cost per KG
       </div>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.averageWeight}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.costPerKg}</Text>,
   },
   {
-    accessorKey: 'averageWeightGain',
-    header: () => (
-      <div title="Average weight gain" className="w-[4rem] truncate font-bold">
-        Average weight gain
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.averageWeightGain}</Text>,
-  },
-  {
-    accessorKey: 'mortality',
-    header: 'Mortality',
-    cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
-  },
-  {
-    accessorKey: 'splitTriggered',
-    header: () => (
-      <div title="Split triggered" className="w-[4rem] truncate font-bold">
-        Split triggered
-      </div>
-    ),
-    cell: ({ row }) => (
-      <StatusBadge
-        status={row.original.splitTriggered}
-        activeText="Yes"
-        inactiveText="No"
-        inactiveBg="bg-error-100 border-[#FF0000] text-[#FF0000]"
-      />
-    ),
-  },
-  {
-    accessorKey: 'fishMoved',
-    header: () => (
-      <div title="Number of fish moved" className="w-[4rem] truncate font-bold">
-        No. of fish moved
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.fishMoved}</Text>,
-  },
-  {
-    accessorKey: 'destinationPond',
-    header: () => (
-      <div title="Destination pond" className=" font-bold">
-        Destination pond
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.destinationPond}</Text>,
-  },
-  {
-    accessorKey: 'reason',
-    header: 'Reason',
-    cell: ({ row }) => {
-      const reasonBool = row.original.reason === 'Harvest' ? true : false
-
-      return (
-        <>
-          {['Harvest', 'Transfer'].includes(row.original.reason) ? (
-            <StatusBadge
-              status={reasonBool}
-              activeText="Harvest"
-              inactiveText="Transfer"
-              activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
-              inactiveIcon={<SolarIconSet.MapArrowRight color="currentColor" size={16} />}
-              inactiveBg="bg-[#E5E7FF] text-[#000AFF] border-[#000AFF]"
-            />
-          ) : (
-            <Text weight="light">-</Text>
-          )}
-        </>
-      )
-    },
+    id: 'actions',
+    cell: ({ row }) => <HarvestReportActionsDropdown samplingData={row?.original} />,
   },
 ]

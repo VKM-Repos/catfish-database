@@ -255,6 +255,31 @@ export const fishDetailsResponseSchema = z.object({
   updatedAt: z.string(),
 })
 
+export const feedTypeSchema = z.object({
+  type: z.string().min(1, { message: 'Please enter the brand of feed' }),
+  sizeInMm: z.string().min(1, { message: 'Please select a pellet size' }),
+  quantityInKg: z.string().min(1, { message: 'Please enter the quantity of feed' }),
+  totalCost: z
+    .string()
+    .regex(/^[-+]?\d+(\.\d+)?$/, {
+      message: 'Total cost must be a valid number',
+    })
+    .optional(),
+  costPerKg: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
+    message: 'Feed cost per kg must be a valid number',
+  }),
+})
+
+export const feedTypeResponseSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  sizeInMm: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  quantityInKg: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  costPerKg: z.union([z.string(), z.number()]).transform((val) => String(val)),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
 export const feedingResponseSchema = z.object({
   id: z.string().optional(),
   pondId: z.string().optional(),
@@ -419,14 +444,16 @@ export const samplingSchema = z.object({
 
 export const sortingSchema = z.object({
   splitOccur: z.boolean(),
-  reason: z.string().optional(),
+  reason: z.any().optional(),
   batches: z.array(
     z.object({
       pondId: z.string().optional(),
       quantity: z.any().optional(),
     }),
   ),
-  numberOfFishToHarvest: z.string().optional(),
+  quantity: z.any(),
+  totalWeightHarvested: z.any(),
+  costPerKg: z.any(),
 })
 // export const sortingSchema = z.object({
 //   splitOccur: z.boolean(),
@@ -461,9 +488,6 @@ export const sortingSchema = z.object({
 // })
 export const harvestSchema = z.object({
   numberOfFishHarvested: z.string(),
-  avgWeightOfFishHarvested: z.string(),
   totalWeightHarvested: z.string(),
-  totalAmountSold: z.string(),
-  harvestObservation: z.string(),
-  harvestedBy: z.string(),
+  costPerKg: z.string(),
 })

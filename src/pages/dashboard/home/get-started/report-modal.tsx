@@ -55,6 +55,9 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
 
   const handleProceed = (values: FormValues) => {
     if (!values.pondId) return
+    if (values.pondId === 'add-pond') {
+      return navigate(paths.dashboard.ponds.create.addPond)
+    }
     // Perform action using values.pondId
     switch (redirect) {
       case 'daily-farm-report':
@@ -111,17 +114,16 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                             </SelectItem>
                           ))
                         )}
-                        {isLoadingClustersManagerPonds ? (
-                          <SelectItem value="loading" disabled>
-                            <Text>Loading ponds...</Text>
+                        {clustersManagerPonds.content?.map((pond: any) => (
+                          <SelectItem key={pond.id} value={pond.id}>
+                            {pond.name}
                           </SelectItem>
-                        ) : (
-                          clustersManagerPonds.content?.map((pond: any) => (
-                            <SelectItem key={pond.id} value={pond.id}>
-                              {pond.name}
-                            </SelectItem>
-                          ))
-                        )}
+                        ))}
+                        <SelectItem value="add-pond">
+                          <span className="flex items-center gap-2 py-1">
+                            <SolarIconSet.AddCircle /> Add another pond
+                          </span>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

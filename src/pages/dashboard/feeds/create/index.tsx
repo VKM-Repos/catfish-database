@@ -79,7 +79,7 @@ export default function RegisterFeedTypes() {
       setError(null)
       const mutationData = {
         ...values,
-        sizeInMm: values.sizeInMm.replace('mm', ''),
+        sizeInMm: values.sizeInMm?.replace('mm', ''),
       }
       await createFeedTypeMutation.mutateAsync(mutationData)
     } catch (err) {

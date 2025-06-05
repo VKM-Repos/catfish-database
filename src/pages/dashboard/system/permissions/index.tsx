@@ -40,13 +40,13 @@ export default function PermissionsPage() {
           >
             <div className="w-full border-b border-b-neutral-200 p-0">
               <TabsList className="text-sm font-semibold">
-                <TabsTrigger value="admin" className="data-[state=active]:font-bold">
+                <TabsTrigger value="admin" className="data-[state=active]:font-semibold">
                   Admin
                 </TabsTrigger>
-                <TabsTrigger value="cluster-manager" className="data-[state=active]:font-bold">
+                <TabsTrigger value="cluster-manager" className="data-[state=active]:font-semibold">
                   Cluster Manager
                 </TabsTrigger>
-                <TabsTrigger value="farmer" className="data-[state=active]:font-bold">
+                <TabsTrigger value="farmer" className="data-[state=active]:font-semibold">
                   Farmer
                 </TabsTrigger>
               </TabsList>

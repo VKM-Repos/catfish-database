@@ -5,20 +5,32 @@ import { useForm } from 'react-hook-form'
 import { Button } from 'src/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { harvestSchema } from 'src/schemas'
-import type { z } from 'zod'
+import { z } from 'zod'
 // Import useEffect
 import { Text } from 'src/components/ui/text'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { CreateReportDialog } from '../../modals/create-report-modal'
+import { createPostMutationHook } from 'src/api/hooks/usePost'
+import { ClientErrorType, ServerErrorType } from 'src/types'
+import { LoadingScreen } from 'src/components/global/loading-screen'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
 type HarvestFormValues = z.infer<typeof harvestSchema>
 
 export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; handleNext: () => void }) {
   const navigate = useNavigate()
+  const [error, setError] = useState<ClientErrorType | null>()
+  const { id } = useParams<{ id: string }>()
+
+  const useSamplingReport = createPostMutationHook({
+    endpoint: '/samplings',
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
 
   const form = useForm<z.infer<typeof harvestSchema>>({
     resolver: zodResolver(harvestSchema),
@@ -33,9 +45,34 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const [openDialog, setOpenDialog] = useState(false)
 
-  function onSubmit(data: z.infer<typeof harvestSchema>) {
-    console.log(data)
-    setOpenDialog(true)
+  const createSamplingReport = useSamplingReport()
+
+  const onSubmit = async (data: z.infer<typeof harvestSchema>) => {
+    try {
+      const harvestData = {
+        pondId: id,
+        harvestCreate: {
+          quantity: Number(data.numberOfFishHarvested),
+          totalWeightHarvested: Number(data.totalWeightHarvested),
+          costPerKg: Number(data.costPerKg),
+        },
+      }
+      await createSamplingReport.mutateAsync(harvestData)
+      setOpenDialog(true)
+    } catch (err) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: ServerErrorType } }
+        const errorData = axiosError.response?.data
+
+        if (errorData) {
+          setError({
+            title: errorData?.error,
+            message: errorData?.message,
+            errors: errorData?.errors ?? null,
+          })
+        }
+      }
+    }
   }
   const handleInputChange = (fieldName: string, value: string) => {
     setActiveInputs((prev) => ({
@@ -62,10 +99,13 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
       form.setValue(fieldName, newValue)
     }
   }
+  if (createSamplingReport.isLoading) {
+    return <LoadingScreen />
+  }
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
-
+      {error && <FormValidationErrorAlert error={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>

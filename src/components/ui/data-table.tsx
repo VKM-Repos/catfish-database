@@ -102,7 +102,7 @@ export function DataTable<TData>({
       <TableRow key={`skeleton-${index}`}>
         {columns.map((_, colIndex) => (
           <TableCell key={`skeleton-cell-${index}-${colIndex}`} className="h-12">
-            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full rounded" />
           </TableCell>
         ))}
       </TableRow>
@@ -151,47 +151,6 @@ export function DataTable<TData>({
             )}
           </div>
         </div>
-        // <div className="w-[20%]">
-        //   {user?.role === 'SUPER_ADMIN' && showFilter ? (
-        //     // <Inline>
-        //     <Button variant="outline" className="flex items-center gap-2" onClick={() => console.log('test')}>
-        //       <SolarIconSet.Filter size={20} />
-        //       <Text>Show Filters</Text>
-        //     </Button>
-        //   ) : (
-        //     // </Inline>
-        //     <Select value={selectedCluster} onValueChange={handleClusterChange}>
-        //       <SelectTrigger className="w-full">
-        //         <SelectValue placeholder="All clusters" />
-        //       </SelectTrigger>
-        //       <SelectContent side="top">
-        //         <SelectItem value=" ">All clusters</SelectItem>
-        //         {clusters?.map((cluster: Cluster) => (
-        //           <SelectItem key={cluster.name} value={cluster.name}>
-        //             {cluster.name}
-        //           </SelectItem>
-        //         ))}
-        //       </SelectContent>
-        //     </Select>
-        //   )}
-        // </div>
-
-        //  <div>
-        //   <Select value={selectedCluster} onValueChange={handleClusterChange}>
-        //     <SelectTrigger className="w-full">
-        //       <SelectValue placeholder="All clusters" />
-        //     </SelectTrigger>
-        //     <SelectContent side="top">
-        //       <SelectItem value=" ">All clusters</SelectItem>
-        //       {clusters?.map((cluster: Cluster) => (
-        //         <SelectItem key={cluster.name} value={cluster.name}>
-        //           {cluster.name}
-        //         </SelectItem>
-        //       ))}
-        //     </SelectContent>
-        //   </Select>
-        // </div>
-        // </div>
       )}
 
       <div className="overflow-hidden rounded-md border border-neutral-200">
@@ -227,81 +186,81 @@ export function DataTable<TData>({
             )}
           </TableBody>
         </Table>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between px-2">
-        <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Results per page</p>
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value))
-            }}
-          >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        {/* Pagination */}
+        <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <Button
-              variant="icon"
-              className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+            <p className="text-sm font-normal">Results per page</p>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value))
+              }}
             >
-              <span className="sr-only">Go to previous page</span>
-              <SolarIconSet.AltArrowLeft size={20} />
-            </Button>
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue placeholder={table.getState().pagination.pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            {Array.from({ length: Math.min(5, table.getPageCount()) }, (_, i) => {
-              let pageIndex
-              const currentPage = table.getState().pagination.pageIndex
-              const pageCount = table.getPageCount()
+          <div className="flex items-center space-x-6 lg:space-x-8">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="icon"
+                className="h-8 w-8 p-0"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <SolarIconSet.AltArrowLeft size={26} />
+              </Button>
+              {/* 
+              {Array.from({ length: Math.min(5, table.getPageCount()) }, (_, i) => {
+                let pageIndex
+                const currentPage = table.getState().pagination.pageIndex
+                const pageCount = table.getPageCount()
 
-              if (pageCount <= 5) {
-                pageIndex = i
-              } else if (currentPage < 3) {
-                pageIndex = i
-              } else if (currentPage > pageCount - 4) {
-                pageIndex = pageCount - 5 + i
-              } else {
-                pageIndex = currentPage - 2 + i
-              }
-              return (
-                <Button
-                  key={pageIndex}
-                  variant={currentPage === pageIndex ? 'outline' : 'ghost'}
-                  className={`flex w-14 items-center justify-start px-2 py-2 ${
-                    currentPage !== pageIndex ? 'hidden' : 'block'
-                  }`}
-                  onClick={() => table.setPageIndex(pageIndex)}
-                >
-                  {pageIndex + 1}
-                </Button>
-              )
-            })}
-            <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-              of {table.getPageCount()} pages
+                if (pageCount <= 5) {
+                  pageIndex = i
+                } else if (currentPage < 3) {
+                  pageIndex = i
+                } else if (currentPage > pageCount - 4) {
+                  pageIndex = pageCount - 5 + i
+                } else {
+                  pageIndex = currentPage - 2 + i
+                }
+                return (
+                  <Button
+                    key={pageIndex}
+                    variant={currentPage === pageIndex ? 'outline' : 'ghost'}
+                    className={`flex w-14 items-center justify-start px-2 py-2 ${
+                      currentPage !== pageIndex ? 'hidden' : 'block'
+                    }`}
+                    onClick={() => table.setPageIndex(pageIndex)}
+                  >
+                    {pageIndex + 1}
+                  </Button>
+                )
+              })}
+              <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                of {table.getPageCount()} pages
+              </div> */}
+              <Button
+                variant="icon"
+                className="h-8 w-8 p-0"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <SolarIconSet.AltArrowRight size={26} />
+              </Button>
             </div>
-            <Button
-              variant="icon"
-              className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Go to next page</span>
-              <SolarIconSet.AltArrowRight size={20} />
-            </Button>
           </div>
         </div>
       </div>

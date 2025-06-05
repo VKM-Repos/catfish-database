@@ -256,8 +256,9 @@ export const fishDetailsResponseSchema = z.object({
 })
 
 export const feedTypeSchema = z.object({
-  type: z.string().min(1, { message: 'Please enter the brand of feed' }),
-  sizeInMm: z.string().min(1, { message: 'Please select a pellet size' }),
+  id: z.string().optional(),
+  type: z.string().min(1, { message: 'Please enter the brand of feed' }).optional(),
+  sizeInMm: z.string().min(1, { message: 'Please select a pellet size' }).optional(),
   quantityInKg: z.string().min(1, { message: 'Please enter the quantity of feed' }),
   totalCost: z
     .string()
@@ -268,6 +269,7 @@ export const feedTypeSchema = z.object({
   costPerKg: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
     message: 'Feed cost per kg must be a valid number',
   }),
+  date: z.string().optional(),
 })
 
 export const feedTypeResponseSchema = z.object({

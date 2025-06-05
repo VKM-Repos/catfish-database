@@ -41,15 +41,15 @@ export default function Settings() {
           >
             <div className="w-full border-b border-b-neutral-200 p-0">
               <TabsList className="text-sm font-semibold">
-                <TabsTrigger value="account" className="data-[state=active]:font-bold">
+                <TabsTrigger value="account" className="data-[state=active]:font-semibold">
                   Account
                 </TabsTrigger>
                 {isSuperAdmin && (
                   <>
-                    <TabsTrigger value="template" className="data-[state=active]:font-bold">
+                    <TabsTrigger value="template" className="data-[state=active]:font-semibold">
                       Template
                     </TabsTrigger>
-                    <TabsTrigger value="system" className="data-[state=active]:font-bold">
+                    <TabsTrigger value="system" className="data-[state=active]:font-semibold">
                       System
                     </TabsTrigger>
                   </>

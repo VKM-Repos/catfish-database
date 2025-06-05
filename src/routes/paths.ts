@@ -1,4 +1,15 @@
+/**
+ * ------------------------------------------------------------------------
+ * Application Route Paths
+ * This file contains all the route path constants and path generators
+ * for the application. Use these to avoid hardcoding URLs in your codebase.
+ * ------------------------------------------------------------------------
+ */
 export const paths = {
+  // ---------------- Auth Section ----------------
+  /**
+   * Auth routes for login, password reset, terms, and privacy.
+   */
   auth: {
     root: '/auth',
     login: '/auth/login',
@@ -8,14 +19,28 @@ export const paths = {
     privacy: '/auth/privacy',
   },
 
+  // ---------------- Dashboard Section ----------------
+  /**
+   * Main dashboard routes and all nested sections.
+   */
   dashboard: {
     root: '/dashboard',
+
+    // -------- Home Section --------
+    /**
+     * Dashboard home, overview, new entry, and get started.
+     */
     home: {
       root: '/dashboard/home',
       overview: '/dashboard/home/overview',
       newEntry: '/dashboard/home/new-entry',
       getStarted: '/dashboard/home/get-started',
     },
+
+    // -------- Profile & Settings --------
+    /**
+     * User profile and settings tabs.
+     */
     profile: '/dashboard/settings?tab=account',
     account: '/dashboard/settings?tab=account',
     settings: '/dashboard/settings',
@@ -24,24 +49,43 @@ export const paths = {
     privacyPolicy: '/dashboard/privacy-policy',
     newPassword: '/dashboard/new-password',
 
+    // -------- Farmers Section --------
+    /**
+     * Farmer management routes.
+     */
     farmers: {
       root: '/dashboard/farmers',
       view: (id: string) => `/dashboard/farmers/${id}`,
       create: '/dashboard/farmers/create',
       id: (id: string) => `/dashboard/farmers/${id}/edit`,
     },
+
+    // -------- Admins Section --------
+    /**
+     * Admin management routes.
+     */
     admins: {
       root: '/dashboard/admins',
       create: '/dashboard/admins/create',
       view: (adminId: string) => `/dashboard/admins/${adminId}`,
       id: (adminId: string) => `/dashboard/admins/${adminId}/edit`,
     },
+
+    // -------- Cluster Managers Section --------
+    /**
+     * Cluster manager management routes.
+     */
     clusterManagers: {
       root: '/dashboard/cluster-managers',
       view: (id: string) => `/dashboard/cluster-managers/${id}`,
       create: '/dashboard/cluster-managers/create',
       id: (id: string) => `/dashboard/cluster-managers/${id}/edit`,
     },
+
+    // -------- Ponds Section --------
+    /**
+     * Pond management and creation steps.
+     */
     ponds: {
       root: '/dashboard/ponds',
       create: {
@@ -58,7 +102,10 @@ export const paths = {
       },
     },
 
-    // Reports Routes
+    // -------- Reports Section --------
+    /**
+     * Farm and sampling/harvest report routes.
+     */
     reports: {
       root: '/dashboard/reports',
       createDailyFarmReport: (id: string) => `/dashboard/reports/create/daily-farm-report/${id}`,
@@ -73,7 +120,28 @@ export const paths = {
       editHarvestReport: (id: string) => `/dashboard/reports/${id}/edit/harvest-report`,
     },
 
-    // System Routes
+    // -------- Inventory Section --------
+    /**
+     * Inventory management and report routes.
+     */
+    inventory: {
+      root: '/dashboard/inventory',
+      createFeedStock: () => `/dashboard/inventory/create/feed-stock`,
+      createMaintenanceRecord: () => `/dashboard/inventory/create/maintenance-record`,
+      createSalesRecord: () => `/dashboard/inventory/create/sales-record`,
+
+      view: (id: string) => `/dashboard/inventory/${id}`,
+
+      viewFeedActivityLog: (id: string) => `/dashboard/inventory/${id}/feed-activity-logs`,
+      viewSalesRecord: (id: string) => `/dashboard/inventory/${id}/sales-record`,
+
+      editMaintenanceRecord: (id: string) => `/dashboard/inventory/${id}/edit/maintenance-record`,
+    },
+
+    // -------- System Section --------
+    /**
+     * System management routes: permissions, audit log, clusters.
+     */
     system: {
       root: '/dashboard/system',
       permissions: {

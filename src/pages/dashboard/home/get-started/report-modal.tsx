@@ -119,11 +119,6 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                             {pond.name}
                           </SelectItem>
                         ))}
-                        <SelectItem value="add-pond">
-                          <span className="flex items-center gap-2 py-1">
-                            <SolarIconSet.AddCircle /> Add another pond
-                          </span>
-                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

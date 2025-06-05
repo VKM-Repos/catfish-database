@@ -2,6 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay/ClashDisplay-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay/ClashDisplay-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay/ClashDisplay-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay/ClashDisplay-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay/ClashDisplay-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
 @layer base {
   :root {
     --primary-100: #f0e8f4;
@@ -127,8 +162,6 @@
 @layer base {
   * {
     @apply border-neutral-300;
-
-    font-family: Inter, ui-sans-serif, system-ui;
   }
 
   body {
@@ -140,5 +173,13 @@
   input::-ms-reveal,
   input::-ms-clear {
     display: none;
+  }
+
+  .input-time-wrapper input[type='time']::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+
+  .input-time-wrapper input[type='time'] {
+    appearance: textfield;
   }
 }

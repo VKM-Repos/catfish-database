@@ -25,6 +25,8 @@ const roleRoutes: Record<UserRole, string[]> = {
     paths.dashboard.settings,
     paths.dashboard.helpCenter,
     paths.dashboard.privacyPolicy,
+    paths.dashboard.ponds.root,
+    paths.dashboard.feeds.create.root,
   ],
   FARMER: [
     paths.dashboard.home.root,
@@ -36,6 +38,8 @@ const roleRoutes: Record<UserRole, string[]> = {
     paths.dashboard.settings,
     paths.dashboard.helpCenter,
     paths.dashboard.privacyPolicy,
+    paths.dashboard.ponds.root,
+    paths.dashboard.feeds.create.root,
   ],
 }
 

@@ -14,7 +14,7 @@ type TextProps = {
 }
 
 const variantMap = {
-  body: 'font-normal',
+  body: 'font-meduim',
   subtitle: 'font-medium',
   label: 'font-medium',
   caption: 'font-normal',
@@ -30,7 +30,7 @@ const sizeMap = {
 }
 
 const weightMap = {
-  light: 'font-light',
+  light: 'font-normal',
   normal: 'font-normal',
   medium: 'font-medium',
   semibold: 'font-semibold',

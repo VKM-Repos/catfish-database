@@ -15,6 +15,7 @@ import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { X } from 'lucide-react'
 import ECLIPSE from 'src/assets/images/ellipse.png'
+import { removeSymbols } from 'src/lib/utils'
 
 // Hook to handle logout API call.
 const useLogout = createPostMutationHook({
@@ -37,7 +38,7 @@ export const useGetCurrentUser = createGetQueryHook({
 const ProfileMenu = () => {
   const { data: user } = useGetCurrentUser()
   const token = useAuthStore((state) => state.accessToken)
-  const userName = user ? `${user.firstName} ${user.lastName}` : 'User'
+  const userName = user ? `${user.firstName} ${user.lastName?.charAt(0).toUpperCase()}.` : 'User'
   const fallbackInitial = user?.firstName?.charAt(0).toUpperCase() || 'U'
   const logoutMutation = useLogout()
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false)
@@ -77,20 +78,25 @@ const ProfileMenu = () => {
     <div className="flex items-center">
       <Popover>
         <PopoverTrigger>
-          <div className="flex cursor-pointer items-center gap-2">
+          <div className="flex cursor-pointer items-center gap-4">
             <Avatar>
               <AvatarFallback className="text-neutral-600">{fallbackInitial}</AvatarFallback>
             </Avatar>
-            <Text variant="label" color="text-neutral-600" weight="normal">
-              {userName}
-            </Text>
+            <div className="flex flex-col">
+              <Text variant="label" color="text-neutral-600" weight="semibold" size="lg" className="capitalize">
+                {userName}
+              </Text>
+              <Text variant="label" color="text-neutral-500" weight="light" size="sm" className="lowercase">
+                {removeSymbols(user?.role ?? 'FARMER')}
+              </Text>
+            </div>
             <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
           </div>
         </PopoverTrigger>
         <PopoverContent className="relative mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
           {profileLinks.map(({ label, href, action, icon }) => {
             const content = (
-              <div className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-100">
+              <div className="flex items-center gap-2 rounded-md p-2 hover:bg-primary-100">
                 {icon}
                 <span className="text-sm font-medium text-neutral-500">{label}</span>
               </div>

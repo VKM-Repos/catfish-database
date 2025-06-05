@@ -9,17 +9,31 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { FarmersTable } from './components/farmers-table'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { paginatedUserResponseSchema } from 'src/schemas'
 
 export default function FarmersPage() {
   const title = 'Farmers'
   const navigate = useNavigate()
 
+  const useGetFarmers = createGetQueryHook({
+    endpoint: '/users/farmers?direction=DESC',
+    responseSchema: paginatedUserResponseSchema,
+    queryKey: ['farmers'],
+  })
+
   const openCreateModal = () => {
     navigate(paths.dashboard.farmers.create)
   }
 
-  const actions = (
+  const { data: farmers } = useGetFarmers()
+
+  const actions = farmers && farmers?.content.length > 0 && (
     <Inline>
+      <Button variant="outline" className="flex items-center gap-2 border-primary-400">
+        <SolarIconSet.CircleBottomUp color="#651391" size={20} iconStyle="Outline" />
+        <Text className="text-primary-400">Import</Text>
+      </Button>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
         <Text>Add Farmers</Text>
@@ -33,7 +47,7 @@ export default function FarmersPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
-          <FarmersTable />
+          <FarmersTable useGetFarmers={useGetFarmers} />
         </Container>
       </PageTransition>
       <Outlet />

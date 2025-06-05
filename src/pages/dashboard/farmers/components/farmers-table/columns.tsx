@@ -3,6 +3,8 @@ import { Text } from 'src/components/ui/text'
 import { z } from 'zod'
 import { ActionsDropdown } from './actions-dropdown'
 import { userSchema } from 'src/schemas/schemas'
+import { StatusBadge } from 'src/components/global/status-badge'
+import { cn } from 'src/lib/utils'
 
 type Farmer = z.infer<typeof userSchema>
 
@@ -36,21 +38,17 @@ export const columns: ColumnDef<Farmer>[] = [
     accessorKey: 'accountNonLocked',
     header: 'Status',
     cell: ({ row }) => (
-      <div
-        className={`flex items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${
-          row.getValue('accountNonLocked') == true
-            ? 'border-success-400 bg-success-100 text-success-500'
-            : 'border-neutral-400 bg-neutral-100 text-neutral-400'
-        }`}
-      >
-        {' '}
-        <div
-          className={`h-2 w-2 rounded-full ${
-            row.getValue('accountNonLocked') == true ? 'bg-success-500' : 'bg-neutral-400'
-          }`}
-        ></div>{' '}
-        {row.getValue('accountNonLocked') == true ? 'Active' : 'Deactivated'}
-      </div>
+      <StatusBadge
+        status={row.getValue('accountNonLocked')}
+        activeText="Active"
+        inactiveText="Deactivated"
+        inactiveBg="bg-[#737780]/10 border-[#737780] text-[#737780]"
+        inactiveIcon={
+          <div
+            className={cn('h-2 w-2 rounded-full', row.getValue('accountNonLocked') ? 'bg-success-400' : 'bg-[#737780]')}
+          />
+        }
+      />
     ),
   },
   {

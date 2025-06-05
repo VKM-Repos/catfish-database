@@ -42,6 +42,11 @@ const roleSpecificLinks = {
     path: paths.dashboard.farmers.root,
     icon: <SolarIconSet.UserHands color="currentColor" size={22} iconStyle="Outline" />,
   },
+  ponds: {
+    label: 'Ponds',
+    path: paths.dashboard.ponds.root,
+    icon: <SolarIconSet.BoxMinimalistic color="currentColor" size={22} iconStyle="Outline" />,
+  },
   system: {
     label: 'System',
     icon: <SolarIconSet.Settings color="currentColor" size={22} iconStyle="Outline" />,
@@ -78,5 +83,5 @@ export const sideBarLinks: Record<string, SideBarLink[]> = {
     commonLinks.more,
   ],
   CLUSTER_MANAGER: [commonLinks.home, roleSpecificLinks.farmers, commonLinks.reports, commonLinks.more],
-  FARMER: [commonLinks.home, commonLinks.reports, commonLinks.more],
+  FARMER: [commonLinks.home, roleSpecificLinks.ponds, commonLinks.reports, commonLinks.more],
 }

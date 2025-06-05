@@ -48,8 +48,8 @@ interface ApiResponse<T> {
  */
 export function createGetQueryHook<
   ResponseSchema extends z.ZodType,
-  RouteParams extends Record<string, string | number | undefined> = Record<string, never>,
-  QueryParams extends Record<string, string | number | undefined> = Record<string, never>,
+  RouteParams extends Record<string, string | number | undefined> = Record<string, string | number | undefined>,
+  QueryParams extends Record<string, string | number | undefined> = Record<string, string | number | undefined>,
 >({
   endpoint,
   responseSchema,

@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from 'clsx'
+import { UserRole } from 'src/types'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -44,3 +45,50 @@ export const states = [
   'Yobe',
   'Zamfara',
 ]
+
+export const roleQueryMap: Record<string, string[]> = {
+  FARMER: ['farmers'],
+  CLUSTER_MANAGER: ['cluster-managers'],
+}
+
+export function removeSymbols(str: keyof typeof UserRole) {
+  const newStr = str.replace(/[-,[_\]]/g, ' ')
+  return newStr
+}
+
+export function formatLatLng(lat: string, lng: string) {
+  const latDirection = parseFloat(lat) >= 0 ? 'N' : 'S'
+  const lngDirection = parseFloat(lng) >= 0 ? 'E' : 'W'
+
+  const formattedLat = `${Math.abs(parseFloat(lat)).toFixed(4)}° ${latDirection}`
+  const formattedLng = `${Math.abs(parseFloat(lng)).toFixed(4)}° ${lngDirection}`
+
+  return `${formattedLat}, ${formattedLng}`
+}
+
+export function mergePondsWithTotalFishQuantity(ponds: any, batches: any) {
+  return ponds?.content.map((pond: any) => {
+    const relatedBatches = batches?.content.filter((batch: any) => batch.pond.id === pond.id)
+    const latestQuantity = relatedBatches.reduce((sum: any, b: any) => sum + (Number(b.latestQuantity) || 0), 0)
+
+    return {
+      ...pond,
+      latestQuantity,
+    }
+  })
+}
+
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  })
+}
+
+export function getInitials(str: string) {
+  return str
+    .split(' ')
+    .map((word) => word.charAt(0))
+    .join('')
+}

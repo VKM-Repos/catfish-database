@@ -1,7 +1,7 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { formatDate } from 'src/lib/date'
-import { MaintenanceExpenseActions } from './actions'
+import { SalesRecordsActions } from './actions'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -37,6 +37,6 @@ export const columns: ColumnDef<any>[] = [
   {
     id: 'actions',
     header: 'Actions',
-    cell: ({ row }) => <MaintenanceExpenseActions item={row?.original} />,
+    cell: ({ row }) => <SalesRecordsActions item={row?.original} />,
   },
 ]

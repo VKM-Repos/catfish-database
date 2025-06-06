@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from 'src/components/ui/dropdown-menu'
 
-type MaintenanceExpenseActionsProps = {
+type SalesRecordsActionsProps = {
   item: any
 }
-export function MaintenanceExpenseActions({ item }: MaintenanceExpenseActionsProps) {
+export function SalesRecordsActions({ item }: SalesRecordsActionsProps) {
   const navigate = useNavigate()
 
   return (
@@ -25,10 +25,10 @@ export function MaintenanceExpenseActions({ item }: MaintenanceExpenseActionsPro
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[8rem] p-0">
         <DropdownMenuItem
-          onClick={() => navigate(paths.dashboard.inventory.editMaintenanceRecord(item.id), { state: { item } })}
+          onClick={() => navigate(paths.dashboard.inventory.viewSalesRecord(item.id), { state: { item } })}
           className="border-b border-b-neutral-200 transition-all hover:border-b-4 hover:border-primary-400"
         >
-          Edit
+          View
         </DropdownMenuItem>
         <div className="border-b border-neutral-200" />
         <DropdownMenuItem

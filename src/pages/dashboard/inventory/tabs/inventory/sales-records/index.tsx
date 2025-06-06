@@ -70,7 +70,7 @@ export default function SalesRecords() {
         onClick={() => navigate(paths.dashboard.inventory.createSalesRecord())}
       >
         <SolarIconSet.AddCircle size={20} />
-        <Text>Add record</Text>
+        <Text>Add sales record</Text>
       </Button>
     </Inline>
   )

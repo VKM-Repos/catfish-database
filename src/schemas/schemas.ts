@@ -257,18 +257,11 @@ export const fishDetailsResponseSchema = z.object({
 
 export const feedTypeSchema = z.object({
   id: z.string().optional(),
-  type: z.string().min(1, { message: 'Please enter the brand of feed' }).optional(),
-  sizeInMm: z.string().min(1, { message: 'Please select a pellet size' }).optional(),
-  quantityInKg: z.string().min(1, { message: 'Please enter the quantity of feed' }),
-  totalCost: z
-    .string()
-    .regex(/^[-+]?\d+(\.\d+)?$/, {
-      message: 'Total cost must be a valid number',
-    })
-    .optional(),
-  costPerKg: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
-    message: 'Feed cost per kg must be a valid number',
-  }),
+  type: z.string().min(1, { message: 'Please select the brand of feed' }),
+  sizeInMm: z.number({ required_error: 'Please select a pellet size' }),
+  quantityInKg: z.number({ required_error: 'Please enter the quantity of feed' }),
+  totalCost: z.string().optional(),
+  costPerKg: z.number({ required_error: 'Feed cost per kg must be a number' }),
   date: z.string().optional(),
 })
 
@@ -465,7 +458,7 @@ export const sortingSchema = z.object({
 //     .superRefine((val, ctx) => {
 //       console.log(ctx, val)
 
-//       if (ctx.path[0]. && !val) {
+//       if (ctx.path[0].&& !val) {
 //         ctx.addIssue({
 //           code: z.ZodIssueCode.custom,
 //           message: 'Reason is required when split occurred',
@@ -488,6 +481,7 @@ export const sortingSchema = z.object({
 //       }
 //     }),
 // })
+
 export const harvestSchema = z.object({
   numberOfFishHarvested: z.string(),
   totalWeightHarvested: z.string(),

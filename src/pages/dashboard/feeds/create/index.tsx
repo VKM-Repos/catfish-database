@@ -30,6 +30,7 @@ export default function RegisterFeedTypes() {
 
   const handleCancelYes = () => {
     setOpenCancelPrompt(false)
+    navigate(-1)
   }
 
   const handleCancelNo = () => {
@@ -64,11 +65,7 @@ export default function RegisterFeedTypes() {
                 Feed Details
               </Heading>
               <div className="py-4" />
-              <FeedStockForm
-                mode="create"
-                setStep={setStep}
-                onCancel={() => navigate(`${paths.dashboard.inventory.root}`)}
-              />
+              <FeedStockForm mode="create" setStep={setStep} onCancel={() => setOpenCancelPrompt(true)} />
             </div>
           </>
         )

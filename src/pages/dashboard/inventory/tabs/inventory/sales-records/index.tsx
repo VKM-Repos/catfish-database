@@ -61,7 +61,7 @@ export default function SalesRecords() {
 
   const { data: feedInventories, isLoading } = useGetFeedInventories()
 
-  const title = 'Expenses'
+  const title = 'Sales records'
   const actions = (
     <Inline>
       <Button

@@ -32,13 +32,13 @@ export default function ClusterManagersPage() {
             >
               <div className="w-full border-b border-b-neutral-200 p-0">
                 <TabsList className="text-sm font-semibold">
-                  <TabsTrigger value="feeding-reports" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="feeding-reports" className="data-[state=active]:font-semibold">
                     Feeding reports
                   </TabsTrigger>
-                  <TabsTrigger value="sampling-report" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="sampling-report" className="data-[state=active]:font-semibold">
                     Sampling report
                   </TabsTrigger>
-                  <TabsTrigger value="harvest-reports" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="harvest-reports" className="data-[state=active]:font-semibold">
                     Harvest reports
                   </TabsTrigger>
                 </TabsList>

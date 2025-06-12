@@ -74,10 +74,10 @@ export default function FarmDetailsPage() {
             >
               <div className="w-full border-b border-b-neutral-200 p-0">
                 <TabsList className="text-sm font-semibold">
-                  <TabsTrigger value="overview" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="overview" className="data-[state=active]:font-semibold">
                     Overview
                   </TabsTrigger>
-                  <TabsTrigger value="ponds" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="ponds" className="data-[state=active]:font-semibold">
                     Ponds
                   </TabsTrigger>
                 </TabsList>

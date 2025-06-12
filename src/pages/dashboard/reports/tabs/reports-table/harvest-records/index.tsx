@@ -36,8 +36,8 @@ export default function HarvestReportsTable() {
     setFarmReportOpen(true)
   }
   const harvestArray = extractHarvestObjectsWithCreatedAt(samplingReports?.content)
-  const title = 'harvest reports'
-  const actions = samplingReports && samplingReports?.content.length > 0 && (
+  const title = 'Harvest reports'
+  const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
         <SolarIconSet.AddCircle size={20} />

@@ -4,14 +4,20 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
-import type { dailyWaterQualitySchema } from 'src/schemas'
+import type { dailyFeedingSchema } from 'src/schemas' // dailyFeedingSchema has a parameter that controls water quality field validation
 import type { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 import { Textarea } from 'src/components/ui/textarea'
 
-type WaterQualityFormValues = z.infer<typeof dailyWaterQualitySchema>
+type WaterQualityFormValues = z.infer<typeof dailyFeedingSchema>
 
-export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQualityFormValues> }) {
+export default function WaterQualityForm({
+  form,
+  recordWaterQuality,
+}: {
+  form: UseFormReturn<WaterQualityFormValues>
+  recordWaterQuality?: boolean
+}) {
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
 
   const handleInputChange = (fieldName: string, value: string) => {
@@ -20,6 +26,7 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
       [fieldName]: value.trim().length > 0,
     }))
   }
+  console.log(recordWaterQuality)
 
   return (
     <FlexBox gap="gap-2" direction="col" className="w-full space-y-3">
@@ -27,8 +34,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Dissolved Oxygen
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -69,8 +76,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             PH Level
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -113,8 +120,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Temperature
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -155,8 +162,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Ammonia
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -199,8 +206,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Nitrite
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -241,8 +248,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Alkalinity
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -285,8 +292,8 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Hardness
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}

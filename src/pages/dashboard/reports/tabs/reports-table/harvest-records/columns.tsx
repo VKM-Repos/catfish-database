@@ -30,8 +30,8 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'costPerKg',
     header: () => (
-      <div title="Cost per KG" className="font-bold">
-        Cost per KG
+      <div title="Cost per kg" className="font-bold">
+        Cost per kg
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.costPerKg}</Text>,

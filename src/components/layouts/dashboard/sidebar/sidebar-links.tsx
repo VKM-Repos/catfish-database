@@ -76,7 +76,6 @@ export const sideBarLinks: Record<string, SideBarLink[]> = {
     roleSpecificLinks.clusterManagers,
     roleSpecificLinks.admins,
     roleSpecificLinks.farmers,
-    commonLinks.reports,
     roleSpecificLinks.system,
     commonLinks.more,
   ],

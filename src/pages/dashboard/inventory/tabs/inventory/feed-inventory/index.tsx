@@ -86,7 +86,6 @@ export default function FeedInventory() {
           columns={columns}
           data={mockFeedInventories}
           isLoading={isLoading}
-          // showFilter={true}
           emptyStateMessage="No feed inventory found"
         />
       </FlexBox>

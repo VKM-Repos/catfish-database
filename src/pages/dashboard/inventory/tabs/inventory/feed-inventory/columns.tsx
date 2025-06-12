@@ -7,32 +7,36 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'type',
     header: 'Feed type',
-    cell: ({ row }) => <Text weight="light">{row.original.type || '-'}</Text>,
+    cell: ({ row }) => (
+      <Text className="capitalize" weight="light">
+        {row.original.type.toLowerCase() || '-'}
+      </Text>
+    ),
   },
   {
     accessorKey: 'sizeInMm',
     header: 'Size (mm)',
     cell: ({ row }) => <Text weight="light">{row.original.sizeInMm || '-'}</Text>,
   },
+  // {
+  //   accessorKey: 'quantityInKg',
+  //   header: 'Total feed stocked (kg)',
+  //   cell: ({ row }) => <Text weight="light">{row.original.quantityInKg || '-'}</Text>,
+  // },
   {
     accessorKey: 'costPerKg',
     header: 'Avg Cost/ kg(₦)',
     cell: ({ row }) => <Text weight="light">{`₦${row.original.costPerKg}` || '-'}</Text>,
   },
+  // {
+  //   accessorKey: 'cost',
+  //   header: 'Total cost (₦)',
+  //   cell: ({ row }) => <Text weight="light">{`₦${row.original.costPerKg * row.original.quantityInKg}` || '-'}</Text>,
+  // },
   {
-    accessorKey: 'feedStock',
-    header: 'Total feed stocked (kg)',
-    cell: ({ row }) => <Text weight="light">{row.original.feedStock || '-'}</Text>,
-  },
-  {
-    accessorKey: 'cost',
-    header: 'Total cost (₦)',
-    cell: ({ row }) => <Text weight="light">{`₦${row.original.cost}` || '-'}</Text>,
-  },
-  {
-    accessorKey: 'stock',
+    accessorKey: 'quantityInKg',
     header: 'Remaining stock',
-    cell: ({ row }) => <Text weight="light">{row.original.stock ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.quantityInKg ?? '-'}</Text>,
   },
   {
     accessorKey: 'updatedAt',

@@ -11,8 +11,14 @@ function getAllDashboardPaths(obj: any): string[] {
   })
 }
 
+function filterOutReports(routes: string[]): string[] {
+  return routes.filter((route) => !route.startsWith(paths.dashboard.reports.root))
+}
+
+const allDashboardPaths = getAllDashboardPaths(paths.dashboard)
+
 const roleRoutes: Record<UserRole, string[]> = {
-  SUPER_ADMIN: getAllDashboardPaths(paths.dashboard),
+  SUPER_ADMIN: filterOutReports(allDashboardPaths),
   ADMIN: getAllDashboardPaths(paths.dashboard),
   CLUSTER_MANAGER: [
     paths.dashboard.home.root,
@@ -54,9 +60,9 @@ export const getRoutesByRole = (userRole: string) => {
   const role = APP_CONFIG.auth.roles[userRole]
   if (!role) return []
 
-  // Super admin has access to everything
+  // Super admin has access to everything except reports
   if (role.permissions.includes('*')) {
-    return Object.values(paths.dashboard)
+    return filterOutReports(getAllDashboardPaths(paths.dashboard))
   }
 
   // Return routes based on role permissions

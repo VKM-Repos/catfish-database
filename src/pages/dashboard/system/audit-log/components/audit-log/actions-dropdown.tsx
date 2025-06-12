@@ -29,7 +29,13 @@ export function ActionsDropdown({ audit }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.auditLog.id(audit.id))}>
+          <DropdownMenuItem
+            onClick={() =>
+              navigate(paths.dashboard.system.auditLog.id(audit.id), {
+                state: { audit },
+              })
+            }
+          >
             View
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -21,12 +21,13 @@ import { z } from 'zod'
 import type { Cluster } from 'src/types/cluster.types'
 import { useAuthStore } from 'src/store/auth.store'
 import { useLocation } from 'react-router-dom'
+import { Text } from 'src/components/ui/text'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
   isLoading?: boolean
-  showFilter?: boolean
+  // showFilter?: boolean
   emptyStateMessage?: string
   hideClusterFilter?: boolean
   search?: boolean
@@ -37,7 +38,6 @@ export function DataTable<TData>({
   data,
   search = true,
   isLoading = false,
-  showFilter = false,
   emptyStateMessage = 'No results found',
   hideClusterFilter = false,
 }: DataTableProps<TData>) {
@@ -47,6 +47,7 @@ export function DataTable<TData>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [selectedCluster, setSelectedCluster] = React.useState<string>('')
+  const [showFilter, setShowFilter] = React.useState(false)
 
   const normalizeClusterName = (name: string) => name.replace(/-/g, '')
   const location = useLocation()
@@ -120,36 +121,114 @@ export function DataTable<TData>({
   })
   const { data: clusters } = useGetClusters()
 
+  const actionTypes = [
+    { name: 'CREATE' },
+    { name: 'UPDATE' },
+    { name: 'DELETE' },
+    { name: 'LOG IN' },
+    { name: 'LOG OUT' },
+  ]
+
   return (
     <div className="w-full">
       {search && (
-        <div className="mb-8 flex h-[80px] items-center justify-between rounded-md bg-neutral-50 px-[24px] py-[20px]">
-          <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
-            <SolarIconSet.MinimalisticMagnifer />
-            <input
-              className="w-[390px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
-              placeholder="Search..."
-              value={globalFilter ?? ''}
-              onChange={(e) => setGlobalFilter(String(e.target.value))}
-            />
+        <div className="mb-8  min-h-[80px] items-center  rounded-md bg-neutral-50 px-[24px] py-[20px]">
+          <div className="flex justify-between">
+            <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
+              <SolarIconSet.MinimalisticMagnifer />
+              <input
+                className="w-[390px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
+                placeholder="Search..."
+                value={globalFilter ?? ''}
+                onChange={(e) => setGlobalFilter(String(e.target.value))}
+              />
+            </div>
+            <div className="w-[20%]">
+              {!hideClusterFilter && !isClustersPage && user?.role === 'SUPER_ADMIN' && (
+                <Select value={selectedCluster} onValueChange={handleClusterChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All clusters" />
+                  </SelectTrigger>
+                  <SelectContent side="top">
+                    <SelectItem value="null">All clusters</SelectItem>
+                    {clusters?.map((cluster: Cluster) => (
+                      <SelectItem key={cluster.name} value={cluster.name}>
+                        {cluster.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {hideClusterFilter && (
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  onClick={() => setShowFilter(!showFilter)}
+                >
+                  <SolarIconSet.Filter size={20} />
+                  <Text>Show Filters</Text>
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="w-[20%]">
-            {!hideClusterFilter && !isClustersPage && user?.role === 'SUPER_ADMIN' && (
-              <Select value={selectedCluster} onValueChange={handleClusterChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All clusters" />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  <SelectItem value="null">All clusters</SelectItem>
-                  {clusters?.map((cluster: Cluster) => (
-                    <SelectItem key={cluster.name} value={cluster.name}>
-                      {cluster.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
+          {showFilter && hideClusterFilter && (
+            <div className="flex items-center justify-between">
+              <div className="my-3 flex-1">
+                <Text variant="label">Action type</Text>
+                <Select value={selectedCluster} onValueChange={handleClusterChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Activities" />
+                  </SelectTrigger>
+                  <SelectContent side="top">
+                    <SelectItem value=" ">All Activities</SelectItem>
+                    {actionTypes?.map((action: any) => (
+                      <SelectItem key={action.name} value={action.name}>
+                        {action.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="mx-3 flex-1">
+                <Text variant="label">Date range</Text>
+                <div className="flex gap-2">
+                  <Select value={selectedCluster} onValueChange={handleClusterChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All clusters" />
+                    </SelectTrigger>
+                    <SelectContent side="top">
+                      <SelectItem value=" ">All Activities</SelectItem>
+                      {clusters?.map((cluster: Cluster) => (
+                        <SelectItem key={cluster.name} value={cluster.name}>
+                          {cluster.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={selectedCluster} onValueChange={handleClusterChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All clusters" />
+                    </SelectTrigger>
+                    <SelectContent side="top">
+                      <SelectItem value=" ">All Activities</SelectItem>
+                      {clusters?.map((cluster: Cluster) => (
+                        <SelectItem key={cluster.name} value={cluster.name}>
+                          {cluster.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex-1" onClick={() => setShowFilter(false)}>
+                <Text variant="label">Clear Filters</Text>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

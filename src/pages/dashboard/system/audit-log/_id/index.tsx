@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -16,26 +16,14 @@ const useGetAudit = createGetQueryHook<typeof auditResponseSchema, { id: string 
 })
 
 export default function AuditDetailsModal() {
+  const location = useLocation()
+  const audit = location.state?.audit
+
+  // console.log('test audit: ', testAudit)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   // const { data: audit, isLoading } = useGetAudit({ route: { id: id! } })
 
-  const audit = {
-    id: 'afe094c9-c7f0-4ce6-97e5-2d46467244b5',
-    timestamp: '2025-05-02T13:33:41.125857',
-    actionType: 'CREATE',
-    entityType: 'Pond',
-    entityId: 'cadcf174-9d59-4365-bc0d-5687675789a0',
-    userId: 'b92eedd7-2713-4fdb-b30e-d233edb7840a',
-    username: 'testfarmer@gmail.com',
-    oldValue: null,
-    newValue:
-      '{"id":"cadcf174-9d59-4365-bc0d-5687675789a0","createdAt":"2025-05-02T13:33:41.125431781","updatedAt":"2025-05-02T13:33:41.125431781","createdBy":"b92eedd7-2713-4fdb-b30e-d233edb7840a","updatedBy":"b92eedd7-2713-4fdb-b30e-d233edb7840a","context":null,"version":0,"name":"Pond 1D","size":578,"waterSource":"Streams","pondType":"Concrete","cluster":{"id":"abuja-cluster2","name":"abuja-cluster2","state":{"id":37,"name":"Abuja"},"description":"A cluster in abuja","createdAt":"2025-04-16T14:16:49.542352","updatedAt":"2025-04-16T14:16:49.542352","createdBy":"5442e373-ec40-4593-9c2b-16a11b25037a","updatedBy":"5442e373-ec40-4593-9c2b-16a11b25037a"},"farmer":{"id":"b92eedd7-2713-4fdb-b30e-d233edb7840a","email":"testfarmer@gmail.com","role":"FARMER","firstName":"Farmer","lastName":"Test","phone":"08033838383","address":"Place","context":null,"password":"$2a$10$bOAXssmnx39vzAZoYI1PyeR7lhnil.U7YzXDss3hGwmk9kKlzLeT.","defaultPassword":false,"accountNonLocked":true,"enabled":true,"banUntil":null,"creat',
-    description: 'Entity created',
-    ipAddress: '127.0.0.1',
-    userAgent:
-      'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
-  }
   const isLoading = false
   if (!id) {
     return null

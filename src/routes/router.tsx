@@ -511,6 +511,15 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          // Farm rules
+          {
+            path: paths.dashboard.system.farmRules.root,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                {LazyPage(() => import('src/pages/dashboard/system/farm-rules'))}
+              </RoleGuard>
+            ),
+          },
         ],
       },
     ],

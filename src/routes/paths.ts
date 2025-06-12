@@ -152,7 +152,7 @@ export const paths = {
       },
       auditLog: {
         root: '/dashboard/system/audit-log',
-        create: '/dashboard/system/audit-log/create',
+        // create: '/dashboard/system/audit-log/create',
         id: (id: string) => `/dashboard/system/audit-log/${id}`,
       },
       clusters: {
@@ -160,6 +160,11 @@ export const paths = {
         create: '/dashboard/system/clusters/create',
         id: (id: string) => `/dashboard/system/clusters/${id}`,
         edit: (id: string) => `/dashboard/system/clusters/${id}/edit`,
+      },
+      farmRules: {
+        root: '/dashboard/system/farm-rules',
+        // create: '/dashboard/system/audit-log/create',
+        // id: (id: string) => `/dashboard/system/audit-log/${id}`,
       },
     },
   },

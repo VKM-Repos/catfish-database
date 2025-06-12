@@ -24,7 +24,7 @@ export default function SamplingReportsTable() {
     setFarmReportOpen(true)
   }
   const title = 'Sampling reports'
-  const actions = samplingReports && samplingReports?.content.length > 0 && (
+  const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
         <SolarIconSet.AddCircle size={20} />

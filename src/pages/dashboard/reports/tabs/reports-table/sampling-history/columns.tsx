@@ -15,8 +15,8 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'sample',
     header: () => (
-      <div title="No. fish Sampled" className="w-[4rem] truncate font-semibold">
-        No. fish Sampled
+      <div title="No. fish sampled" className="w-[4rem] truncate font-semibold">
+        No. fish sampled
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.sample}</Text>,
@@ -24,8 +24,8 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'weight',
     header: () => (
-      <div title="Wgt fish Sampled" className="w-[4rem] truncate font-semibold">
-        Wgt fish Sampled
+      <div title="Wgt fish sampled" className="w-[4rem] truncate font-semibold">
+        Wgt fish sampled
       </div>
     ),
     cell: ({ row }) => <Text weight="light">{row.original.weight}</Text>,
@@ -50,7 +50,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'feedConsumed',
-    header: 'Feed Consumed',
+    header: 'Feed consumed',
     cell: ({ row }) => <Text weight="light">{row.original.feedConsumed}</Text>,
   },
   {

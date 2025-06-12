@@ -84,7 +84,7 @@ export default function FeedInventory() {
         <DataTable
           search={false}
           columns={columns}
-          data={mockFeedInventories}
+          data={feedInventories?.content ?? []}
           isLoading={isLoading}
           emptyStateMessage="No feed inventory found"
         />

@@ -51,7 +51,7 @@ export default function FeedActivityLogsModal() {
             </Text>
           </Button>
         </FlexBox>
-        <FeedActivityLogsTable data={data} />
+        <FeedActivityLogsTable data={data?.content ?? []} />
       </DialogContent>
     </Dialog>
   )

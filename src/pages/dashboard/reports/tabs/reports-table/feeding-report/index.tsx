@@ -25,7 +25,7 @@ export default function FeedingReportsTable() {
   const { data: feedingReports } = useGetFeedingReports()
 
   const title = 'Feeding reports'
-  const actions = feedingReports && feedingReports?.content.length > 0 && (
+  const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
         <SolarIconSet.AddCircle size={20} />

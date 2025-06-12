@@ -23,9 +23,8 @@ export default function FeedConsumedForm({ form }: { form: UseFormReturn<Samplin
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Total feed consumed (kg)
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
           </Text>
           <FormField
             control={form.control}
@@ -40,6 +39,7 @@ export default function FeedConsumedForm({ form }: { form: UseFormReturn<Samplin
                       const value = e.target.value.replace(/[^0-9]/g, '')
                       field.onChange(value)
                     }}
+                    readOnly
                   />
                 </FormControl>
                 <FormMessage />

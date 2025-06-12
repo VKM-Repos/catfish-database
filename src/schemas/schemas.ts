@@ -99,7 +99,6 @@ export const clusterManagerRequestSchema = z.object({
 
 export const clusterManagerResponseSchema = userSchema
 const user = useAuthStore.getState().user
-console.log(user?.role, '<<<<<<<')
 
 export const farmerRequestSchema = z.object({
   firstName: z
@@ -382,39 +381,32 @@ export const paginatedSamplingResponseSchema = z.object({
 })
 
 export const dailyFeedingSchema = z.object({
-  feedType: z.string().optional(),
-  pelletSize: z.string().optional(),
-  feedQuantity: z.any().optional(),
-  // .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
-  // .transform(Number),
-  feedTime: z.string().optional(),
-  dissolvedOxygen: z.string().optional(),
-  phLevel: z.string().optional(),
-  temperature: z.string().optional(),
-  ammonia: z.string().optional(),
-  nitrite: z.string().optional(),
-  nitrate: z.string().optional(),
-  alkalinity: z.string().optional(),
-  hardness: z.string().optional(),
-  waterQualityObservation: z.string().optional(),
-  // .min(10, {
-  //   message: 'Water quality observation must be at least 10 characters.',
-  // }),
-})
+  feedType: z.string().min(1, { message: 'Please select a feed type' }),
+  pelletSize: z.string().min(1, { message: 'Please select a pellet size' }),
+  feedQuantity: z.string().min(1, { message: 'Please enter the quantity of feed' }),
+  feedTime: z.string().min(1, { message: 'Please select a feeding time' }),
 
-export const dailyWaterQualitySchema = z.object({
-  recordWaterQuality: z.boolean().optional(),
+  // Water quality fields are always present, but can be empty strings unless required
   dissolvedOxygen: z.string().optional(),
   phLevel: z.string().optional(),
   temperature: z.string().optional(),
   ammonia: z.string().optional(),
   nitrite: z.string().optional(),
-  nitrate: z.string().optional(),
   alkalinity: z.string().optional(),
   hardness: z.string().optional(),
   observation: z.string().optional(),
 })
-
+export const extendedDailyFeedingSchema = (isWaterRequired?: boolean | false) =>
+  dailyFeedingSchema.extend({
+    dissolvedOxygen: isWaterRequired ? z.string().min(1, 'Dissolved Oxygen is required') : z.string().optional(),
+    phLevel: isWaterRequired ? z.string().min(1, 'PH Level is required') : z.string().optional(),
+    temperature: isWaterRequired ? z.string().min(1, 'Temperature is required') : z.string().optional(),
+    ammonia: isWaterRequired ? z.string().min(1, 'Ammonia is required') : z.string().optional(),
+    nitrite: isWaterRequired ? z.string().min(1, 'Nitrite is required') : z.string().optional(),
+    alkalinity: isWaterRequired ? z.string().min(1, 'Alkalinity is required') : z.string().optional(),
+    hardness: isWaterRequired ? z.string().min(1, 'Hardness is required') : z.string().optional(),
+    observation: isWaterRequired ? z.string().min(5, 'Water Quality Observations is required') : z.string().optional(),
+  })
 export const maintenanceSchema = z.object({
   maintenance: z.string().min(1, { message: 'Please Select a maintenance' }),
   cost: z

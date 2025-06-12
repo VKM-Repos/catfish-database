@@ -31,7 +31,7 @@ export default function MortalityRateForm({ form }: { form: UseFormReturn<Sampli
       <div className="flex w-full items-center gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-            No of fish mortality recorded
+            No of fish mortality recorded <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
           </Text>
           <FormField

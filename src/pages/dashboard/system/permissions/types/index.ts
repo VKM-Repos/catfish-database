@@ -12,6 +12,7 @@ export type ColumnFactoryProps = {
 
 export type PermissionRow = {
   module: string
+  moduleName?: string
 } & ModulePermissions
 
 export type SwitchCellProps = {

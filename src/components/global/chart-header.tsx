@@ -7,7 +7,7 @@ type ChartHeaderProps = {
 
 export const ChartHeader = ({ title, action }: ChartHeaderProps) => (
   <div className="flex w-full items-center justify-between pb-8">
-    <Heading level={6} weight="semibold" className="w-full whitespace-nowrap">
+    <Heading level={6} weight="medium" className="w-full whitespace-nowrap text-lg">
       {title}
     </Heading>
     {action && <div className="flex w-full items-center justify-end gap-2">{action}</div>}

@@ -155,7 +155,7 @@ export default function AddPond() {
 
   const handleCancelYes = () => {
     setOpenCancelPrompt(false)
-    farmerId ? navigate(paths.dashboard.farmers.view(farmerId)) : navigate(paths.dashboard.ponds.root)
+    farmerId ? navigate(paths.dashboard.farmers.view(farmerId)) : navigate(-1)
   }
 
   const handleCancelNo = () => {

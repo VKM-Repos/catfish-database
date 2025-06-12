@@ -1,17 +1,20 @@
+import React from 'react'
 import PageTransition from 'src/components/animation/page-transition'
-import { Container } from 'src/components/ui/container'
-import { PageHeader } from 'src/components/ui/page-header'
-import { Menubar } from 'src/components/layouts/dashboard/menubar'
+import { useAuthStore } from 'src/store/auth.store'
+import FarmerDashboardOverview from './components/farmer-dashboard'
+import CLusterManagerDashboardOverview from './components/cluster-manager-dashboard'
 
 export default function DashboardOverviewPage() {
-  const title = 'Overview'
-
+  const user = useAuthStore((state) => state.user)
+  if (user?.role === 'FARMER') {
+    return <FarmerDashboardOverview />
+  }
+  if (user?.role === 'CLUSTER_MANAGER') {
+    return <CLusterManagerDashboardOverview />
+  }
   return (
     <PageTransition>
-      <Menubar />
-      <Container className="min-h-[150dvh] !px-12">
-        <PageHeader title={title} />
-      </Container>
+      <div>No dashboard available for your role.</div>
     </PageTransition>
   )
 }

@@ -11,12 +11,26 @@ import { UserRole } from 'src/types'
 import { AuthGuard } from './guards/auth-guard'
 import PostLoginRedirect from './guards/post-login-redirect'
 
+/**
+ * ------------------------------------------------------------------------
+ * Root Redirect Route
+ * Redirects '/' to the main dashboard root.
+ * ------------------------------------------------------------------------
+ */
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Navigate to={paths.dashboard.root} replace />,
     errorElement: <ErrorBoundary />,
   },
+
+  /**
+   * ------------------------------------------------------------------------
+   * Auth Routes
+   * Handles authentication pages: login, forgot password, reset password.
+   * Wrapped with GuestGuard and AuthLayout.
+   * ------------------------------------------------------------------------
+   */
   {
     path: paths.auth.root,
     element: (
@@ -45,6 +59,15 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  /**
+   * ------------------------------------------------------------------------
+   * Main Dashboard Routes (with Sidebar)
+   * Protected by AuthGuard and uses DashboardLayout.
+   * Includes home, notifications, settings, help center, privacy policy,
+   * ponds, farmers, cluster managers, reports, inventory, admins, and system routes.
+   * ------------------------------------------------------------------------
+   */
   {
     path: paths.dashboard.root,
     element: (
@@ -55,12 +78,13 @@ export const router = createBrowserRouter([
     ),
     errorElement: <ErrorBoundary />,
     children: [
+      // ---------------- Home Section ----------------
       {
         index: true,
         path: paths.dashboard.root,
         element: <Navigate to={paths.dashboard.home.overview} replace />,
       },
-      // Home Routes
+      // Home Overview
       {
         path: paths.dashboard.home.root,
         children: [
@@ -70,23 +94,28 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      // Notifications
       {
         path: paths.dashboard.notifications,
         element: LazyPage(() => import('src/pages/dashboard/notifications')),
       },
+      // Settings
       {
         path: paths.dashboard.settings,
         element: LazyPage(() => import('src/pages/dashboard/settings')),
       },
+      // Help Center
       {
         path: paths.dashboard.helpCenter,
         element: LazyPage(() => import('src/pages/dashboard/help-center')),
       },
+      // Privacy Policy
       {
         path: paths.dashboard.privacyPolicy,
         element: LazyPage(() => import('src/pages/dashboard/privacy-policy')),
       },
-      // ponds Routes
+
+      // ---------------- Ponds Section ----------------
       {
         path: paths.dashboard.ponds.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds')),
@@ -102,7 +131,7 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // Farmer Routes
+      // ---------------- Farmers Section ----------------
       {
         path: paths.dashboard.farmers.root,
         element: (
@@ -141,7 +170,7 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // Cluster Managers Routes
+      // ---------------- Cluster Managers Section ----------------
       {
         path: paths.dashboard.clusterManagers.root,
         element: (
@@ -181,7 +210,8 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // Reports Routes
+
+      // ---------------- Reports Section ----------------
       {
         path: paths.dashboard.reports.root,
         element: (
@@ -203,6 +233,7 @@ export const router = createBrowserRouter([
                   </RoleGuard>
                 ),
               },
+              // Feeding, Sampling, Harvest Reports (View & Edit)
               {
                 path: paths.dashboard.reports.viewFeedingReport(':id'),
                 element: (
@@ -267,7 +298,84 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // Admin Routes
+
+      // ---------------- Inventory Section ----------------
+      {
+        path: paths.dashboard.inventory.root,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/inventory'))}
+          </RoleGuard>
+        ),
+        children: [
+          {
+            path: ':id',
+            children: [
+              {
+                index: true,
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                    {LazyPage(() => import('src/pages/dashboard/inventory/_id'))}
+                  </RoleGuard>
+                ),
+              },
+
+              // Inventory Reports (View & Edit)
+              {
+                path: paths.dashboard.inventory.viewFeedActivityLog(':id'),
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                    {LazyPage(() => import('src/pages/dashboard/inventory/_id/feed-activity-logs'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: paths.dashboard.inventory.viewSalesRecord(':id'),
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                    {LazyPage(() => import('src/pages/dashboard/inventory/_id/sales-records'))}
+                  </RoleGuard>
+                ),
+              },
+
+              {
+                path: paths.dashboard.inventory.editMaintenanceRecord(':id'),
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                    {LazyPage(() => import('src/pages/dashboard/inventory/_id/edit/maintenance-record'))}
+                  </RoleGuard>
+                ),
+              },
+            ],
+          },
+          {
+            path: 'create/feed-stock',
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/inventory/create/feed-stock'))}
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'create/maintenance-record',
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/inventory/create/maintenance-record'))}
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'create/sales-record',
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/inventory/create/sales-record'))}
+              </RoleGuard>
+            ),
+          },
+        ],
+      },
+
+      // ---------------- Admins Section ----------------
       {
         path: paths.dashboard.admins.root,
         element: (
@@ -307,10 +415,12 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      // System Routes
+
+      // ---------------- System Section ----------------
       {
         path: paths.dashboard.system.root,
         children: [
+          // Permissions
           {
             path: paths.dashboard.system.permissions.root,
             element: (
@@ -319,6 +429,7 @@ export const router = createBrowserRouter([
               </RoleGuard>
             ),
           },
+          // Audit Log
           {
             path: paths.dashboard.system.auditLog.root,
             element: (
@@ -327,6 +438,7 @@ export const router = createBrowserRouter([
               </RoleGuard>
             ),
             children: [
+              // Uncomment to enable audit-log creation
               // {
               //   path: 'create',
               //   element: (
@@ -346,6 +458,7 @@ export const router = createBrowserRouter([
                       </RoleGuard>
                     ),
                   },
+                  // Uncomment to enable audit-log editing
                   // {
                   //   path: 'edit',
                   //   element: (
@@ -358,6 +471,7 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          // Clusters
           {
             path: paths.dashboard.system.clusters.root,
             element: (
@@ -397,11 +511,27 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          // Farm rules
+          {
+            path: paths.dashboard.system.farmRules.root,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                {LazyPage(() => import('src/pages/dashboard/system/farm-rules'))}
+              </RoleGuard>
+            ),
+          },
         ],
       },
     ],
   },
-  // Add a new route for pages that don't need the sidebar
+
+  /**
+   * ------------------------------------------------------------------------
+   * Dashboard Routes (No Sidebar)
+   * For dashboard pages that do not require the sidebar layout.
+   * Uses DashboardNoSidebarLayout.
+   * ------------------------------------------------------------------------
+   */
   {
     path: paths.dashboard.root,
     element: (
@@ -411,6 +541,7 @@ export const router = createBrowserRouter([
     ),
     errorElement: <ErrorBoundary />,
     children: [
+      // Get Started, New Entry, New Password
       {
         path: paths.dashboard.home.getStarted,
         element: LazyPage(() => import('src/pages/dashboard/home/get-started')),
@@ -423,10 +554,13 @@ export const router = createBrowserRouter([
         path: paths.dashboard.newPassword,
         element: LazyPage(() => import('src/pages/dashboard/new-password')),
       },
+      // Feeds create Steps
       {
         path: paths.dashboard.feeds.create.root,
         element: LazyPage(() => import('src/pages/dashboard/feeds/create')),
       },
+
+      // Ponds Creation Steps
       {
         path: paths.dashboard.ponds.create.root,
         element: LazyPage(() => import('src/pages/dashboard/ponds/create')),
@@ -441,6 +575,7 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      // Reports Creation Steps
       {
         path: paths.dashboard.reports.createDailyFarmReport(':id'),
         element: (
@@ -469,6 +604,12 @@ export const router = createBrowserRouter([
   },
 ])
 
+/**
+ * ------------------------------------------------------------------------
+ * Router Provider
+ * Wraps the app with the router configuration above.
+ * ------------------------------------------------------------------------
+ */
 export function Router() {
   return <RouterProvider router={router} />
 }

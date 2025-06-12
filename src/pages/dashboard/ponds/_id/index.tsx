@@ -82,13 +82,13 @@ export default function PondsDetailsPage() {
             >
               <div className="w-full border-b border-b-neutral-200 p-0">
                 <TabsList className="text-sm font-semibold">
-                  <TabsTrigger value="overview" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="overview" className="data-[state=active]:font-semibold">
                     Overview
                   </TabsTrigger>
-                  <TabsTrigger value="stocking-history" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="stocking-history" className="data-[state=active]:font-semibold">
                     Stocking history
                   </TabsTrigger>
-                  <TabsTrigger value="feeding-sampling" className="data-[state=active]:font-bold">
+                  <TabsTrigger value="feeding-sampling" className="data-[state=active]:font-semibold">
                     Feeding & Sampling
                   </TabsTrigger>
                 </TabsList>

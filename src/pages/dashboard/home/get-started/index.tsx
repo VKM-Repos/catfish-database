@@ -22,9 +22,11 @@ interface ActionCardProps {
   isFirstCard?: boolean
 }
 
-interface UnregisteredPondAndBatchCardsProps {
+interface UnregisteredCardsProps {
   navigate: (path: string) => void
   hasPond: boolean
+  hasBatch: boolean
+  hasFeed: boolean
 }
 
 function ActionCard({ title, description, icon, buttonText, buttonAction, isFirstCard }: ActionCardProps) {
@@ -53,8 +55,9 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
 }
 
 // Component for unregistered pond state
-function UnregisteredPondAndBatchCards({ navigate, hasPond }: UnregisteredPondAndBatchCardsProps) {
+function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }: UnregisteredCardsProps) {
   const [showPondError, setShowPondError] = useState(false)
+  const [showFeedError, setShowFeedError] = useState(false)
 
   return (
     <>
@@ -89,19 +92,6 @@ function UnregisteredPondAndBatchCards({ navigate, hasPond }: UnregisteredPondAn
         }}
         isFirstCard={false}
       />
-
-      {/* <ActionCard
-          title="Need Help?"
-          description="Find answers to common questions or get in touch with support."
-          icon={
-            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-full bg-primary-100 text-primary-600">
-              <SolarIconSet.Lightbulb color="currentColor" size={24} iconStyle="Outline" className="text-primary-500" />
-            </div>
-          }
-          buttonText="Visit help center"
-          buttonAction={() => navigate(paths.dashboard.helpCenter)}
-        /> */}
-
       <ActionCard
         title="Register your feed types"
         description="Add each type of feed available on your farm. These entries will populate the feed options in your daily feeding forms."
@@ -111,9 +101,12 @@ function UnregisteredPondAndBatchCards({ navigate, hasPond }: UnregisteredPondAn
           </div>
         }
         buttonText="Register your feeds"
-        buttonAction={() => navigate(paths.dashboard.feeds.create.root)}
+        buttonAction={() => {
+          navigate(paths.dashboard.feeds.create.root)
+        }}
       />
 
+      {/* Pond error dialog */}
       <Dialog open={showPondError} onOpenChange={setShowPondError}>
         <DialogContent className="flex h-fit w-[450px]  overflow-hidden p-4">
           <DialogHeader className="absolute left-0 flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
@@ -126,6 +119,27 @@ function UnregisteredPondAndBatchCards({ navigate, hasPond }: UnregisteredPondAn
           <div className="mt-[5rem] flex w-full flex-col items-center justify-center gap-y-4 ">
             <SolarIconSet.Danger color="red" size={48} />
             <Text className="text-center">You need to create a pond first before adding fish.</Text>
+            <DialogClose className="flex justify-end">
+              <Button size="lg" variant="primary">
+                OK
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Feed error dialog */}
+      <Dialog open={showFeedError} onOpenChange={setShowFeedError}>
+        <DialogContent className="flex h-fit w-[450px]  overflow-hidden p-4">
+          <DialogHeader className="absolute left-0 flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
+            <Heading level={6}> Pond & Batch Required</Heading>
+
+            <DialogClose className="flex justify-end">
+              <SolarIconSet.CloseCircle color="text-inherit" size={24} iconStyle="Outline" />
+            </DialogClose>
+          </DialogHeader>
+          <div className="mt-[5rem] flex w-full flex-col items-center justify-center gap-y-4 ">
+            <SolarIconSet.Danger color="red" size={48} />
+            <Text className="text-center">You need to create a pond and add fish before registering feeds.</Text>
             <DialogClose className="flex justify-end">
               <Button size="lg" variant="primary">
                 OK
@@ -209,19 +223,30 @@ export default function GetStarted() {
     queryKey: ['my-batches'],
   })
 
+  const useGetFeeds = createGetQueryHook({
+    endpoint: '/feed-inventories',
+    responseSchema: z.any(),
+    queryKey: ['my-inventory'],
+  })
+
+  // 👇 Move useState here, before any return!
+  const [showProceedError, setShowProceedError] = useState(false)
+
   const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
   const { data: fishBatches = [], isLoading: isLoadingFishBatches } = useGetFishBatches()
+  const { data: feeds = [], isLoading: isLoadingFeeds } = useGetFeeds()
 
-  if (isLoadingPonds || isLoadingFishBatches) {
+  if (isLoadingPonds || isLoadingFishBatches || isLoadingFeeds) {
     return <LoadingScreen />
   }
 
   const hasPond = ponds.totalElements > 0
   const hasBatches = fishBatches.totalElements > 0
-  const hasPondAndBatch = hasPond && hasBatches
-  const pageTitle = hasPondAndBatch ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
+  const hasFeeds = feeds.totalElements > 0
+  const hasAllSetup = hasPond && hasBatches && hasFeeds
+  const pageTitle = hasAllSetup ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 
-  const pageDescription = hasPondAndBatch
+  const pageDescription = hasAllSetup
     ? 'What report do you want to submit today?'
     : 'Get Started with Your Farm Management'
 
@@ -237,8 +262,13 @@ export default function GetStarted() {
       </div>
 
       <div className="mt-8 flex flex-wrap justify-center gap-5">
-        {!hasPondAndBatch ? (
-          <UnregisteredPondAndBatchCards navigate={navigate} hasPond={hasPond} />
+        {!hasAllSetup ? (
+          <UnregisteredPondBatchFeedCards
+            navigate={navigate}
+            hasPond={hasPond}
+            hasBatch={hasBatches}
+            hasFeed={hasFeeds}
+          />
         ) : (
           <RegisteredPondAndBatchCards navigate={navigate} />
         )}
@@ -247,13 +277,43 @@ export default function GetStarted() {
       <div className="mx-auto mt-12 w-fit border-b border-primary-400 p-2 text-center">
         <Button
           variant="ghost"
-          onClick={() => navigate(paths.dashboard.home.overview)}
+          onClick={() => {
+            if (!hasAllSetup) {
+              setShowProceedError(true)
+            } else {
+              navigate(paths.dashboard.home.overview)
+            }
+          }}
           className="mx-auto w-fit space-x-2 p-0 text-primary-600 hover:text-primary-400"
         >
           <span>Proceed to your Dashboard</span>
           <SolarIconSet.Forward color="currentColor" size={20} iconStyle="Outline" className="text-primary-500" />
         </Button>
       </div>
+
+      <Dialog open={showProceedError} onOpenChange={setShowProceedError}>
+        <DialogContent className="flex h-fit w-[450px]  overflow-hidden p-4">
+          <DialogHeader className="absolute left-0 flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
+            <Heading level={6}>Complete All Steps</Heading>
+
+            <DialogClose className="flex justify-end">
+              <SolarIconSet.CloseCircle color="text-inherit" size={24} iconStyle="Outline" />
+            </DialogClose>
+          </DialogHeader>
+          <div className="mt-[5rem] flex w-full flex-col items-center justify-center gap-y-4 ">
+            <SolarIconSet.Danger color="red" size={48} />
+            <Text className="text-center">
+              You must complete all three steps (pond, batch, and feed registration) before proceeding to your
+              dashboard.
+            </Text>
+            <DialogClose className="flex justify-end">
+              <Button size="lg" variant="primary">
+                OK
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

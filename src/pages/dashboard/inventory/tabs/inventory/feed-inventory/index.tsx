@@ -65,7 +65,7 @@ export default function FeedInventory() {
       <Button
         variant="primary"
         className="flex items-center gap-2"
-        onClick={() => navigate(paths.dashboard.inventory.createFeedStock())}
+        onClick={() => navigate(paths.dashboard.inventory.createFeedStock('inventory'))}
       >
         <SolarIconSet.AddCircle size={20} />
         <Text>Add feed stock</Text>

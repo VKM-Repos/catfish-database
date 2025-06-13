@@ -28,7 +28,7 @@ export function FeedInventoryActions({ item }: FeedInventoryActionsProps) {
       <Button
         size="sm"
         variant="primary"
-        onClick={() => navigate(paths.dashboard.inventory.createFeedStock(), { state: { item } })}
+        onClick={() => navigate(paths.dashboard.inventory.createFeedStock('inventory'), { state: { item } })}
       >
         <FlexBox gap="gap-2" align="center">
           <SolarIconSet.AddCircle color="#fff" size={20} iconStyle="Outline" />

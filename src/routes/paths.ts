@@ -126,7 +126,7 @@ export const paths = {
      */
     inventory: {
       root: '/dashboard/inventory',
-      createFeedStock: () => `/dashboard/inventory/create/feed-stock`,
+      createFeedStock: (from: string) => `/dashboard/inventory/create/feed-stock/${from}`,
       createMaintenanceRecord: () => `/dashboard/inventory/create/maintenance-record`,
       createSalesRecord: () => `/dashboard/inventory/create/sales-record`,
 

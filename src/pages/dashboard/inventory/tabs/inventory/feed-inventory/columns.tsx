@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { extractTimeFromISO } from 'src/lib/date'
+import { extractTimeFromISO, formatDate } from 'src/lib/date'
 import { FeedInventoryActions } from './actions'
 
 export const columns: ColumnDef<any>[] = [
@@ -26,7 +26,10 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'costPerKg',
     header: 'Avg Cost/ kg(₦)',
-    cell: ({ row }) => <Text weight="light">{`₦${row.original.costPerKg}` || '-'}</Text>,
+    cell: ({ row }) => {
+      const cost = row.original.costPerKg
+      return <Text weight="light">{cost ? `₦${Math.round(cost)}` : '-'}</Text>
+    },
   },
   // {
   //   accessorKey: 'cost',
@@ -41,7 +44,12 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'updatedAt',
     header: 'Last updated',
-    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.updatedAt)}</Text>,
+    cell: ({ row }) => (
+      <>
+        <Text weight="light">{formatDate(row.original.updatedAt)}</Text>
+        <Text weight="light">{extractTimeFromISO(row.original.updatedAt)}</Text>
+      </>
+    ),
   },
   {
     id: 'actions',

@@ -19,7 +19,7 @@ export default function AddFeedStock() {
           <>
             <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
               <Heading className="text-center" level={6}>
-                {location.state ? `Add ${location.state?.item.type} feed stock` : 'Add feed stock'}
+                {location.state ? `Add ${location.state?.item.type.toLowerCase()} feed stock` : 'Add feed stock'}
               </Heading>
             </div>
             <FeedStockForm

@@ -1,107 +1,93 @@
 import type { ColumnDef } from '@tanstack/react-table'
-import { Text } from 'src/components/ui/text'
-import { formatDate } from 'src/lib/date'
 import { StatusBadge } from 'src/components/global/status-badge'
-import { getInitials } from 'src/lib/utils'
+import { Text } from 'src/components/ui/text'
+import { extractTimeFromISO, formatDate } from 'src/lib/date'
+import * as SolarIconSet from 'solar-icon-set'
+
+type LogType = 'CREATE' | 'RESTOCK' | 'DEDUCTION' | 'DELETE' | 'CONSUMPTION' | 'UPDATE' | 'NONE'
+
+const logTypeMap: Record<LogType, { label: string; type: 'active' | 'inactive' }> = {
+  CREATE: { label: 'Addition', type: 'active' },
+  RESTOCK: { label: 'Addition', type: 'active' },
+  DEDUCTION: { label: 'Deduction', type: 'inactive' },
+  DELETE: { label: 'Deduction', type: 'inactive' },
+  CONSUMPTION: { label: 'Consumption', type: 'inactive' },
+  UPDATE: { label: 'Update', type: 'inactive' },
+  NONE: { label: 'None', type: 'inactive' },
+}
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'createdAt',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
-  },
-  {
-    accessorKey: 'sample',
-    header: () => (
-      <div title="No. fish Sampled" className="w-[4rem] truncate font-semibold">
-        No. fish Sampled
-      </div>
+    cell: ({ row }) => (
+      <>
+        <Text weight="light">{formatDate(row.original.createdAt)}</Text>
+        <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>
+      </>
     ),
-    cell: ({ row }) => <Text weight="light">{row.original.sample}</Text>,
   },
   {
-    accessorKey: 'weight',
+    accessorKey: 'logType',
     header: () => (
-      <div title="Wgt fish Sampled" className="w-[4rem] truncate font-semibold">
-        Wgt fish Sampled
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.weight}</Text>,
-  },
-  {
-    accessorKey: 'averageWeightToFish',
-    header: () => (
-      <div title="Average weight" className="font-semibold">
-        Avg. wgt
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.averageWeightToFish}</Text>,
-  },
-  {
-    accessorKey: 'weightGain',
-    header: () => (
-      <div title="Total wgt gain" className="w-[4rem] truncate font-semibold">
-        Total wgt gain
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.weightGain}</Text>,
-  },
-  {
-    accessorKey: 'feedConsumed',
-    header: 'Feed Consumed',
-    cell: ({ row }) => <Text weight="light">{row.original.feedConsumed}</Text>,
-  },
-  {
-    accessorKey: 'mortality',
-    header: 'Mort',
-    cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
-  },
-  {
-    accessorKey: 'splitOccur',
-    header: () => (
-      <div title="Split triggered" className="w-[4rem] truncate font-bold">
-        Split triggered
+      <div title="Type" className="w-[4rem] truncate font-semibold">
+        Type
       </div>
     ),
     cell: ({ row }) => {
-      const status = !(row.original.harvest === null && row.original.destinationBatches.length < 1)
+      const type = row.original.logType as LogType
+      const mapped = logTypeMap[type] ?? { label: type, type: 'inactive' }
+
+      const isActive = mapped.type === 'active'
+
       return (
         <StatusBadge
-          status={status}
-          activeText="Yes"
-          inactiveText="No"
-          inactiveBg="bg-error-100 border-[#FF0000] text-[#FF0000]"
+          status={isActive}
+          activeText={mapped.label}
+          inactiveText={mapped.label}
+          activeIcon={<SolarIconSet.ArrowRightUp color="currentColor" size={16} />}
+          inactiveIcon={<SolarIconSet.ArrowRightDown color="currentColor" size={16} />}
+          inactiveBg="bg-[#E5E7FF] text-[#000AFF] border-[#000AFF]"
         />
       )
     },
   },
-  {
-    accessorKey: 'destinationBatches',
-    header: () => (
-      <div title="Dest. pond" className="w-[4rem] truncate font-bold">
-        Dest. pond
-      </div>
-    ),
-    cell: ({ row }) => {
-      const batches = row.original.destinationBatches || []
 
-      return (
-        <div className="flex gap-1">
-          {batches.slice(0, 2).map((dest: any) => (
-            <span
-              className="rounded-md border-2 border-neutral-300 bg-neutral-200 px-1 py-1 font-semibold"
-              key={dest?.id}
-            >
-              {getInitials(dest.pond.name)}
-            </span>
-          ))}
-          {batches.length > 2 && (
-            <span className="rounded-md border-2 border-neutral-300 bg-neutral-200 px-1 py-1 font-semibold">
-              +{batches.length - 2}
-            </span>
-          )}
-        </div>
-      )
+  {
+    accessorKey: 'type',
+    header: 'Feed type',
+    cell: ({ row }) => (
+      <Text className="capitalize" weight="light">
+        {row.original.type.toLowerCase() || '-'}
+      </Text>
+    ),
+  },
+  {
+    accessorKey: 'sizeInMm',
+    header: 'Size (mm)',
+    cell: ({ row }) => <Text weight="light">{row.original.sizeInMm || '-'}</Text>,
+  },
+  // {
+  //   accessorKey: 'quantityInKg',
+  //   header: 'Total feed stocked (kg)',
+  //   cell: ({ row }) => <Text weight="light">{row.original.quantityInKg || '-'}</Text>,
+  // },
+  {
+    accessorKey: 'costPerKg',
+    header: 'Avg Cost/ kg(₦)',
+    cell: ({ row }) => {
+      const cost = row.original.costPerKg
+      return <Text weight="light">{cost ? `₦${Math.round(cost)}` : '-'}</Text>
     },
+  },
+  // {
+  //   accessorKey: 'cost',
+  //   header: 'Total cost (₦)',
+  //   cell: ({ row }) => <Text weight="light">{`₦${row.original.costPerKg * row.original.quantityInKg}` || '-'}</Text>,
+  // },
+  {
+    accessorKey: 'quantityInKg',
+    header: 'Remaining stock',
+    cell: ({ row }) => <Text weight="light">{row.original.quantityInKg ?? '-'}</Text>,
   },
 ]

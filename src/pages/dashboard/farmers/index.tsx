@@ -10,7 +10,7 @@ import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { FarmersTable } from './components/farmers-table'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedUserResponseSchema } from 'src/schemas'
+import { z } from 'zod'
 
 export default function FarmersPage() {
   const title = 'Farmers'
@@ -18,7 +18,7 @@ export default function FarmersPage() {
 
   const useGetFarmers = createGetQueryHook({
     endpoint: '/users/farmers?direction=DESC',
-    responseSchema: paginatedUserResponseSchema,
+    responseSchema: z.any(),
     queryKey: ['farmers'],
   })
 

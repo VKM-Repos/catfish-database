@@ -254,10 +254,22 @@ export const fishDetailsResponseSchema = z.object({
   updatedAt: z.string(),
 })
 
-export const feedTypeSchema = z.object({
+// When creating — all fields required
+export const feedTypeCreateSchema = z.object({
   id: z.string().optional(),
   type: z.string().min(1, { message: 'Please select the brand of feed' }),
   sizeInMm: z.number({ required_error: 'Please select a pellet size' }),
+  quantityInKg: z.number({ required_error: 'Please enter the quantity of feed' }),
+  totalCost: z.string().min(1, { message: 'Please enter total cost' }),
+  costPerKg: z.number({ required_error: 'Feed cost per kg must be a number' }),
+  date: z.string().min(1, { message: 'Please select a date' }),
+})
+
+// When editing — only quantity and cost are required
+export const feedTypeEditSchema = z.object({
+  id: z.string().optional(),
+  type: z.string().optional(),
+  sizeInMm: z.number().optional(),
   quantityInKg: z.number({ required_error: 'Please enter the quantity of feed' }),
   totalCost: z.string().optional(),
   costPerKg: z.number({ required_error: 'Feed cost per kg must be a number' }),

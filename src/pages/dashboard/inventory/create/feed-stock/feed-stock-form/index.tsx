@@ -17,16 +17,15 @@ import { Input } from 'src/components/ui/input'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { Grid } from 'src/components/ui/grid'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
 
-import { feedTypeResponseSchema, feedTypeSchema } from 'src/schemas'
+import { feedTypeResponseSchema, feedTypeCreateSchema, feedTypeEditSchema } from 'src/schemas'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { scrollToTop } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 import DatePicker from 'src/components/ui/datepicker'
 
-type FeedingTypeData = z.infer<typeof feedTypeSchema>
+type FeedingTypeData = z.infer<typeof feedTypeCreateSchema> | z.infer<typeof feedTypeEditSchema>
 
 type FeedStockFormProps = {
   onCancel: () => void
@@ -51,30 +50,23 @@ export default function FeedStockForm({
   const queryClient = useQueryClient()
   const pelletsSize = ['0.5mm', '1.0mm', '2.0mm', '3.0mm', '4.0mm', '5.0mm', '6.0mm', '7.0mm', '8.0mm']
 
-  const useGetFishBatches = createGetQueryHook({
-    endpoint: '/fish-batches',
-    responseSchema: z.any(),
-    queryKey: ['fish-batches'],
-  })
-
   const useCreateFeedStockMutation = createPostMutationHook({
     endpoint: '/feed-inventories',
-    requestSchema: feedTypeSchema,
+    requestSchema: feedTypeCreateSchema,
     responseSchema: feedTypeResponseSchema,
   })
 
   const useUpdateFeedStockMutation = createPutMutationHook({
     endpoint: `/feed-inventories/${initialValues?.id}`,
-    requestSchema: feedTypeSchema,
+    requestSchema: feedTypeEditSchema,
     responseSchema: feedTypeResponseSchema,
   })
 
-  const { data: fishBatches } = useGetFishBatches()
   const createFeedStockMutation = useCreateFeedStockMutation()
   const updateFeedStockMutation = useUpdateFeedStockMutation()
 
   const form = useForm<FeedingTypeData>({
-    resolver: zodResolver(feedTypeSchema),
+    resolver: zodResolver(initialValues ? feedTypeEditSchema : feedTypeCreateSchema),
     defaultValues: {
       type: '',
       sizeInMm: undefined,
@@ -87,7 +79,11 @@ export default function FeedStockForm({
 
   const quantityInKg = form.watch('quantityInKg')
   const totalCost = form.watch('totalCost')
-  const cost = quantityInKg && totalCost && !isNaN(Number(totalCost)) ? Number(totalCost) / Number(quantityInKg) : 0
+
+  const cost =
+    quantityInKg && totalCost && !isNaN(Number(totalCost)) && Number(quantityInKg) !== 0
+      ? Math.round((Number(totalCost) / Number(quantityInKg)) * 10) / 10
+      : 0
 
   useEffect(() => {
     if (!isNaN(cost) && isFinite(cost)) {
@@ -95,32 +91,35 @@ export default function FeedStockForm({
     }
   }, [form.setValue, cost])
 
-  const onSubmit = async (values: z.infer<typeof feedTypeSchema>) => {
+  useEffect(() => {
+    if (initialValues) {
+      form.reset(initialValues)
+    }
+  }, [initialValues])
+
+  const onSubmit = async (values: FeedingTypeData) => {
     try {
       setError(null)
-      // Remove date from payload
-      const { date, totalCost, ...rest } = values
 
-      // Convert string values to numbers for backend
-      const mutationData = {
-        ...rest,
-        sizeInMm: rest.sizeInMm ? Number(rest.sizeInMm) : undefined,
-        quantityInKg: rest.quantityInKg ? Number(rest.quantityInKg) : undefined,
-        costPerKg: rest.costPerKg ? Number(rest.costPerKg) : undefined,
+      const basePayload = {
+        ...values,
+        sizeInMm: values.sizeInMm !== undefined ? Number(values.sizeInMm) : 0,
+        quantityInKg: values.quantityInKg !== undefined ? Number(values.quantityInKg) : 0,
+        costPerKg: values.costPerKg !== undefined ? Number(values.costPerKg) : 0,
       }
 
-      if (mode === 'create') {
-        await createFeedStockMutation.mutateAsync(mutationData as any)
-        queryClient.refetchQueries(['fish-batches'])
+      if (!initialValues?.id) {
+        await createFeedStockMutation.mutateAsync(basePayload as any)
+        queryClient.refetchQueries(['feed-inventories'])
         form.reset()
         onSuccess?.()
         setStep(2)
-      } else if (mode === 'edit' && initialValues?.id) {
+      } else {
         await updateFeedStockMutation.mutateAsync({
-          ...mutationData,
           id: initialValues.id,
+          ...basePayload,
         } as any)
-        queryClient.refetchQueries(['fish-batches'])
+        queryClient.refetchQueries(['feed-inventories'])
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -151,7 +150,7 @@ export default function FeedStockForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="mt-12 flex w-full flex-col gap-10">
         {error && <FormValidationErrorAlert error={error} />}
         <div className="flex w-full flex-col gap-10">
-          <Grid cols={3} gap="gap-2" className="!grid-cols-1 md:!grid-cols-3">
+          <Grid cols={3} gap="gap-2" className={` ${hideFeedTypeAndPelletSize ? '!grid-cols-1' : 'md:!grid-cols-3'}`}>
             {!hideFeedTypeAndPelletSize && (
               <FlexBox direction="col" gap="gap-2">
                 <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">

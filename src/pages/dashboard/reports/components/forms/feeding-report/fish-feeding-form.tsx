@@ -2,13 +2,21 @@ import type { UseFormReturn } from 'react-hook-form'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'src/components/ui/select'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+} from 'src/components/ui/select'
 import { Text } from 'src/components/ui/text'
 import { dailyFeedingSchema } from 'src/schemas'
 import * as SolarIconSet from 'solar-icon-set'
 
-import type { z } from 'zod'
+import { z } from 'zod'
 import { useRef, useState } from 'react'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
 // Create the schema type
 type FishFeedingFormValues = z.infer<typeof dailyFeedingSchema>
@@ -18,6 +26,15 @@ interface FishFeedingFormProps {
 }
 export default function FishFeedingForm({ form, isWaterRequired = false }: FishFeedingFormProps) {
   const timeInputRef = useRef<HTMLInputElement>(null)
+  const useGetFeedInventory = createGetQueryHook({
+    endpoint: '/feed-inventories',
+    responseSchema: z.any(),
+    queryKey: ['feed-inventory-report'],
+  })
+  const { data: feedInventory } = useGetFeedInventory()
+
+  console.log(feedInventory, '<<<<<<')
+
   const feeds = [
     'Pellets',
     'Skretting',
@@ -82,13 +99,17 @@ export default function FishFeedingForm({ form, isWaterRequired = false }: FishF
                       </div>
                     </SelectTrigger>
                     <SelectContent>
-                      {feeds.map((feed) => (
+                      {feedInventory?.content.map((feed: any) => (
                         <SelectItem
-                          className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
-                          key={feed}
-                          value={feed}
+                          className="w-full items-center justify-between "
+                          key={feed.id}
+                          value={feed.type + feed.sizeInMm}
                         >
-                          {feed}
+                          <Text>
+                            {' '}
+                            {feed.type} ({feed.sizeInMm}mm)
+                          </Text>
+                          <SelectSeparator />
                         </SelectItem>
                       ))}
                     </SelectContent>

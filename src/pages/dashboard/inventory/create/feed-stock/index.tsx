@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes/paths'
 import { useState } from 'react'
@@ -11,6 +11,7 @@ export default function AddFeedStock() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const location = useLocation()
+  const { from } = useParams<{ from: string }>()
 
   const RenderSteps = () => {
     switch (step) {
@@ -22,11 +23,7 @@ export default function AddFeedStock() {
                 {location.state ? `Add ${location.state?.item.type} feed stock` : 'Add feed stock'}
               </Heading>
             </div>
-            <FeedStockForm
-              mode="create"
-              setStep={setStep}
-              onCancel={() => navigate(`${paths.dashboard.inventory.root}`)}
-            />
+            <FeedStockForm mode="create" setStep={setStep} onCancel={goBack} />
           </>
         )
       case 2:
@@ -51,8 +48,12 @@ export default function AddFeedStock() {
     }
   }
 
+  const goBack = () => {
+    if (from == 'overview') navigate(paths.dashboard.home.overview)
+    else if (from == 'inventory') navigate(paths.dashboard.inventory.root)
+  }
   return (
-    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.inventory.root)}>
+    <Dialog open={true} onOpenChange={goBack}>
       <DialogContent
         onInteractOutside={(e) => {
           e.preventDefault()

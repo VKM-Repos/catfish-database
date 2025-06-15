@@ -1,7 +1,7 @@
 import { UseFormReturn } from 'react-hook-form'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { Heading } from 'src/components/ui/heading'
-import AddPondDetailsForm from '../../../create/add-pond/forms/add-pond-details-form'
+// import AddPondDetailsForm from '../../../create/add-pond/forms/add-pond-details-form'
 import { Button } from 'src/components/ui/button'
 import UpdatePondLocationForm from './forms/update-pond-location'
 import { ClientErrorType } from 'src/types'
@@ -30,7 +30,7 @@ export default function UpdatePondForm({ form, error, loading, setOpen }: Update
           <p className=" font-bold text-[#444955]">Pond Details</p>
           <hr className="w-full border border-primary-200" />
         </div>
-        <AddPondDetailsForm form={form} />
+        {/* <AddPondDetailsForm form={form} /> */}
 
         <div className="mb-2 w-full items-start">
           <p className="font-bold text-[#444955]">Pond Location</p>

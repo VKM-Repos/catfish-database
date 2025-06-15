@@ -33,21 +33,6 @@ export default function FishFeedingForm({ form, isWaterRequired = false }: FishF
   })
   const { data: feedInventory } = useGetFeedInventory()
 
-  console.log(feedInventory, '<<<<<<')
-
-  const feeds = [
-    'Pellets',
-    'Skretting',
-    'Coppens',
-    'TopFeeds',
-    'Blue Crown',
-    'Vital Feeds',
-    'Aller Aqua',
-    'hybrid catfishfeed',
-    'Aqualis',
-    'Ecofloat',
-  ]
-  const pelletsSize = ['0.5mm', '1.0mm', '2.0mm', '3.0mm', '4.0mm', '5.0mm', '6.0mm', '7.0mm', '8.0mm']
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
 
   const handleIconClick = () => {
@@ -120,41 +105,6 @@ export default function FishFeedingForm({ form, isWaterRequired = false }: FishF
             )}
           />
         </div>
-
-        {/* Pellet Size Field */}
-        <div className="flex w-full flex-col gap-2">
-          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-            Pellet Size <span className="font-bold text-red-500">*</span>
-            <SolarIconSet.QuestionCircle size={16} />
-          </Text>
-          <FormField
-            control={form.control}
-            name="pelletSize"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Select value={field.value || ''} onValueChange={field.onChange}>
-                    <SelectTrigger className="font-light">
-                      <div className="flex items-center justify-center gap-2">
-                        <SolarIconSet.Weigher />
-                        <SelectValue placeholder="Select Pellet size" />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {pelletsSize.map((pellet) => (
-                        <SelectItem key={pellet} value={pellet}>
-                          {pellet}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         {/* Feed Quantity Field */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">

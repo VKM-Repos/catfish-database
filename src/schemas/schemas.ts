@@ -394,7 +394,7 @@ export const paginatedSamplingResponseSchema = z.object({
 
 export const dailyFeedingSchema = z.object({
   feedType: z.string().min(1, { message: 'Please select a feed type' }),
-  pelletSize: z.string().min(1, { message: 'Please select a pellet size' }),
+  pelletSize: z.string().optional(),
   feedQuantity: z.string().min(1, { message: 'Please enter the quantity of feed' }),
   feedTime: z.string().min(1, { message: 'Please select a feeding time' }),
 
@@ -410,6 +410,10 @@ export const dailyFeedingSchema = z.object({
 })
 export const extendedDailyFeedingSchema = (isWaterRequired?: boolean | false) =>
   dailyFeedingSchema.extend({
+    feedType: z.string().optional(),
+    pelletSize: z.string().optional(),
+    feedQuantity: z.string().optional(),
+    feedTime: z.string().optional(),
     dissolvedOxygen: isWaterRequired ? z.string().min(1, 'Dissolved Oxygen is required') : z.string().optional(),
     phLevel: isWaterRequired ? z.string().min(1, 'PH Level is required') : z.string().optional(),
     temperature: isWaterRequired ? z.string().min(1, 'Temperature is required') : z.string().optional(),

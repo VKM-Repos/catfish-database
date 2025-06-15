@@ -53,7 +53,12 @@ export default function WaterQualityForm({
                         placeholder="Input dissolved oxygen"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
+
                           handleInputChange('dissolvedOxygen', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -95,7 +100,11 @@ export default function WaterQualityForm({
                         placeholder="Input value"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
                           handleInputChange('phLevel', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -139,7 +148,12 @@ export default function WaterQualityForm({
                         placeholder="Input temperature"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
+
                           handleInputChange('temperature', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -181,7 +195,12 @@ export default function WaterQualityForm({
                         placeholder="Input value"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
+
                           handleInputChange('ammonia', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -225,7 +244,12 @@ export default function WaterQualityForm({
                         placeholder="input value"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
+
                           handleInputChange('nitrite', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -267,7 +291,12 @@ export default function WaterQualityForm({
                         placeholder="input value"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
+
                           handleInputChange('alkalinity', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -311,7 +340,12 @@ export default function WaterQualityForm({
                         placeholder="Input value"
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          let value = e.target.value.replace(/[^0-9]/g, '')
+                          if (value.length > 1 && value.startsWith('0')) {
+                            value = value.replace(/^0+/, '')
+                          }
+                          field.onChange(value)
+
                           handleInputChange('hardness', e.target.value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"

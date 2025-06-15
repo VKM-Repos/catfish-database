@@ -110,7 +110,7 @@ export default function SamplingDetailForm({
         </div>
       </div>
       <div className="flex w-[60%] flex-col gap-2">
-        <Text className="text-sm font-medium text-neutral-500">Feeding Time</Text>
+        <Text className="text-sm font-medium text-neutral-500">Feedingsasasasasas Time</Text>
         <FormField
           control={form.control}
           name="feedTime"

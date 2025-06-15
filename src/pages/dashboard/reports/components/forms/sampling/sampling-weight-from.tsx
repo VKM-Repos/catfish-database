@@ -65,7 +65,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Number of Fish Sampled
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
             {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
           </Text>
@@ -119,7 +119,6 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
             Weight of Fish Sampled
             <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -170,9 +169,8 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Avg. Weight of Fish Sampled
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
           </Text>
           <FormField
             control={form.control}
@@ -190,9 +188,8 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Total Weight gain
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            {/* <Text className="font-light text-neutral-500">(Optional)</Text> */}
           </Text>
           <FormField
             control={form.control}

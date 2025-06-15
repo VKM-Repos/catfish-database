@@ -32,7 +32,7 @@ export function ClusterTable() {
   const navigate = useNavigate()
 
   const openCreateModal = () => {
-    navigate(paths.dashboard.farmers.create)
+    navigate(paths.dashboard.system.clusters.create)
   }
   return (
     <>
@@ -44,7 +44,7 @@ export function ClusterTable() {
           emptyStateMessage="No clusters found"
         />
       ) : (
-        <EmptyTableState image={EmptyFarmersImg} name="farmer" text="a farmer" buttonFunc={openCreateModal} />
+        <EmptyTableState image={EmptyFarmersImg} name="cluster" text="a cluster" buttonFunc={openCreateModal} />
       )}
     </>
   )

@@ -177,7 +177,7 @@ export default function AddPond() {
       ? navigate(-1)
       : pondCreated
       ? navigate(paths.dashboard.ponds.create.addFishToPond)
-      : navigate(paths.dashboard.ponds.root)
+      : navigate(paths.dashboard.home.getStarted)
   }
 
   useEffect(() => {

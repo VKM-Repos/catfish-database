@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { FlexBox } from 'src/components/ui/flexbox'
-import { Form, FormField, FormItem, FormControl, FormDescription } from 'src/components/ui/form'
+import { Form, FormDescription } from 'src/components/ui/form'
 import { Button } from 'src/components/ui/button'
 import { Switch } from 'src/components/ui/switch'
 import { Text } from 'src/components/ui/text'
@@ -16,12 +16,12 @@ import { Loader } from 'src/components/ui/loader'
 import FishFeedingForm from 'src/pages/dashboard/reports/components/forms/feeding-report/fish-feeding-form'
 import WaterQualityForm from 'src/pages/dashboard/reports/components/forms/feeding-report/water-quality-form'
 
-import { dailyFeedingSchema, dailyWaterQualitySchema } from 'src/schemas'
+import { dailyFeedingSchema, extendedDailyFeedingSchema } from 'src/schemas'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 
-type FormData = z.infer<typeof dailyFeedingSchema> & z.infer<typeof dailyWaterQualitySchema>
+type FormData = z.infer<typeof dailyFeedingSchema>
 
 type UpdateFeedingReportProps = {
   onCancel: () => void
@@ -39,25 +39,28 @@ export default function UpdateFeedingReportForm({ onCancel, setStep }: UpdateFee
   const { id } = useParams<{ id: string }>()
   const queryClient = useQueryClient()
   const { data, isLoading } = useGetFeedingReports({ route: { id: id! } })
+  const [recordWaterQuality, setRecordWaterQuality] = useState(false)
 
   // 1) set up RHF
+  const [schema, setSchema] = useState(() => extendedDailyFeedingSchema(recordWaterQuality))
+  useEffect(() => {
+    setSchema(extendedDailyFeedingSchema(recordWaterQuality))
+  }, [recordWaterQuality])
   const form = useForm<FormData>({
-    resolver: zodResolver(dailyFeedingSchema.merge(dailyWaterQualitySchema)),
+    resolver: zodResolver(schema),
     defaultValues: {
       feedType: '',
       pelletSize: '',
-      feedQuantity: null,
+      feedQuantity: '',
       feedTime: '',
-      observation: '',
       dissolvedOxygen: '',
       phLevel: '',
       temperature: '',
       ammonia: '',
       nitrite: '',
-      nitrate: '',
       alkalinity: '',
       hardness: '',
-      recordWaterQuality: false,
+      observation: '',
     },
     mode: 'onChange',
   })
@@ -72,15 +75,6 @@ export default function UpdateFeedingReportForm({ onCancel, setStep }: UpdateFee
       // turn 3.0 → '3.0mm'
       const pelletSizeOption = data.pelletSize != null ? `${Number(data.pelletSize).toFixed(1)}mm` : ''
       // detect if any WQ present…
-      const hasWQ = [
-        data.dissolvedOxygen,
-        data.phLevel,
-        data.temperature,
-        data.ammonia,
-        data.nitrate,
-        data.alkalinity,
-        data.hardness,
-      ].some((v) => v != null)
 
       form.reset({
         feedType: feedTypeOption,
@@ -88,7 +82,6 @@ export default function UpdateFeedingReportForm({ onCancel, setStep }: UpdateFee
         feedQuantity: data.quantity ?? null,
         feedTime: data.feedTime ?? '',
         observation: data.observation ?? '',
-        recordWaterQuality: hasWQ,
 
         // water‐quality fields:
         dissolvedOxygen: data.dissolvedOxygen ?? '',
@@ -96,7 +89,7 @@ export default function UpdateFeedingReportForm({ onCancel, setStep }: UpdateFee
         temperature: data.temperature ?? '',
         ammonia: data.ammonia ?? '',
         nitrite: data.nitrite ?? '',
-        nitrate: data.nitrate ?? '',
+
         alkalinity: data.alkalinity ?? '',
         hardness: data.hardness ?? '',
       })
@@ -124,14 +117,13 @@ export default function UpdateFeedingReportForm({ onCancel, setStep }: UpdateFee
       }
 
       // water quality (optional)
-      const waterQualityData = values.recordWaterQuality
+      const waterQualityData = recordWaterQuality
         ? {
             dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
             phLevel: values.phLevel ? Number(values.phLevel) : null,
             temperature: values.temperature ? Number(values.temperature) : null,
             ammonia: values.ammonia ? Number(values.ammonia) : null,
             nitrite: values.nitrite ? Number(values.nitrite) : null,
-            nitrate: values.nitrate ? Number(values.nitrate) : null,
             alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
             hardness: values.hardness ? Number(values.hardness) : null,
             frequency: 'DAILY',
@@ -181,20 +173,37 @@ export default function UpdateFeedingReportForm({ onCancel, setStep }: UpdateFee
         <Text className="border-b pb-2 font-semibold">Feeding Details</Text>
         <FishFeedingForm form={form} />
 
-        <FormField
-          control={form.control}
-          name="recordWaterQuality"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormDescription>Record Water Quality?</FormDescription>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
+        <FormDescription>Record Water Quality?</FormDescription>
+
+        <Switch
+          onCheckedChange={(e: boolean) => {
+            setRecordWaterQuality(e)
+            // Reset water quality fields when toggling
+            form.reset(
+              {
+                ...form.getValues(),
+                dissolvedOxygen: '',
+                phLevel: '',
+                temperature: '',
+                ammonia: '',
+                nitrite: '',
+                alkalinity: '',
+                hardness: '',
+                observation: '',
+              },
+              {
+                keepErrors: false,
+                keepDirty: false,
+                keepIsSubmitted: false,
+                keepTouched: false,
+                keepIsValid: false,
+                keepSubmitCount: false,
+              },
+            )
+          }}
         />
 
-        {form.watch('recordWaterQuality') && (
+        {recordWaterQuality && (
           <>
             <Text className="border-b pb-2 font-semibold">Water Quality</Text>
             <WaterQualityForm form={form} />

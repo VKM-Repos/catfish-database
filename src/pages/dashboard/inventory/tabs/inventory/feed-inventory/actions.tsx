@@ -18,7 +18,7 @@ export function FeedInventoryActions({ item }: FeedInventoryActionsProps) {
         size="sm"
         variant="outline"
         className="border-primary-400"
-        onClick={() => navigate(paths.dashboard.inventory.viewFeedActivityLog(item.id))}
+        onClick={() => navigate(paths.dashboard.inventory.viewFeedActivityLog(item.id), { state: { item } })}
       >
         <FlexBox gap="gap-2" align="center">
           <SolarIconSet.Eye color="#651391" size={20} iconStyle="Outline" />
@@ -28,7 +28,7 @@ export function FeedInventoryActions({ item }: FeedInventoryActionsProps) {
       <Button
         size="sm"
         variant="primary"
-        onClick={() => navigate(paths.dashboard.inventory.createFeedStock(), { state: { item } })}
+        onClick={() => navigate(paths.dashboard.inventory.createFeedStock('inventory'), { state: { item } })}
       >
         <FlexBox gap="gap-2" align="center">
           <SolarIconSet.AddCircle color="#fff" size={20} iconStyle="Outline" />

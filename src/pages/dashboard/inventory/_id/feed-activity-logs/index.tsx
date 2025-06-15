@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes/paths'
 import FeedActivityLogsTable from './table'
@@ -18,6 +18,11 @@ const useGetFeedActivityLogs = createGetQueryHook({
 export default function FeedActivityLogsModal() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+
+  const location = useLocation()
+  const item = location.state?.item
+
+  console.log(item)
 
   const { data, isLoading } = useGetFeedActivityLogs({ route: { id: id! } })
 
@@ -51,7 +56,7 @@ export default function FeedActivityLogsModal() {
             </Text>
           </Button>
         </FlexBox>
-        <FeedActivityLogsTable data={data} />
+        <FeedActivityLogsTable data={data} isLoading={isLoading} item={item} />
       </DialogContent>
     </Dialog>
   )

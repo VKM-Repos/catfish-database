@@ -56,7 +56,9 @@ export function DropDownOption() {
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.ponds.create.addFishToPond)}>
             Add fish
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={redirectToPond}>Add feed type</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(paths.dashboard.inventory.createFeedStock('overview'))}>
+            Add feed stock
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

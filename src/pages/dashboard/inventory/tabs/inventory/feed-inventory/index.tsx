@@ -65,7 +65,7 @@ export default function FeedInventory() {
       <Button
         variant="primary"
         className="flex items-center gap-2"
-        onClick={() => navigate(paths.dashboard.inventory.createFeedStock())}
+        onClick={() => navigate(paths.dashboard.inventory.createFeedStock('inventory'))}
       >
         <SolarIconSet.AddCircle size={20} />
         <Text>Add feed stock</Text>
@@ -84,9 +84,8 @@ export default function FeedInventory() {
         <DataTable
           search={false}
           columns={columns}
-          data={mockFeedInventories}
+          data={feedInventories?.content ?? []}
           isLoading={isLoading}
-          // showFilter={true}
           emptyStateMessage="No feed inventory found"
         />
       </FlexBox>

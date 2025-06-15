@@ -38,9 +38,8 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Behavior
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}
@@ -79,9 +78,8 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Observation
-            {/* <span className="font-bold text-red-500">*</span> */}
+            <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
-            <Text className="font-light text-neutral-500">(Optional)</Text>
           </Text>
           <FormField
             control={form.control}

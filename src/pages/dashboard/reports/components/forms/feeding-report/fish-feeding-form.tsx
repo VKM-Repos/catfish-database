@@ -2,48 +2,54 @@ import type { UseFormReturn } from 'react-hook-form'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'src/components/ui/select'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+} from 'src/components/ui/select'
 import { Text } from 'src/components/ui/text'
-import type { dailyFeedingSchema } from 'src/schemas'
+import { dailyFeedingSchema } from 'src/schemas'
 import * as SolarIconSet from 'solar-icon-set'
 
-import type { z } from 'zod'
+import { z } from 'zod'
 import { useRef, useState } from 'react'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
+// Create the schema type
 type FishFeedingFormValues = z.infer<typeof dailyFeedingSchema>
-
-export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeedingFormValues> }) {
+interface FishFeedingFormProps {
+  form: UseFormReturn<FishFeedingFormValues>
+  isWaterRequired?: boolean
+}
+export default function FishFeedingForm({ form, isWaterRequired = false }: FishFeedingFormProps) {
   const timeInputRef = useRef<HTMLInputElement>(null)
-  const feeds = [
-    'Pellets',
-    'Skretting',
-    'Coppens',
-    'TopFeeds',
-    'Blue Crown',
-    'Vital Feeds',
-    'Aller Aqua',
-    'hybrid catfishfeed',
-    'Aqualis',
-    'Ecofloat',
-  ]
-  const pelletsSize = ['0.5mm', '1.0mm', '2.0mm', '3.0mm', '4.0mm', '5.0mm', '6.0mm', '7.0mm', '8.0mm']
-  const isWaterSourcesLoading = false
-  const isPondTypesLoading = false
+  const useGetFeedInventory = createGetQueryHook({
+    endpoint: '/feed-inventories',
+    responseSchema: z.any(),
+    queryKey: ['feed-inventory-report'],
+  })
+  const { data: feedInventory } = useGetFeedInventory()
+
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
 
   const handleIconClick = () => {
     timeInputRef.current?.showPicker()
-    console.log('Helloo')
   }
+
   const handleInputChange = (fieldName: string, value: string) => {
     setActiveInputs((prev) => ({
       ...prev,
       [fieldName]: value.trim().length > 0,
     }))
   }
+
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full space-y-3 rounded-md">
       <div className="flex w-full items-start gap-5">
+        {/* Feed Type Field */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Feed Type <span className="font-bold text-red-500">*</span>
@@ -55,11 +61,10 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Select value={field.value || ''} onValueChange={(v) => field.onChange(v)}>
+                  <Select value={field.value || ''} onValueChange={field.onChange}>
                     <SelectTrigger className="font-light">
                       <div className="flex items-center justify-center gap-2">
                         <div>
-                          {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
                           <svg
                             width="20"
                             height="20"
@@ -79,21 +84,19 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
                       </div>
                     </SelectTrigger>
                     <SelectContent>
-                      {isWaterSourcesLoading ? (
-                        <SelectItem value="loading" disabled>
-                          <Text>Loading feeds...</Text>
+                      {feedInventory?.content.map((feed: any) => (
+                        <SelectItem
+                          className="w-full items-center justify-between "
+                          key={feed.id}
+                          value={feed.type + feed.sizeInMm}
+                        >
+                          <Text>
+                            {' '}
+                            {feed.type} ({feed.sizeInMm}mm)
+                          </Text>
+                          <SelectSeparator />
                         </SelectItem>
-                      ) : (
-                        feeds?.map((feed) => (
-                          <SelectItem
-                            className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
-                            key={feed}
-                            value={feed}
-                          >
-                            {feed}
-                          </SelectItem>
-                        ))
-                      )}
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -102,44 +105,7 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
             )}
           />
         </div>
-        <div className="flex w-full flex-col gap-2">
-          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-            Pellet Size <span className="font-bold text-red-500">*</span>
-            <SolarIconSet.QuestionCircle size={16} />
-          </Text>
-          <FormField
-            control={form.control}
-            name="pelletSize"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Select value={field.value || ''} onValueChange={(v) => field.onChange(v)}>
-                    <SelectTrigger className="font-light">
-                      <div className="flex items-center justify-center gap-2">
-                        <SolarIconSet.Weigher />
-                        <SelectValue placeholder="Select Pellet size" />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {isWaterSourcesLoading ? (
-                        <SelectItem value="loading" disabled>
-                          <Text>Loading pellets...</Text>
-                        </SelectItem>
-                      ) : (
-                        pelletsSize?.map((pellet) => (
-                          <SelectItem key={pellet} value={pellet}>
-                            {pellet}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        {/* Feed Quantity Field */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Feed Quantity <span className="font-bold text-red-500">*</span>
@@ -148,13 +114,15 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
           <FormField
             control={form.control}
             name="feedQuantity"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
                   <div
-                    className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border px-3${
+                    className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border px-3 ${
                       activeInputs.feedQuantity ? 'bg-neutral-100' : ''
-                    } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
+                    } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 ${
+                      fieldState.error ? ' border-red-500' : ''
+                    }`}
                   >
                     <SolarIconSet.Weigher />
                     <Input
@@ -162,8 +130,12 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
                       {...field}
                       className="w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                       onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '')
+                        let value = e.target.value.replace(/[^0-9]/g, '')
+                        if (value.length > 1 && value.startsWith('0')) {
+                          value = value.replace(/^0+/, '')
+                        }
                         field.onChange(value)
+                        handleInputChange('feedQuantity', value)
                       }}
                     />
                   </div>
@@ -175,11 +147,8 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
         </div>
       </div>
 
-      {/* <div className="flex w-[32%] flex-col gap-2">
-        <Text className="text-md flex items-center gap-2 font-semibold text-neutral-700">
-          Feeding Time <span className="font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
-        </Text>
+      {/* Feeding Time Field */}
+      <div className="flex w-[32%] flex-col gap-2">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
           Enter the Feeding Time <span className="font-bold text-red-500">*</span>
           <SolarIconSet.QuestionCircle size={16} />
@@ -201,12 +170,11 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
                       type="time"
                       {...field}
                       onChange={(e) => {
-                        field.onChange(e)
+                        field.onChange(e.target.value)
                         handleInputChange('feedTime', e.target.value)
                       }}
                       ref={timeInputRef}
-                      className="md:text-md text-md !w-full border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0
-                 focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden "
+                      className="md:text-md text-md !w-full border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden"
                     />
                   </div>
                   <div
@@ -223,7 +191,63 @@ export default function FishFeedingForm({ form }: { form: UseFormReturn<FishFeed
             </FormItem>
           )}
         />
-      </div> */}
+      </div>
+
+      {/* Water Quality Fields (conditionally rendered) */}
+      {isWaterRequired && (
+        <div className="mt-4 w-full space-y-4">
+          <Text className="text-md font-semibold text-neutral-700">Water Quality Parameters</Text>
+          <div className="grid grid-cols-3 gap-4">
+            {/* Dissolved Oxygen */}
+            <FormField
+              control={form.control}
+              name="dissolvedOxygen"
+              render={({ field }) => (
+                <FormItem>
+                  <Text className="text-sm font-medium text-neutral-700">Dissolved Oxygen (mg/L)</Text>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter value" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* pH Level */}
+            <FormField
+              control={form.control}
+              name="phLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <Text className="text-sm font-medium text-neutral-700">pH Level</Text>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter value" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Temperature */}
+            <FormField
+              control={form.control}
+              name="temperature"
+              render={({ field }) => (
+                <FormItem>
+                  <Text className="text-sm font-medium text-neutral-700">Temperature (°C)</Text>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter value" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Add other water quality fields similarly */}
+            {/* Ammonia, Nitrite, Nitrate, etc. */}
+          </div>
+        </div>
+      )}
     </FlexBox>
   )
 }

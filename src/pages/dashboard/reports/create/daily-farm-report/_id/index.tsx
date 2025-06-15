@@ -13,7 +13,6 @@ import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { Switch } from 'src/components/ui/switch'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType, ServerErrorType } from 'src/types'
-import { scrollToTop } from 'src/lib/utils'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,6 +26,7 @@ import FishFeedingForm from '../../../components/forms/feeding-report/fish-feedi
 import WaterQualityForm from '../../../components/forms/feeding-report/water-quality-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { Input } from 'src/components/ui/input'
+import { scrollToTop } from 'src/lib/utils'
 
 type FormData = z.infer<typeof dailyFeedingSchema>
 
@@ -41,14 +41,22 @@ export default function CreateDailyFeedingReportPage() {
   const queryClient = useQueryClient()
 
   const { id } = useParams<{ id: string }>()
+
   const useCreateDailyFeeding = createPostMutationHook({
-    endpoint: '/feeding-water-qualities',
+    endpoint: '/feedings',
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+
+  const useCreateWaterQuality = createPostMutationHook({
+    endpoint: '/water-quality',
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
   const [schema, setSchema] = useState(() => extendedDailyFeedingSchema(recordWaterQuality))
   useEffect(() => {
     setSchema(extendedDailyFeedingSchema(recordWaterQuality))
+    console.log('schema changed', recordWaterQuality)
   }, [recordWaterQuality])
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -71,8 +79,13 @@ export default function CreateDailyFeedingReportPage() {
 
   const { reset } = form
   const createDailyFeeding = useCreateDailyFeeding()
+  const createWaterQuality = useCreateWaterQuality()
 
   const onSubmit = async (values: FormData) => {
+    const numbers = values.feedType.match(/\d+/g)
+    values.pelletSize = numbers ? numbers.join('') : ''
+    values.feedType = values.feedType.replace(/\d+/g, '')
+
     setError(null)
     setIsSubmitting(true)
     try {
@@ -83,24 +96,27 @@ export default function CreateDailyFeedingReportPage() {
         quantity: Number(values.feedQuantity),
         // feedTime: values.feedTime,
       }
-
-      const waterQualityData = {
-        dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
-        phLevel: values.phLevel ? Number(values.phLevel) : null,
-        temperature: values.temperature ? Number(values.temperature) : null,
-        ammonia: values.ammonia ? Number(values.ammonia) : null,
-        nitrite: values.nitrite ? Number(values.nitrite) : null,
-        alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
-        hardness: values.hardness ? Number(values.hardness) : null,
-        frequency: 'DAILY',
-        // observation: values.observation ? values.observation : null,
-        observation: 'EXCELLENT',
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (feedingData.pelletSize !== null && recordWaterQuality) {
+        await createDailyFeeding.mutateAsync(feedingData)
       }
 
-      const formData = { ...feedingData, ...waterQualityData }
-      console.log('Submit', formData)
-      await createDailyFeeding.mutateAsync(formData)
-
+      if (recordWaterQuality) {
+        const waterQualityData = {
+          pondId: id,
+          dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
+          phLevel: values.phLevel ? Number(values.phLevel) : null,
+          temperature: values.temperature ? Number(values.temperature) : null,
+          ammonia: values.ammonia ? Number(values.ammonia) : null,
+          nitrite: values.nitrite ? Number(values.nitrite) : null,
+          alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
+          hardness: values.hardness ? Number(values.hardness) : null,
+          frequency: 'DAILY',
+          // observation: values.observation ? values.observation : null,
+          observation: 'EXCELLENT',
+        }
+        await createWaterQuality.mutateAsync(waterQualityData)
+      }
       queryClient.refetchQueries(['feeding-water-quality'])
 
       setOpenDialog(true)
@@ -282,12 +298,7 @@ export default function CreateDailyFeedingReportPage() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="flex items-center gap-2"
-                  disabled={!form.formState.isValid || isSubmitting}
-                >
+                <Button type="submit" variant="primary" className="flex items-center gap-2" disabled={isSubmitting}>
                   {isSubmitting ? 'Submitting...' : 'Continue'}
                 </Button>
               </div>

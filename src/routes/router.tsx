@@ -375,6 +375,70 @@ export const router = createBrowserRouter([
         ],
       },
 
+      // ---------------- Staff Section ----------------
+      {
+        path: paths.dashboard.staff.root,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>{LazyPage(() => import('src/pages/dashboard/staff'))}</RoleGuard>
+        ),
+        children: [
+          {
+            path: 'create',
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/staff/create'))}
+              </RoleGuard>
+            ),
+          },
+          {
+            path: 'view',
+
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/staff/_id'))}
+              </RoleGuard>
+            ),
+          },
+
+          //     // staff (View & Edit)
+          //     // {
+          //     //   path: paths.dashboard.staff.viewFeedActivityLog(':id'),
+          //     //   element: (
+          //     //     <RoleGuard allowedRoles={[UserRole.FARMER]}>
+          //     //       {LazyPage(() => import('src/pages/dashboard/inventory/_id/feed-activity-logs'))}
+          //     //     </RoleGuard>
+          //     //   ),
+          //     // },
+          //     // {
+          //     //   path: paths.dashboard.inventory.viewSalesRecord(':id'),
+          //     //   element: (
+          //     //     <RoleGuard allowedRoles={[UserRole.FARMER]}>
+          //     //       {LazyPage(() => import('src/pages/dashboard/inventory/_id/sales-records'))}
+          //     //     </RoleGuard>
+          //     //   ),
+          //     // },
+
+          //     // {
+          //     //   path: paths.dashboard.inventory.editMaintenanceRecord(':id'),
+          //     //   element: (
+          //     //     <RoleGuard allowedRoles={[UserRole.FARMER]}>
+          //     //       {LazyPage(() => import('src/pages/dashboard/inventory/_id/edit/maintenance-record'))}
+          //     //     </RoleGuard>
+          //     //   ),
+          //     // },
+          //   ],
+          // },
+          // {
+          //   path: 'create/staff',
+          //   element: (
+          //     <RoleGuard allowedRoles={[UserRole.FARMER]}>
+          //       {LazyPage(() => import('src/pages/dashboard/staff/create'))}
+          //     </RoleGuard>
+          //   ),
+          // },
+        ],
+      },
+
       // ---------------- Admins Section ----------------
       {
         path: paths.dashboard.admins.root,

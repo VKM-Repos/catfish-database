@@ -138,6 +138,16 @@ export const paths = {
       editMaintenanceRecord: (id: string) => `/dashboard/inventory/${id}/edit/maintenance-record`,
     },
 
+    // -------- Staff management Section --------
+    /**
+     * Farmer Staffs.
+     */
+    staff: {
+      root: '/dashboard/staff',
+      view: (id: string) => `/dashboard/staff/${id}`,
+      create: '/dashboard/staff/create',
+      // id: (id: string) => `/dashboard/cluster-managers/${id}/edit`,
+    },
     // -------- System Section --------
     /**
      * System management routes: permissions, audit log, clusters.

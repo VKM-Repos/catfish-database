@@ -52,6 +52,11 @@ const roleSpecificLinks = {
     path: paths.dashboard.inventory.root,
     icon: <SolarIconSet.FolderOpen color="currentColor" size={22} iconStyle="Outline" />,
   },
+  staff: {
+    label: 'Staff',
+    path: paths.dashboard.staff.root,
+    icon: <SolarIconSet.UsersGroupRounded color="currentColor" size={22} iconStyle="Outline" />,
+  },
   system: {
     label: 'System',
     icon: <SolarIconSet.Settings color="currentColor" size={22} iconStyle="Outline" />,
@@ -94,6 +99,7 @@ export const sideBarLinks: Record<string, SideBarLink[]> = {
     roleSpecificLinks.ponds,
     commonLinks.reports,
     roleSpecificLinks.inventory,
+    roleSpecificLinks.staff,
     commonLinks.more,
   ],
 }

@@ -41,6 +41,7 @@ const roleRoutes: Record<UserRole, string[]> = {
     paths.dashboard.ponds.root,
     paths.dashboard.feeds.create.root,
     paths.dashboard.inventory.root,
+    paths.dashboard.staff.root,
   ],
 }
 

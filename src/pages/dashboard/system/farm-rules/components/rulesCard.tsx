@@ -3,9 +3,12 @@ import { Checkbox } from 'src/components/ui/checkbox'
 import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
+import { useNavigate } from 'react-router-dom'
+import { paths } from 'src/routes/paths'
 
 const data = [
   {
+    id: 'feed',
     title: 'Feed Types & Pellet Size',
     subtitle: 'Manage feed types and their available pellet sizes',
     params: [
@@ -16,6 +19,7 @@ const data = [
     ],
   },
   {
+    id: 'water_quality',
     title: 'Water Quality Parameters',
     subtitle: 'Set which parameters are mandatory for monitoring',
     params: [
@@ -26,6 +30,29 @@ const data = [
     ],
   },
   {
+    id: 'water_source',
+    title: 'Water Sources',
+    subtitle: 'Manage feed types and their available pellet sizes',
+    params: [
+      { label: 'Borehole', values: ['Deep grounded source'] },
+      { label: 'River', values: ['Natural flowing water source'] },
+      { label: 'Municipal Supply', values: ['Treated city water'] },
+      { label: 'Rainwater', values: ['Collect precipitation'] },
+    ],
+  },
+  {
+    id: 'maintenance',
+    title: 'Maintenace Types',
+    subtitle: 'Define common maintenance actions and procedures',
+    params: [
+      { label: 'Water Charge', values: ['Deep grounded source'] },
+      { label: 'Pump Repair', values: ['Natural flowing water source'] },
+      { label: 'Fulling', values: ['Treated city water'] },
+      { label: 'Net Cleaning', values: ['Collect precipitation'] },
+    ],
+  },
+  {
+    id: 'disease',
     title: 'Disease Types',
     subtitle: 'Manage fish diseases with descriptions',
     params: [
@@ -33,6 +60,17 @@ const data = [
       { label: 'Columnaris', values: ['Bacterial infection affecting gills and skin'] },
       { label: 'Ich', values: ['Parasitic infection causing white spots'] },
       { label: 'Fungal Infection', values: ['Various fungal infections'] },
+    ],
+  },
+  {
+    id: 'behavior',
+    title: 'Fish Behaviors',
+    subtitle: 'Behavior labels for observation reporting',
+    params: [
+      { label: 'Slow Movement', values: ['Bacterial infection affecting fins'] },
+      { label: 'Gasping', values: ['Bacterial infection affecting gills and skin'] },
+      { label: 'Aggressive Feeding', values: ['Parasitic infection causing white spots'] },
+      { label: 'Lethargy', values: ['Various fungal infections'] },
     ],
   },
 ]
@@ -81,6 +119,11 @@ const RuleItem = ({ label, values }: { label: string; values: string[] }) => (
 )
 
 const RulesCard = () => {
+  const navigate = useNavigate()
+
+  const openModal = (navOpt: any) => {
+    navigate(paths.dashboard.system.farmRules.add)
+  }
   return (
     <div className="mb-8 grid grid-cols-2 gap-8">
       {data.map((config, sectionIndex) => (
@@ -93,7 +136,7 @@ const RulesCard = () => {
               <RuleItem key={i} label={type.label} values={type.values} />
             ))}
             <button
-              onClick={() => console.log('add')}
+              onClick={() => openModal(config.id)}
               className="col-span-2 flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-neutral-200 py-2 hover:bg-hover"
             >
               <SolarIconSet.AddSquare color="black" size={14} iconStyle="Outline" />

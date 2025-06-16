@@ -54,10 +54,13 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
   )
 }
 
-// Component for unregistered pond state
 function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }: UnregisteredCardsProps) {
   const [showPondError, setShowPondError] = useState(false)
   const [showFeedError, setShowFeedError] = useState(false)
+
+  const showFirstOnAddPond = !hasPond
+  const showFirstOnAddFish = hasPond && !hasBatch
+  const showFirstOnAddFeed = hasPond && hasBatch && !hasFeed
 
   return (
     <>
@@ -71,7 +74,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
         }
         buttonText="Register a pond"
         buttonAction={() => navigate(paths.dashboard.ponds.create.addPond)}
-        isFirstCard={true}
+        isFirstCard={showFirstOnAddPond}
       />
 
       <ActionCard
@@ -90,7 +93,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
             setShowPondError(true)
           }
         }}
-        isFirstCard={false}
+        isFirstCard={showFirstOnAddFish}
       />
       <ActionCard
         title="Register your feed types"
@@ -104,6 +107,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
         buttonAction={() => {
           navigate(paths.dashboard.feeds.create.root)
         }}
+        isFirstCard={showFirstOnAddFeed}
       />
 
       {/* Pond error dialog */}
@@ -215,34 +219,46 @@ export default function GetStarted() {
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   const useGetFishBatches = createGetQueryHook({
     endpoint: `/fish-batches?farmerId=${user?.id}`,
     responseSchema: z.any(),
     queryKey: ['my-batches'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   const useGetFeeds = createGetQueryHook({
     endpoint: '/feed-inventories',
     responseSchema: z.any(),
     queryKey: ['my-inventory'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   // 👇 Move useState here, before any return!
   const [showProceedError, setShowProceedError] = useState(false)
 
-  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
-  const { data: fishBatches = [], isLoading: isLoadingFishBatches } = useGetFishBatches()
-  const { data: feeds = [], isLoading: isLoadingFeeds } = useGetFeeds()
+  const { data: ponds, isLoading: isLoadingPonds } = useGetPonds()
+  const { data: fishBatches, isLoading: isLoadingFishBatches } = useGetFishBatches()
+  const { data: feeds, isLoading: isLoadingFeeds } = useGetFeeds()
 
   if (isLoadingPonds || isLoadingFishBatches || isLoadingFeeds) {
     return <LoadingScreen />
   }
 
-  const hasPond = ponds.totalElements > 0
-  const hasBatches = fishBatches.totalElements > 0
-  const hasFeeds = feeds.totalElements > 0
+  const hasPond = ponds?.totalElements > 0
+  const hasBatches = fishBatches?.totalElements > 0
+  const hasFeeds = feeds?.totalElements > 0
   const hasAllSetup = hasPond && hasBatches && hasFeeds
   const pageTitle = hasAllSetup ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 

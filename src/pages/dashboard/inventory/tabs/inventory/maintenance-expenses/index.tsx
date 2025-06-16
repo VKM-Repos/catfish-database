@@ -54,13 +54,15 @@ const mockMaintenanceExpenses = [
 
 export default function MaintenanceExpenses() {
   const navigate = useNavigate()
-  const useGetFeedInventories = createGetQueryHook({
-    endpoint: '/feed-inventories',
+  const useGetManitenanceCost = createGetQueryHook({
+    endpoint: '/maintenance-costs',
     responseSchema: z.any(),
-    queryKey: ['feed-inventories'],
+    queryKey: ['maintenance-costs'],
   })
 
-  const { data: feedInventories, isLoading } = useGetFeedInventories()
+  const { data: maintenanceCost, isLoading } = useGetManitenanceCost()
+
+  console.log('Maintenance Cost Data:', maintenanceCost)
 
   const title = 'Expenses'
   const actions = (

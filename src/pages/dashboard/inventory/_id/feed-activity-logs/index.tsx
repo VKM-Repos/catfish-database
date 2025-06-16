@@ -10,7 +10,7 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 
 const useGetFeedActivityLogs = createGetQueryHook({
-  endpoint: '/feed-inventories/:id/logs',
+  endpoint: `/feed-inventories/:id/logs?&direction=DESC`,
   responseSchema: z.any(),
   queryKey: ['feeding-activity-logs'],
 })

@@ -66,6 +66,14 @@ export const paginatedUserResponseSchema = z.object({
   content: z.array(userSchema),
 })
 
+export const staffUserResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(userSchema),
+})
+
 export const clusterRequestSchema = z.object({
   name: z.string().min(3, 'Cluster name must not be less than 3 characters'),
   context: z.string().optional(),

@@ -349,7 +349,7 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            path: paths.dashboard.inventory.createFeedStock(':from'),
+            path: 'create/feed-stock',
             element: (
               <RoleGuard allowedRoles={[UserRole.FARMER]}>
                 {LazyPage(() => import('src/pages/dashboard/inventory/create/feed-stock'))}
@@ -373,6 +373,50 @@ export const router = createBrowserRouter([
             ),
           },
         ],
+      },
+
+      // ---------------- Staff Section ----------------
+      {
+        path: paths.dashboard.staff.root,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>{LazyPage(() => import('src/pages/dashboard/staff'))}</RoleGuard>
+        ),
+        children: [
+          {
+            path: 'create',
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/staff/create'))}
+              </RoleGuard>
+            ),
+          },
+        ],
+      },
+      {
+        path: `${paths.dashboard.staff.root}/:id`, // /dashboard/staff/:id
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/staff/_id'))}
+          </RoleGuard>
+        ),
+      },
+
+      // {
+      //   path: paths.dashboard.staff.view, // This handles the view route
+      //   element: (
+      //     <RoleGuard allowedRoles={[UserRole.FARMER]}>
+      //       {LazyPage(() => import('src/pages/dashboard/staff/_id'))}
+      //     </RoleGuard>
+      //   ),
+      // },
+
+      {
+        path: `${paths.dashboard.staff.root}:id/edit`, // This handles the edit route
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/staff/_id/edit'))}
+          </RoleGuard>
+        ),
       },
 
       // ---------------- Admins Section ----------------

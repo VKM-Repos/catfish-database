@@ -59,6 +59,7 @@ export const paths: {
       auditLog: string
       permissions: string
       settings: string
+      farmRules: string
       admins: {
         root: string
         list: string

@@ -4,43 +4,35 @@ import { ActionsDropdown } from './action-dropdown'
 
 export const columns: ColumnDef<any>[] = [
   {
+    accessorKey: 'firstName', // Use accessorKey instead of accessorFn for simple cases
     header: 'First Name',
-    accessorFn: (row) => row.original.name ?? '—',
-    cell: ({ row }) => {
-      const pond = row.original
-
-      return <Text weight="light">{pond.name ?? '—'}</Text>
-    },
+    cell: ({ row }) => <Text weight="light">{row.original.firstName ?? '—'}</Text>,
   },
   {
+    accessorKey: 'lastName', // Simplified this one too
     header: 'Last Name',
-    accessorFn: (row) => row.original.name ?? '—',
-    cell: ({ row }) => {
-      const pond = row.original
-
-      return <Text weight="light">{pond.name ?? '—'}</Text>
-    },
+    cell: ({ row }) => <Text weight="light">{row.original.lastName ?? '—'}</Text>,
   },
   {
     accessorKey: 'email',
     header: 'Email',
-    cell: ({ row }) => <Text weight="light">{row.original.latestQuantity ?? '—'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.email ?? '—'}</Text>,
   },
   {
-    accessorKey: 'phone_number',
+    accessorKey: 'phone',
     header: 'Phone number',
-    cell: ({ row }) => <Text weight="light">{row.original.weight ?? '—'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.phone ?? '—'}</Text>,
   },
   {
-    // accessorKey: 'lastSampled',
+    accessorKey: 'role', // Changed from 'roles' to 'role' to match your data structure
     header: 'Role/Permission',
-    cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.roles ?? '—'}</Text>,
   },
   {
     accessorFn: (row) => row.original.status,
     header: 'Status',
     cell: ({ row }) => {
-      const status = row.original.latestQuantity === 0 ? 'Inactive' : 'Active'
+      const status = row.original.accountNonLocked ? 'Active' : 'Inactive'
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${
@@ -53,7 +45,7 @@ export const columns: ColumnDef<any>[] = [
           <div
             className={`h-2 w-2 rounded-full ${status == 'Active' ? 'bg-success-400' : 'bg-neutral-400'}`}
           ></div>{' '}
-          {status}
+          {status == 'Active' ? 'Active' : 'Deactived '}
         </div>
       )
     },

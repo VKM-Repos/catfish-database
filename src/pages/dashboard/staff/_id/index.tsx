@@ -1,4 +1,4 @@
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
@@ -11,13 +11,17 @@ import ActiviyLogTab from './tabs/activity-log'
 // import SamplingReportsTable from './tabs/reports-table/sampling-history'
 // import HarvestReportsTable from './tabs/reports-table/harvest-records'
 
-export default function ClusterManagersPage() {
-  const title = 'Emeka Eze'
+export default function ViewStaff() {
+  const location = useLocation()
+  const user = location.state?.user
+  console.log('test.............. ', user)
+
+  const title = `${user.firstName} ${user.lastName}`
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const activeTab = searchParams.get('tab') || 'overview'
+  const activeTab = searchParams.get('tab') || 'staff-overview'
   const handleTabChange = (tab: string) => {
-    navigate(`?tab=${tab}`, { replace: true })
+    navigate(`?tab=${tab}`, { state: { user }, replace: true })
   }
   return (
     <div className="relative">
@@ -34,18 +38,18 @@ export default function ClusterManagersPage() {
             >
               <div className="w-full border-b border-b-neutral-200 p-0">
                 <TabsList className="text-sm font-semibold">
-                  <TabsTrigger value="feeding-reports" className="data-[state=active]:font-semibold">
-                    Feeding reports
+                  <TabsTrigger value="staff-overview" className="data-[state=active]:font-semibold">
+                    Overview
                   </TabsTrigger>
-                  <TabsTrigger value="sampling-report" className="data-[state=active]:font-semibold">
-                    Sampling report
+                  <TabsTrigger value="staff-activityLog" className="data-[state=active]:font-semibold">
+                    Activity Log
                   </TabsTrigger>
                 </TabsList>
               </div>
-              <TabsContent value="feeding-reports" className="w-full">
+              <TabsContent value="staff-overview" className="w-full">
                 <OverviewTab />
               </TabsContent>
-              <TabsContent value="sampling-report" className="w-full">
+              <TabsContent value="staff-activityLog" className="w-full">
                 <ActiviyLogTab />
               </TabsContent>
             </Tabs>

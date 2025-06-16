@@ -146,7 +146,7 @@ export const paths = {
       root: '/dashboard/staff',
       view: (id: string) => `/dashboard/staff/${id}`,
       create: '/dashboard/staff/create',
-      // id: (id: string) => `/dashboard/cluster-managers/${id}/edit`,
+      id: (id: string) => `/dashboard/staff/${id}/edit`,
     },
     // -------- System Section --------
     /**

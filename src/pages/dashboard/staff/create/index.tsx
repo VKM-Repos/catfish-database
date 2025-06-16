@@ -76,7 +76,7 @@ export default function AddStaff() {
   }
 
   return (
-    <Dialog open onOpenChange={() => navigate(paths.dashboard.farmers.root)}>
+    <Dialog open onOpenChange={() => navigate(paths.dashboard.staff.root)}>
       <DialogContent className="max-w-[478px] overflow-hidden p-8">
         <div className="py-[4rem] pb-[6rem]">
           {(() => {

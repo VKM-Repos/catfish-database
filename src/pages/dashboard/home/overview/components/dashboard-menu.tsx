@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'src/components/ui/button'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
@@ -7,11 +7,12 @@ import { DropDownOption } from './drop-down-option'
 import { useAuthStore } from 'src/store/auth.store'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
+import { SelectFarmerDialog } from './select-farmer-dialog'
 
 export default function DashboardMenu() {
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
-
+  const [selectFarmerDIalogOpen, setOpenSelectFarmerDialog] = useState(false)
   const title = user?.role === 'FARMER' ? 'Farm ' : 'Cluster'
 
   return (
@@ -57,7 +58,7 @@ export default function DashboardMenu() {
             <DropDownOption />
           ) : (
             <Button
-              onClick={() => navigate(paths.dashboard.ponds.create.addPond)}
+              onClick={() => setOpenSelectFarmerDialog(true)}
               variant={'outline'}
               className="flex items-center gap-2"
             >
@@ -77,6 +78,11 @@ export default function DashboardMenu() {
           <Button onClick={() => navigate(paths.dashboard.home.getStarted)}>Submit Report</Button>
         </div>
       </FlexBox>
+      <SelectFarmerDialog
+        open={selectFarmerDIalogOpen}
+        title="Create pond for a farmer"
+        onOpenChange={() => setOpenSelectFarmerDialog(false)}
+      />
     </nav>
   )
 }

@@ -59,6 +59,7 @@ export default function AddPond() {
   const searchParams = new URLSearchParams(location.search)
   const farmerId = searchParams.get('farmerId')
   const clusterId = searchParams.get('clusterId')
+  const from = searchParams.get('from')
 
   const createPondMutation = useCreatePondMutation(farmerId)
 
@@ -155,6 +156,7 @@ export default function AddPond() {
 
   const handleCancelYes = () => {
     setOpenCancelPrompt(false)
+    if (from || from === 'overview') return navigate(paths.dashboard.home.overview)
     farmerId ? navigate(paths.dashboard.farmers.view(farmerId)) : navigate(-1)
   }
 
@@ -172,7 +174,7 @@ export default function AddPond() {
   const handleNoConditionOnClose = () => {
     form.reset()
     setOpen(false)
-
+    if (from || from === 'overview') return navigate(paths.dashboard.home.overview)
     user?.role !== 'FARMER'
       ? navigate(-1)
       : pondCreated

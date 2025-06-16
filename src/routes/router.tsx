@@ -349,7 +349,7 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            path: 'create/feed-stock',
+            path: paths.dashboard.inventory.createFeedStock(':from'),
             element: (
               <RoleGuard allowedRoles={[UserRole.FARMER]}>
                 {LazyPage(() => import('src/pages/dashboard/inventory/create/feed-stock'))}

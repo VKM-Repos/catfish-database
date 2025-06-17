@@ -19,6 +19,7 @@ import { ClientErrorType, ServerErrorType } from 'src/types'
 import { LoadingScreen } from 'src/components/global/loading-screen'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { FlexBox } from 'src/components/ui/flexbox'
+import { useQueryClient } from '@tanstack/react-query'
 
 type HarvestFormValues = z.infer<typeof harvestSchema>
 
@@ -26,10 +27,11 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   const navigate = useNavigate()
   const [error, setError] = useState<ClientErrorType | null>()
   const { id } = useParams<{ id: string }>()
+  const queryClient = useQueryClient()
 
   const timeInputRef = useRef<HTMLInputElement>(null)
-  const useSamplingReport = createPostMutationHook({
-    endpoint: '/samplings',
+  const useHarvestReport = createPostMutationHook({
+    endpoint: `/harvests/${id}`,
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
@@ -47,19 +49,20 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const [openDialog, setOpenDialog] = useState(false)
 
-  const createSamplingReport = useSamplingReport()
+  const createHarvestReport = useHarvestReport()
 
   const onSubmit = async (data: z.infer<typeof harvestSchema>) => {
     try {
       const harvestData = {
-        pondId: id,
-        harvestCreate: {
-          quantity: Number(data.numberOfFishHarvested),
-          totalWeightHarvested: Number(data.totalWeightHarvested),
-          costPerKg: Number(data.costPerKg),
-        },
+        quantity: Number(data.numberOfFishHarvested),
+        totalWeightHarvested: Number(data.totalWeightHarvested),
+        costPerKg: Number(data.costPerKg),
+        costPerFish: 10,
       }
-      await createSamplingReport.mutateAsync(harvestData)
+      await createHarvestReport.mutateAsync(harvestData)
+      await queryClient.refetchQueries(['fish-batches-in-ponds'])
+      await queryClient.refetchQueries(['my-ponds-in-ponds'])
+
       setOpenDialog(true)
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
@@ -101,7 +104,7 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
       form.setValue(fieldName, newValue)
     }
   }
-  if (createSamplingReport.isLoading) {
+  if (createHarvestReport.isLoading) {
     return <LoadingScreen />
   }
 

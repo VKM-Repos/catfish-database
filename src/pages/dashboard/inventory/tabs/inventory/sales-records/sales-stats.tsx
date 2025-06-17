@@ -2,7 +2,19 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { Grid } from 'src/components/ui/grid'
 
-export default function SalesStatistics() {
+export default function SalesStatistics({ data }: { data: any }) {
+  const feed_inventory_stats = [
+    {
+      color: '#B9D9FF',
+      label: 'Avg. Selling Price',
+      value: `₦${data?.averageSellingPrice ?? (0 || '0')}`,
+    },
+    {
+      color: '#F8D082',
+      label: 'Total Sales',
+      value: `₦${data?.totalSales ?? (0 || '0')}`,
+    },
+  ]
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-2">
@@ -22,19 +34,6 @@ export default function SalesStatistics() {
     </FlexBox>
   )
 }
-
-const feed_inventory_stats = [
-  {
-    color: '#B9D9FF',
-    label: 'Avg. Selling Price',
-    value: '₦174,950/kg',
-  },
-  {
-    color: '#F8D082',
-    label: 'Total Sales',
-    value: '₦2,174,950',
-  },
-]
 
 export function isPositive(value: string): boolean {
   const numericValue = parseFloat(value.replace('%', '').trim())

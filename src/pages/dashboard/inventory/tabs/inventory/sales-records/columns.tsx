@@ -1,38 +1,43 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { formatDate } from 'src/lib/date'
 import { SalesRecordsActions } from './actions'
+import { formatPrice } from 'src/lib/utils'
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'updatedAt',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original.updatedAt)}</Text>,
+    cell: ({ row }) => <Text weight="light">{'-'}</Text>,
+    // cell: ({ row }) => <Text weight="light">{formatDate(row.original.updatedAt ?? '') || '-'}</Text>,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'pond',
     header: 'Pond name',
-    cell: ({ row }) => <Text weight="light">{row.original.name || '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.pond.name || '-'}</Text>,
   },
   {
-    accessorKey: 'totalWeight',
+    accessorKey: 'totalWeightHarvested',
     header: 'Total weight (kg)',
-    cell: ({ row }) => <Text weight="light">{row.original.totalWeight ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.totalWeightHarvested ?? '-'}</Text>,
   },
   {
-    accessorKey: 'fishSold',
+    accessorKey: 'quantity',
     header: 'No. of fish sold',
-    cell: ({ row }) => <Text weight="light">{row.original.fishSold ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.quantity ?? 0}</Text>,
   },
   {
-    accessorKey: 'cost',
+    accessorKey: 'costPerKg',
     header: 'Cost price per kg (₦)',
-    cell: ({ row }) => <Text weight="light">{`₦${row.original.cost}` || '-'}</Text>,
+    cell: ({ row }) => (
+      <Text weight="light">{row.original.costPerKg < 1 ? '-' : formatPrice(row.original.costPerKg)}</Text>
+    ),
   },
   {
-    accessorKey: 'income',
-    header: 'Total income (₦)',
-    cell: ({ row }) => <Text weight="light">{`₦${row.original.income}` || '-'}</Text>,
+    accessorKey: 'costPerFish',
+    header: 'Total cost (₦)',
+    cell: ({ row }) => (
+      <Text weight="light">{row.original.costPerFish < 1 ? '-' : formatPrice(row.original.costPerFish)}</Text>
+    ),
   },
   {
     id: 'actions',

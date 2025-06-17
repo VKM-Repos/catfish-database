@@ -5,29 +5,35 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Grid } from 'src/components/ui/grid'
 import { Text } from 'src/components/ui/text'
 import { formatDate } from 'src/lib/date'
+import { formatPrice } from 'src/lib/utils'
 import { paths } from 'src/routes/paths'
 
 export default function SalesRecordsDetailsModal() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { state } = useLocation()
-
-  // Get the sales record from state
   const record = state?.item
 
   if (!id || !record) return null
 
-  // Calculate average weight per fish
   const avgWeight =
-    record.fishSold && record.totalWeight ? (Number(record.totalWeight) / Number(record.fishSold)).toFixed(2) : '-'
+    record.quantity && record.totalWeightHarvested
+      ? (Number(record.totalWeightHarvested) / Number(record.quantity)).toFixed(2)
+      : '-'
 
   const salesRecordDetails = [
     { label: 'Date', value: record.updatedAt ? formatDate(record.updatedAt) : '-' },
-    { label: 'Pond name', value: record.name || '-' },
-    { label: 'Total weight (kg)', value: record.totalWeight ?? '-' },
-    { label: 'No. of fish sold', value: record.fishSold ?? '-' },
-    { label: 'Cost per kg (₦)', value: record.cost ? `₦${record.cost}` : '-' },
-    { label: 'Total income (₦)', value: record.income ? `₦${record.income}` : '-' },
+    { label: 'Pond name', value: record.pond?.name || '-' },
+    { label: 'Total weight (kg)', value: record.totalWeightHarvested ?? '-' },
+    { label: 'No. of fish sold', value: record.quantity ?? '-' },
+    {
+      label: 'Cost per kg (₦)',
+      value: record.costPerKg && record.costPerKg > 0 ? formatPrice(record.costPerKg) : '-',
+    },
+    {
+      label: 'Total cost (₦)',
+      value: record.costPerFish && record.costPerFish > 0 ? formatPrice(record.costPerFish) : '-',
+    },
     { label: 'Avg weight per fish (kg)', value: avgWeight },
   ]
 
@@ -51,6 +57,7 @@ export default function SalesRecordsDetailsModal() {
               </FlexBox>
             ))}
           </Grid>
+
           <div className="mt-6 flex w-full justify-between space-x-2">
             <Button
               className="w-full"

@@ -220,8 +220,16 @@ export default function GetStarted() {
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
     options: {
-      enabled: true,
-      staleTime: 0,
+      enabled: user?.role === 'FARMER',
+    },
+  })
+
+  const useGetClusterManagerPonds = createGetQueryHook({
+    endpoint: '/ponds/clusters/me',
+    responseSchema: z.any(),
+    queryKey: ['cluster-manager-ponds'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
     },
   })
 
@@ -248,17 +256,21 @@ export default function GetStarted() {
   // 👇 Move useState here, before any return!
   const [showProceedError, setShowProceedError] = useState(false)
 
-  const { data: ponds, isLoading: isLoadingPonds } = useGetPonds()
-  const { data: fishBatches, isLoading: isLoadingFishBatches } = useGetFishBatches()
-  const { data: feeds, isLoading: isLoadingFeeds } = useGetFeeds()
+  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
+  const { data: clusterManagerPonds = [], isLoading: isLoadingClusterManagerPonds } = useGetClusterManagerPonds()
+  const { data: fishBatches = [], isLoading: isLoadingFishBatches } = useGetFishBatches()
+  const { data: feeds = [], isLoading: isLoadingFeeds } = useGetFeeds()
 
-  if (isLoadingPonds || isLoadingFishBatches || isLoadingFeeds) {
+  if ((user?.role === 'CLUSTER_MANAGER' && isLoadingFishBatches) || isLoadingFeeds || isLoadingClusterManagerPonds) {
+    return <LoadingScreen />
+  }
+  if ((user?.role === 'FARMER' && isLoadingPonds) || isLoadingFeeds || isLoadingClusterManagerPonds) {
     return <LoadingScreen />
   }
 
-  const hasPond = ponds?.totalElements > 0
-  const hasBatches = fishBatches?.totalElements > 0
-  const hasFeeds = feeds?.totalElements > 0
+  const hasPond = ponds.totalElements > 0 || clusterManagerPonds.totalElements > 0
+  const hasBatches = fishBatches.totalElements > 0 || user?.role === 'CLUSTER_MANAGER'
+  const hasFeeds = feeds.totalElements > 0 || user?.role === 'CLUSTER_MANAGER'
   const hasAllSetup = hasPond && hasBatches && hasFeeds
   const pageTitle = hasAllSetup ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 

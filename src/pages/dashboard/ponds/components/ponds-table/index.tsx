@@ -19,13 +19,13 @@ export function PondsTable() {
   const useGetFishBatches = createGetQueryHook({
     endpoint: '/fish-batches',
     responseSchema: z.any(),
-    queryKey: ['fish-batches'],
+    queryKey: ['fish-batches-in-ponds'],
   })
 
   const useFetchPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
-    queryKey: ['my-ponds'],
+    queryKey: ['my-ponds-in-ponds'],
   })
 
   const { data: fishBatches, isLoading: isFishBatchesLoading } = useGetFishBatches()

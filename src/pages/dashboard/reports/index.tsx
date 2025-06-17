@@ -7,7 +7,6 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs'
 import FeedingReportsTable from './tabs/reports-table/feeding-report'
 import SamplingReportsTable from './tabs/reports-table/sampling-history'
-import HarvestReportsTable from './tabs/reports-table/harvest-records'
 
 export default function ClusterManagersPage() {
   const title = 'Reports'
@@ -38,9 +37,9 @@ export default function ClusterManagersPage() {
                   <TabsTrigger value="sampling-report" className="data-[state=active]:font-semibold">
                     Sampling report
                   </TabsTrigger>
-                  <TabsTrigger value="harvest-reports" className="data-[state=active]:font-semibold">
+                  {/* <TabsTrigger value="harvest-reports" className="data-[state=active]:font-semibold">
                     Harvest reports
-                  </TabsTrigger>
+                  </TabsTrigger> */}
                 </TabsList>
               </div>
               <TabsContent value="feeding-reports" className="w-full">
@@ -49,9 +48,9 @@ export default function ClusterManagersPage() {
               <TabsContent value="sampling-report" className="w-full">
                 <SamplingReportsTable />
               </TabsContent>
-              <TabsContent value="harvest-reports" className="w-full">
+              {/* <TabsContent value="harvest-reports" className="w-full">
                 <HarvestReportsTable />
-              </TabsContent>
+              </TabsContent> */}
             </Tabs>
           </FlexBox>
         </Container>

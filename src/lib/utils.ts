@@ -92,3 +92,17 @@ export function getInitials(str: string) {
     .map((word) => word.charAt(0))
     .join('')
 }
+
+export function formatPrice(value: number | string | undefined | null): string {
+  if (value === undefined || value === null || isNaN(Number(value))) return '-'
+
+  const number = Number(value)
+  return number
+    .toLocaleString('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })
+    .replace('NGN', '₦')
+}

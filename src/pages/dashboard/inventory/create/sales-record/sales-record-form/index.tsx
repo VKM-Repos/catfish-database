@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,13 +16,15 @@ import { scrollToTop } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import * as SolarIconSet from 'solar-icon-set'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
+// Schema for UI validation only
 const salesRecordSchema = z.object({
-  fishHarvested: z.string().min(1, 'Number of fish harvested is required'),
-  totalWeight: z.string().min(1, 'Total weight is required'),
-  totalCost: z.string().min(1, 'Total cost is required'),
-  costPerKg: z.string().optional(),
-  costPerFish: z.string().optional(),
+  pondId: z.string().min(1, 'Pond is required'),
+  quantity: z.string().min(1, 'Number of fish harvested is required'),
+  totalWeightHarvested: z.string().min(1, 'Total weight is required'),
+  totalCost: z.string().min(1, 'Total cost is required'), // only for frontend calc
 })
 
 type SalesRecordsFormData = z.infer<typeof salesRecordSchema>
@@ -39,51 +41,65 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
   const [error, setError] = useState<ClientErrorType | null>()
   const queryClient = useQueryClient()
 
-  const useCreateSalesRecordMutation = createPostMutationHook({
-    endpoint: '/sales-records',
-    requestSchema: salesRecordSchema,
-    responseSchema: salesRecordSchema,
+  const form = useForm<SalesRecordsFormData>({
+    resolver: zodResolver(salesRecordSchema),
+    defaultValues: {
+      pondId: initialValues?.pondId || '',
+      quantity: initialValues?.quantity?.toString() || '',
+      totalWeightHarvested: initialValues?.totalWeightHarvested?.toString() || '',
+      totalCost: initialValues?.totalCost?.toString() || '',
+    },
+    mode: 'onChange',
   })
 
+  // Fetch ponds
+  const useGetPonds = createGetQueryHook({
+    endpoint: '/ponds/farmers/me',
+    responseSchema: z.any(),
+    queryKey: ['my-ponds'],
+  })
+  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
+  const pondId = initialValues?.pondId || form.watch('pondId')
+
+  // Update placeholder if needed (not used in harvest POST)
   const useUpdateSalesRecordMutation = createPutMutationHook({
     endpoint: `/sales-records/${initialValues?.id}`,
     requestSchema: salesRecordSchema,
     responseSchema: salesRecordSchema,
   })
-
-  const createSalesRecordMutation = useCreateSalesRecordMutation()
-  const updateSalesRecordMutation = useUpdateSalesRecordMutation()
-
-  const form = useForm<SalesRecordsFormData>({
-    resolver: zodResolver(salesRecordSchema),
-    defaultValues: {
-      fishHarvested: initialValues?.fishHarvested || '',
-      totalWeight: initialValues?.totalWeight || '',
-      totalCost: initialValues?.totalCost || '',
-      costPerKg: initialValues?.costPerKg || '',
-      costPerFish: initialValues?.costPerFish || '',
-    },
-    mode: 'onChange',
+  // Create mutation
+  const useCreateHarvestMutation = createPostMutationHook({
+    endpoint: `/harvests/${pondId}`,
+    requestSchema: z.object({
+      quantity: z.number(),
+      totalWeightHarvested: z.number(),
+      costPerKg: z.number(),
+      costPerFish: z.number(),
+    }),
+    responseSchema: z.any(),
   })
 
-  // Calculate cost per kg and cost per fish
-  const fishHarvested = Number(form.watch('fishHarvested'))
-  const totalWeight = Number(form.watch('totalWeight'))
-  const totalCost = Number(form.watch('totalCost'))
-
-  const costPerKg = totalWeight && totalCost ? (totalCost / totalWeight).toFixed(2) : ''
-  const costPerFish = fishHarvested && totalCost ? (totalCost / fishHarvested).toFixed(2) : ''
-
-  useEffect(() => {
-    form.setValue('costPerKg', costPerKg)
-    form.setValue('costPerFish', costPerFish)
-  }, [costPerKg, costPerFish, form])
+  const createHarvestMutation = useCreateHarvestMutation()
+  const updateSalesRecordMutation = useUpdateSalesRecordMutation()
 
   const onSubmit = async (values: SalesRecordsFormData) => {
     try {
       setError(null)
+
+      const quantity = Number(values.quantity)
+      const totalWeightHarvested = Number(values.totalWeightHarvested)
+      const totalCost = Number(values.totalCost)
+      const costPerKg = totalWeightHarvested ? totalCost / totalWeightHarvested : 0
+      const costPerFish = quantity ? totalCost / quantity : 0
+
       if (mode === 'create') {
-        await createSalesRecordMutation.mutateAsync(values)
+        await createHarvestMutation.mutateAsync({
+          quantity,
+          totalWeightHarvested,
+          costPerKg,
+          costPerFish,
+        })
+
         queryClient.refetchQueries(['sales-records'])
         form.reset()
         onSuccess?.()
@@ -117,20 +133,18 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
         {error && <FormValidationErrorAlert error={error} />}
         <div className="flex w-full flex-col gap-10">
           <Grid cols={2} gap="gap-4" className="!grid-cols-1 md:!grid-cols-2">
-            {/* Number of fish harvested - full span */}
             <FlexBox direction="col" gap="gap-2" className="col-span-2 w-full">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                Number of fish harvested
-                <span className="font-bold text-red-500">*</span>
+                Number of fish harvested <span className="font-bold text-red-500">*</span>
                 <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
-                name="fishHarvested"
+                name="quantity"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Input placeholder="Number of fish harvested" {...field} value={field.value ?? ''} type="text" />
+                      <Input placeholder="Number of fish harvested" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -138,25 +152,18 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
               />
             </FlexBox>
 
-            {/* Total weight - col 1 */}
             <FlexBox direction="col" gap="gap-2" className="w-full">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                Total weight of fish harvested (kg)
-                <span className="font-bold text-red-500">*</span>
+                Total weight of fish harvested (kg) <span className="font-bold text-red-500">*</span>
                 <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
-                name="totalWeight"
+                name="totalWeightHarvested"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Input
-                        placeholder="Total weight of fish harvested (kg)"
-                        {...field}
-                        value={field.value ?? ''}
-                        type="text"
-                      />
+                      <Input placeholder="Total weight (kg)" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -164,11 +171,9 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
               />
             </FlexBox>
 
-            {/* Total cost - col 2 */}
             <FlexBox direction="col" gap="gap-2" className="w-full">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                Total cost of fish harvested (₦)
-                <span className="font-bold text-red-500">*</span>
+                Total cost (₦) <span className="font-bold text-red-500">*</span>
                 <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
@@ -177,12 +182,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Input
-                        placeholder="Total cost of fish harvested (₦)"
-                        {...field}
-                        value={field.value ?? ''}
-                        type="text"
-                      />
+                      <Input placeholder="Total cost (₦)" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -190,55 +190,40 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
               />
             </FlexBox>
 
-            {/* Cost per kg - calculated, disabled */}
-            <FlexBox direction="col" gap="gap-2" className="w-full">
+            <FlexBox direction="col" gap="gap-2" className="col-span-2">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                Cost per kg (₦)
-                <span className="font-bold text-red-500">*</span>
+                Pond Name <span className="font-bold text-red-500">*</span>
                 <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
-                name="costPerKg"
+                name="pondId"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Input
-                        placeholder="Cost per kg (₦)"
-                        {...field}
-                        value={field.value ?? ''}
-                        type="text"
-                        className="bg-neutral-200 !text-black"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </FlexBox>
-
-            {/* Cost per fish - calculated, disabled */}
-            <FlexBox direction="col" gap="gap-2" className="w-full">
-              <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                Cost per fish (₦)
-                <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
-              </Text>
-              <FormField
-                control={form.control}
-                name="costPerFish"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        placeholder="Cost per fish (₦)"
-                        {...field}
-                        value={field.value ?? ''}
-                        type="text"
-                        className="bg-neutral-200 !text-black"
-                        disabled
-                      />
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger
+                          className={form.formState.errors.pondId ? 'border-red-500 ring-2 ring-red-500' : ''}
+                        >
+                          <div className="flex w-full items-center justify-start gap-3 text-neutral-300">
+                            <SolarIconSet.Water size={24} />
+                            <SelectValue placeholder="Select a pond" />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {isLoadingPonds ? (
+                            <SelectItem value="loading" disabled>
+                              <Text>Loading ponds...</Text>
+                            </SelectItem>
+                          ) : (
+                            ponds.content?.map((pond: any) => (
+                              <SelectItem key={pond.id} value={pond.id}>
+                                {pond.name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -262,7 +247,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
             className="flex items-center gap-2"
             disabled={!form.formState.isValid}
           >
-            {createSalesRecordMutation.isLoading || updateSalesRecordMutation.isLoading ? (
+            {createHarvestMutation.isLoading || updateSalesRecordMutation.isLoading ? (
               <>
                 <Loader type="spinner" size={18} />
                 <Text color="text-inherit" variant="body">
@@ -270,11 +255,9 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
                 </Text>
               </>
             ) : (
-              <>
-                <Text color="text-inherit" variant="body">
-                  Continue
-                </Text>
-              </>
+              <Text color="text-inherit" variant="body">
+                Continue
+              </Text>
             )}
           </Button>
         </FlexBox>

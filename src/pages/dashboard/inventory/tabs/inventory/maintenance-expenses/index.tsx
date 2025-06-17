@@ -55,7 +55,7 @@ const mockMaintenanceExpenses = [
 export default function MaintenanceExpenses() {
   const navigate = useNavigate()
   const useGetManitenanceCost = createGetQueryHook({
-    endpoint: '/maintenance-costs',
+    endpoint: `/maintenance-costs?&direction=DESC`,
     responseSchema: z.any(),
     queryKey: ['maintenance-costs'],
   })

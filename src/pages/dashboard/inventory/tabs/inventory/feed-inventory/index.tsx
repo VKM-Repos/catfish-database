@@ -15,40 +15,6 @@ import { paths } from 'src/routes'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 
-// --- Mock data for feed inventories ---
-const mockFeedInventories = [
-  {
-    id: '1',
-    type: 'Floating',
-    sizeInMm: 2,
-    costPerKg: 3500,
-    feedStock: 1000,
-    cost: 3500000,
-    stock: 400,
-    updatedAt: '2025-05-30T10:00:00Z',
-  },
-  {
-    id: '2',
-    type: 'Sinking',
-    sizeInMm: 4,
-    costPerKg: 3200,
-    feedStock: 800,
-    cost: 2560000,
-    stock: 200,
-    updatedAt: '2025-05-29T15:30:00Z',
-  },
-  {
-    id: '3',
-    type: 'Floating',
-    sizeInMm: 6,
-    costPerKg: 3700,
-    feedStock: 1200,
-    cost: 4440000,
-    stock: 900,
-    updatedAt: '2025-05-28T09:15:00Z',
-  },
-]
-
 export default function FeedInventory() {
   const navigate = useNavigate()
   const useGetFeedInventories = createGetQueryHook({

@@ -181,14 +181,14 @@ export default function FeedStockForm({
                             </div>
                           </SelectTrigger>
                           <SelectContent>
-                            {['PELLETS', 'COPPENS', 'SKRETTING', 'AQUALIS', 'BLUECROWN'].map((type) => (
+                            {['PELLETS', 'COPPENS', 'SKRETTING', 'AQUALIS'].map((type) => (
                               <SelectItem key={type} value={type}>
                                 {type}
                               </SelectItem>
                             ))}
-                            <SelectItem value="add_custom">
+                            {/* <SelectItem value="add_custom">
                               <span className="text-primary-500">+ Add custom</span>
-                            </SelectItem>
+                            </SelectItem> */}
                           </SelectContent>
                         </Select>
                       </FormControl>

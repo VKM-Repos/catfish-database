@@ -33,7 +33,7 @@ export default function StaffsPage() {
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
-        <Text>AddStaff</Text>
+        <Text>Add Staff</Text>
       </Button>
     </Inline>
   )

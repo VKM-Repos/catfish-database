@@ -1,43 +1,36 @@
-import type { ColumnDef } from '@tanstack/react-table'
+import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { formatDate } from 'src/lib/date'
-import { HarvestReportActionsDropdown } from './actions-dropdown'
+import { z } from 'zod'
+import { ActionsDropdown } from './actions-dropdown'
+import { auditSchema } from 'src/schemas/auditLogSchema'
 
-export const columns: ColumnDef<any>[] = [
+type audit = z.infer<typeof auditSchema>
+
+export const columns: ColumnDef<audit>[] = [
   {
-    accessorKey: 'date',
-    header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
+    accessorKey: 'timestamp',
+    header: 'Timestamp',
+    cell: ({ row }) => <Text weight="light">{new Date(row.original.timestamp).toLocaleString()}</Text>,
   },
   {
-    accessorKey: 'quantity',
-    header: () => (
-      <div title="Quantity" className="w-[4rem] truncate font-bold">
-        Quantity
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.quantity}</Text>,
+    accessorKey: 'actionType',
+    header: 'Action Type',
+    cell: ({ row }) => <Text weight="light">{row.original.actionType}</Text>,
   },
   {
-    accessorKey: 'totalWeightHarvested',
-    header: () => (
-      <div title="Total weight harvested" className="w-[4rem] truncate font-bold">
-        Total weight harvested
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.totalWeightHarvested}</Text>,
+    accessorKey: 'entityType',
+    header: 'Entity Type',
+    cell: ({ row }) => <Text weight="light">{row.original.entityType}</Text>,
   },
   {
-    accessorKey: 'costPerKg',
-    header: () => (
-      <div title="Cost per KG" className="font-bold">
-        Cost per KG
-      </div>
-    ),
-    cell: ({ row }) => <Text weight="light">{row.original.costPerKg}</Text>,
+    accessorKey: 'description',
+    header: 'Description',
+    cell: ({ row }) => <Text weight="light">{row.original.description}</Text>,
   },
+
   {
     id: 'actions',
-    cell: ({ row }) => <HarvestReportActionsDropdown samplingData={row?.original} />,
+    header: 'Action',
+    cell: ({ row }) => <ActionsDropdown audit={row?.original} />,
   },
 ]

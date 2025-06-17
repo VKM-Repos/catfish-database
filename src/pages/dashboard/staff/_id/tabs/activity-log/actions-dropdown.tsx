@@ -8,16 +8,16 @@ import {
 } from 'src/components/ui/dropdown-menu'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
-// import { DeactivateUserDialog } from '../modals/deactivate-user'
-import * as SolarIconSet from 'solar-icon-set'
+import { useState } from 'react'
+import { Audit } from 'src/types/audit.types'
 
 type ActionsDropdownProps = {
-  samplingData: any
+  audit: Audit
 }
 
-export function HarvestReportActionsDropdown({ samplingData }: ActionsDropdownProps) {
+export function ActionsDropdown({ audit }: ActionsDropdownProps) {
   const navigate = useNavigate()
-  console.log(samplingData, 'stattet')
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   return (
     <>
@@ -31,17 +31,17 @@ export function HarvestReportActionsDropdown({ samplingData }: ActionsDropdownPr
         <DropdownMenuContent align="start">
           <DropdownMenuItem
             onClick={() =>
-              navigate(paths.dashboard.reports.viewHarvestReport(samplingData.id), {
-                state: {
-                  samplingData,
-                },
+              navigate(paths.dashboard.system.auditLog.id(audit.id), {
+                state: { audit },
               })
             }
           >
-            <SolarIconSet.Eye /> View
+            View
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* <DeleteClusterDialog cluster={audit} open={isDeleteOpen} onOpenChange={setIsDeleteOpen} /> */}
     </>
   )
 }

@@ -261,10 +261,10 @@ export default function GetStarted() {
   const { data: fishBatches = [], isLoading: isLoadingFishBatches } = useGetFishBatches()
   const { data: feeds = [], isLoading: isLoadingFeeds } = useGetFeeds()
 
-  if ((user?.role === 'CLUSTER_MANAGER' && isLoadingFishBatches) || isLoadingFeeds || isLoadingClusterManagerPonds) {
+  if (user?.role === 'CLUSTER_MANAGER' && isLoadingClusterManagerPonds) {
     return <LoadingScreen />
   }
-  if ((user?.role === 'FARMER' && isLoadingPonds) || isLoadingFeeds || isLoadingClusterManagerPonds) {
+  if ((user?.role === 'FARMER' && isLoadingPonds) || isLoadingFeeds || isLoadingFishBatches) {
     return <LoadingScreen />
   }
 

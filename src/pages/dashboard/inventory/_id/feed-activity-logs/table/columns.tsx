@@ -47,7 +47,7 @@ export const columns: ColumnDef<any>[] = [
           inactiveText={mapped.label}
           activeIcon={<SolarIconSet.ArrowRightUp color="currentColor" size={16} />}
           inactiveIcon={<SolarIconSet.ArrowRightDown color="currentColor" size={16} />}
-          inactiveBg="bg-[#E5E7FF] text-[#000AFF] border-[#000AFF]"
+          inactiveBg="bg-error-100 text-[#FF0000] border-[#FF0000]"
         />
       )
     },

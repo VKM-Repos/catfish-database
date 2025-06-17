@@ -54,10 +54,13 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
   )
 }
 
-// Component for unregistered pond state
 function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }: UnregisteredCardsProps) {
   const [showPondError, setShowPondError] = useState(false)
   const [showFeedError, setShowFeedError] = useState(false)
+
+  const showFirstOnAddPond = !hasPond
+  const showFirstOnAddFish = hasPond && !hasBatch
+  const showFirstOnAddFeed = hasPond && hasBatch && !hasFeed
 
   return (
     <>
@@ -71,7 +74,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
         }
         buttonText="Register a pond"
         buttonAction={() => navigate(paths.dashboard.ponds.create.addPond)}
-        isFirstCard={true}
+        isFirstCard={showFirstOnAddPond}
       />
 
       <ActionCard
@@ -90,7 +93,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
             setShowPondError(true)
           }
         }}
-        isFirstCard={false}
+        isFirstCard={showFirstOnAddFish}
       />
       <ActionCard
         title="Register your feed types"
@@ -104,6 +107,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
         buttonAction={() => {
           navigate(paths.dashboard.feeds.create.root)
         }}
+        isFirstCard={showFirstOnAddFeed}
       />
 
       {/* Pond error dialog */}
@@ -233,12 +237,20 @@ export default function GetStarted() {
     endpoint: `/fish-batches?farmerId=${user?.id}`,
     responseSchema: z.any(),
     queryKey: ['my-batches'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   const useGetFeeds = createGetQueryHook({
     endpoint: '/feed-inventories',
     responseSchema: z.any(),
     queryKey: ['my-inventory'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   // 👇 Move useState here, before any return!

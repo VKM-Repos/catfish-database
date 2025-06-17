@@ -30,41 +30,6 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.quantity || '-'}</Text>,
   },
   {
-    accessorKey: 'dissolvedOxygen',
-    header: 'Diss. Oxygen',
-    cell: ({ row }) => <Text weight="light">{row.original.dissolvedOxygen ?? '-'}</Text>,
-  },
-  {
-    accessorKey: 'phLevel',
-    header: 'pH',
-    cell: ({ row }) => <Text weight="light">{row.original.phLevel ?? '-'}</Text>,
-  },
-  {
-    accessorKey: 'temperature',
-    header: 'Temp',
-    cell: ({ row }) => <Text weight="light">{row.original.temperature ?? '-'}</Text>,
-  },
-  {
-    accessorKey: 'ammonia',
-    header: 'Ammonia',
-    cell: ({ row }) => <Text weight="light">{row.original.ammonia ?? '-'}</Text>,
-  },
-  {
-    accessorKey: 'nitrate',
-    header: 'Nitrate',
-    cell: ({ row }) => <Text weight="light">{row.original.nitrate ?? '-'}</Text>,
-  },
-  {
-    accessorKey: 'alkalinity',
-    header: 'Alkalinity',
-    cell: ({ row }) => <Text weight="light">{row.original.alkalinity ?? '-'}</Text>,
-  },
-  {
-    accessorKey: 'hardness',
-    header: 'Hardness',
-    cell: ({ row }) => <Text weight="light">{row.original.hardness ?? '-'}</Text>,
-  },
-  {
     id: 'actions',
     cell: ({ row }) => <FeedingReportActionsDropdown user={row?.original} />,
   },

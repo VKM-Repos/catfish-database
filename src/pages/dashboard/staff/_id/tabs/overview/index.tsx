@@ -56,7 +56,7 @@ export default function OverviewTab() {
             <Text>dfgfdfg</Text>
           </div>
           <div>
-            <Heading level={6}>First Name</Heading>
+            <Heading level={6}>State</Heading>
             <Text>dfgfdfg</Text>
           </div>
           <div>
@@ -67,7 +67,7 @@ export default function OverviewTab() {
 
         <Heading level={6}>Role/Permission</Heading>
         <Grid cols={2} gap="gap-4">
-          <Text>Daily Farm Report Entry</Text>
+          <Text className="flex-1">Daily Farm Report Entry</Text>
           <Checkbox />
           <Text>Sampling Report</Text>
           <Checkbox />

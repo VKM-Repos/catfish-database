@@ -5,25 +5,34 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Pie, PieChart } from 'recharts'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 import { Text } from 'src/components/ui/text'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
-const chartData = [
-  { reason: 'stocked', quantity: 10000, fill: '#9C27B0' },
-  { reason: 'harvested', quantity: 7000, fill: '#FF9040' },
-]
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  stocked: {
-    label: 'Stocked',
-    color: '#9C27B0',
-  },
-  harvested: {
-    label: 'Harvested',
-    color: '#FF9040',
-  },
-} satisfies ChartConfig
 export default function StockingHarvestOverview() {
+  const useGetStockingHarvestData = createGetQueryHook({
+    endpoint: '/dashboards/farmer/fish-availability',
+    responseSchema: z.any(),
+    queryKey: ['stocking-harvest-data'],
+  })
+  const { data: stockHarvestData } = useGetStockingHarvestData()
+
+  const chartData = [
+    { reason: 'stocked', quantity: stockHarvestData?.availableFish, fill: '#9C27B0' },
+    { reason: 'harvested', quantity: stockHarvestData?.soldFish, fill: '#FF9040' },
+  ]
+  const chartConfig = {
+    visitors: {
+      label: 'Visitors',
+    },
+    stocked: {
+      label: 'Stocked',
+      color: '#9C27B0',
+    },
+    harvested: {
+      label: 'Harvested',
+      color: '#FF9040',
+    },
+  } satisfies ChartConfig
   const totalQuantity = chartData.reduce((sum, item) => sum + item.quantity, 0)
   return (
     <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full items-center p-[24px]">
@@ -50,7 +59,7 @@ export default function StockingHarvestOverview() {
                 <div
                   className="h-4 w-4 rounded-full"
                   style={{
-                    background: `conic-gradient(${item.fill} 0% ${percent}%, #e5e7eb ${percent}% 100%)`,
+                    background: `${item.fill}`,
                   }}
                 />
                 <span className="text-sm">{item.reason}</span>
@@ -68,8 +77,13 @@ export default function StockingHarvestOverview() {
                 <span className="text-sm">{item.quantity}</span>
               </div>
               <div
-                className="rounded-full"
-                style={{ backgroundColor: item.fill, width: `${item.quantity / 50}px`, height: '8px' }}
+                className="max-w-full rounded-full"
+                style={{
+                  backgroundColor: item.fill,
+                  width: `${item.quantity / 100}px`,
+                  maxWidth: '300px',
+                  height: '8px',
+                }}
               />
             </FlexBox>
           ))}

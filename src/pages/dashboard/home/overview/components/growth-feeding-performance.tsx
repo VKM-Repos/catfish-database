@@ -29,7 +29,6 @@ export default function GrowthFeedingPerformance() {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
               width={100}
             />
             <YAxis

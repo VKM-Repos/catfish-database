@@ -12,7 +12,7 @@ type CardTypes = {
 }
 const cardConfigs: CardTypes[] = [
   {
-    endpoint: '/dashboard/farmer/revenue/overall?interval=MONTHLY',
+    endpoint: 'dashboards/farmer/revenue/overall',
     queryKey: ['revenue'],
     // responseSchema: revenueSchema, // Add if needed
   },

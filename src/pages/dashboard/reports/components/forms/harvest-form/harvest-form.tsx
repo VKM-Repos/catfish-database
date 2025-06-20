@@ -62,6 +62,7 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
       await createHarvestReport.mutateAsync(harvestData)
       await queryClient.refetchQueries(['fish-batches-in-ponds'])
       await queryClient.refetchQueries(['my-ponds-in-ponds'])
+      await queryClient.refetchQueries(['stocking-harvest-data'])
 
       setOpenDialog(true)
     } catch (err) {

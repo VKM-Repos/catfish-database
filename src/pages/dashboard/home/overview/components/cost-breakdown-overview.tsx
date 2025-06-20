@@ -5,40 +5,61 @@ import { Text } from 'src/components/ui/text'
 import { Pie, PieChart } from 'recharts'
 
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
-const chartData = [
-  { reason: 'feed', quantity: 275, fill: '#9C27B0' },
-  { reason: 'fingerlings', quantity: 200, fill: '#8C4EAD' },
-  { reason: 'maintenance', quantity: 187, fill: '#B188C7' },
-  { reason: 'labour', quantity: 173, fill: '#D8C4E3' },
-  { reason: 'other', quantity: 90, fill: '#F0E8F4' },
-]
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  feed: {
-    label: 'Feed',
-    color: '#9C27B0',
-  },
-  fingerlings: {
-    label: 'Fingerlings',
-    color: '#8C4EAD',
-  },
-  maintenance: {
-    label: 'Maintenance',
-    color: '#B188C7',
-  },
-  labour: {
-    label: 'Labour',
-    color: '#D8C4E3',
-  },
-  other: {
-    label: 'Other',
-    color: '#F0E8F4',
-  },
-} satisfies ChartConfig
 export default function CostBreakdownOverview() {
+  const useGetMaintenanceData = createGetQueryHook({
+    endpoint: '/dashboards/farmer/maintenance-cost/breakdown',
+    responseSchema: z.any(),
+    queryKey: ['maintenance-cost-data'],
+  })
+  const { data: maintenanceCostData } = useGetMaintenanceData()
+  console.log(maintenanceCostData)
+  const chartData = [
+    { reason: 'feed', quantity: 275, fill: '#9C27B0' },
+    { reason: 'fingerlings', quantity: 200, fill: '#8C4EAD' },
+    { reason: 'maintenance', quantity: 187, fill: '#B188C7' },
+    { reason: 'labour', quantity: 173, fill: '#D8C4E3' },
+    { reason: 'other', quantity: 90, fill: '#F0E8F4' },
+  ]
+
+  const colorMap: any = {
+    CHEMICALS: '#9C27B0',
+    ENERGY: '#8C4EAD',
+    EQUIPMENT: '#B188C7',
+    LABOR: '#D8C4E3',
+    OTHER: '#F0E8F4',
+  }
+  const dataWithColors = maintenanceCostData?.map((item: any) => ({
+    ...item,
+    fill: colorMap[item.maintenanceType] || '#CCCCCC', // Fallback color
+  }))
+  const chartConfig = {
+    visitors: {
+      label: 'Visitors',
+    },
+    LABOR: {
+      label: 'LABOR',
+      color: '#9C27B0',
+    },
+    CHEMICALS: {
+      label: 'CHEMICALS',
+      color: '#8C4EAD',
+    },
+    maintenance: {
+      label: 'Maintenance',
+      color: '#B188C7',
+    },
+    labour: {
+      label: 'Labour',
+      color: '#D8C4E3',
+    },
+    other: {
+      label: 'Other',
+      color: '#F0E8F4',
+    },
+  } satisfies ChartConfig
   return (
     <Card className="flex  h-[400px] max-h-[400px] min-h-[400px] w-full items-center p-[24px]">
       <div className="flex w-full flex-col">
@@ -47,19 +68,26 @@ export default function CostBreakdownOverview() {
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px] px-0">
             <PieChart>
               <ChartTooltip
-                content={<ChartTooltipContent className="h-16 w-10 bg-black text-white" nameKey="quantity" />}
+                content={<ChartTooltipContent className="h-16 w-10 bg-black text-white" nameKey="totalCost" />}
               />
-              <Pie width={250} height={250} data={chartData} dataKey="quantity" labelLine={false} nameKey="reason" />
+              <Pie
+                width={250}
+                height={250}
+                data={dataWithColors}
+                dataKey="totalCost"
+                labelLine={false}
+                nameKey="maintenanceType"
+              />
             </PieChart>
           </ChartContainer>
         </CardContent>
       </div>
       <FlexBox className="w-full" direction="row" align="center">
         <FlexBox direction="col" className="w-full gap-2">
-          {chartData.map((item, index) => (
+          {dataWithColors?.map((item: any, index: number) => (
             <FlexBox key={index} align="center" gap="gap-2">
-              <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item.fill }} />
-              <span className="text-sm">{item.reason}</span>
+              <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item?.fill }} />
+              <span className="text-sm !capitalize">{item?.maintenanceType}</span>
             </FlexBox>
           ))}
         </FlexBox>

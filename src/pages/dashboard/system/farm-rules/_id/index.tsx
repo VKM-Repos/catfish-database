@@ -5,17 +5,17 @@ import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Heading } from 'src/components/ui/heading'
-import { FeedForm } from '../components/forms/feed-form'
+import { DiseaseForm } from '../components/forms/disease-form'
+import { BehaviorForm } from '../components/forms/behavior-form'
+import { MaintenanceForm } from '../components/forms/maintenance-form'
 import { WaterQualityForm } from '../components/forms/water-quality-form'
 import { WaterSourceForm } from '../components/forms/water-source-form'
-import { BehaviorForm } from '../components/forms/behavior-form'
-import { DiseaseForm } from '../components/forms/disease-form'
-import { MaintenanceForm } from '../components/forms/maintenance-form'
+import { FeedForm } from '../components/forms/feed-form'
 
-export default function CreateFarmersPage() {
+export default function EditForm() {
   const location = useLocation()
   const modalOpt = location.state?.modalOpt
-  // console.log('modalOpt:  ', modalOpt)
+  const initialValues = location.state?.data
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
 
@@ -35,17 +35,42 @@ export default function CreateFarmersPage() {
             switch (step) {
               case 1:
                 return modalOpt === 'feed' ? (
-                  <FeedForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  <FeedForm mode="edit" initialValues={initialValues} onSuccess={handleSuccess} onClose={handleClose} />
                 ) : modalOpt === 'water_quality' ? (
-                  <WaterQualityForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  <WaterQualityForm
+                    mode="edit"
+                    initialValues={initialValues}
+                    onSuccess={handleSuccess}
+                    onClose={handleClose}
+                  />
                 ) : modalOpt === 'water_source' ? (
-                  <WaterSourceForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  <WaterSourceForm
+                    mode="edit"
+                    initialValues={initialValues}
+                    onSuccess={handleSuccess}
+                    onClose={handleClose}
+                  />
                 ) : modalOpt === 'maintenance' ? (
-                  <MaintenanceForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  <MaintenanceForm
+                    mode="edit"
+                    initialValues={initialValues}
+                    onSuccess={handleSuccess}
+                    onClose={handleClose}
+                  />
                 ) : modalOpt === 'behavior' ? (
-                  <BehaviorForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  <BehaviorForm
+                    mode="edit"
+                    initialValues={initialValues}
+                    onSuccess={handleSuccess}
+                    onClose={handleClose}
+                  />
                 ) : modalOpt === 'disease' ? (
-                  <DiseaseForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  <DiseaseForm
+                    mode="edit"
+                    initialValues={initialValues}
+                    onSuccess={handleSuccess}
+                    onClose={handleClose}
+                  />
                 ) : null
               case 2:
                 return (

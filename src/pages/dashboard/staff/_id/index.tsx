@@ -14,7 +14,7 @@ import ActiviyLogTab from './tabs/activity-log'
 export default function ViewStaff() {
   const location = useLocation()
   const user = location.state?.user
-  console.log('test.............. ', user)
+  // console.log('test.............. ', user)
 
   const title = `${user.firstName} ${user.lastName}`
   const navigate = useNavigate()
@@ -46,10 +46,10 @@ export default function ViewStaff() {
                   </TabsTrigger>
                 </TabsList>
               </div>
-              <TabsContent value="staff-overview" className="w-full">
+              <TabsContent value="staff-overview" className="mb-20 w-full">
                 <OverviewTab />
               </TabsContent>
-              <TabsContent value="staff-activityLog" className="w-full">
+              <TabsContent value="staff-activityLog" className="mb-20 w-full">
                 <ActiviyLogTab />
               </TabsContent>
             </Tabs>

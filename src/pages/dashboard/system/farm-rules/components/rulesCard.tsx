@@ -12,10 +12,10 @@ const data = [
     title: 'Feed Types & Pellet Size',
     subtitle: 'Manage feed types and their available pellet sizes',
     params: [
-      { label: 'Starter Feed', values: ['1mn', '2mn', '3mn'] },
-      { label: 'Grower Feed', values: ['2mn', '4mn'] },
-      { label: 'Finisher Feed', values: ['3mn', '5mn'] },
-      { label: 'Custom Feed', values: ['2mn', '4mn', '6mn'] },
+      { id: 'f1', label: 'Starter Feed', values: ['1mn', '2mn', '3mn'] },
+      { id: 'f2', label: 'Grower Feed', values: ['2mn', '4mn'] },
+      { id: 'f3', label: 'Finisher Feed', values: ['3mn', '5mn'] },
+      { id: 'f4', label: 'Custom Feed', values: ['2mn', '4mn', '6mn'] },
     ],
   },
   {
@@ -23,10 +23,10 @@ const data = [
     title: 'Water Quality Parameters',
     subtitle: 'Set which parameters are mandatory for monitoring',
     params: [
-      { label: 'Dissolved Oxygen', values: ['mg/L'] },
-      { label: 'Temperature', values: ['°C'] },
-      { label: 'Nitrite', values: ['mg/L'] },
-      { label: 'pH', values: ['1–14 scale'] },
+      { id: 'q1', label: 'Dissolved Oxygen', values: ['mg/L'] },
+      { id: 'q2', label: 'Temperature', values: ['°C'] },
+      { id: 'q3', label: 'Nitrite', values: ['mg/L'] },
+      { id: 'q4', label: 'pH', values: ['1–14 scale'] },
     ],
   },
   {
@@ -34,10 +34,10 @@ const data = [
     title: 'Water Sources',
     subtitle: 'Manage feed types and their available pellet sizes',
     params: [
-      { label: 'Borehole', values: ['Deep grounded source'] },
-      { label: 'River', values: ['Natural flowing water source'] },
-      { label: 'Municipal Supply', values: ['Treated city water'] },
-      { label: 'Rainwater', values: ['Collect precipitation'] },
+      { id: 's1', label: 'Borehole', values: ['Deep grounded source'] },
+      { id: 's2', label: 'River', values: ['Natural flowing water source'] },
+      { id: 's3', label: 'Municipal Supply', values: ['Treated city water'] },
+      { id: 's4', label: 'Rainwater', values: ['Collect precipitation'] },
     ],
   },
   {
@@ -45,10 +45,10 @@ const data = [
     title: 'Maintenace Types',
     subtitle: 'Define common maintenance actions and procedures',
     params: [
-      { label: 'Water Charge', values: ['Deep grounded source'] },
-      { label: 'Pump Repair', values: ['Natural flowing water source'] },
-      { label: 'Fulling', values: ['Treated city water'] },
-      { label: 'Net Cleaning', values: ['Collect precipitation'] },
+      { id: 'm1', label: 'Water Charge', values: ['Deep grounded source'] },
+      { id: 'm2', label: 'Pump Repair', values: ['Natural flowing water source'] },
+      { id: 'm3', label: 'Fulling', values: ['Treated city water'] },
+      { id: 'm4', label: 'Net Cleaning', values: ['Collect precipitation'] },
     ],
   },
   {
@@ -56,10 +56,10 @@ const data = [
     title: 'Disease Types',
     subtitle: 'Manage fish diseases with descriptions',
     params: [
-      { label: 'Fin Rot', values: ['Bacterial infection affecting fins'] },
-      { label: 'Columnaris', values: ['Bacterial infection affecting gills and skin'] },
-      { label: 'Ich', values: ['Parasitic infection causing white spots'] },
-      { label: 'Fungal Infection', values: ['Various fungal infections'] },
+      { id: 'd1', label: 'Fin Rot', values: ['Bacterial infection affecting fins'] },
+      { id: 'd2', label: 'Columnaris', values: ['Bacterial infection affecting gills and skin'] },
+      { id: 'd3', label: 'Ich', values: ['Parasitic infection causing white spots'] },
+      { id: 'd4', label: 'Fungal Infection', values: ['Various fungal infections'] },
     ],
   },
   {
@@ -67,15 +67,21 @@ const data = [
     title: 'Fish Behaviors',
     subtitle: 'Behavior labels for observation reporting',
     params: [
-      { label: 'Slow Movement', values: ['Bacterial infection affecting fins'] },
-      { label: 'Gasping', values: ['Bacterial infection affecting gills and skin'] },
-      { label: 'Aggressive Feeding', values: ['Parasitic infection causing white spots'] },
-      { label: 'Lethargy', values: ['Various fungal infections'] },
+      { id: 'b1', label: 'Slow Movement', values: ['Bacterial infection affecting fins'] },
+      { id: 'b2', label: 'Gasping', values: ['Bacterial infection affecting gills and skin'] },
+      { id: 'b3', label: 'Aggressive Feeding', values: ['Parasitic infection causing white spots'] },
+      { id: 'b4', label: 'Lethargy', values: ['Various fungal infections'] },
     ],
   },
 ]
 
-const RuleItem = ({ label, values }: { label: string; values: string[] }) => (
+type RuleParam = {
+  id: string
+  label: string
+  values: string[]
+}
+
+const RuleItem = ({ label, values, onEdit }: { label: string; values: string[]; onEdit: any }) => (
   <div className="group flex items-start gap-3 rounded-md p-3 transition hover:bg-hover">
     <Checkbox />
     <div className="flex w-full flex-col">
@@ -92,15 +98,15 @@ const RuleItem = ({ label, values }: { label: string; values: string[] }) => (
         </Text>
 
         {/* Only show on hover */}
-        <div className="opacity-0 transition-opacity group-hover:opacity-100">
+        <button onClick={() => onEdit()} className="opacity-0 transition-opacity group-hover:opacity-100">
           <SolarIconSet.PenNewSquare
             color="#4C0E6D"
             size={14}
             iconStyle="Outline"
-            onClick={() => console.log('edit')}
+            // onClick={() => console.log('edit')}
             className="cursor-pointer"
           />
-        </div>
+        </button>
       </div>
 
       <div className="mt-1 flex flex-wrap gap-2">
@@ -121,8 +127,17 @@ const RuleItem = ({ label, values }: { label: string; values: string[] }) => (
 const RulesCard = () => {
   const navigate = useNavigate()
 
-  const openModal = (navOpt: any) => {
-    navigate(paths.dashboard.system.farmRules.add)
+  const openAddModal = (navOpt: string) => {
+    navigate(paths.dashboard.system.farmRules.create(navOpt), {
+      state: { modalOpt: navOpt },
+    })
+  }
+
+  const openEditModal = (navOpt: string, data: RuleParam) => {
+    // console.log(data?.id)
+    navigate(paths.dashboard.system.farmRules.edit(data.id), {
+      state: { modalOpt: navOpt, data },
+    })
   }
   return (
     <div className="mb-8 grid grid-cols-2 gap-8">
@@ -133,10 +148,10 @@ const RulesCard = () => {
 
           <div className="grid grid-cols-2 gap-4">
             {config.params.map((type, i) => (
-              <RuleItem key={i} label={type.label} values={type.values} />
+              <RuleItem key={i} label={type.label} values={type.values} onEdit={() => openEditModal(config.id, type)} />
             ))}
             <button
-              onClick={() => openModal(config.id)}
+              onClick={() => openAddModal(config.id)}
               className="col-span-2 flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-neutral-200 py-2 hover:bg-hover"
             >
               <SolarIconSet.AddSquare color="black" size={14} iconStyle="Outline" />

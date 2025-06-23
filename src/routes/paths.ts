@@ -173,8 +173,8 @@ export const paths = {
       },
       farmRules: {
         root: '/dashboard/system/farm-rules',
-        add: '/dashboard/system/farm-rules/add',
-        edit: '/dashboard/system/farm-rules/edit',
+        create: (navOpt: string) => `/dashboard/system/farm-rules/create/${navOpt}`,
+        edit: (id: string) => `/dashboard/system/farm-rules/${id}/edit`,
       },
     },
   },

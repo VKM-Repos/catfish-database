@@ -7,111 +7,80 @@ import { Text } from 'src/components/ui/text'
 
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
-import { farmerRequestSchema, extendedFarmerRequestSchema } from 'src/schemas/schemas'
-import { useEffect, useState } from 'react'
+import { staffRequestSchema, staffResponseSchema } from 'src/schemas/schemas'
+import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Grid } from 'src/components/ui/grid'
 import { Textarea } from 'src/components/ui/textarea'
-import { useAuthStore } from 'src/store/auth.store'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType } from 'src/types'
 import { Checkbox } from 'src/components/ui/checkbox'
+import { createPostMutationHook } from 'src/api/hooks/usePost'
 
-type FarmerValues = z.infer<typeof farmerRequestSchema> & { id?: string }
+type StaffValues = z.infer<typeof staffRequestSchema>
 
-type FarmerProps = {
+type StaffProps = {
   mode: 'create' | 'edit'
-  initialValues?: FarmerValues
+  initialValues?: StaffValues
   onSuccess?: () => void
   onClose?: () => void
 }
 
-export function StaffForm({ mode, initialValues, onSuccess, onClose }: FarmerProps) {
+export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProps) {
   const queryClient = useQueryClient()
   const [error, setError] = useState<ClientErrorType | null>(null)
-  const user = useAuthStore((state) => state.user)
-  const [schema, setSchema] = useState(() => extendedFarmerRequestSchema(user))
-  useEffect(() => {
-    setSchema(extendedFarmerRequestSchema(user))
-  }, [user])
-  const form = useForm<FarmerValues>({
-    resolver: zodResolver(schema),
+  // const user = useAuthStore((state) => state.user)
+  // const [schema, setSchema] = useState(() => extendedFarmerRequestSchema(user))
+  // useEffect(() => {
+  //   setSchema(extendedFarmerRequestSchema(user))
+  // }, [user])
+  const form = useForm<StaffValues>({
+    resolver: zodResolver(staffRequestSchema),
     defaultValues: initialValues || {},
     mode: 'onChange',
   })
 
-  // Create the create cluster mutation hook
-  // const useCreateFarmer = createPostMutationHook({
-  //   endpoint: '/users/users',
-  //   requestSchema: farmerRequestSchema,
-  //   responseSchema: farmerResponseSchema,
-  // })
+  // Create farmer staff
+  const useCreateStaff = createPostMutationHook({
+    endpoint: '/users/farmer-staff',
+    requestSchema: staffRequestSchema,
+    responseSchema: staffResponseSchema,
+  })
 
-  // const useClusterManagerCreateFarmer = createPostMutationHook({
-  //   endpoint: '/users/farmers',
-  //   requestSchema: farmerRequestSchema,
-  //   responseSchema: farmerResponseSchema,
-  // })
+  const useCreateStaffMutation = useCreateStaff()
 
-  // Create the update cluster mutation hook
-  // const useUpdateFarmer = createPutMutationHook({
-  //   endpoint: `/users/${initialValues?.id}`,
-  //   requestSchema: farmerRequestSchema,
-  //   responseSchema: farmerResponseSchema,
-  // })
+  const onSubmit = async (values: StaffValues) => {
+    try {
+      setError(null)
+      if (mode === 'create') {
+        await useCreateStaffMutation.mutateAsync({ ...values })
 
-  // const createFarmerMutation = useCreateFarmer()
-  // const clusterManagerCreateFarmer = useClusterManagerCreateFarmer()
-  // const updateFarmerMutation = useUpdateFarmer()
+        queryClient.invalidateQueries(['farmerStaff'])
+        queryClient.refetchQueries(['farmerStaff-details'])
+      } else if (mode === 'edit' && initialValues) {
+        // await updateFarmerStaffMutation.mutateAsync({
+        //   ...values,
+        // })
+        // queryClient.invalidateQueries(['farmerStaff'])
+        // queryClient.refetchQueries(['farmerStaff-details'])
+      }
 
-  // const useGetClusters = createGetQueryHook({
-  //   endpoint: '/clusters',
-  //   responseSchema: z.any(),
-  //   queryKey: ['clusters_for_farmers  '],
-  //   options: {
-  //     enabled: user?.role === 'SUPER_ADMIN',
-  //   },
-  // })
-
-  // const { data: clusters, isLoading: isLoadingClusters } = useGetClusters()
-
-  const onSubmit = async (values: FarmerValues) => {
-    console.log(values)
-    // try {
-    //   setError(null)
-    //   if (mode === 'create') {
-    //     user?.role === 'SUPER_ADMIN'
-    //       ? await createFarmerMutation.mutateAsync({ ...values, role: 'FARMER' })
-    //       : await clusterManagerCreateFarmer.mutateAsync({ ...values })
-    //     queryClient.invalidateQueries(['farmers'])
-    //     queryClient.refetchQueries(['farmer-details'])
-    //   } else if (mode === 'edit' && initialValues?.id) {
-    //     await updateFarmerMutation.mutateAsync({
-    //       ...values,
-    //       id: initialValues.id,
-    //       role: 'FARMER',
-    //     })
-    //     queryClient.invalidateQueries(['farmers'])
-    //     queryClient.refetchQueries(['farmer-details'])
-    //   }
-
-    //   form.reset()
-    //   onSuccess?.()
-    // } catch (err) {
-    //   console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
-    //   if (err && typeof err === 'object' && 'response' in err) {
-    //     const axiosError = err as { response?: { data?: ServerErrorType } }
-    //     const errorData = axiosError.response?.data
-
-    //     if (errorData) {
-    //       setError({
-    //         title: errorData.error,
-    //         message: errorData.message,
-    //         errors: errorData.errors ?? null,
-    //       })
-    //     }
-    //   }
-    // }
+      form.reset()
+      onSuccess?.()
+    } catch (err) {
+      console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
+      if (err && typeof err === 'object' && 'response' in err) {
+        // const axiosError = err as { response?: { data?: ServerErrorType } }
+        // const errorData = axiosError.response?.data
+        // if (errorData) {
+        //   setError({
+        //     title: errorData.error,
+        //     message: errorData.message,
+        //     errors: errorData.errors ?? null,
+        //   })
+        // }
+      }
+    }
   }
 
   return (
@@ -119,12 +88,12 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: FarmerPro
       {/* Sticky Header */}
       <div className="sticky top-0 z-10 w-full border-b border-neutral-200 bg-white py-3">
         <Heading className="text-center" level={6}>
-          {mode === 'create' ? 'Add a staff' : 'Edit farmer’s info'}
+          {mode === 'create' ? 'Add a staff' : 'Edit staff’s info'}
         </Heading>
       </div>
 
       {/* Scrollable Form Body */}
-      <div className="relative h-[calc(100vh-7rem)] overflow-y-auto px-4 pb-36 pt-6">
+      <div className="relative h-[calc(100vh-7rem)] overflow-y-auto px-4 pb-10 pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {error && <FormValidationErrorAlert error={error} />}
@@ -227,7 +196,7 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: FarmerPro
                   />
                 </div>
                 <Button
-                  type="submit"
+                  type="button"
                   variant="primary"
                   disabled={!form.formState.isValid}
                   className="whitespace-nowrap"
@@ -265,26 +234,22 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: FarmerPro
               <Checkbox />
               <Text>Read-Only Access</Text>
             </Grid>
+
+            {/* <div className="fixed inset-x-0 bottom-0 z-10 border-t border-neutral-200 bg-white px-4 py-3"> */}
+            <div className="mx-auto flex max-w-4xl items-center justify-between">
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" disabled={!form.formState.isValid}>
+                <Text>{mode === 'create' ? 'Add staff' : 'Update'}</Text>
+              </Button>
+            </div>
+            {/* </div> */}
           </form>
         </Form>
       </div>
 
       {/* Sticky Footer */}
-      {/* <div className="fixed inset-x-0 bottom-0 z-10 border-t border-neutral-200 bg-white px-4 py-3"> */}
-      <div className="mx-auto flex max-w-4xl items-center justify-between">
-        <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          form="your-form-id" // Optional: if you're using multi-form setup
-          variant="primary"
-          disabled={!form.formState.isValid}
-        >
-          <Text>{mode === 'create' ? 'Add staff' : 'Update'}</Text>
-        </Button>
-      </div>
-      {/* </div> */}
     </>
   )
 }

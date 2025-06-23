@@ -74,6 +74,32 @@ export const staffUserResponseSchema = z.object({
   content: z.array(userSchema),
 })
 
+export const staffRequestSchema = z.object({
+  firstName: z
+    .string()
+    .min(3, 'Field must be at least 3 characters')
+    .max(50, 'Field must not be more than 50 characters'),
+  lastName: z.string().min(3, 'Field must be at least 3 characters'),
+  email: z.string().email().max(50, 'Field must not be more than 50 characters'),
+  phone: z
+    .string()
+    .regex(/^\d+$/, {
+      message: 'Phone number must contain only digits (0-9)',
+    })
+    .min(11, 'Field must be at least 11 digits')
+    .max(11, 'Field must not be more than 11 digit'),
+  address: z
+    .string()
+    .min(5, 'Field must be at least 5 characters')
+    .max(100, 'Field must not be more than 100 characters'),
+
+  password: z.string().optional(),
+  // role: z.string().optional(),
+  // id: z.string().optional(),
+})
+
+export const staffResponseSchema = userSchema
+
 export const clusterRequestSchema = z.object({
   name: z.string().min(3, 'Cluster name must not be less than 3 characters'),
   context: z.string().optional(),

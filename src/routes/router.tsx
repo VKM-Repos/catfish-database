@@ -559,10 +559,28 @@ export const router = createBrowserRouter([
           {
             path: paths.dashboard.system.farmRules.root,
             element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
                 {LazyPage(() => import('src/pages/dashboard/system/farm-rules'))}
               </RoleGuard>
             ),
+            children: [
+              {
+                path: 'create/:navOpt',
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/system/farm-rules/create'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: ':id/edit',
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/system/farm-rules/_id'))}
+                  </RoleGuard>
+                ),
+              },
+            ],
           },
         ],
       },

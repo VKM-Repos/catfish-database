@@ -9,14 +9,6 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { StaffsTable } from './components/staffs-table'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { staffUserResponseSchema } from 'src/schemas'
-
-const useGetStaffs = createGetQueryHook({
-  endpoint: '/users/farmers',
-  responseSchema: staffUserResponseSchema,
-  queryKey: ['staffs'],
-})
 
 export default function StaffsPage() {
   const title = 'Staff'
@@ -25,8 +17,6 @@ export default function StaffsPage() {
   const openCreateModal = () => {
     navigate(paths.dashboard.staff.create)
   }
-
-  const { data: staffs } = useGetStaffs()
 
   // const actions = staffs && staffs?.content.length > 0 && (
   const actions = (

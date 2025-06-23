@@ -1,9 +1,8 @@
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
-import EmptyTableState from 'src/components/global/empty-state'
-import { useNavigate } from 'react-router-dom'
-import EmptyClusterManagerImg from 'src/assets/images/empty-cluster-manager.jpg'
-import { paths } from 'src/routes'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
+import { LoadingScreen } from 'src/components/global/loading-screen'
 
 const data = [
   {
@@ -38,37 +37,20 @@ const data = [
 ]
 
 export function StaffsTable() {
-  const navigate = useNavigate()
+  const useGetFarmerStaff = createGetQueryHook({
+    endpoint: '/users//by-owning-farmer',
+    responseSchema: z.any(),
+    queryKey: ['staff'],
+  })
 
-  const openCreateModal = () => {
-    navigate(paths.dashboard.ponds.create.addPond)
-  }
+  const { data: staffs, isLoading: isStaffsLoading } = useGetFarmerStaff()
 
-  // const useGetFishBatches = createGetQueryHook({
-  //   endpoint: '/fish-batches',
-  //   responseSchema: z.any(),
-  //   queryKey: ['fish-batches'],
-  // })
-
-  // const useFetchPonds = createGetQueryHook({
-  //   endpoint: '/ponds/farmers/me',
-  //   responseSchema: z.any(),
-  //   queryKey: ['my-ponds'],
-  // })
-
-  // const { data: fishBatches, isLoading: isFishBatchesLoading } = useGetFishBatches()
-  // const { data: ponds, isLoading: isPondsLoading } = useFetchPonds()
-
-  // if (isPondsLoading || isFishBatchesLoading) return <LoadingScreen />
-
-  // const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
+  if (isStaffsLoading) return <LoadingScreen />
 
   return (
     <>
-      {data && data.length > 0 ? (
-        <DataTable columns={columns} data={data ?? []} emptyStateMessage="No staff found" />
-      ) : (
-        <EmptyTableState image={EmptyClusterManagerImg} name="staff" text="staff" buttonFunc={openCreateModal} />
+      {data && data.length > 0 && (
+        <DataTable columns={columns} data={staffs ?? []} emptyStateMessage="No staff found" />
       )}
     </>
   )

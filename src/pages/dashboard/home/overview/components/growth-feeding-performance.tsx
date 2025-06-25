@@ -4,6 +4,8 @@ import { Card } from 'src/components/ui/card'
 import { ChartHeader } from 'src/components/global/chart-header'
 import { Text } from 'src/components/ui/text'
 import { FlexBox } from 'src/components/ui/flexbox'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
 const averageWeightConfig = {
   averageWeight: {
@@ -13,6 +15,12 @@ const averageWeightConfig = {
 }
 
 export default function GrowthFeedingPerformance() {
+  const useGetFcr = createGetQueryHook({
+    endpoint: '/dashboards/farmer/fcr/overall?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['fcr-overall'],
+  })
+  const { data: fcr } = useGetFcr()
   return (
     <Card
       className=" mt-[40px] flex
@@ -55,18 +63,18 @@ export default function GrowthFeedingPerformance() {
       <FlexBox className="w-[20%]" direction="col">
         <div className="flex w-[250px] flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
           <Text className="font-medium leading-[20px]">Feed Conversion Ratio</Text>
-          <Text className="text-[16px] font-semibold">1.6</Text>
-          <Text className="text-[10px] font-medium">Good</Text>
+          <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.fcrValue : 0}</Text>
+          <Text className="text-[10px] font-medium text-success-500">Good</Text>
         </div>
         <div className="flex w-[250px] flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
-          <Text className="font-medium leading-[20px]">Feed Conversion Ratio</Text>
-          <Text className="text-[16px] font-semibold">1.6</Text>
-          <Text className="text-[10px] font-medium">Good</Text>
+          <Text className="font-medium leading-[20px]">Total Feed Consumed</Text>
+          <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.totalFeedConsumed : 0} kg</Text>
+          <Text className="text-[10px] font-medium">For current production cycle</Text>
         </div>
         <div className="flex w-[250px] flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
-          <Text className="font-medium leading-[20px]">Feed Conversion Ratio</Text>
-          <Text className="text-[16px] font-semibold">1.6</Text>
-          <Text className="text-[10px] font-medium">Good</Text>
+          <Text className="font-medium leading-[20px]">Feed Cost</Text>
+          <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
+          <Text className="text-[10px] font-medium text-[#000AFF]">5.5 per kg</Text>
         </div>
       </FlexBox>
     </Card>

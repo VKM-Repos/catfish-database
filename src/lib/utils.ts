@@ -79,7 +79,7 @@ export function mergePondsWithTotalFishQuantity(ponds: any, batches: any) {
 }
 
 export function formatNumberWithCommas(number: number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export const scrollToTop = () => {

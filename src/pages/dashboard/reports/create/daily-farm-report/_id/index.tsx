@@ -97,24 +97,27 @@ export default function CreateDailyFeedingReportPage() {
         // feedTime: values.feedTime,
       }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (feedingData.pelletSize !== null && recordWaterQuality) {
+      if (feedingData.pelletSize !== null && !recordWaterQuality) {
         await createDailyFeeding.mutateAsync(feedingData)
       }
-
-      if (recordWaterQuality) {
-        const waterQualityData = {
-          pondId: id,
-          dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
-          phLevel: values.phLevel ? Number(values.phLevel) : null,
-          temperature: values.temperature ? Number(values.temperature) : null,
-          ammonia: values.ammonia ? Number(values.ammonia) : null,
-          nitrite: values.nitrite ? Number(values.nitrite) : null,
-          alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
-          hardness: values.hardness ? Number(values.hardness) : null,
-          frequency: 'DAILY',
-          // observation: values.observation ? values.observation : null,
-          observation: 'EXCELLENT',
-        }
+      const waterQualityData = {
+        pondId: id,
+        dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
+        phLevel: values.phLevel ? Number(values.phLevel) : null,
+        temperature: values.temperature ? Number(values.temperature) : null,
+        ammonia: values.ammonia ? Number(values.ammonia) : null,
+        nitrite: values.nitrite ? Number(values.nitrite) : null,
+        alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
+        hardness: values.hardness ? Number(values.hardness) : null,
+        frequency: 'DAILY',
+        // observation: values.observation ? values.observation : null,
+        observation: 'EXCELLENT',
+      }
+      if (recordWaterQuality && feedingData.pelletSize === null) {
+        await createWaterQuality.mutateAsync(waterQualityData)
+      }
+      if (feedingData.pelletSize !== null && recordWaterQuality) {
+        await createDailyFeeding.mutateAsync(feedingData)
         await createWaterQuality.mutateAsync(waterQualityData)
       }
       queryClient.refetchQueries(['feeding-water-quality'])

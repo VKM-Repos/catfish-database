@@ -13,7 +13,7 @@ export default function DashboardMenu() {
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
   const [selectFarmerDIalogOpen, setOpenSelectFarmerDialog] = useState(false)
-  const title = user?.role === 'FARMER' ? 'Farm ' : 'Cluster'
+  const title = user?.role === 'FARMER' ? 'Farm ' : user?.role === 'CLUSTER_MANAGER' ? 'Cluster' : 'System'
 
   return (
     <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white px-10 py-4">

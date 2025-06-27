@@ -171,6 +171,12 @@ export const paths = {
         id: (id: string) => `/dashboard/system/clusters/${id}`,
         edit: (id: string) => `/dashboard/system/clusters/${id}/edit`,
       },
+      rolesPermission: {
+        root: '/dashboard/system/roles-permissions',
+        create: '/dashboard/system/roles-permissions/create',
+        id: (id: string) => `/dashboard/system/roles-permissions/${id}`,
+        edit: (id: string) => `/dashboard/system/roles-permissions/${id}/edit`,
+      },
       farmRules: {
         root: '/dashboard/system/farm-rules',
         create: (navOpt: string) => `/dashboard/system/farm-rules/create/${navOpt}`,

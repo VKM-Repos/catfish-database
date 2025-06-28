@@ -56,6 +56,18 @@ export function removeSymbols(str: keyof typeof UserRole) {
   return newStr
 }
 
+/**
+ * Converts a string like "HYBRID_CATFISH_FEED" to "Hybrid Catfish Feed"
+ */
+export function formatLabel(str: string) {
+  if (!str) return ''
+  return str
+    .toLowerCase()
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
 export function formatLatLng(lat: string, lng: string) {
   const latDirection = parseFloat(lat) >= 0 ? 'N' : 'S'
   const lngDirection = parseFloat(lng) >= 0 ? 'E' : 'W'

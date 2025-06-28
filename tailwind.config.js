@@ -91,6 +91,7 @@ module.exports = {
       fontFamily: {
         inter: ['Inter', 'serif'],
         clash: ['"Clash Display"', 'sans-serif'],
+        bricolage: ['Bricolage Grotesque', 'sans-serif'],
       },
       backgroundImage: {
         waves: "url('/src/assets/images/waves.png')",

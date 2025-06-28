@@ -12,24 +12,25 @@ import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { Loader } from 'src/components/ui/loader'
 import * as SolarIconSet from 'solar-icon-set'
 import { Input } from 'src/components/ui/input'
-import { Textarea } from 'src/components/ui/textarea'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { Grid } from 'src/components/ui/grid'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { scrollToTop } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
-import { useLocation } from 'react-router-dom'
 import DatePicker from 'src/components/ui/datepicker'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { MaintenanceActivityTypes } from 'src/lib/constants'
+import { useLocation } from 'react-router-dom'
 
 const maintenanceSchema = z.object({
-  date: z.string().min(1, 'Date is required'),
-  activityType: z.enum(['Cleaning', 'Repairs', 'Disinfection', 'Others'], {
-    required_error: 'Activity type is required',
+  date: z.string().min(1, 'Date is required').optional(),
+  frequency: z.string().optional(), // remove later
+  maintenanceType: z.enum(Object.values(MaintenanceActivityTypes) as [string, ...string[]], {
+    required_error: 'Maintenance type is required',
   }),
-  cost: z.string().min(1, 'Cost is required'),
-  description: z.string().min(1, 'Description is required'),
-  pond: z.string().min(1, 'Pond is required'),
+  cost: z.number({ required_error: 'Cost is required' }),
+  pondId: z.string().min(1, 'Pond is required').optional(),
 })
 
 type MaintenanceFormData = z.infer<typeof maintenanceSchema>
@@ -42,8 +43,6 @@ type MaintenanceRecordsFormProps = {
   onSuccess?: () => void
 }
 
-const activityTypes = ['Cleaning', 'Repairs', 'Disinfection', 'Others']
-
 export default function MaintenanceRecordsForm({
   onCancel,
   setStep,
@@ -53,26 +52,20 @@ export default function MaintenanceRecordsForm({
 }: MaintenanceRecordsFormProps) {
   const [error, setError] = useState<ClientErrorType | null>()
   const queryClient = useQueryClient()
-  const location = useLocation()
 
-  // Mock ponds for select
-  const ponds = [
-    { label: 'Pond A', value: 'Pond A' },
-    { label: 'Pond B', value: 'Pond B' },
-    { label: 'Pond C', value: 'Pond C' },
-    { label: 'Pond D', value: 'Pond D' },
-  ]
+  const { state } = useLocation()
+  const record = state?.item
 
   const useCreateMaintenanceMutation = createPostMutationHook({
-    endpoint: '/maintenance-expenses',
+    endpoint: '/maintenance-costs',
     requestSchema: maintenanceSchema,
-    responseSchema: maintenanceSchema,
+    responseSchema: z.any(),
   })
 
   const useUpdateMaintenanceMutation = createPutMutationHook({
-    endpoint: `/maintenance-expenses/${initialValues?.id}`,
+    endpoint: `/maintenance-costs/${record?.id}`,
     requestSchema: maintenanceSchema,
-    responseSchema: maintenanceSchema,
+    responseSchema: z.any(),
   })
 
   const createMaintenanceMutation = useCreateMaintenanceMutation()
@@ -81,27 +74,43 @@ export default function MaintenanceRecordsForm({
   const form = useForm<MaintenanceFormData>({
     resolver: zodResolver(maintenanceSchema),
     defaultValues: {
-      date: initialValues?.date || '',
-      activityType: initialValues?.activityType || '',
-      cost: initialValues?.cost || '',
-      description: initialValues?.description || '',
-      pond: initialValues?.pond || '',
+      date: record?.createdAt || '',
+      maintenanceType: record?.maintenanceType || '',
+      cost: record?.cost ?? undefined,
+      pondId: mode === 'edit' ? undefined : record?.id || '',
     },
     mode: 'onChange',
   })
 
+  // Fetch ponds
+  const useGetPonds = createGetQueryHook({
+    endpoint: '/ponds/farmers/me',
+    responseSchema: z.any(),
+    queryKey: ['my-ponds'],
+  })
+  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
+  const pondId = record?.id || form.watch('pondId')
+
   const onSubmit = async (values: MaintenanceFormData) => {
     try {
       setError(null)
+
+      const basePayload = {
+        // date: values.date,
+        maintenanceType: values.maintenanceType,
+        cost: values.cost !== undefined && !isNaN(Number(values.cost)) ? Number(values.cost) : 0, // Ensure cost is a number
+        pondId: pondId,
+        frequency: 'DAILY',
+      }
       if (mode === 'create') {
-        await createMaintenanceMutation.mutateAsync(values)
-        queryClient.refetchQueries(['maintenance-expenses'])
+        await createMaintenanceMutation.mutateAsync(basePayload)
+        queryClient.refetchQueries(['maintenance-costs'])
         form.reset()
         onSuccess?.()
         setStep(2)
-      } else if (mode === 'edit' && initialValues?.id) {
-        await updateMaintenanceMutation.mutateAsync(values)
-        queryClient.refetchQueries(['maintenance-expenses'])
+      } else if (mode === 'edit' && pondId) {
+        await updateMaintenanceMutation.mutateAsync(basePayload)
+        queryClient.refetchQueries(['maintenance-costs'])
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -156,7 +165,7 @@ export default function MaintenanceRecordsForm({
                 </Text>
                 <FormField
                   control={form.control}
-                  name="activityType"
+                  name="maintenanceType"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormControl>
@@ -165,11 +174,19 @@ export default function MaintenanceRecordsForm({
                             <SelectValue placeholder="Select activity type" />
                           </SelectTrigger>
                           <SelectContent>
-                            {activityTypes.map((type) => (
-                              <SelectItem key={type} value={type}>
-                                {type}
-                              </SelectItem>
-                            ))}
+                            {Object.values(MaintenanceActivityTypes).map((type) => {
+                              // Format: remove underscores, capitalize each word
+                              const label = type
+                                .toLowerCase()
+                                .split('_')
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' ')
+                              return (
+                                <SelectItem key={type} value={type}>
+                                  {label}
+                                </SelectItem>
+                              )
+                            })}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -190,7 +207,23 @@ export default function MaintenanceRecordsForm({
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormControl>
-                        <Input placeholder="Enter cost" {...field} />
+                        <Input
+                          placeholder="Enter cost"
+                          {...field}
+                          value={field.value ?? ''}
+                          type="number"
+                          min={0}
+                          step="any"
+                          onChange={(e) => {
+                            const val = e.target.value
+                            // Only allow numbers and empty string
+                            if (/^\d*\.?\d*$/.test(val)) {
+                              field.onChange(val === '' ? undefined : e.target.valueAsNumber)
+                            }
+                          }}
+                          inputMode="decimal"
+                          pattern="[0-9]*"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -198,59 +231,51 @@ export default function MaintenanceRecordsForm({
                 />
               </FlexBox>
             </Grid>
-            <FlexBox gap="gap-4" className="w-full flex-col md:!flex-row">
-              <div className="flex w-full flex-col gap-2">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  Description
-                  <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Textarea placeholder="Enter description" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </FlexBox>
-            <FlexBox gap="gap-4" className="w-full flex-col md:!flex-row">
-              <div className="flex w-full flex-col gap-2">
-                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                  Pond
-                  <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
-                </Text>
-                <FormField
-                  control={form.control}
-                  name="pond"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Select value={field.value || ''} onValueChange={field.onChange}>
-                          <SelectTrigger className="w-full font-light">
-                            <SelectValue placeholder="Select pond" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {ponds.map((pond) => (
-                              <SelectItem key={pond.value} value={pond.value}>
-                                {pond.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </FlexBox>
+            {mode === 'create' && (
+              <FlexBox gap="gap-4" className="w-full flex-col md:!flex-row">
+                <div className="flex w-full flex-col gap-2">
+                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                    Pond
+                    <span className="font-bold text-red-500">*</span>
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </Text>
+                  <FormField
+                    control={form.control}
+                    name="pondId"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger
+                              className={form.formState.errors.pondId ? 'border-red-500 ring-2 ring-red-500' : ''}
+                            >
+                              <div className="flex w-full items-center justify-start gap-3 text-neutral-300">
+                                <SolarIconSet.Water size={24} />
+                                <SelectValue placeholder="Select a pond" />
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {isLoadingPonds ? (
+                                <SelectItem value="loading" disabled>
+                                  <Text>Loading ponds...</Text>
+                                </SelectItem>
+                              ) : (
+                                ponds.content?.map((pond: any) => (
+                                  <SelectItem key={pond.id} value={pond.id}>
+                                    {pond.name}
+                                  </SelectItem>
+                                ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </FlexBox>
+            )}
           </div>
           <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">
             <Button

@@ -32,7 +32,7 @@ export default function AddMaintenanceRecord() {
       case 2:
         return (
           <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Feeding report updated successfully!</Text>
+            <Text className="text-lg font-semibold">Maintenance record added!</Text>
             <Button
               variant="primary"
               onClick={() => {

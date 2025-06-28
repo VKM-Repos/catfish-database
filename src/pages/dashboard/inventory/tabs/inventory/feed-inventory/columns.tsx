@@ -2,6 +2,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { extractTimeFromISO, formatDate } from 'src/lib/date'
 import { FeedInventoryActions } from './actions'
+import { formatLabel, formatPrice } from 'src/lib/utils'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -9,7 +10,7 @@ export const columns: ColumnDef<any>[] = [
     header: 'Feed type',
     cell: ({ row }) => (
       <Text className="capitalize" weight="light">
-        {row.original.type.toLowerCase() || '-'}
+        {formatLabel(row.original.type) || '-'}
       </Text>
     ),
   },
@@ -28,18 +29,20 @@ export const columns: ColumnDef<any>[] = [
     header: 'Avg Cost/ kg(₦)',
     cell: ({ row }) => {
       const cost = row.original.costPerKg
-      return <Text weight="light">{cost ? `₦${Math.round(cost)}` : '-'}</Text>
+      return <Text weight="light">{cost ? formatPrice(cost) : '-'}</Text>
     },
   },
-  // {
-  //   accessorKey: 'cost',
-  //   header: 'Total cost (₦)',
-  //   cell: ({ row }) => <Text weight="light">{`₦${row.original.costPerKg * row.original.quantityInKg}` || '-'}</Text>,
-  // },
   {
     accessorKey: 'quantityInKg',
     header: 'Remaining stock',
     cell: ({ row }) => <Text weight="light">{row.original.quantityInKg ?? '-'}</Text>,
+  },
+  {
+    accessorKey: 'cost',
+    header: 'Total cost (₦)',
+    cell: ({ row }) => (
+      <Text weight="light">{`${formatPrice(row.original.costPerKg * row.original.quantityInKg)}` || '-'}</Text>
+    ),
   },
   {
     accessorKey: 'updatedAt',

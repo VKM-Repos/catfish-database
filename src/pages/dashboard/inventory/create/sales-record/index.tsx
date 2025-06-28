@@ -31,8 +31,8 @@ export default function AddSalesRecord() {
         )
       case 2:
         return (
-          <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Sales report updated successfully!</Text>
+          <div className="my-8 flex w-fit flex-col items-center justify-center gap-4">
+            <Text className="text-lg font-semibold">Sales record added!</Text>
             <Button
               variant="primary"
               onClick={() => {

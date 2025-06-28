@@ -18,7 +18,7 @@ const Providers = ({ children }: ProvidersProps) => {
       <QueryClientProvider client={queryClient}>
         <SideBarProvider>
           <TooltipProvider>
-            <div className="font-clash">{children}</div>
+            <div className="font-bricolage">{children}</div>
           </TooltipProvider>
           <Toaster />
         </SideBarProvider>

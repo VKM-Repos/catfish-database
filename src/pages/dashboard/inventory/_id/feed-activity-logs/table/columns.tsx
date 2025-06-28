@@ -74,7 +74,7 @@ export const columns: ColumnDef<any>[] = [
   // },
   {
     accessorKey: 'costPerKg',
-    header: 'Avg Cost/ kg(₦)',
+    header: 'Cost/kg(₦)',
     cell: ({ row }) => {
       const cost = row.original.costPerKg
       return <Text weight="light">{cost ? `₦${Math.round(cost)}` : '-'}</Text>

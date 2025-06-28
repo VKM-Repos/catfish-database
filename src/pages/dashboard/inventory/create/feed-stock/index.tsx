@@ -28,8 +28,8 @@ export default function AddFeedStock() {
         )
       case 2:
         return (
-          <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Feeding report updated successfully!</Text>
+          <div className="my-8 flex w-fit flex-col items-center justify-center gap-4">
+            <Text className="text-lg font-semibold">Feed added to inventory!</Text>
             <Button
               variant="primary"
               onClick={() => {
@@ -58,7 +58,7 @@ export default function AddFeedStock() {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        className="max-h-[80vh] max-w-[750px] overflow-y-scroll p-8"
+        className="h-fit max-h-[80vh] w-fit max-w-[750px] overflow-y-scroll p-8"
       >
         <RenderSteps />
       </DialogContent>

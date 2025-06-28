@@ -15,6 +15,7 @@ import { z } from 'zod'
 import { Section } from 'src/components/ui/section'
 import PondRevenue from './pond-revenue'
 import { fishBatchResponseSchema } from 'src/schemas'
+import { Container } from 'src/components/ui/container'
 
 type SalesRecordRaw = {
   id: string
@@ -27,8 +28,6 @@ type SalesRecordRaw = {
 
 type EnrichedSalesRecord = SalesRecordRaw & {
   pond?: any
-  averageSellingPrice: number
-  totalSales: number
 }
 
 const fishBatchesResponseSchema = z.object({
@@ -51,9 +50,16 @@ const useGetAllFishBatches = createGetQueryHook({
   queryKey: ['fish-batches-all'],
 })
 
+const useGetVolumeOfSales = createGetQueryHook({
+  endpoint: 'dashboards/farmer/volume-of-sales?interval=ALL',
+  responseSchema: z.any(),
+  queryKey: ['volume-sales'],
+})
+
 export default function SalesRecords() {
   const navigate = useNavigate()
   const { data: salesRecordsRaw, isLoading: isLoadingSales } = useGetSalesRecords()
+  const { data: volumeOfSales } = useGetVolumeOfSales()
   const raw: SalesRecordRaw[] = salesRecordsRaw?.content ?? []
 
   const { data: fishBatchesData, isLoading: isLoadingFishBatches } = useGetAllFishBatches({
@@ -79,36 +85,14 @@ export default function SalesRecords() {
     return raw.map((record) => {
       const fishBatchData = fishBatchMap[record.fishBatchId]
 
-      const quantityInKg = Number(record?.quantityInKg ?? 0)
-      const costPerKg = Number(record?.costPerKg ?? 0)
-      const totalAmount = Number(record?.totalAmount ?? 0)
-
-      const averageSellingPrice =
-        quantityInKg > 0 && totalAmount > 0 ? Number((totalAmount / quantityInKg).toFixed(2)) : 0
-
-      const totalSales = quantityInKg > 0 && costPerKg > 0 ? quantityInKg * costPerKg : totalAmount
-
       return {
         ...record,
         pond: fishBatchData?.pond ?? null,
-        averageSellingPrice,
-        totalSales,
       }
     })
   }, [raw, fishBatchMap])
 
-  // ⬇️ Calculate total and average across all records
-  const salesStats = useMemo(() => {
-    const totalQuantity = enrichedRecords.reduce((sum, r) => sum + (r.quantityInKg ?? 0), 0)
-    const totalRevenue = enrichedRecords.reduce((sum, r) => sum + (r.totalSales ?? 0), 0)
-    const averageSellingPrice = totalQuantity > 0 ? Number((totalRevenue / totalQuantity).toFixed(2)) : 0
-
-    return {
-      totalRevenue,
-      averageSellingPrice,
-      totalQuantity,
-    }
-  }, [enrichedRecords])
+  console.log('Enriched Sales Records:', volumeOfSales)
 
   const isLoading = isLoadingSales || isLoadingFishBatches
 
@@ -127,9 +111,9 @@ export default function SalesRecords() {
   )
 
   return (
-    <>
+    <Container>
       <FlexBox direction="col" gap="gap-4" className="w-full">
-        <SalesStatistics data={salesStats} />
+        <SalesStatistics data={Array.isArray(volumeOfSales) ? volumeOfSales[0] : 0} />
         <FlexBox direction="row" align="center" justify="between" className="w-full">
           <Heading level={6}>{title}</Heading>
           <div>{actions}</div>
@@ -145,6 +129,6 @@ export default function SalesRecords() {
       <Section className="mt-6 flex items-start justify-between gap-10">
         <PondRevenue />
       </Section>
-    </>
+    </Container>
   )
 }

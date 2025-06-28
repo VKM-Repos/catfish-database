@@ -24,6 +24,7 @@ import { scrollToTop } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 import DatePicker from 'src/components/ui/datepicker'
+import { AvailableFeedTypes, PelletSizes } from 'src/lib/constants'
 
 type FeedingTypeData = z.infer<typeof feedTypeCreateSchema> | z.infer<typeof feedTypeEditSchema>
 
@@ -48,7 +49,6 @@ export default function FeedStockForm({
 
   const [error, setError] = useState<ClientErrorType | null>()
   const queryClient = useQueryClient()
-  const pelletsSize = ['0.5mm', '1.0mm', '2.0mm', '3.0mm', '4.0mm', '5.0mm', '6.0mm', '7.0mm', '8.0mm']
 
   const useCreateFeedStockMutation = createPostMutationHook({
     endpoint: '/feed-inventories',
@@ -168,7 +168,7 @@ export default function FeedStockForm({
                           value={field.value}
                           onValueChange={(v) => {
                             if (v === 'add_custom') {
-                              console.log('open dialoog')
+                              console.log('open dialog')
                             } else {
                               field.onChange(v)
                             }
@@ -181,11 +181,19 @@ export default function FeedStockForm({
                             </div>
                           </SelectTrigger>
                           <SelectContent>
-                            {['PELLETS', 'COPPENS', 'SKRETTING', 'AQUALIS'].map((type) => (
-                              <SelectItem key={type} value={type}>
-                                {type}
-                              </SelectItem>
-                            ))}
+                            {Object.values(AvailableFeedTypes).map((type) => {
+                              // Format: remove underscores, capitalize each word
+                              const label = type
+                                .toLowerCase()
+                                .split('_')
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' ')
+                              return (
+                                <SelectItem key={type} value={type}>
+                                  {label}
+                                </SelectItem>
+                              )
+                            })}
                             {/* <SelectItem value="add_custom">
                               <span className="text-primary-500">+ Add custom</span>
                             </SelectItem> */}
@@ -222,7 +230,7 @@ export default function FeedStockForm({
                             </div>
                           </SelectTrigger>
                           <SelectContent>
-                            {pelletsSize?.map((pellet) => (
+                            {PelletSizes?.map((pellet) => (
                               <SelectItem key={pellet} value={parseFloat(pellet).toString()}>
                                 {pellet}
                               </SelectItem>
@@ -253,11 +261,18 @@ export default function FeedStockForm({
                           placeholder="Input quantity in kg"
                           {...field}
                           value={field.value ?? ''}
+                          type="number"
+                          min={0}
+                          step="any"
                           onChange={(e) => {
                             const val = e.target.value
-                            field.onChange(val === '' ? undefined : Number(val))
+                            // Only allow numbers and empty string
+                            if (/^\d*\.?\d*$/.test(val)) {
+                              field.onChange(val === '' ? undefined : Number(val))
+                            }
                           }}
-                          type="text" // or "number"
+                          inputMode="decimal"
+                          pattern="[0-9]*"
                         />
                       </div>
                     </FormControl>
@@ -301,7 +316,23 @@ export default function FeedStockForm({
                   <FormItem className="w-full !space-y-0">
                     <FormControl>
                       <div className="w-full">
-                        <Input placeholder="Input cost of feed" {...field} />
+                        <Input
+                          placeholder="Input cost of feed"
+                          {...field}
+                          value={field.value ?? ''}
+                          type="number"
+                          min={0}
+                          step="any"
+                          onChange={(e) => {
+                            const val = e.target.value
+                            // Only allow numbers and empty string
+                            if (/^\d*\.?\d*$/.test(val)) {
+                              field.onChange(val === '' ? undefined : val)
+                            }
+                          }}
+                          inputMode="decimal"
+                          pattern="[0-9]*"
+                        />
                       </div>
                     </FormControl>
                     <div className={`relative min-h-fit`}>

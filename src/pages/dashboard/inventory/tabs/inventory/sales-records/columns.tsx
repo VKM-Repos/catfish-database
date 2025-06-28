@@ -13,7 +13,7 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'pond',
     header: 'Pond name',
-    cell: ({ row }) => <Text weight="light">{row.original.pond.name || '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.fishBatch.pond.name || '-'}</Text>,
   },
   {
     accessorKey: 'totalWeightHarvested',

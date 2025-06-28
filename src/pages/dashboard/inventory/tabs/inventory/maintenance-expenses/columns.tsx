@@ -2,6 +2,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { formatDate } from 'src/lib/date'
 import { MaintenanceExpenseActions } from './actions'
+import { formatPrice } from 'src/lib/utils'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -10,17 +11,27 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{formatDate(row.original.updatedAt)}</Text>,
   },
   {
-    accessorKey: 'type',
+    accessorKey: 'maintenanceType',
     header: 'Activity type',
     cell: ({ row }) => {
-      const type = row.original.type || '-'
+      const type = row.original.maintenanceType || '-'
       const colorMap: Record<string, string> = {
-        Disinfection: '#0DA500',
-        Others: '#651391',
-        Repairs: '#FF9040',
-        Cleaning: '#000AFF',
+        LABOR: '#F59E42',
+        CHEMICALS: '#1E90FF',
+        EQUIPMENT: '#A020F0',
+        ENERGY: '#FFD700',
+        CLEANING: '#000AFF',
+        REPAIRS: '#FF9040',
+        DISINFECTION: '#0DA500',
+        OTHER: '#A1A4AA',
       }
-      const dotColor = colorMap[type] || '#A1A4AA'
+      const dotColor = colorMap[type.toUpperCase()] || '#000000'
+      // Format label for display (capitalize, remove underscores)
+      const label = type
+        .toLowerCase()
+        .split('_')
+        .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
       return (
         <div className="flex items-center gap-2">
           <div
@@ -32,25 +43,20 @@ export const columns: ColumnDef<any>[] = [
               minWidth: 10,
             }}
           />
-          <Text weight="light">{type}</Text>
+          <Text weight="light">{label}</Text>
         </div>
       )
     },
   },
   {
-    accessorKey: 'description',
-    header: 'Description',
-    cell: ({ row }) => <Text weight="light">{row.original.description || '-'}</Text>,
-  },
-  {
     accessorKey: 'cost',
     header: 'Total cost (₦)',
-    cell: ({ row }) => <Text weight="light">{`₦${row.original.cost}` || '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatPrice(row.original.cost) || '-'}</Text>,
   },
   {
     accessorKey: 'pond',
     header: 'Pond',
-    cell: ({ row }) => <Text weight="light">{row.original.pond ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.pond?.name ?? '-'}</Text>,
   },
   {
     id: 'actions',

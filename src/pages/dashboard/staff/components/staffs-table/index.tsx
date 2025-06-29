@@ -40,7 +40,7 @@ export function StaffsTable() {
   const useGetFarmerStaff = createGetQueryHook({
     endpoint: '/users//by-owning-farmer',
     responseSchema: z.any(),
-    queryKey: ['staff'],
+    queryKey: ['Farmer-Staffs'],
   })
 
   const { data: staffs, isLoading: isStaffsLoading } = useGetFarmerStaff()

@@ -114,7 +114,7 @@ export default function PermissionsPage() {
     return result
   }, [roles, privileges])
 
-  console.log('test: ', permissionsByRole)
+  // console.log('test: ', roles)
 
   return (
     <div className="relative">

@@ -50,6 +50,8 @@ export default function PermissionsTabContent({
   const [showSaved, setShowSaved] = useState(false)
   const queryClient = useQueryClient()
 
+  // console.log('Permissions permissions: ', permissions)
+
   // Map module+action to privilegeId for quick lookup
   const privilegeMap = useMemo(() => {
     const map: Record<string, Record<string, string>> = {}

@@ -51,7 +51,7 @@ export function DataTable<TData>({
   const [selectedCluster, setSelectedCluster] = React.useState<string>('')
   const [showFilter, setShowFilter] = React.useState(false)
 
-  const normalizeClusterName = (name: string) => name.replace(/-/g, '')
+  // const normalizeClusterName = (name: string) => name.replace(/-/g, '')
   const location = useLocation()
   const isClustersPage = location.pathname.includes('/clusters')
   const filteredData = React.useMemo(() => {
@@ -134,7 +134,7 @@ export function DataTable<TData>({
   return (
     <div className="w-full">
       {search && (
-        <div className="mb-8  min-h-[80px] items-center  rounded-md bg-neutral-50 px-[24px] py-[20px]">
+        <div className="mb-8 min-h-[80px] items-center  rounded-md bg-neutral-50 px-[24px] py-[20px]">
           <div className="flex justify-between">
             <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
               <SolarIconSet.MinimalisticMagnifer />

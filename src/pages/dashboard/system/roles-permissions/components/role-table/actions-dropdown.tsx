@@ -30,22 +30,24 @@ export function ActionsDropdown({ role }: ActionsDropdownProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem
-            onClick={() =>
-              navigate(paths.dashboard.system.auditLog.id(role.id), {
+            onClick={() => {
+              // console.log(role)
+              navigate(paths.dashboard.system.rolesPermission.edit(role.id), {
                 state: { role },
               })
-            }
+            }}
           >
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() =>
-              navigate(paths.dashboard.system.auditLog.id(role.id), {
+            onClick={() => {
+              // console.log(role)
+              navigate(paths.dashboard.system.rolesPermission.edit(role.id), {
                 state: { role },
               })
-            }
+            }}
           >
-            Deactivate
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

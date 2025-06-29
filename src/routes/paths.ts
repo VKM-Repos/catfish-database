@@ -174,7 +174,6 @@ export const paths = {
       rolesPermission: {
         root: '/dashboard/system/roles-permissions',
         create: '/dashboard/system/roles-permissions/create',
-        id: (id: string) => `/dashboard/system/roles-permissions/${id}`,
         edit: (id: string) => `/dashboard/system/roles-permissions/${id}/edit`,
       },
       farmRules: {

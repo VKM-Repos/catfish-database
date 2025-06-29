@@ -1,8 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { ActionsDropdown } from './actions-dropdown'
-import { StatusBadge } from 'src/components/global/status-badge'
-import { cn } from 'src/lib/utils'
 import { Role } from 'src/types/role.types'
 
 export const columns: ColumnDef<Role>[] = [
@@ -38,7 +36,7 @@ export const columns: ColumnDef<Role>[] = [
       })
 
       // Slice first 4, rest is overflow
-      const visibleChips = permissionChips.slice(0, 4)
+      const visibleChips = permissionChips.slice(0, 8)
       const remainingCount = permissionChips.length - visibleChips.length
 
       return (
@@ -61,32 +59,6 @@ export const columns: ColumnDef<Role>[] = [
     },
   },
 
-  {
-    accessorKey: 'user',
-    header: 'User',
-    cell: ({ row }) => <Text weight="light">{row.original.user}</Text>,
-  },
-
-  {
-    accessorKey: 'createDate',
-    header: 'Created Date',
-    cell: ({ row }) => <Text weight="light">{new Date(row.original.createDate).toLocaleString()}</Text>,
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => (
-      <StatusBadge
-        status={row.original.status}
-        activeText="Active"
-        inactiveText="Deactivated"
-        inactiveBg="bg-[#737780]/10 border-[#737780] text-[#737780]"
-        inactiveIcon={
-          <div className={cn('h-2 w-2 rounded-full', row.original.status ? 'bg-success-400' : 'bg-[#737780]')} />
-        }
-      />
-    ),
-  },
   {
     id: 'actions',
     cell: ({ row }) => <ActionsDropdown role={row?.original} />,

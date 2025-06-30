@@ -67,7 +67,7 @@ export default function SalesRecords() {
   const fishBatchMap = useMemo(() => {
     if (!fishBatchesData?.content) return {}
 
-    return fishBatchesData.content.reduce((acc, batch) => {
+    return fishBatchesData?.content.reduce((acc, batch) => {
       if (batch?.id) {
         acc[batch.id] = batch
       }

@@ -16,6 +16,14 @@ export default function StockingHarvestOverview() {
   })
   const { data: stockHarvestData } = useGetStockingHarvestData()
 
+  const useMortalitySurvival = createGetQueryHook({
+    endpoint: '/dashboards/farmer/mortality-rate/overall?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['mortality-survival-rate-overall'],
+  })
+  const { data: mortalitySurvival } = useMortalitySurvival()
+  console.log(mortalitySurvival)
+
   const chartData = [
     { reason: 'stocked', quantity: stockHarvestData?.availableFish, fill: '#9C27B0' },
     { reason: 'harvested', quantity: stockHarvestData?.soldFish, fill: '#FF9040' },
@@ -76,15 +84,17 @@ export default function StockingHarvestOverview() {
                 <span className="text-sm">{item.reason}</span>
                 <span className="text-sm">{item.quantity}</span>
               </div>
-              <div
-                className="max-w-full rounded-full"
-                style={{
-                  backgroundColor: item.fill,
-                  width: `${item.quantity / 100}px`,
-                  maxWidth: '300px',
-                  height: '8px',
-                }}
-              />
+              <div className="relative max-w-full rounded-full bg-gray-200" style={{ width: '300px', height: '8px' }}>
+                <div
+                  className="max-w-full rounded-full"
+                  style={{
+                    backgroundColor: item.fill,
+                    width: `${item.quantity / 100}px`,
+                    maxWidth: '300px',
+                    height: '8px',
+                  }}
+                />
+              </div>
             </FlexBox>
           ))}
         </FlexBox>
@@ -94,15 +104,15 @@ export default function StockingHarvestOverview() {
               Survival Rate
             </Text>
             <Text size="lg" weight="semibold">
-              87%
+              {mortalitySurvival && mortalitySurvival[0]?.survivalRate}%
             </Text>
           </Card>
           <Card className="w-full p-[10px]">
             <Text size="sm" weight="normal">
-              Harvested Fish
+              Mortality Fish
             </Text>
             <Text size="lg" weight="semibold">
-              13%
+              {mortalitySurvival && mortalitySurvival[0]?.mortalityRate}%
             </Text>
           </Card>
         </FlexBox>

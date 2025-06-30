@@ -5,9 +5,9 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import SuperAdminSystemStats from './super-admin-system-stats'
 import HarvestVolumeTrends from './harvest-volume-trends'
 import { StockedHarvestedByCluster } from './stocked-harvested-by-cluster'
-import { FeedInsight } from './feed-insight'
 import SuperAdminClusterHealthAlert from './super-admin-cluster-health-alert'
 import ClusterPerformance from './cluster-performance'
+import FeedInsight from './feed-insight'
 
 export default function SuperAdminDashboard() {
   return (

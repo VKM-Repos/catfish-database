@@ -15,14 +15,22 @@ export default function CostBreakdownOverview() {
     queryKey: ['maintenance-cost-data'],
   })
   const { data: maintenanceCostData } = useGetMaintenanceData()
-  console.log(maintenanceCostData)
-  const chartData = [
-    { reason: 'feed', quantity: 275, fill: '#9C27B0' },
-    { reason: 'fingerlings', quantity: 200, fill: '#8C4EAD' },
-    { reason: 'maintenance', quantity: 187, fill: '#B188C7' },
-    { reason: 'labour', quantity: 173, fill: '#D8C4E3' },
-    { reason: 'other', quantity: 90, fill: '#F0E8F4' },
-  ]
+
+  const useGetAveragePrice = createGetQueryHook({
+    endpoint: '/dashboards/farmer/average-price',
+    responseSchema: z.any(),
+    queryKey: ['average-price'],
+  })
+  const { data: averagePrice } = useGetAveragePrice()
+  console.log(averagePrice)
+
+  // const chartData = [
+  //   { reason: 'feed', quantity: 275, fill: '#9C27B0' },
+  //   { reason: 'fingerlings', quantity: 200, fill: '#8C4EAD' },
+  //   { reason: 'maintenance', quantity: 187, fill: '#B188C7' },
+  //   { reason: 'labour', quantity: 173, fill: '#D8C4E3' },
+  //   { reason: 'other', quantity: 90, fill: '#F0E8F4' },
+  // ]
 
   const colorMap: any = {
     CHEMICALS: '#9C27B0',
@@ -106,7 +114,7 @@ export default function CostBreakdownOverview() {
               Cost per Fish
             </Text>
             <Text size="lg" weight="semibold">
-              13%
+              ₦{averagePrice?.averagePrice}
             </Text>
             <Text size="xs">At market average</Text>
           </Card>

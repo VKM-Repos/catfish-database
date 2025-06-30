@@ -1,8 +1,10 @@
 import React from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Card, CardContent } from 'src/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 import { Text } from 'src/components/ui/text'
+import { z } from 'zod'
 
 const chartData = [
   { month: 'Q1', value: 5, mobile: 80 },
@@ -25,6 +27,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 export default function HarvestVolumeTrends() {
+  const useGetRevenuePrice = createGetQueryHook({
+    endpoint: '/dashboards/super-admin/volume-of-sales?interval=MONTHLY',
+    responseSchema: z.any(),
+    queryKey: ['sales-revenue-price-trends-super-admin'],
+  })
+  const { data: salesRevenue } = useGetRevenuePrice()
+  console.log(salesRevenue)
+
   return (
     <Card className="h-[450px] max-h-[450px] min-h-[450px] w-full border border-neutral-200 p-[16px] ">
       <CardContent>
@@ -33,7 +43,7 @@ export default function HarvestVolumeTrends() {
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={salesRevenue}
             margin={{
               left: 12,
               right: 12,
@@ -41,7 +51,7 @@ export default function HarvestVolumeTrends() {
           >
             <CartesianGrid vertical={true} />
             <XAxis
-              dataKey="month"
+              dataKey="intervalLabel"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -58,7 +68,7 @@ export default function HarvestVolumeTrends() {
             />
 
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Line dataKey="value" type="monotone" stroke="var(--color-value)" strokeWidth={2} dot={true} />
+            <Line dataKey="totalQuantity" type="monotone" stroke="var(--color-value)" strokeWidth={2} dot={true} />
           </LineChart>
         </ChartContainer>
       </CardContent>

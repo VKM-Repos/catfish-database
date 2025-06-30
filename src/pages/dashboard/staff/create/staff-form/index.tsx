@@ -13,7 +13,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Grid } from 'src/components/ui/grid'
 import { Textarea } from 'src/components/ui/textarea'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
-import { ClientErrorType } from 'src/types'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { FlexBox } from 'src/components/ui/flexbox'
@@ -30,6 +30,7 @@ type StaffProps = {
 export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProps) {
   const queryClient = useQueryClient()
   const [error, setError] = useState<ClientErrorType | null>(null)
+
   // const user = useAuthStore((state) => state.user)
   // const [schema, setSchema] = useState(() => extendedFarmerRequestSchema(user))
   // useEffect(() => {
@@ -54,32 +55,31 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
     try {
       setError(null)
       if (mode === 'create') {
-        await useCreateStaffMutation.mutateAsync({ ...values })
-
-        queryClient.invalidateQueries(['farmerStaff'])
-        queryClient.refetchQueries(['farmerStaff-details'])
+        await useCreateStaffMutation.mutate({ ...values })
+        queryClient.invalidateQueries(['Farmer-Staffs'])
+        queryClient.refetchQueries(['Farmer-Staffs'])
       } else if (mode === 'edit' && initialValues) {
         // await updateFarmerStaffMutation.mutateAsync({
         //   ...values,
         // })
-        // queryClient.invalidateQueries(['farmerStaff'])
-        // queryClient.refetchQueries(['farmerStaff-details'])
+        queryClient.invalidateQueries(['farmerStaff'])
+        queryClient.refetchQueries(['farmerStaff-details'])
       }
 
       form.reset()
       onSuccess?.()
     } catch (err) {
-      console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
+      console.error(`${mode === 'create' ? 'Create' : 'Update'} staff error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        // const axiosError = err as { response?: { data?: ServerErrorType } }
-        // const errorData = axiosError.response?.data
-        // if (errorData) {
-        //   setError({
-        //     title: errorData.error,
-        //     message: errorData.message,
-        //     errors: errorData.errors ?? null,
-        //   })
-        // }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
+        const errorData = axiosError.response?.data
+        if (errorData) {
+          setError({
+            title: errorData.error,
+            message: errorData.message,
+            errors: errorData.errors ?? null,
+          })
+        }
       }
     }
   }
@@ -170,38 +170,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
               </FormItem>
             )}
           />
-
-          {/* Password & Generate */}
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-4 md:flex-row">
-              <div className="flex-1">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input state={fieldState.error ? 'error' : 'default'} placeholder="Password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="button" variant="primary" disabled={!form.formState.isValid} className="whitespace-nowrap">
-                <Text>Generate</Text>
-              </Button>
-            </div>
-
-            {/* Send email to user */}
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <Text>Send email to user</Text>
-                <span className="block text-xs text-neutral-500">Notify the user of their staff account</span>
-              </div>
-              <Checkbox />
-            </div>
-          </div>
 
           {/* Permissions */}
           <Heading level={6}>Set staff permission</Heading>

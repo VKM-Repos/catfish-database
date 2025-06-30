@@ -130,7 +130,7 @@ export function RoleForm({ mode, initialValues, onSuccess, onClose }: RoleFormPr
       form.reset()
       onSuccess?.()
     } catch (err) {
-      console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
+      console.error(`${mode === 'create' ? 'Create' : 'Update'} role error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: { error: string; message: string } } }
         const errorData = axiosError.response?.data

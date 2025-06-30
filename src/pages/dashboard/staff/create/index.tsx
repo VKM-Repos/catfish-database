@@ -22,8 +22,8 @@ export default function AddStaff() {
 
   return (
     <Dialog open={true}>
-      <DialogContent className="max-h-[80vh] max-w-[600px] overflow-y-scroll p-8">
-        <div className="py-[4rem] pb-[1rem]">
+      <DialogContent className={`max-h-[80vh] max-w-[600px] ${step === 1 ? 'overflow-y-scroll' : null} p-8`}>
+        <div className={`pt-[4rem] pb-${step === 1 ? '1' : '[2rem]'}`}>
           {(() => {
             switch (step) {
               case 1:

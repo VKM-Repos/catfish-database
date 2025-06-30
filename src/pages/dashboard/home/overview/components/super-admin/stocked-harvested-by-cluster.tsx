@@ -10,20 +10,20 @@ import { Text } from 'src/components/ui/text'
 export const description = 'A multiple bar chart'
 
 const chartData = [
-  { month: 'Ajegunle', desktop: 186, mobile: 80 },
-  { month: 'Vital', desktop: 305, mobile: 200 },
-  { month: 'Camp 74', desktop: 237, mobile: 120 },
-  { month: 'Kumbotso', desktop: 73, mobile: 190 },
-  { month: 'Waziri', desktop: 209, mobile: 130 },
-  { month: 'Eriwe', desktop: 214, mobile: 140 },
+  { feedType: 'Ajegunle', stocked: 186, harvested: 80 },
+  { feedType: 'Vital', stocked: 305, harvested: 200 },
+  { feedType: 'Camp 74', stocked: 237, harvested: 120 },
+  { feedType: 'Kumbotso', stocked: 73, harvested: 190 },
+  { feedType: 'Waziri', stocked: 209, harvested: 130 },
+  { feedType: 'Eriwe', stocked: 214, harvested: 140 },
 ]
 
 const chartConfig = {
-  desktop: {
+  stocked: {
     label: 'Stocked',
     color: '#651391',
   },
-  mobile: {
+  harvested: {
     label: 'Harvested',
     color: '#0DA500',
   },
@@ -37,7 +37,7 @@ export function StockedHarvestedByCluster() {
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={true} />
-            <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
+            <XAxis dataKey="feedType" tickLine={false} tickMargin={10} axisLine={false} />
             <YAxis
               tick={{ fill: '#737780', fontSize: 10 }}
               axisLine={false}
@@ -47,8 +47,8 @@ export function StockedHarvestedByCluster() {
               max={100}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" className="bg-white" />} />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+            <Bar dataKey="stocked" fill="var(--color-stocked)" radius={4} />
+            <Bar dataKey="harvested" fill="var(--color-harvested)" radius={4} />
           </BarChart>
         </ChartContainer>
         <FlexBox justify="center" className="mt-[6px] font-medium">

@@ -31,8 +31,8 @@ export default function EditMaintenanceRecordPage() {
         )
       case 2:
         return (
-          <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Feeding report updated successfully!</Text>
+          <div className="my-8 flex w-fit flex-col items-center justify-center gap-4">
+            <Text className="text-lg font-semibold">Maintenance expense updated successfully!</Text>
             <Button
               variant="primary"
               onClick={() => {

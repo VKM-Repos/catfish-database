@@ -8,11 +8,11 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import FeedStockForm from '../../inventory/create/feed-stock/feed-stock-form'
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from 'src/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader } from 'src/components/ui/dialog'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import * as SolarIconSet from 'solar-icon-set'
+import ECLIPSE from 'src/assets/images/ellipse.png'
 
 export default function RegisterFeedTypes() {
   const [open, setOpen] = useState(false)
@@ -76,36 +76,35 @@ export default function RegisterFeedTypes() {
               onInteractOutside={(e) => {
                 e.preventDefault()
               }}
-              className="max-h-[80vh] max-w-[750px] overflow-y-scroll p-8"
+              className="h-fit w-fit overflow-y-scroll p-8"
             >
-              <VisuallyHidden>
-                <DialogTitle>Add new feed type?</DialogTitle>
-                <DialogDescription>
-                  This popup allows you to either start a new process to add a feed type or leave the page
-                </DialogDescription>
-              </VisuallyHidden>
-              <FlexBox direction="col" justify="between" gap="gap-[3.25rem]" align="center">
-                <FlexBox direction="col" gap="gap-2" align="center">
-                  <Heading level={5} weight="bold">
+              <>
+                <picture>
+                  <img className="absolute left-0 top-0 w-[10rem]" src={ECLIPSE} alt="Background ellipse" />
+                </picture>
+                <DialogHeader>
+                  <Heading level={5} weight="semibold" className="text-center">
                     Success! Feed recorded
                   </Heading>
+                </DialogHeader>
+                <div className="space-y-8">
                   <Text className="text-center">
                     Do you want to add another feed ? You can always add to your stock from your inventory.
                   </Text>
-                </FlexBox>
-                <FlexBox direction="col" gap="gap-3" className="w-full">
-                  <Button variant="primary" onClick={handleYesConditionOnClose} className="w-full font-semibold">
-                    Yes, add another feed
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={handleNoConditionOnClose}
-                    className="w-full font-semibold text-primary-500"
-                  >
-                    No, I will do this later
-                  </Button>
-                </FlexBox>
-              </FlexBox>
+                  <div className="flex w-full flex-col justify-between space-x-2">
+                    <Button variant="primary" onClick={() => setStep(1)} className="w-full font-semibold">
+                      Yes, add another feed
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={handleNoConditionOnClose}
+                      className="w-full font-semibold text-primary-500"
+                    >
+                      No, I will do this later
+                    </Button>
+                  </div>
+                </div>
+              </>
             </DialogContent>
           </Dialog>
         )

@@ -1,18 +1,19 @@
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { Grid } from 'src/components/ui/grid'
+import { formatPrice } from 'src/lib/utils'
 
 export default function SalesStatistics({ data }: { data: any }) {
   const feed_inventory_stats = [
     {
       color: '#B9D9FF',
       label: 'Avg. Selling Price',
-      value: `₦${data?.averageSellingPrice ?? (0 || '0')}`,
+      value: `${formatPrice(data?.averageSellingPrice) ?? (0 || '0')}`,
     },
     {
       color: '#F8D082',
       label: 'Total Sales',
-      value: `₦${data?.totalSales ?? (0 || '0')}`,
+      value: `${formatPrice(data?.totalRevenue) ?? (0 || '0')}`,
     },
   ]
   return (

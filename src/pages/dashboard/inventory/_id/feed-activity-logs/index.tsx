@@ -36,7 +36,7 @@ export default function FeedActivityLogsModal() {
             <Text className="text-xl font-semibold text-neutral-700">Feed Activity Log</Text>
           </FlexBox>
         </div>
-        <FlexBox gap="gap-unset" justify="between" align="center" className="mt-8 w-full">
+        <FlexBox gap="gap-unset" justify="between" align="center" className="w-full pt-[3rem]">
           <Button
             variant="outline"
             className=" flex items-center justify-between gap-4 rounded-sm border border-neutral-200 text-neutral-500"

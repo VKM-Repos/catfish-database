@@ -16,6 +16,7 @@ import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType } from 'src/types'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
+import { FlexBox } from 'src/components/ui/flexbox'
 
 type StaffValues = z.infer<typeof staffRequestSchema>
 
@@ -85,169 +86,169 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
 
   return (
     <>
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-10 w-full border-b border-neutral-200 bg-white py-3">
-        <Heading className="text-center" level={6}>
-          {mode === 'create' ? 'Add a staff' : 'Edit staff’s info'}
-        </Heading>
-      </div>
+      {/* <div className="relative h-[80%] w-[70%] overflow-y-auto px-4 pb-10 pt-6"> */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          {error && <FormValidationErrorAlert error={error} />}
 
-      {/* Scrollable Form Body */}
-      <div className="relative h-[calc(100vh-7rem)] overflow-y-auto px-4 pb-10 pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {error && <FormValidationErrorAlert error={error} />}
-
-            {/* Name Fields */}
-            <Grid cols={2} gap="gap-4">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter first name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </Grid>
-
-            {/* Email */}
+          {/* Name Fields */}
+          <Grid cols={2} gap="gap-4">
             <FormField
               control={form.control}
-              name="email"
+              name="firstName"
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      state={fieldState.error ? 'error' : 'default'}
-                      placeholder="Enter email"
-                      {...field}
-                      disabled={mode === 'edit'}
-                    />
+                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter first name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            {/* Phone */}
             <FormField
               control={form.control}
-              name="phone"
+              name="lastName"
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormControl>
-                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter phone" {...field} />
+                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </Grid>
 
-            {/* Address */}
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      state={fieldState.error ? 'error' : 'default'}
-                      placeholder="Address"
-                      {...field}
-                      className="text-neutral-900"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Password & Generate */}
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-4 md:flex-row">
-                <div className="flex-1">
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input state={fieldState.error ? 'error' : 'default'} placeholder="Password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+          {/* Email */}
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    state={fieldState.error ? 'error' : 'default'}
+                    placeholder="Enter email"
+                    {...field}
+                    disabled={mode === 'edit'}
                   />
-                </div>
-                <Button
-                  type="button"
-                  variant="primary"
-                  disabled={!form.formState.isValid}
-                  className="whitespace-nowrap"
-                >
-                  <Text>Generate</Text>
-                </Button>
-              </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              {/* Send email to user */}
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <Text>Send email to user</Text>
-                  <span className="block text-xs text-neutral-500">Notify the user of their staff account</span>
-                </div>
-                <Checkbox />
+          {/* Phone */}
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormControl>
+                  <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter phone" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Address */}
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    state={fieldState.error ? 'error' : 'default'}
+                    placeholder="Address"
+                    {...field}
+                    className="text-neutral-900"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Password & Generate */}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="flex-1">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input state={fieldState.error ? 'error' : 'default'} placeholder="Password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
+              <Button type="button" variant="primary" disabled={!form.formState.isValid} className="whitespace-nowrap">
+                <Text>Generate</Text>
+              </Button>
             </div>
 
-            {/* Permissions */}
-            <Heading level={6}>Set staff permission</Heading>
-            <Grid cols={2} gap="gap-4">
-              <Text>Daily Farm Report Entry</Text>
+            {/* Send email to user */}
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <Text>Send email to user</Text>
+                <span className="block text-xs text-neutral-500">Notify the user of their staff account</span>
+              </div>
               <Checkbox />
-              <Text>Sampling Report</Text>
-              <Checkbox />
-              <Text>Harvest Report</Text>
-              <Checkbox />
-              <Text>Feed Inventory</Text>
-              <Checkbox />
-              <Text>Maintenance Inventory</Text>
-              <Checkbox />
-              <Text>Sales Report</Text>
-              <Checkbox />
-              <Text>View Reports</Text>
-              <Checkbox />
-              <Text>Read-Only Access</Text>
-            </Grid>
-
-            {/* <div className="fixed inset-x-0 bottom-0 z-10 border-t border-neutral-200 bg-white px-4 py-3"> */}
-            <div className="mx-auto flex max-w-4xl items-center justify-between">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" disabled={!form.formState.isValid}>
-                <Text>{mode === 'create' ? 'Add staff' : 'Update'}</Text>
-              </Button>
             </div>
-            {/* </div> */}
-          </form>
-        </Form>
-      </div>
+          </div>
+
+          {/* Permissions */}
+          <Heading level={6}>Set staff permission</Heading>
+          <Grid cols={2} gap="gap-4">
+            <Text>Daily Farm Report Entry</Text>
+            <Checkbox />
+            <Text>Sampling Report</Text>
+            <Checkbox />
+            <Text>Harvest Report</Text>
+            <Checkbox />
+            <Text>Feed Inventory</Text>
+            <Checkbox />
+            <Text>Maintenance Inventory</Text>
+            <Checkbox />
+            <Text>Sales Report</Text>
+            <Checkbox />
+            <Text>View Reports</Text>
+            <Checkbox />
+            <Text>Read-Only Access</Text>
+            <Checkbox />
+          </Grid>
+
+          <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex items-center gap-2 bg-white font-medium text-primary-500"
+              onClick={onClose}
+            >
+              <Text>Back</Text>
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex items-center gap-2"
+              disabled={!form.formState.isValid}
+            >
+              <>
+                <Text color="text-inherit" variant="body">
+                  Create
+                </Text>
+              </>
+            </Button>
+          </FlexBox>
+        </form>
+      </Form>
+      {/* </div> */}
 
       {/* Sticky Footer */}
     </>

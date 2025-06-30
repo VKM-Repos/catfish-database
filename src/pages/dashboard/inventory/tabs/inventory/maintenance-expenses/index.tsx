@@ -15,42 +15,7 @@ import { z } from 'zod'
 import { Section } from 'src/components/ui/section'
 import ActivityTypeCost from './activity-type-cost'
 import PondCost from './pond-cost'
-
-// --- Mock data for maintenance expenses ---
-const mockMaintenanceExpenses = [
-  {
-    id: '1',
-    updatedAt: '2025-05-30T10:00:00Z',
-    type: 'Cleaning',
-    description: 'General pond cleaning and debris removal',
-    cost: 2000,
-    pond: 'Pond A',
-  },
-  {
-    id: '2',
-    updatedAt: '2025-05-29T15:30:00Z',
-    type: 'Repairs',
-    description: 'Fixed broken inlet pipe',
-    cost: 5500,
-    pond: 'Pond B',
-  },
-  {
-    id: '3',
-    updatedAt: '2025-05-28T09:15:00Z',
-    type: 'Disinfection',
-    description: 'Applied disinfectant to all surfaces',
-    cost: 3200,
-    pond: 'Pond C',
-  },
-  {
-    id: '4',
-    updatedAt: '2025-05-27T12:45:00Z',
-    type: 'Others',
-    description: 'Miscellaneous maintenance',
-    cost: 1000,
-    pond: 'Pond D',
-  },
-]
+import { Container } from 'src/components/ui/container'
 
 export default function MaintenanceExpenses() {
   const navigate = useNavigate()
@@ -60,7 +25,14 @@ export default function MaintenanceExpenses() {
     queryKey: ['maintenance-costs'],
   })
 
+  const useGetTotalMaintenanceCost = createGetQueryHook({
+    endpoint: '/dashboards/farmer/maintenance/total?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['total-maintenance-cost'],
+  })
+
   const { data: maintenanceCost, isLoading } = useGetManitenanceCost()
+  const { data: totalMaintenanceCost } = useGetTotalMaintenanceCost()
 
   console.log('Maintenance Cost Data:', maintenanceCost)
 
@@ -79,9 +51,9 @@ export default function MaintenanceExpenses() {
   )
 
   return (
-    <>
+    <Container>
       <FlexBox direction="col" gap="gap-4" className="w-full">
-        <MaintenanceStatistics />
+        <MaintenanceStatistics totalMaintenanceCost={totalMaintenanceCost?.totalCost} />
         <FlexBox direction="row" align="center" justify="between" className="w-full">
           <Heading level={6}>{title}</Heading>
           <div>{actions}</div>
@@ -89,7 +61,7 @@ export default function MaintenanceExpenses() {
         <DataTable
           search={false}
           columns={columns}
-          data={mockMaintenanceExpenses}
+          data={maintenanceCost?.content ?? []}
           isLoading={isLoading}
           emptyStateMessage="No feed inventory found"
         />
@@ -98,6 +70,6 @@ export default function MaintenanceExpenses() {
         <ActivityTypeCost />
         <PondCost />
       </Section>
-    </>
+    </Container>
   )
 }

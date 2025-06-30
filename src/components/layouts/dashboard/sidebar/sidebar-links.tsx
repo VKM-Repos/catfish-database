@@ -63,8 +63,9 @@ const roleSpecificLinks = {
     subLinks: [
       { label: 'Audit log', path: paths.dashboard.system.auditLog.root },
       { label: 'Clusters', path: paths.dashboard.system.clusters.root },
+      { label: 'Roles & permissions', path: paths.dashboard.system.rolesPermission.root },
       { label: 'Permissions', path: paths.dashboard.system.permissions.root },
-      { label: 'Farm rules', path: paths.dashboard.system.farmRules.root },
+      // { label: 'Farm rules', path: paths.dashboard.system.farmRules.root },
     ],
   },
   systemAdmin: {

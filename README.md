@@ -93,3 +93,6 @@ src
 ### Swagger
 
 http://ec2-34-239-49-92.compute-1.amazonaws.com/swagger-ui/index.html
+
+alaniomotosho2@gmail.com
+Password@123

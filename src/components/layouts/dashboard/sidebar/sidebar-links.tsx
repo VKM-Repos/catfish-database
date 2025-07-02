@@ -65,7 +65,7 @@ const roleSpecificLinks = {
       { label: 'Clusters', path: paths.dashboard.system.clusters.root },
       { label: 'Roles & permissions', path: paths.dashboard.system.rolesPermission.root },
       { label: 'Configuration', path: paths.dashboard.system.configuration.root },
-      { label: 'Permissions', path: paths.dashboard.system.permissions.root },
+      // { label: 'Permissions', path: paths.dashboard.system.permissions.root },
       // { label: 'Farm rules', path: paths.dashboard.system.farmRules.root },
     ],
   },

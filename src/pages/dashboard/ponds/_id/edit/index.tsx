@@ -33,16 +33,19 @@ export default function UpdatePondPage() {
   const { id } = useParams<{ id: string }>()
 
   const { data: pond } = useGetPond({ route: { id: id! } })
-
+  // console.log('pond:.. ', pond)
   const initialValues = {
     id: pond?.id || '',
     name: pond?.name || '',
     size: pond?.size || '',
+    // length: pond?.length || '',
+    // breadth: pond?.breadth || '',
+    // height: pond?.height || '',
     latitude: pond?.latitude || '',
     longitude: pond?.longitude || '',
     waterSource: pond?.waterSource || '',
     pondType: pond?.pondType || '',
-    status: 'Active',
+    status: pond?.status || 'Active',
     clusterId: pond?.cluster?.id || '',
   }
 
@@ -63,11 +66,14 @@ export default function UpdatePondPage() {
   const updatePondMutation = useUpdatePond()
 
   const onSubmit = async (values: z.infer<typeof pondSchema>) => {
+    const formData = {
+      ...values,
+    }
+
+    console.log('value: ', formData)
     try {
-      setError(null)
-      await updatePondMutation.mutateAsync({
-        ...values,
-      })
+      // setError(null)
+      await updatePondMutation.mutateAsync(formData)
       queryClient.invalidateQueries(['pond-details-for-farmer'])
       queryClient.refetchQueries(['pond-details-for-farmer'])
       queryClient.refetchQueries(['my-ponds'])

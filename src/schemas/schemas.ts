@@ -246,6 +246,9 @@ export const pondResponseSchema = z.object({
     .transform((val) => String(val))
     .optional()
     .nullable(),
+  length: z.number(),
+  breadth: z.number(),
+  height: z.number(),
   waterSource: z.string(),
   pondType: z.string(),
   cluster: z.object({

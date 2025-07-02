@@ -13,10 +13,11 @@ type PondFormValues = z.infer<typeof pondSchema>
 
 export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
   const waterSources = ['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers']
-  const pondTypes = ['Concrete', 'Earthen']
+  const pondTypes = ['Concrete', 'Earthen', 'Plastic', 'Tarpauline']
   const isWaterSourcesLoading = false
   const isPondTypesLoading = false
 
+  // console.log('test: ', form)
   return (
     <FlexBox gap="gap-5" direction="col" align="center" className="w-full">
       <div className="flex w-full flex-col gap-2">

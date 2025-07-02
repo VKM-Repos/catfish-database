@@ -20,10 +20,8 @@ type DeactivateUserDialogProps = {
 
 export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUserDialogProps) {
   const queryClient = useQueryClient()
-
-  const [isActive, setIsActive] = useState(user?.accountNonLocked)
+  const [isActive, setIsActive] = useState(user.accountNonLocked)
   const [step, setStep] = useState(1)
-  console.log(user, 'user', isActive)
 
   // Create the put mutation hook for deactivating a user.
   const useDeactivateUser = createPutMutationHook({
@@ -47,7 +45,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
     onOpenChange(false)
   }
   const handleToggle = () => {
-    if (user?.accountNonLocked) {
+    if (isActive) {
       // Deactivate the user
       deactivateUser(
         {},
@@ -55,7 +53,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
           onSuccess: () => {
             setStep(2)
             setIsActive(false)
-            queryClient.invalidateQueries(['farmers'])
+            queryClient.invalidateQueries(['users'])
           },
         },
       )
@@ -67,7 +65,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
           onSuccess: () => {
             setStep(2)
             setIsActive(true)
-            queryClient.invalidateQueries(['farmers'])
+            queryClient.invalidateQueries(['users'])
           },
         },
       )
@@ -87,13 +85,13 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
               <span className="sr-only">Close</span>
             </DialogClose>
             <DialogHeader>
-              <Heading level={5}>{user?.accountNonLocked ? 'Deactivate Farmer?' : 'Activate Farmer?'}</Heading>
+              <Heading level={5}>{isActive ? 'Deactivate User?' : 'Activate User?'}</Heading>
             </DialogHeader>
             <div className="space-y-8">
               <Text weight="light" size="base">
-                {user?.accountNonLocked
-                  ? `You are about to deactivate this Farmer, "${user.firstName}". This action cannot be undone.`
-                  : `You are about to activate this Farmer, "${user.firstName}".`}
+                {isActive
+                  ? `You are about to deactivate this user, "${user.firstName}". This action cannot be undone.`
+                  : `You are about to activate this user, "${user.firstName}".`}
               </Text>
               <div className="flex w-full justify-between space-x-2">
                 <Button
@@ -110,11 +108,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
                   onClick={handleToggle}
                   disabled={isDeactivating || isActivating}
                 >
-                  {isDeactivating || isActivating
-                    ? 'Processing...'
-                    : user?.accountNonLocked
-                    ? 'Deactivate'
-                    : 'Activate'}
+                  {isDeactivating || isActivating ? 'Processing...' : isActive ? 'Deactivate' : 'Activate'}
                 </Button>
               </div>
             </div>
@@ -124,8 +118,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
         {step == 2 && (
           <div className="flex flex-col items-center justify-center space-y-4">
             <Text className="text-lg font-semibold">Done!</Text>
-
-            <Text weight="light">Farmer {user?.accountNonLocked ? 'Activated' : 'Deactivated'} successfully</Text>
+            <Text weight="light">User {isActive ? 'Activated' : 'Deactivated'} successfully</Text>
             <Button variant="primary" onClick={handleCloseDialog}>
               Close
             </Button>

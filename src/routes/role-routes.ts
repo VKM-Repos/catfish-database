@@ -49,6 +49,12 @@ const roleRoutes: Record<UserRole, string[]> = {
     paths.dashboard.inventory.root,
     paths.dashboard.staff.root,
   ],
+  FARMER_STAFF: [
+    paths.dashboard.home.root,
+    paths.dashboard.newPassword,
+    paths.dashboard.home.getStarted,
+    paths.dashboard.profile,
+  ],
 }
 
 // Helper function to check if a user has access to a route

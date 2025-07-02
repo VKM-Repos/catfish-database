@@ -1,38 +1,39 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { z } from 'zod'
 import { ActionsDropdown } from './actions-dropdown'
-import { userSchema } from 'src/schemas/schemas'
 import { StatusBadge } from 'src/components/global/status-badge'
-import { cn } from 'src/lib/utils'
+import { RoleBadge } from 'src/components/global/role-badge'
 
-type Farmer = z.infer<typeof userSchema>
-
-export const columns: ColumnDef<Farmer>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'firstName',
-    header: 'First Name',
-    cell: ({ row }) => <Text weight="light">{row.original.firstName}</Text>,
+    header: 'FirstName',
+    cell: ({ row }) => <Text weight="light">{row?.original.firstName}</Text>,
   },
   {
-    accessorKey: 'lastName',
-    header: 'Last Name',
-    cell: ({ row }) => <Text weight="light">{row.original.lastName}</Text>,
+    accessorKey: 'LastName',
+    header: 'LastName',
+    cell: ({ row }) => <Text weight="light">{row?.original.lastName}</Text>,
   },
   {
     accessorKey: 'email',
     header: 'Email',
-    cell: ({ row }) => <Text weight="light">{row.original.email}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original.email}</Text>,
   },
   {
-    accessorKey: 'phone',
-    header: 'Phone number',
-    cell: ({ row }) => <Text weight="light">{row.original.phone}</Text>,
+    accessorKey: 'phoneNumber',
+    header: 'Phone Number',
+    cell: ({ row }) => <Text weight="light">{row?.original.phone}</Text>,
+  },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+    cell: ({ row }) => <RoleBadge role={row?.original.role} size="sm" variant="default" />,
   },
   {
     accessorKey: 'cluster',
     header: 'Cluster',
-    cell: ({ row }) => <Text weight="light">{row.original.cluster?.name}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original.cluster?.name}</Text>,
   },
   {
     accessorKey: 'accountNonLocked',
@@ -49,11 +50,6 @@ export const columns: ColumnDef<Farmer>[] = [
           backgroundColor: 'bg-[#737780]/10',
           dotColor: 'bg-[#737780]',
         }}
-        inactiveIcon={
-          <div
-            className={cn('h-2 w-2 rounded-full', row.getValue('accountNonLocked') ? 'bg-success-400' : 'bg-[#737780]')}
-          />
-        }
       />
     ),
   },

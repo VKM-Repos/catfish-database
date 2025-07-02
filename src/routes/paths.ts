@@ -49,6 +49,17 @@ export const paths = {
     privacyPolicy: '/dashboard/privacy-policy',
     newPassword: '/dashboard/new-password',
 
+    // -------- User Section --------
+    /**
+     * User management routes.
+     */
+    users: {
+      root: '/dashboard/users',
+      view: (id: string) => `/dashboard/users/${id}`,
+      create: '/dashboard/users/create',
+      edit: (id: string) => `/dashboard/users/${id}/edit`,
+    },
+
     // -------- Farmers Section --------
     /**
      * Farmer management routes.

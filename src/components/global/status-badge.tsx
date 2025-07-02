@@ -5,37 +5,71 @@ interface StatusBadgeProps {
   status: boolean
   activeText?: string
   inactiveText?: string
-  activeBg?: string
-  inactiveBg?: string
+  activeConfig?: {
+    textColor: string
+    borderColor: string
+    backgroundColor: string
+    dotColor: string
+  }
+  inactiveConfig?: {
+    textColor: string
+    borderColor: string
+    backgroundColor: string
+    dotColor: string
+  }
   activeIcon?: ReactNode
   inactiveIcon?: ReactNode
+  size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
 export function StatusBadge({
   status,
   activeText = 'Active',
-  inactiveText = 'Deactivated',
-  activeBg,
-  inactiveBg,
+  inactiveText = 'Inactive',
+  activeConfig = {
+    textColor: 'text-success-500',
+    borderColor: 'border-success-400',
+    backgroundColor: 'bg-success-100',
+    dotColor: 'bg-success-400',
+  },
+  inactiveConfig = {
+    textColor: 'text-neutral-400',
+    borderColor: 'border-neutral-400',
+    backgroundColor: 'bg-neutral-100',
+    dotColor: 'bg-neutral-400',
+  },
   activeIcon,
   inactiveIcon,
+  size = 'md',
   className,
 }: StatusBadgeProps) {
-  const defaultActiveBg = 'border-success-400 bg-success-100 text-success-500'
-  const defaultInactiveBg = 'bg-neutral-400 border-neutral-400 bg-neutral-100 text-neutral-400'
+  const config = status ? activeConfig : inactiveConfig
 
-  const badgeBg = status ? activeBg || defaultActiveBg : inactiveBg || defaultInactiveBg
+  const sizeClasses = {
+    sm: 'px-2 py-0.5 text-xs gap-1',
+    md: 'px-2 py-1 text-sm gap-2',
+    lg: 'px-3 py-1.5 text-base gap-2',
+  }
 
-  const defaultDot = <div className={cn('h-2 w-2 rounded-full', status ? 'bg-success-400' : 'bg-[#FF0000]')} />
+  const dotSizes = {
+    sm: 'h-1.5 w-1.5',
+    md: 'h-2 w-2',
+    lg: 'h-2.5 w-2.5',
+  }
 
-  const icon = status ? activeIcon ?? defaultDot : inactiveIcon ?? defaultDot
+  const defaultIcon = <div className={cn('rounded-full', config.dotColor, dotSizes[size])} />
+
+  const icon = status ? activeIcon ?? defaultIcon : inactiveIcon ?? defaultIcon
 
   return (
     <div
       className={cn(
-        'flex max-w-fit items-center gap-2 rounded-[4rem] border px-2 py-1 text-sm capitalize',
-        badgeBg,
+        'flex max-w-fit items-center rounded-full border font-medium capitalize',
+        config.textColor,
+        config.borderColor,
+        config.backgroundColor,
+        sizeClasses[size],
         className,
       )}
     >

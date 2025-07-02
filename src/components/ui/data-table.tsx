@@ -121,6 +121,7 @@ export function DataTable<TData>({
       enabled: user?.role === 'SUPER_ADMIN',
     },
   })
+
   const { data: clusters } = useGetClusters()
 
   const actionTypes = [

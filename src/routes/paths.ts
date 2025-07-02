@@ -178,6 +178,7 @@ export const paths = {
       },
       configuration: {
         root: '/dashboard/system/configuration',
+        edit: (id: string) => `/dashboard/system/configuration/${id}/edit`,
       },
       farmRules: {
         root: '/dashboard/system/farm-rules',

@@ -12,7 +12,7 @@ export default function CLusterManagerDashboardOverview() {
       <DashboardMenu />
       <FlexBox direction="col" className="mt-5">
         <ClusterFarmOverviewStats />
-        <FlexBox className="w-full" direction="row">
+        <FlexBox className="mb-[20px] w-full" direction="row">
           <FeedingInsight />
           <ClusterHealthAlert />
         </FlexBox>

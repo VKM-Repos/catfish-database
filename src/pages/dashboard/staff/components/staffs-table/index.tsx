@@ -40,7 +40,7 @@ export function StaffsTable() {
   const useGetFarmerStaff = createGetQueryHook({
     endpoint: '/users//by-owning-farmer',
     responseSchema: z.any(),
-    queryKey: ['staff'],
+    queryKey: ['Farmer-Staffs'],
   })
 
   const { data: staffs, isLoading: isStaffsLoading } = useGetFarmerStaff()
@@ -50,7 +50,7 @@ export function StaffsTable() {
   return (
     <>
       {data && data.length > 0 && (
-        <DataTable columns={columns} data={staffs ?? []} emptyStateMessage="No staff found" />
+        <DataTable columns={columns} data={staffs.content ?? []} emptyStateMessage="No staff found" />
       )}
     </>
   )

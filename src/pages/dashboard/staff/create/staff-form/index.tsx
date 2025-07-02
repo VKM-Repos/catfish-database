@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/compone
 import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
-
+import * as SolarIconSet from 'solar-icon-set'
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
 import { staffRequestSchema, staffResponseSchema } from 'src/schemas/schemas'
@@ -13,9 +13,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Grid } from 'src/components/ui/grid'
 import { Textarea } from 'src/components/ui/textarea'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
-import { ClientErrorType } from 'src/types'
+import { ClientErrorType, ServerErrorType } from 'src/types'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
+import { FlexBox } from 'src/components/ui/flexbox'
 
 type StaffValues = z.infer<typeof staffRequestSchema>
 
@@ -29,11 +30,7 @@ type StaffProps = {
 export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProps) {
   const queryClient = useQueryClient()
   const [error, setError] = useState<ClientErrorType | null>(null)
-  // const user = useAuthStore((state) => state.user)
-  // const [schema, setSchema] = useState(() => extendedFarmerRequestSchema(user))
-  // useEffect(() => {
-  //   setSchema(extendedFarmerRequestSchema(user))
-  // }, [user])
+
   const form = useForm<StaffValues>({
     resolver: zodResolver(staffRequestSchema),
     defaultValues: initialValues || {},
@@ -53,58 +50,53 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
     try {
       setError(null)
       if (mode === 'create') {
-        await useCreateStaffMutation.mutateAsync({ ...values })
-
-        queryClient.invalidateQueries(['farmerStaff'])
-        queryClient.refetchQueries(['farmerStaff-details'])
+        await useCreateStaffMutation.mutate({ ...values })
+        queryClient.invalidateQueries(['Farmer-Staffs'])
+        queryClient.refetchQueries(['Farmer-Staffs'])
       } else if (mode === 'edit' && initialValues) {
         // await updateFarmerStaffMutation.mutateAsync({
         //   ...values,
         // })
-        // queryClient.invalidateQueries(['farmerStaff'])
-        // queryClient.refetchQueries(['farmerStaff-details'])
+        queryClient.invalidateQueries(['farmerStaff'])
+        queryClient.refetchQueries(['farmerStaff-details'])
       }
 
       form.reset()
       onSuccess?.()
     } catch (err) {
-      console.error(`${mode === 'create' ? 'Create' : 'Update'} cluster error:`, err)
+      console.error(`${mode === 'create' ? 'Create' : 'Update'} staff error:`, err)
       if (err && typeof err === 'object' && 'response' in err) {
-        // const axiosError = err as { response?: { data?: ServerErrorType } }
-        // const errorData = axiosError.response?.data
-        // if (errorData) {
-        //   setError({
-        //     title: errorData.error,
-        //     message: errorData.message,
-        //     errors: errorData.errors ?? null,
-        //   })
-        // }
+        const axiosError = err as { response?: { data?: ServerErrorType } }
+        const errorData = axiosError.response?.data
+        if (errorData) {
+          setError({
+            title: errorData.error,
+            message: errorData.message,
+            errors: errorData.errors ?? null,
+          })
+        }
       }
     }
   }
 
   return (
     <>
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-10 w-full border-b border-neutral-200 bg-white py-3">
-        <Heading className="text-center" level={6}>
-          {mode === 'create' ? 'Add a staff' : 'Edit staff’s info'}
-        </Heading>
-      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          {error && <FormValidationErrorAlert error={error} />}
 
-      {/* Scrollable Form Body */}
-      <div className="relative h-[calc(100vh-7rem)] overflow-y-auto px-4 pb-10 pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {error && <FormValidationErrorAlert error={error} />}
-
-            {/* Name Fields */}
-            <Grid cols={2} gap="gap-4">
+          {/* Name Fields */}
+          <Grid cols={2} gap="gap-4">
+            <FlexBox direction="col" className="w-full" gap="gap-1">
+              <Text className="flex items-center text-sm font-medium text-neutral-700">
+                First Name <span className="font-bold text-red-500">*</span>
+                <SolarIconSet.QuestionCircle size={16} />
+              </Text>
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field, fieldState }) => (
-                  <FormItem>
+                  <FormItem className="w-full">
                     <FormControl>
                       <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter first name" {...field} />
                     </FormControl>
@@ -112,11 +104,18 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
                   </FormItem>
                 )}
               />
+            </FlexBox>
+
+            <FlexBox direction="col" className="w-full" gap="gap-1">
+              <Text className="flex items-center text-sm font-medium text-neutral-700">
+                Last Name <span className="font-bold text-red-500">*</span>
+                <SolarIconSet.QuestionCircle size={16} />
+              </Text>
               <FormField
                 control={form.control}
                 name="lastName"
                 render={({ field, fieldState }) => (
-                  <FormItem>
+                  <FormItem className="w-full">
                     <FormControl>
                       <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
                     </FormControl>
@@ -124,9 +123,15 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
                   </FormItem>
                 )}
               />
-            </Grid>
+            </FlexBox>
+          </Grid>
 
-            {/* Email */}
+          {/* Email */}
+          <div>
+            <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
+              Email <span className="font-bold text-red-500">*</span>
+              <SolarIconSet.QuestionCircle size={16} />
+            </Text>
             <FormField
               control={form.control}
               name="email"
@@ -144,8 +149,14 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
                 </FormItem>
               )}
             />
+          </div>
 
-            {/* Phone */}
+          {/* Phone */}
+          <div>
+            <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
+              Phone Number <span className="font-bold text-red-500">*</span>
+              <SolarIconSet.QuestionCircle size={16} />
+            </Text>
             <FormField
               control={form.control}
               name="phone"
@@ -158,8 +169,14 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
                 </FormItem>
               )}
             />
+          </div>
 
-            {/* Address */}
+          {/* Address */}
+          <div>
+            <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
+              Address <span className="font-bold text-red-500">*</span>
+              <SolarIconSet.QuestionCircle size={16} />
+            </Text>
             <FormField
               control={form.control}
               name="address"
@@ -177,79 +194,53 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
                 </FormItem>
               )}
             />
+          </div>
 
-            {/* Password & Generate */}
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-4 md:flex-row">
-                <div className="flex-1">
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field, fieldState }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input state={fieldState.error ? 'error' : 'default'} placeholder="Password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  variant="primary"
-                  disabled={!form.formState.isValid}
-                  className="whitespace-nowrap"
-                >
-                  <Text>Generate</Text>
-                </Button>
-              </div>
+          {/* Permissions */}
+          <Heading level={6}>Set staff permission</Heading>
+          <Grid cols={2} gap="gap-4">
+            <Text>Daily Farm Report Entry</Text>
+            <Checkbox />
+            <Text>Sampling Report</Text>
+            <Checkbox />
+            <Text>Harvest Report</Text>
+            <Checkbox />
+            <Text>Feed Inventory</Text>
+            <Checkbox />
+            <Text>Maintenance Inventory</Text>
+            <Checkbox />
+            <Text>Sales Report</Text>
+            <Checkbox />
+            <Text>View Reports</Text>
+            <Checkbox />
+            <Text>Read-Only Access</Text>
+            <Checkbox />
+          </Grid>
 
-              {/* Send email to user */}
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <Text>Send email to user</Text>
-                  <span className="block text-xs text-neutral-500">Notify the user of their staff account</span>
-                </div>
-                <Checkbox />
-              </div>
-            </div>
-
-            {/* Permissions */}
-            <Heading level={6}>Set staff permission</Heading>
-            <Grid cols={2} gap="gap-4">
-              <Text>Daily Farm Report Entry</Text>
-              <Checkbox />
-              <Text>Sampling Report</Text>
-              <Checkbox />
-              <Text>Harvest Report</Text>
-              <Checkbox />
-              <Text>Feed Inventory</Text>
-              <Checkbox />
-              <Text>Maintenance Inventory</Text>
-              <Checkbox />
-              <Text>Sales Report</Text>
-              <Checkbox />
-              <Text>View Reports</Text>
-              <Checkbox />
-              <Text>Read-Only Access</Text>
-            </Grid>
-
-            {/* <div className="fixed inset-x-0 bottom-0 z-10 border-t border-neutral-200 bg-white px-4 py-3"> */}
-            <div className="mx-auto flex max-w-4xl items-center justify-between">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" disabled={!form.formState.isValid}>
-                <Text>{mode === 'create' ? 'Add staff' : 'Update'}</Text>
-              </Button>
-            </div>
-            {/* </div> */}
-          </form>
-        </Form>
-      </div>
-
-      {/* Sticky Footer */}
+          <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex items-center gap-2 bg-white font-medium text-primary-500"
+              onClick={onClose}
+            >
+              <Text>Back</Text>
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex items-center gap-2"
+              disabled={!form.formState.isValid}
+            >
+              <>
+                <Text color="text-inherit" variant="body">
+                  Create
+                </Text>
+              </>
+            </Button>
+          </FlexBox>
+        </form>
+      </Form>
     </>
   )
 }

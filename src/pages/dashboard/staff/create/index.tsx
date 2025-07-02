@@ -21,13 +21,24 @@ export default function AddStaff() {
   }
 
   return (
-    <Dialog open onOpenChange={() => navigate(paths.dashboard.staff.root)}>
-      <DialogContent className="max-w-[478px] overflow-hidden p-8">
-        <div className="py-[4rem] pb-[6rem]">
+    <Dialog open={true}>
+      <DialogContent className={`max-h-[80vh] max-w-[600px] ${step === 1 ? 'overflow-y-scroll' : null} p-8`}>
+        <div className={`pt-[4rem] pb-${step === 1 ? '1' : '[2rem]'}`}>
           {(() => {
             switch (step) {
               case 1:
-                return <StaffForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                return (
+                  <>
+                    {/* Sticky Header */}
+                    <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
+                      <Heading className="text-center" level={6}>
+                        Add a staff
+                      </Heading>
+                    </div>
+                    <StaffForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+                  </>
+                )
+
               case 2:
                 return (
                   <div className="flex h-[3rem] w-full flex-col items-center justify-center space-y-4">

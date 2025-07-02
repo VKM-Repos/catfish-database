@@ -13,7 +13,7 @@ export default function DashboardMenu() {
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
   const [selectFarmerDIalogOpen, setOpenSelectFarmerDialog] = useState(false)
-  const title = user?.role === 'FARMER' ? 'Farm ' : 'Cluster'
+  const title = user?.role === 'FARMER' ? 'Farm ' : user?.role === 'CLUSTER_MANAGER' ? 'Cluster' : 'System'
 
   return (
     <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white px-10 py-4">
@@ -53,30 +53,32 @@ export default function DashboardMenu() {
             View and manage your {title.toLowerCase()} performance metrics
           </Text>
         </FlexBox>
-        <div className="flex items-center gap-2">
-          {user?.role === 'FARMER' ? (
-            <DropDownOption />
-          ) : (
-            <Button
-              onClick={() => setOpenSelectFarmerDialog(true)}
-              variant={'outline'}
-              className="flex items-center gap-2"
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M15 10.625H5C4.65833 10.625 4.375 10.3417 4.375 10C4.375 9.65833 4.65833 9.375 5 9.375H15C15.3417 9.375 15.625 9.65833 15.625 10C15.625 10.3417 15.3417 10.625 15 10.625Z"
-                  fill="#651391"
-                />
-                <path
-                  d="M10 15.625C9.65833 15.625 9.375 15.3417 9.375 15V5C9.375 4.65833 9.65833 4.375 10 4.375C10.3417 4.375 10.625 4.65833 10.625 5V15C10.625 15.3417 10.3417 15.625 10 15.625Z"
-                  fill="#651391"
-                />
-              </svg>
-              <Text className="text-[14px] font-semibold">Add Pond</Text>
-            </Button>
-          )}
-          <Button onClick={() => navigate(paths.dashboard.home.getStarted)}>Submit Report</Button>
-        </div>
+        {user?.role !== 'SUPER_ADMIN' && (
+          <div className="flex items-center gap-2">
+            {user?.role === 'FARMER' ? (
+              <DropDownOption />
+            ) : (
+              <Button
+                onClick={() => setOpenSelectFarmerDialog(true)}
+                variant={'outline'}
+                className="flex items-center gap-2"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15 10.625H5C4.65833 10.625 4.375 10.3417 4.375 10C4.375 9.65833 4.65833 9.375 5 9.375H15C15.3417 9.375 15.625 9.65833 15.625 10C15.625 10.3417 15.3417 10.625 15 10.625Z"
+                    fill="#651391"
+                  />
+                  <path
+                    d="M10 15.625C9.65833 15.625 9.375 15.3417 9.375 15V5C9.375 4.65833 9.65833 4.375 10 4.375C10.3417 4.375 10.625 4.65833 10.625 5V15C10.625 15.3417 10.3417 15.625 10 15.625Z"
+                    fill="#651391"
+                  />
+                </svg>
+                <Text className="text-[14px] font-semibold">Add Pond</Text>
+              </Button>
+            )}
+            <Button onClick={() => navigate(paths.dashboard.home.getStarted)}>Submit Report</Button>
+          </div>
+        )}
       </FlexBox>
       <SelectFarmerDialog
         open={selectFarmerDIalogOpen}

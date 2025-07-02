@@ -4,8 +4,23 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { HarvestVolumeOvertime } from './harvest-volume-overtime'
 import { LineChartHarvestVolume } from './line-chart-harvest-volume'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
 export default function ProductAndHarvestMetrics() {
+  const useGetSalesVolume = createGetQueryHook({
+    endpoint: '/dashboards/cluster/volume-of-sales?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['sales-volume-cluster-manager'],
+  })
+  const { data: salesVolume } = useGetSalesVolume()
+  const useGetRevenuePrice = createGetQueryHook({
+    endpoint: '/dashboards/cluster/volume-of-sales?interval=MONTHLY',
+    responseSchema: z.any(),
+    queryKey: ['sales-revenue-price-trends-cluster-manager'],
+  })
+  const { data: salesRevenue } = useGetRevenuePrice()
+
   return (
     <Card className="border border-neutral-200 p-[24px]">
       <FlexBox>
@@ -15,7 +30,7 @@ export default function ProductAndHarvestMetrics() {
               Total harvest volume
             </Text>
             <Text size="lg" weight="semibold">
-              32,000 kg
+              {salesVolume && salesVolume[0]?.totalWeight} kg
             </Text>
             <Text size="xs">YTD</Text>
           </FlexBox>
@@ -26,7 +41,7 @@ export default function ProductAndHarvestMetrics() {
               Average selling price
             </Text>
             <Text size="lg" weight="semibold">
-              ₦425/kg
+              ₦{salesVolume && salesVolume[0]?.averageSellingPrice}
             </Text>
             <Text size="xs">Current</Text>
           </FlexBox>
@@ -37,7 +52,7 @@ export default function ProductAndHarvestMetrics() {
               Total revenue
             </Text>
             <Text size="lg" weight="semibold">
-              ₦89.5M
+              ₦{salesVolume && salesVolume[0]?.totalRevenue}
             </Text>
             <Text size="xs">YTD</Text>
           </FlexBox>
@@ -48,14 +63,14 @@ export default function ProductAndHarvestMetrics() {
               Average fish weight
             </Text>
             <Text size="lg" weight="semibold">
-              0.89 kg
+              {salesVolume && salesVolume[0]?.averageFishWeight} kg
             </Text>
             <Text size="xs">Current</Text>
           </FlexBox>
         </Card>
       </FlexBox>
       <FlexBox>
-        <HarvestVolumeOvertime />
+        <HarvestVolumeOvertime harvestTrends={salesRevenue} />
         <LineChartHarvestVolume />
       </FlexBox>
     </Card>

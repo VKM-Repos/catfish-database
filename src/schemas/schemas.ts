@@ -121,6 +121,15 @@ export const staffRequestSchema = z.object({
 
 export const staffResponseSchema = userSchema
 
+export const roleRequestSchema = z.object({
+  id: z.string().optional(), // <-- change this if `id` is only required in edit
+  name: z.string(),
+  description: z.string(),
+  privilegeIds: z.array(z.string()),
+})
+
+export const roleResponseSchema = roleRequestSchema
+
 export const clusterRequestSchema = z.object({
   name: z.string().min(3, 'Cluster name must not be less than 3 characters'),
   context: z.string().optional(),
@@ -258,6 +267,9 @@ export const pondResponseSchema = z.object({
     .transform((val) => String(val))
     .optional()
     .nullable(),
+  length: z.number(),
+  breadth: z.number(),
+  height: z.number(),
   waterSource: z.string(),
   pondType: z.string(),
   cluster: z.object({

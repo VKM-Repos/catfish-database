@@ -24,7 +24,9 @@ export default function EditRolePage() {
   return (
     <Dialog open>
       <DialogContent
-        className={`max-h-[80vh] max-w-[600px] overflow-hidden ${step === 1 ? 'overflow-y-scroll' : null} p-8`}
+        className={`max-h-[80vh] max-w-[${step === 1 ? '600px' : '400px'}] overflow-hidden ${
+          step === 1 ? 'overflow-y-scroll' : null
+        } p-8`}
       >
         <div className={`pt-[4rem] pb-${step === 1 ? '1' : '[2rem]'}`}>
           {(() => {

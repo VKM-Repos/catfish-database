@@ -587,6 +587,30 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          // Configuration
+          {
+            path: paths.dashboard.system.configuration.root,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                {LazyPage(() => import('src/pages/dashboard/system/configuration'))}
+              </RoleGuard>
+            ),
+            children: [
+              {
+                path: ':id',
+                children: [
+                  {
+                    path: 'edit',
+                    element: (
+                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                        {LazyPage(() => import('src/pages/dashboard/system/configuration/_id'))}
+                      </RoleGuard>
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
           // Farm rules
           {
             path: paths.dashboard.system.farmRules.root,

@@ -1,15 +1,14 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
-import { RoleForm } from '../components/forms/role-form'
+// import { RoleForm } from '../components/forms/role-form'
 import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Heading } from 'src/components/ui/heading'
+import { EditConfigForm } from './edit/EditModal'
 
-export default function EditRolePage() {
-  const location = useLocation()
-  const { role } = location?.state || {}
+export default function EditConfigPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
 
@@ -18,7 +17,7 @@ export default function EditRolePage() {
   }
 
   const handleClose = () => {
-    navigate(paths.dashboard.system.rolesPermission.root)
+    navigate(paths.dashboard.system.configuration.root)
   }
 
   return (
@@ -32,7 +31,7 @@ export default function EditRolePage() {
           {(() => {
             switch (step) {
               case 1:
-                return <RoleForm mode="edit" onSuccess={handleSuccess} onClose={handleClose} initialValues={role} />
+                return <EditConfigForm mode="edit" onSuccess={handleSuccess} onClose={handleClose} />
 
               case 2:
                 return (

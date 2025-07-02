@@ -3,11 +3,19 @@ import { Text } from 'src/components/ui/text'
 import { ActionsDropdown } from './actions-dropdown'
 import { Role } from 'src/types/role.types'
 
+const formatString = (key: string) => {
+  if (!key) return ''
+  return key
+    .replace(/_/g, ' ') // Replace underscores with space
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between camelCase words
+    .toLowerCase() // Make the entire string lowercase first
+    .replace(/\b\w/g, (char) => char.toUpperCase()) // Capitalize first letter of each word
+}
 export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: 'role',
     header: 'Role Name',
-    cell: ({ row }) => <Text weight="light">{row.original.name}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatString(row.original.name)}</Text>,
   },
   {
     accessorKey: 'permissions',
@@ -46,7 +54,7 @@ export const columns: ColumnDef<Role>[] = [
               key={index}
               className="rounded-[4rem] border border-neutral-200 bg-primary-100 px-2 py-1 text-sm capitalize text-primary-500"
             >
-              {chip}
+              {formatString(chip)}
             </div>
           ))}
           {remainingCount > 0 && (

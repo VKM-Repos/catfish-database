@@ -61,15 +61,6 @@ export const columns: ColumnDef<any>[] = [
   //       Split triggered
   //     </div>
   //   ),
-  //   cell: ({ row }) => (
-  //     <StatusBadge
-  //       status={row.original.splitTriggered}
-  //       activeText="Yes"
-  //       inactiveText="No"
-  //       inactiveBg="bg-error-100 border-[#FF0000] text-[#FF0000]"
-  //     />
-  //   ),
-  // },
   // {
   //   accessorKey: 'fishMoved',
   //   header: () => (
@@ -87,29 +78,5 @@ export const columns: ColumnDef<any>[] = [
   //     </div>
   //   ),
   //   cell: ({ row }) => <Text weight="light">{row.original.destinationPond}</Text>,
-  // },
-  // {
-  //   accessorKey: 'reason',
-  //   header: 'Reason',
-  //   cell: ({ row }) => {
-  //     const reasonBool = row.original.reason === 'Harvest' ? true : false
-
-  //     return (
-  //       <>
-  //         {['Harvest', 'Transfer'].includes(row.original.reason) ? (
-  //           <StatusBadge
-  //             status={reasonBool}
-  //             activeText="Harvest"
-  //             inactiveText="Transfer"
-  //             activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />}
-  //             inactiveIcon={<SolarIconSet.MapArrowRight color="currentColor" size={16} />}
-  //             inactiveBg="bg-[#E5E7FF] text-[#000AFF] border-[#000AFF]"
-  //           />
-  //         ) : (
-  //           <Text weight="light">-</Text>
-  //         )}
-  //       </>
-  //     )
-  //   },
   // },
 ]

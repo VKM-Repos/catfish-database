@@ -58,6 +58,27 @@ export const userSchema = z.object({
   cluster: clusterSchema.nullable().optional(),
 })
 
+export const userRequestSchema = z.object({
+  firstName: z
+    .string()
+    .min(3, 'Field must be at least 3 characters')
+    .max(50, 'Field must not be more than 50 characters'),
+  lastName: z.string().min(3, 'Field must be at least 3 characters'),
+  email: z.string().email().max(50, 'Field must not be more than 50 characters'),
+  phone: z
+    .string()
+    .regex(/^\d+$/, {
+      message: 'Phone number must contain only digits (0-9)',
+    })
+    .min(11, 'Field must be at least 11 digits')
+    .max(11, 'Field must not be more than 11 digit'),
+  clusterId: z.string().min(1, 'Cluster ID is required'),
+  role: z.string().optional(),
+  id: z.string().optional(),
+})
+
+export const userResponseSchema = userSchema
+
 export const paginatedUserResponseSchema = z.object({
   totalPages: z.number(),
   totalElements: z.number(),

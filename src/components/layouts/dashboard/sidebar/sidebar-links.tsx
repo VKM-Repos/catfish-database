@@ -27,10 +27,10 @@ const commonLinks = {
 
 // Role-specific links
 const roleSpecificLinks = {
-  clusterManagers: {
-    label: 'Cluster managers',
-    path: paths.dashboard.clusterManagers.root,
-    icon: <SolarIconSet.Structure color="currentColor" size={22} iconStyle="Outline" />,
+  users: {
+    label: 'Users',
+    path: paths.dashboard.users.root,
+    icon: <SolarIconSet.UsersGroupTwoRounded color="currentColor" size={22} iconStyle="Outline" />,
   },
   admins: {
     label: 'Admins',
@@ -67,31 +67,12 @@ const roleSpecificLinks = {
       { label: 'Farm rules', path: paths.dashboard.system.farmRules.root },
     ],
   },
-  systemAdmin: {
-    label: 'System',
-    icon: <SolarIconSet.Settings color="currentColor" size={22} iconStyle="Outline" />,
-    subLinks: [{ label: 'Clusters', path: paths.dashboard.system.clusters.root }],
-  },
 }
 
 // Combine links for each role
 export const sideBarLinks: Record<string, SideBarLink[]> = {
-  SUPER_ADMIN: [
-    commonLinks.home,
-    roleSpecificLinks.clusterManagers,
-    roleSpecificLinks.admins,
-    roleSpecificLinks.farmers,
-    roleSpecificLinks.system,
-    commonLinks.more,
-  ],
-  ADMIN: [
-    commonLinks.home,
-    roleSpecificLinks.clusterManagers,
-    roleSpecificLinks.farmers,
-    commonLinks.reports,
-    roleSpecificLinks.systemAdmin,
-    commonLinks.more,
-  ],
+  SUPER_ADMIN: [commonLinks.home, roleSpecificLinks.users, roleSpecificLinks.system, commonLinks.more],
+  ADMIN: [commonLinks.home, roleSpecificLinks.users, commonLinks.reports, commonLinks.more],
   CLUSTER_MANAGER: [commonLinks.home, roleSpecificLinks.farmers, commonLinks.reports, commonLinks.more],
   FARMER: [
     commonLinks.home,

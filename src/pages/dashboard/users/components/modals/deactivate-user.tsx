@@ -53,7 +53,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
           onSuccess: () => {
             setStep(2)
             setIsActive(false)
-            queryClient.invalidateQueries(['farmers'])
+            queryClient.invalidateQueries(['users'])
           },
         },
       )
@@ -65,7 +65,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
           onSuccess: () => {
             setStep(2)
             setIsActive(true)
-            queryClient.invalidateQueries(['farmers'])
+            queryClient.invalidateQueries(['users'])
           },
         },
       )
@@ -85,13 +85,13 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
               <span className="sr-only">Close</span>
             </DialogClose>
             <DialogHeader>
-              <Heading level={5}>{isActive ? 'Deactivate Farmer?' : 'Activate Farmer?'}</Heading>
+              <Heading level={5}>{isActive ? 'Deactivate User?' : 'Activate User?'}</Heading>
             </DialogHeader>
             <div className="space-y-8">
               <Text weight="light" size="base">
                 {isActive
-                  ? `You are about to deactivate this Farmer, "${user.firstName}". This action cannot be undone.`
-                  : `You are about to activate this Farmer, "${user.firstName}".`}
+                  ? `You are about to deactivate this user, "${user.firstName}". This action cannot be undone.`
+                  : `You are about to activate this user, "${user.firstName}".`}
               </Text>
               <div className="flex w-full justify-between space-x-2">
                 <Button
@@ -118,7 +118,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
         {step == 2 && (
           <div className="flex flex-col items-center justify-center space-y-4">
             <Text className="text-lg font-semibold">Done!</Text>
-            <Text weight="light">Farmer {isActive ? 'Activated' : 'Deactivated'} successfully</Text>
+            <Text weight="light">User {isActive ? 'Activated' : 'Deactivated'} successfully</Text>
             <Button variant="primary" onClick={handleCloseDialog}>
               Close
             </Button>

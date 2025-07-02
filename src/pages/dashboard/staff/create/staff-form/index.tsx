@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/compone
 import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
-
+import * as SolarIconSet from 'solar-icon-set'
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
 import { staffRequestSchema, staffResponseSchema } from 'src/schemas/schemas'
@@ -31,11 +31,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
   const queryClient = useQueryClient()
   const [error, setError] = useState<ClientErrorType | null>(null)
 
-  // const user = useAuthStore((state) => state.user)
-  // const [schema, setSchema] = useState(() => extendedFarmerRequestSchema(user))
-  // useEffect(() => {
-  //   setSchema(extendedFarmerRequestSchema(user))
-  // }, [user])
   const form = useForm<StaffValues>({
     resolver: zodResolver(staffRequestSchema),
     defaultValues: initialValues || {},
@@ -86,90 +81,120 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
 
   return (
     <>
-      {/* <div className="relative h-[80%] w-[70%] overflow-y-auto px-4 pb-10 pt-6"> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {error && <FormValidationErrorAlert error={error} />}
 
           {/* Name Fields */}
           <Grid cols={2} gap="gap-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter first name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FlexBox direction="col" className="w-full" gap="gap-1">
+              <Text className="flex items-center text-sm font-medium text-neutral-700">
+                First Name <span className="font-bold text-red-500">*</span>
+                <SolarIconSet.QuestionCircle size={16} />
+              </Text>
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter first name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FlexBox>
+
+            <FlexBox direction="col" className="w-full" gap="gap-1">
+              <Text className="flex items-center text-sm font-medium text-neutral-700">
+                Last Name <span className="font-bold text-red-500">*</span>
+                <SolarIconSet.QuestionCircle size={16} />
+              </Text>
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FlexBox>
           </Grid>
 
           {/* Email */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    state={fieldState.error ? 'error' : 'default'}
-                    placeholder="Enter email"
-                    {...field}
-                    disabled={mode === 'edit'}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
+              Email <span className="font-bold text-red-500">*</span>
+              <SolarIconSet.QuestionCircle size={16} />
+            </Text>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      state={fieldState.error ? 'error' : 'default'}
+                      placeholder="Enter email"
+                      {...field}
+                      disabled={mode === 'edit'}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Phone */}
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter phone" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
+              Phone Number <span className="font-bold text-red-500">*</span>
+              <SolarIconSet.QuestionCircle size={16} />
+            </Text>
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter phone" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Address */}
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    state={fieldState.error ? 'error' : 'default'}
-                    placeholder="Address"
-                    {...field}
-                    className="text-neutral-900"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
+              Address <span className="font-bold text-red-500">*</span>
+              <SolarIconSet.QuestionCircle size={16} />
+            </Text>
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      state={fieldState.error ? 'error' : 'default'}
+                      placeholder="Address"
+                      {...field}
+                      className="text-neutral-900"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Permissions */}
           <Heading level={6}>Set staff permission</Heading>
@@ -216,9 +241,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
           </FlexBox>
         </form>
       </Form>
-      {/* </div> */}
-
-      {/* Sticky Footer */}
     </>
   )
 }

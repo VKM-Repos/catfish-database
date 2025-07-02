@@ -32,7 +32,7 @@ export const columns: ColumnDef<any>[] = [
     accessorFn: (row) => row.original.status,
     header: 'Status',
     cell: ({ row }) => {
-      const status = row.original.accountNonLocked ? 'Active' : 'Inactive'
+      const status = !row.original.accountNonLocked ? 'Active' : 'Inactive'
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${

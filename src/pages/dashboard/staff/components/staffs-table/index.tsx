@@ -50,7 +50,7 @@ export function StaffsTable() {
   return (
     <>
       {data && data.length > 0 && (
-        <DataTable columns={columns} data={staffs ?? []} emptyStateMessage="No staff found" />
+        <DataTable columns={columns} data={staffs.content ?? []} emptyStateMessage="No staff found" />
       )}
     </>
   )

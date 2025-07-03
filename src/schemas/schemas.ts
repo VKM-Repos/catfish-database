@@ -452,6 +452,9 @@ export const fishDiseaseSchema = z.object({
   disease: z.string().min(1, 'Please select fish disease'),
   observation: z.string().min(1, 'Observation is required'),
 })
+export const mortalitySchema = z.object({
+  mortalityNumber: z.string().min(1, 'Mortality number is required'),
+})
 export const maintenanceSchema = z.object({
   maintenance: z.string().min(1, { message: 'Please Select a maintenance' }),
   cost: z
@@ -462,16 +465,10 @@ export const maintenanceSchema = z.object({
 })
 
 export const samplingSchema = z.object({
-  numberOfFishSampled: z.any(),
-  weightOfFishSampled: z.any().optional(),
-  avgWeightFishSampled: z.any().optional(),
-  totalWeightGain: z.any(),
-  totalFeedConsumed: z.any(),
-  numberOfFishMortalityRecorded: z.any(),
-  disease: z.string().optional(),
-  diseaseObservation: z.string().optional(),
-  behavior: z.string().optional(),
-  observation: z.string().optional(),
+  numberOfFishSampled: z.string().min(1, 'Number of fish sampled is required'),
+  weightOfFishSampled: z.string().min(1, 'Weight of fish sampled is required'),
+  avgWeightFishSampled: z.string().min(1, 'Observation is required'),
+  totalWeightGain: z.string().min(1, 'Observation is required'),
 })
 
 export const sortingSchema = z.object({

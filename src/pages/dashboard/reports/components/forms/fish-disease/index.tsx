@@ -7,8 +7,8 @@ import { z } from 'zod'
 import { Text } from 'src/components/ui/text'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
-import { useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { CreateReportDialog } from '../../modals/create-report-modal'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Card } from 'src/components/ui/card'
@@ -17,11 +17,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 's
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
+import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 
-export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
-  const navigate = useNavigate()
+export function FishDisease({
+  handleNext,
+  handlePrevious,
+  isLastStep,
+}: {
+  handleNext?: () => void
+  handlePrevious?: () => void
+  isLastStep?: boolean
+}) {
   const [recordFishDisease, setRecordFishDisease] = useState(false)
-  const timeInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
   const { reset: resetStepper } = useStepperStore()
@@ -41,8 +48,7 @@ export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () =>
   })
 
   const { reset } = form
-  const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
-  const [openDialog, setOpenDialog] = useState(false)
+  const [openFinalDialog, setOpenFinalDialog] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof fishDiseaseSchema>) => {
     console.log(data)
@@ -54,11 +60,13 @@ export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () =>
         time: '2025-07-02T04:10:40.703Z',
       }
       await createFishDisease.mutateAsync(fishDiseaseData)
-      setOpenDialog(true)
-      if (openDialog) {
-        setInterval(() => {
-          resetStepper()
-        }, 2000)
+      if (isLastStep) {
+        setOpenFinalDialog(true)
+        if (openFinalDialog) {
+          setInterval(() => {
+            resetStepper()
+          }, 2000)
+        }
       }
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
@@ -74,20 +82,8 @@ export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () =>
         }
       }
     }
-    if (handleNext) {
-      handleNext()
-    }
-  }
-  const handleInputChange = (fieldName: string, value: string) => {
-    setActiveInputs((prev) => ({
-      ...prev,
-      [fieldName]: value.trim().length > 0,
-    }))
   }
 
-  const handleIconClick = () => {
-    timeInputRef.current?.showPicker()
-  }
   const handleSwitchChange = (checked: boolean) => {
     setRecordFishDisease(checked)
     // Reset form when switch is turned off
@@ -95,6 +91,7 @@ export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () =>
       reset()
     }
   }
+
   const diseases = [
     { value: 'NO_SIGNS_OF_DISEASE', text: 'No Signs of Disease' },
     { value: 'FIN_ROT', text: 'Fin Rot' },
@@ -111,8 +108,8 @@ export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () =>
   ]
   return (
     <>
-      <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
-
+      {isLastStep && <CreateReportDialog open={openFinalDialog} resetForm={reset} onOpenChange={setOpenFinalDialog} />}
+      {error && <FormValidationErrorAlert error={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <Card className="p-[24px]">
@@ -234,7 +231,12 @@ export function FishDisease({ handleNext, handlePrevious }: { handleNext?: () =>
               </Button>
             )}
             {!recordFishDisease && (
-              <Button type="button" onClick={() => setOpenDialog(true)}>
+              <Button
+                type="button"
+                onClick={() => {
+                  !isLastStep ? handleNext?.() : setOpenFinalDialog(true)
+                }}
+              >
                 Continue
               </Button>
             )}

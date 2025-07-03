@@ -29,7 +29,7 @@ export default function FeedConsumedForm({ form }: { form: UseFormReturn<Samplin
           </Text>
           <FormField
             control={form.control}
-            name="totalFeedConsumed"
+            name="totalWeightGain"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

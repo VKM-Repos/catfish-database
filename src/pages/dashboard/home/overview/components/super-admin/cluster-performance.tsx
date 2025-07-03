@@ -3,8 +3,18 @@ import { Card } from 'src/components/ui/card'
 import { DataTable } from 'src/components/ui/data-table'
 import { Text } from 'src/components/ui/text'
 import { clusterPerformanceColumn } from './cluster-performance-column'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
 export default function ClusterPerformance() {
+  const useGetClusterPerformance = createGetQueryHook({
+    endpoint: '/dashboards/super-admin/cluster-summary',
+    responseSchema: z.any(),
+    queryKey: ['cluster-performance-super-admin'],
+  })
+  const { data: clusterPerformance } = useGetClusterPerformance()
+  console.log(clusterPerformance)
+
   const performance = [
     {
       cluster: 'Ekiti-cluster',
@@ -53,7 +63,7 @@ export default function ClusterPerformance() {
       <DataTable
         search={false}
         columns={clusterPerformanceColumn}
-        data={performance || []}
+        data={clusterPerformance || []}
         isLoading={false}
         emptyStateMessage="No cluster performance found"
         hidePagination={true}

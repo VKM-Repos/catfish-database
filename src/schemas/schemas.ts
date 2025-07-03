@@ -464,8 +464,9 @@ export const dailyFeedingSchema = z.object({
   pelletSize: z.string().optional(),
   feedQuantity: z.string().min(1, { message: 'Please enter the quantity of feed' }),
   feedTime: z.string().min(1, { message: 'Please select a feeding time' }),
+})
 
-  // Water quality fields are always present, but can be empty strings unless required
+export const waterQualitySchema = z.object({
   dissolvedOxygen: z.string().optional(),
   phLevel: z.string().optional(),
   temperature: z.string().optional(),
@@ -473,23 +474,17 @@ export const dailyFeedingSchema = z.object({
   nitrite: z.string().optional(),
   alkalinity: z.string().optional(),
   hardness: z.string().optional(),
-  observation: z.string().optional(),
+  observation: z.string().min(5, 'Water Quality Observations is required'),
 })
-export const extendedDailyFeedingSchema = (isWaterRequired?: boolean | false) =>
-  dailyFeedingSchema.extend({
-    feedType: z.string().optional(),
-    pelletSize: z.string().optional(),
-    feedQuantity: z.string().optional(),
-    feedTime: z.string().optional(),
-    dissolvedOxygen: isWaterRequired ? z.string().min(1, 'Dissolved Oxygen is required') : z.string().optional(),
-    phLevel: isWaterRequired ? z.string().min(1, 'PH Level is required') : z.string().optional(),
-    temperature: isWaterRequired ? z.string().min(1, 'Temperature is required') : z.string().optional(),
-    ammonia: isWaterRequired ? z.string().min(1, 'Ammonia is required') : z.string().optional(),
-    nitrite: isWaterRequired ? z.string().min(1, 'Nitrite is required') : z.string().optional(),
-    alkalinity: isWaterRequired ? z.string().min(1, 'Alkalinity is required') : z.string().optional(),
-    hardness: isWaterRequired ? z.string().min(1, 'Hardness is required') : z.string().optional(),
-    observation: isWaterRequired ? z.string().min(5, 'Water Quality Observations is required') : z.string().optional(),
-  })
+export const fishBehaviorSchema = z.object({
+  behavior: z.string().min(1, 'Please select fish behavior'),
+  observation: z.string().min(1, 'Observation is required'),
+})
+
+export const fishDiseaseSchema = z.object({
+  disease: z.string().min(1, 'Please select fish disease'),
+  observation: z.string().min(1, 'Observation is required'),
+})
 export const maintenanceSchema = z.object({
   maintenance: z.string().min(1, { message: 'Please Select a maintenance' }),
   cost: z

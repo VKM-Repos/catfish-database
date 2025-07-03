@@ -1,11 +1,13 @@
 'use client'
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 
 import { Card, CardContent } from 'src/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
+import { z } from 'zod'
 
 export const description = 'A multiple bar chart'
 
@@ -30,14 +32,22 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function StockedHarvestedByCluster() {
+  const useGetFeedConsumed = createGetQueryHook({
+    endpoint: '/dashboards/super-admin/group-fish-availability',
+    responseSchema: z.any(),
+    queryKey: ['group-fish-availability-super-admin'],
+  })
+  const { data: groupFishAvailable } = useGetFeedConsumed()
+  console.log(groupFishAvailable)
+
   return (
     <Card className="h-[450px] max-h-[450px] min-h-[450px] w-full border border-neutral-200 p-[16px]">
       <CardContent>
         <Text className="mb-[20px]  font-semibold">Stocked vs. Harvested by Cluster</Text>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart accessibilityLayer data={groupFishAvailable}>
             <CartesianGrid vertical={true} />
-            <XAxis dataKey="feedType" tickLine={false} tickMargin={10} axisLine={false} />
+            <XAxis dataKey="groupName" tickLine={false} tickMargin={10} axisLine={false} />
             <YAxis
               tick={{ fill: '#737780', fontSize: 10 }}
               axisLine={false}
@@ -47,8 +57,8 @@ export function StockedHarvestedByCluster() {
               max={100}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" className="bg-white" />} />
-            <Bar dataKey="stocked" fill="var(--color-stocked)" radius={4} />
-            <Bar dataKey="harvested" fill="var(--color-harvested)" radius={4} />
+            <Bar dataKey="availableFish" max={2000} fill="var(--color-stocked)" radius={4} />
+            <Bar dataKey="soldFish" fill="var(--color-harvested)" radius={4} />
           </BarChart>
         </ChartContainer>
         <FlexBox justify="center" className="mt-[6px] font-medium">

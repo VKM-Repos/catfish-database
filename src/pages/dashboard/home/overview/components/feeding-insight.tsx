@@ -40,7 +40,7 @@ export default function FeedingInsight() {
   return (
     <Card className="h-[640px] max-h-[640px] w-full rounded-[.875rem] border border-neutral-200 p-4">
       <Text className="mb-[46px] text-[14px] font-semibold">Feed Insights</Text>
-      <Text className="text-[14px] font-medium">Most used feed brands (%)</Text>
+      <Text className="text-[14px] font-medium">Most used feed brands (kg)</Text>
       <ChartContainer className="-ml-5 mt-[10px] w-full" config={monthlyFeedConfig}>
         <BarChart accessibilityLayer data={restructuredData} height={100} barCategoryGap={20}>
           <CartesianGrid />
@@ -58,7 +58,7 @@ export default function FeedingInsight() {
               offset={12}
               className="fill-white"
               fontSize={14}
-              formatter={(quantityKg: string) => `${quantityKg}%`}
+              formatter={(quantityKg: string) => `${quantityKg}kg`}
             />
           </Bar>
         </BarChart>

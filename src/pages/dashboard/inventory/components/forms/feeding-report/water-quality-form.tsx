@@ -4,12 +4,12 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
-import type { dailyFeedingSchema } from 'src/schemas'
+import type { waterQualitySchema } from 'src/schemas'
 import type { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 import { Textarea } from 'src/components/ui/textarea'
 
-type WaterQualityFormValues = z.infer<typeof dailyFeedingSchema>
+type WaterQualityFormValues = z.infer<typeof waterQualitySchema>
 
 export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQualityFormValues> }) {
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})

@@ -135,6 +135,7 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                           data-placeholder={'Select date'}
                           type="date"
                           {...field}
+                          value={selectedDate}
                           onChange={(e) => {
                             field.onChange(e)
                             handleDateChange(e)

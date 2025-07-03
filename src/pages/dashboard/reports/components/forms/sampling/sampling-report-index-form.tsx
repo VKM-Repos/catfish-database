@@ -9,41 +9,20 @@ import SamplingWeightForm from './sampling-weight-from'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
-import MortalityRateForm from './mortality-rate-form'
-import DiseaseForm from './disease-form'
-import FishBehaviorForm from './fish-bevahior-form'
 import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
+import { useDateStore } from 'src/store/report-date-store'
 
 type SamplingData = z.infer<typeof samplingSchema>
 
-export default function SamplingIndexForm({
-  handleNext,
-  handlePrevious,
-}: {
-  handleNext: () => void
-  handlePrevious: () => void
-}) {
+export default function SamplingIndexForm({ handleNext }: { handleNext: () => void }) {
   const navigate = useNavigate()
-  const [openDialog, setOpenDialog] = useState(false)
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const timeInputRef = useRef<HTMLInputElement>(null)
 
-  const {
-    numberOfFishSampled,
-    weightOfFishSampled,
-    avgWeightFishSampled,
-    totalWeightGain,
-    totalFeedConsumed,
-    numberOfFishMortalityRecorded,
-    disease,
-    diseaseObservation,
-    behavior,
-    observation,
-    updateProperty,
-    reset,
-  } = useFishSamplingStore()
-
+  const { numberOfFishSampled, weightOfFishSampled, avgWeightFishSampled, totalWeightGain, updateProperty, reset } =
+    useFishSamplingStore()
+  const { selectedDate, setSelectedDate } = useDateStore()
   const form = useForm<SamplingData>({
     resolver: zodResolver(samplingSchema),
     defaultValues: {
@@ -51,12 +30,6 @@ export default function SamplingIndexForm({
       weightOfFishSampled,
       avgWeightFishSampled,
       totalWeightGain,
-      totalFeedConsumed,
-      numberOfFishMortalityRecorded,
-      disease,
-      diseaseObservation,
-      behavior,
-      observation,
     },
     mode: 'onChange',
   })
@@ -75,8 +48,6 @@ export default function SamplingIndexForm({
 
   const onSubmit = async (values: z.infer<typeof samplingSchema>) => {
     try {
-      console.log('Submitting:', values)
-
       // biome-ignore lint/complexity/noForEach: <explanation>
       Object.entries(values).forEach(([key, value]) => {
         updateProperty(key as keyof SamplingData, value || '')
@@ -101,6 +72,10 @@ export default function SamplingIndexForm({
   const handleIconClick = () => {
     timeInputRef.current?.showPicker()
   }
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value
+    setSelectedDate(newDate) // Persist to store
+  }
   return (
     <>
       <Form {...form}>
@@ -122,8 +97,9 @@ export default function SamplingIndexForm({
                   <Input
                     data-placeholder={'Select date'}
                     type="date"
-                    value={new Date().toISOString().split('T')[0]}
+                    value={selectedDate}
                     onChange={(e) => {
+                      handleDateChange(e)
                       handleInputChange('date', e.target.value)
                     }}
                     ref={timeInputRef}
@@ -175,71 +151,12 @@ export default function SamplingIndexForm({
               <SamplingWeightForm form={form} />
             </div>
           </div>
-          {/* <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Feed consumed</h5>
-                <p className="text-xs font-medium">
-                  Enter the number of fish that died today to help you track survival rates.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <FeedConsumedForm form={form} />
-            </div>
-          </div> */}
-
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Mortality Rate</h5>
-                <p className="text-xs font-medium">
-                  Enter the number of fish that died today to help you track survival rates.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <MortalityRateForm form={form} />
-            </div>
-          </div>
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Diseases</h5>
-                <p className="text-xs font-medium">
-                  Note any disease symptoms or outbreaks observed, including treatments used.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <DiseaseForm form={form} />
-            </div>
-          </div>
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Fish Behavior</h5>
-                <p className="text-xs font-medium">
-                  Score and describe fish activity (e.g., feeding response, swimming patterns) to detect stress or
-                  health issues.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <FishBehaviorForm form={form} />
-            </div>
-          </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">
             <Button type="button" onClick={handleCancel} variant="outline" className="flex items-center gap-2">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              className="flex items-center gap-2"
-              disabled={!form.formState.isValid}
-            >
+            <Button type="submit" variant="primary" className="flex items-center gap-2">
               Continue
             </Button>
           </div>

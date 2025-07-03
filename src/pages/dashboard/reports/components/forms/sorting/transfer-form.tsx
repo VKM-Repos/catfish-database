@@ -14,6 +14,7 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFishSortingStore } from 'src/store/fish-sorting.store'
 import { paths } from 'src/routes'
+import { useAuthStore } from 'src/store/auth.store'
 
 type SortingFormValues = z.infer<typeof sortingSchema>
 
@@ -21,6 +22,7 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
   const { formData, setFormData } = useFishSortingStore()
   const { watch, reset, control } = form
   const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
 
   // Update store when form changes
   useEffect(() => {
@@ -33,10 +35,23 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
+    options: {
+      enabled: user?.role === 'FARMER',
+    },
   })
+
+  const useGetPondByClusterManager = createGetQueryHook({
+    endpoint: '/ponds/clusters/me',
+    responseSchema: z.any(),
+    queryKey: ['ponds_for_cluster_manager'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
+  })
+  const { data: clustersManagerPonds = [], isLoading: isLoadingClustersManagerPonds } = useGetPondByClusterManager()
+  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
   const { id } = useParams<{ id: string }>()
 
-  const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'batches',
@@ -62,7 +77,8 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
       shouldDirty: true,
     })
   }
-  const filteredPonds = ponds.content?.filter((pond: any) => pond.id !== id) || []
+  const filteredFarmerPonds = ponds.content?.filter((pond: any) => pond.id !== id) || []
+  const filteredClusterManagerPonds = clustersManagerPonds.content?.filter((pond: any) => pond.id !== id) || []
 
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full">
@@ -156,17 +172,22 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
                             </div>
                           </SelectTrigger>
                           <SelectContent>
-                            {isLoadingPonds ? (
+                            {user?.role === 'FARMER' && isLoadingPonds ? (
                               <SelectItem value="loading" disabled>
                                 <Text>Loading ponds...</Text>
                               </SelectItem>
                             ) : (
-                              filteredPonds?.map((pond: any) => (
-                                <SelectItem key={pond.id} value={pond.id}>
-                                  {pond.name}
+                              filteredFarmerPonds?.map((pond: unknown) => (
+                                <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
+                                  {(pond as { name: string }).name}
                                 </SelectItem>
                               ))
                             )}
+                            {filteredClusterManagerPonds?.map((pond: unknown) => (
+                              <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
+                                {(pond as { name: string }).name}
+                              </SelectItem>
+                            ))}
                             <button
                               onClick={() => navigate(paths.dashboard.ponds.create.addPond)}
                               type="button"

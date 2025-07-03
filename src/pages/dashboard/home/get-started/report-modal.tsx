@@ -13,7 +13,8 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useAuthStore } from 'src/store/auth.store'
 import { Input } from 'src/components/ui/input'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useDateStore } from 'src/store/report-date-store'
 
 type FormValues = {
   date: string
@@ -30,6 +31,7 @@ type ReportModalProps = {
 export function ReportModal({ title, open, redirect, onOpenChange }: ReportModalProps) {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
+  const { selectedDate, setSelectedDate } = useDateStore()
   const timeInputRef = useRef<HTMLInputElement>(null)
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
 
@@ -60,10 +62,19 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
   const currentDate = `${yyyy}-${mm}-${dd}`
 
   const form = useForm<FormValues>({
-    defaultValues: { pondId: '', date: currentDate },
+    defaultValues: { pondId: '', date: selectedDate },
     mode: 'onSubmit', // validate on submit
   })
+  useEffect(() => {
+    form.setValue('date', selectedDate)
+  }, [selectedDate, form])
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value
+    form.setValue('date', newDate)
+    setSelectedDate(newDate) // Persist to store
+    setActiveInputs((prev) => ({ ...prev, date: newDate !== '' }))
+  }
   const handleProceed = (values: FormValues) => {
     if (!values.pondId || !values.date) return
     if (values.pondId === 'add-pond') {
@@ -92,6 +103,7 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
       [fieldName]: value.trim().length > 0,
     }))
   }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="h-[350px] w-[650px] overflow-hidden p-4">
@@ -125,6 +137,7 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                           {...field}
                           onChange={(e) => {
                             field.onChange(e)
+                            handleDateChange(e)
                             handleInputChange('date', e.target.value)
                           }}
                           ref={timeInputRef}

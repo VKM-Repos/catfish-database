@@ -121,14 +121,14 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
       census: 12,
       sample: Number.parseInt(samplingForm.numberOfFishSampled),
       weight: 10,
-      mortality: Number.parseInt(samplingForm.numberOfFishMortalityRecorded),
-      averageWeightToFish: Number.parseInt(samplingForm.avgWeightFishSampled),
+      mortality: null,
+      averageWeightToFish: 1,
       weightGain: Number.parseInt(samplingForm.totalWeightGain),
-      feedConsumed: Number.parseInt(samplingForm.totalFeedConsumed),
-      behaviourObserve: samplingForm.observation,
-      diseaseObserve: samplingForm.diseaseObservation,
-      diseaseType: samplingForm.disease,
-      behaviorType: samplingForm.behavior,
+      feedConsumed: 0,
+      behaviourObserve: null,
+      diseaseObserve: null,
+      diseaseType: null,
+      behaviorType: null,
       splitOccur: data.splitOccur,
       reason: data.reason?.toUpperCase(),
       splitInfo: {
@@ -137,11 +137,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
           quantity: Number(batch.quantity),
         })),
       },
-      harvestCreate: {
-        quantity: Number(data.quantity),
-        totalWeightHarvested: Number(data.totalWeightHarvested),
-        costPerKg: Number(data.costPerKg),
-      },
+      harvestCreate: null,
+      time: '2025-07-02T04:10:40.703Z',
     }
   }
 

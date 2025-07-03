@@ -1,10 +1,6 @@
 import type { UseFormReturn } from 'react-hook-form'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
-import { Input } from 'src/components/ui/input'
-import { Text } from 'src/components/ui/text'
 import type { samplingSchema } from 'src/schemas'
-import * as SolarIconSet from 'solar-icon-set'
 
 import type { z } from 'zod'
 import { useRef } from 'react'
@@ -19,7 +15,7 @@ export default function FeedConsumedForm({ form }: { form: UseFormReturn<Samplin
   }
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full rounded-md px-5">
-      <div className="flex w-[50%] w-full items-center gap-5">
+      {/* <div className="flex w-[50%] w-full items-center gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Total feed consumed (kg)
@@ -47,7 +43,8 @@ export default function FeedConsumedForm({ form }: { form: UseFormReturn<Samplin
             )}
           />
         </div>
-      </div>
+      </div> */}
+      <p>.</p>
     </FlexBox>
   )
 }

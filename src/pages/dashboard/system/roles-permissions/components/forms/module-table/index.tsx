@@ -12,7 +12,8 @@ type ModuleTableProps = {
 
 export default function ModuleTable({ mode, allPrivileges, role, onChangePrivilegeIds }: ModuleTableProps) {
   // Local state for privilegeIds
-  const [privilegeIds, setPrivilegeIds] = useState<string[]>(mode === 'create' ? [] : role.privilegeIds)
+
+  const [privilegeIds, setPrivilegeIds] = useState<string[]>(mode === 'create' ? [] : role?.privilegeIds)
 
   const permissionTypes = ['access', 'view', 'create', 'edit', 'delete']
 
@@ -53,6 +54,8 @@ export default function ModuleTable({ mode, allPrivileges, role, onChangePrivile
     }
   })
 
+  // console.log('privilegeIds: ', privilegeIds)
+
   // Map module+action to privilegeId for quick lookup
   const privilegeMap = useMemo(() => {
     const map: Record<string, Record<string, string>> = {}
@@ -82,7 +85,7 @@ export default function ModuleTable({ mode, allPrivileges, role, onChangePrivile
     if (!privilegeId) return
 
     setPrivilegeIds((prev) => {
-      const hasPrivilege = prev.includes(privilegeId)
+      const hasPrivilege = prev?.includes(privilegeId)
       let updated: string[]
       if (value && !hasPrivilege) {
         updated = [...prev, privilegeId]
@@ -103,13 +106,13 @@ export default function ModuleTable({ mode, allPrivileges, role, onChangePrivile
   const tableData = useMemo(() => {
     return permissions.map((perm: any) => {
       const module = perm.module
-      // console.log('perm: ', privilegeMap)
+      // console.log('module: ', module)
       return {
         ...perm,
-        create: privilegeIds.includes(privilegeMap[module]?.c),
-        view: privilegeIds.includes(privilegeMap[module]?.r),
-        edit: privilegeIds.includes(privilegeMap[module]?.u),
-        delete: privilegeIds.includes(privilegeMap[module]?.d),
+        create: privilegeIds?.includes(privilegeMap[module]?.c),
+        view: privilegeIds?.includes(privilegeMap[module]?.r),
+        edit: privilegeIds?.includes(privilegeMap[module]?.u),
+        delete: privilegeIds?.includes(privilegeMap[module]?.d),
       }
     })
   }, [permissions, privilegeIds, privilegeMap])

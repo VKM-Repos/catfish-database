@@ -19,6 +19,7 @@ const createSwitchColumn = ({ type, onToggle }: SwitchCellProps): ColumnDef<Perm
   cell: ({ row }) => {
     const value = row.original[type]
     const module = row.original.module
+    // console.log(row.original[type])
     return (
       <Checkbox
         checked={!!value}

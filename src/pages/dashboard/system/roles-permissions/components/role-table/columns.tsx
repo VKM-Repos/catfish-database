@@ -23,6 +23,8 @@ export const columns: ColumnDef<Role>[] = [
     cell: ({ row }) => {
       const modules = row.original.modules as any[]
 
+      // console.log(row.original.modules)
+
       // Map permission keys to display names
       const permissionLabels: Record<string, string> = {
         access: 'Access',

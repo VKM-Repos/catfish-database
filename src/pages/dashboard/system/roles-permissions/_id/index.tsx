@@ -12,6 +12,7 @@ export default function EditRolePage() {
   const { role } = location?.state || {}
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
+  // console.log('editing roles: ', role)
 
   const handleSuccess = () => {
     setStep(2)

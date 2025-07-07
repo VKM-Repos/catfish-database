@@ -11,7 +11,6 @@ import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
-import { roleRequestSchema, roleResponseSchema } from 'src/schemas/schemas'
 import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -20,6 +19,7 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import ModuleTable from './module-table'
 import { useLocation } from 'react-router-dom'
 import { authCache } from 'src/api'
+import { roleFormSchema, roleRequestSchema, roleResponseSchema } from 'src/schemas/rolePermissionSchema'
 
 // const roleSchema = z.object({
 //   id: z.string(),
@@ -28,7 +28,7 @@ import { authCache } from 'src/api'
 //   privilegeIds: z.array(z.string()),
 // })
 
-type RoleFormValues = z.infer<typeof roleRequestSchema>
+type RoleFormValues = z.infer<typeof roleFormSchema>
 
 type RoleFormProps = {
   mode: 'create' | 'edit'
@@ -116,9 +116,15 @@ export function RoleForm({ mode, initialValues, onSuccess, onClose }: RoleFormPr
   const updateRoleMutation = usePutRole()
 
   const onSubmit = async (values: RoleFormValues) => {
+    console.log('values: ', {
+      ...values,
+    })
+
     try {
       setError(null)
-      const formData = { ...values }
+      const formData = {
+        ...values,
+      }
 
       if (mode === 'create') {
         await useCreateRoleMutation.mutateAsync(formData)
@@ -207,6 +213,7 @@ export function RoleForm({ mode, initialValues, onSuccess, onClose }: RoleFormPr
             allPrivileges={allPrivileges}
             role={role}
             onChangePrivilegeIds={(ids) => form.setValue('privilegeIds', ids)}
+            // onChangePrivilegeIds={(ids) => console.log('privilegesIds', ids)}
           />
 
           <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">

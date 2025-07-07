@@ -1,31 +1,17 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
-import { Input } from 'src/components/ui/input'
-import { Button } from 'src/components/ui/button'
-import { Text } from 'src/components/ui/text'
-import { Loader } from 'src/components/ui/loader'
-import * as SolarIconSet from 'solar-icon-set'
-import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { createPutMutationHook } from 'src/api/hooks/usePut'
-
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
-import { roleRequestSchema, roleResponseSchema } from 'src/schemas/schemas'
-import { Alert, AlertTitle, AlertDescription } from 'src/components/ui/alert'
 import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 
-import { FlexBox } from 'src/components/ui/flexbox'
 import { useLocation } from 'react-router-dom'
 import { authCache } from 'src/api'
-import { Grid } from 'src/components/ui/grid'
+import { configSchema } from 'src/schemas/configurationSchema'
 
-type RoleFormValues = z.infer<typeof roleRequestSchema>
+type ConfigFormValues = z.infer<typeof configSchema>
 
 type RoleFormProps = {
   mode: 'create' | 'edit'
-  initialValues?: RoleFormValues
+  initialValues?: ConfigFormValues
   onSuccess?: () => void
   onClose?: () => void
 }
@@ -80,62 +66,60 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
 
   const queryClient = useQueryClient()
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
-  const form = useForm<RoleFormValues>({
-    resolver: zodResolver(roleRequestSchema),
-    defaultValues: initialValues || {
-      id: '', // or use uuid if needed
-      name: '',
-      description: '',
-      privilegeIds: [],
-    },
-    mode: 'onChange',
-  })
+  // const form = useForm<ConfigFormValues>({
+  //   resolver: zodResolver(configRequestSchema),
+  //   defaultValues: initialValues || {
+  //     value: '',
+  //     listValue: [],
+  //     description: '',
+  //     category: '',
+  //   },
+  //   mode: 'onChange',
+  // })
 
-  // Create farmer staff
-  const useCreateRole = createPostMutationHook({
-    endpoint: '/roles',
-    requestSchema: roleRequestSchema,
-    responseSchema: roleResponseSchema,
-  })
+  // // Create farmer staff
+  // const useCreateRole = createPostMutationHook({
+  //   endpoint: '/roles',
+  //   requestSchema: roleRequestSchema,
+  //   responseSchema: roleResponseSchema,
+  // })
 
-  const useCreateRoleMutation = useCreateRole()
+  // const useCreateRoleMutation = useCreateRole()
 
-  // PUT mutation
-  const usePutRole = createPutMutationHook({
-    endpoint: `/roles/${initialValues?.id}`,
-    requestSchema: roleRequestSchema,
-    responseSchema: roleResponseSchema,
-  })
-  const updateRoleMutation = usePutRole()
+  // // PUT mutation
+  // const usePutRole = createPutMutationHook({
+  //   endpoint: `/roles/${initialValues?.id}`,
+  //   requestSchema: roleRequestSchema,
+  //   responseSchema: roleResponseSchema,
+  // })
+  // const updateRoleMutation = usePutRole()
 
-  const onSubmit = async (values: RoleFormValues) => {
-    try {
-      setError(null)
-      const formData = { ...values }
-
-      if (mode === 'create') {
-        await useCreateRoleMutation.mutateAsync(formData)
-        queryClient.invalidateQueries(['roles'])
-      } else if (mode === 'edit' && initialValues?.id) {
-        await updateRoleMutation.mutateAsync(formData)
-        queryClient.invalidateQueries(['roles'])
-      }
-      form.reset()
-      onSuccess?.()
-    } catch (err) {
-      console.error(`${mode === 'create' ? 'Create' : 'Update'} role error:`, err)
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { error: string; message: string } } }
-        const errorData = axiosError.response?.data
-
-        if (errorData) {
-          setError({
-            title: errorData.error,
-            message: errorData.message,
-          })
-        }
-      }
-    }
+  const onSubmit = async (values: ConfigFormValues) => {
+    // try {
+    //   setError(null)
+    //   const formData = { ...values }
+    //   if (mode === 'create') {
+    //     await useCreateRoleMutation.mutateAsync(formData)
+    //     queryClient.invalidateQueries(['roles'])
+    //   } else if (mode === 'edit' && initialValues?.id) {
+    //     await updateRoleMutation.mutateAsync(formData)
+    //     queryClient.invalidateQueries(['roles'])
+    //   }
+    //   form.reset()
+    //   onSuccess?.()
+    // } catch (err) {
+    //   console.error(`${mode === 'create' ? 'Create' : 'Update'} role error:`, err)
+    //   if (err && typeof err === 'object' && 'response' in err) {
+    //     const axiosError = err as { response?: { data?: { error: string; message: string } } }
+    //     const errorData = axiosError.response?.data
+    //     if (errorData) {
+    //       setError({
+    //         title: errorData.error,
+    //         message: errorData.message,
+    //       })
+    //     }
+    //   }
+    // }
   }
 
   return (
@@ -149,7 +133,7 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
         </div>
       </div>
 
-      <Form {...form}>
+      {/* <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 flex flex-col gap-3">
           {error && (
             <Alert variant="error" tone="filled">
@@ -307,7 +291,7 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
             </Button>
           </FlexBox>
         </form>
-      </Form>
+      </Form> */}
     </>
   )
 }

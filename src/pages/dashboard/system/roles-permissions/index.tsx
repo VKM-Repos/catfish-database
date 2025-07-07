@@ -27,7 +27,7 @@ export const roleSchema = z.object({
 
 const useGetRoles = createGetQueryHook({
   endpoint: '/roles',
-  responseSchema: z.array(roleSchema),
+  responseSchema: z.any(),
   queryKey: ['roles'],
 })
 
@@ -81,11 +81,12 @@ export default function RolesPermissionsPage() {
   const permissionsByRole = useMemo(() => {
     if (!roles || !privileges) return []
 
-    return roles.map((role) => {
+    return roles.map((role: any) => {
       const moduleMap: Record<string, any> = {}
 
-      role.privilegeIds.forEach((pid) => {
-        const priv = privileges.find((p) => p.id === pid)
+      role?.privileges?.forEach((pid: any) => {
+        const priv = privileges.find((p) => p.id === pid.id)
+        // console.log('custom:', priv)
         if (priv) {
           const [module] = priv.name.split(':')
 
@@ -109,7 +110,10 @@ export default function RolesPermissionsPage() {
       })
 
       return {
-        ...role,
+        id: role?.id,
+        name: role?.name,
+        description: role?.description,
+        privilegeIds: role?.privileges.map((priv: any) => priv.id),
         modules: Object.values(moduleMap), // privilege module array
       }
     })
@@ -129,6 +133,8 @@ export default function RolesPermissionsPage() {
     </Inline>
   )
 
+  // console.log('permissionsByRole: ', permissionsByRole)
+  // console.log('roles: ', roles)
   return (
     <div className="relative mb-20">
       <PageTransition>

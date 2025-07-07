@@ -19,3 +19,10 @@ export const paginatedConfigResponseSchema = z.object({
 })
 
 export const configResponseSchema = configSchema
+
+export const configRequestSchema = {
+  value: z.string(),
+  listValue: z.array(z.any()),
+  description: z.string(),
+  category: z.string(),
+}

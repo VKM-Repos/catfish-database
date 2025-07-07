@@ -1,261 +1,110 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { Form } from 'src/components/ui/form'
-import { pondResponseSchema, pondSchema } from 'src/schemas'
-import { z } from 'zod'
-import AddPondDetailsForm from './forms/add-pond-details-form'
-import AddPondLocationForm from './forms/add-pond-location-form'
-import { Button } from 'src/components/ui/button'
-import { usePondStore } from 'src/store/pond.store'
-import { ClientErrorType, ServerErrorType } from 'src/types'
-import { useEffect, useState } from 'react'
-import { createPostMutationHook } from 'src/api/hooks/usePost'
-import FormValidationErrorAlert from 'src/components/global/form-error-alert'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { FlexBox } from 'src/components/ui/flexbox'
+import { useState, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { paths } from 'src/routes/paths'
+import { Container } from 'src/components/ui/container'
+import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { paths } from 'src/routes'
-import { Loader } from 'src/components/ui/loader'
-import { useQueryClient } from '@tanstack/react-query'
-import CancelPrompt from '../prompts/cancel-prompt'
-import PromptNewPond from '../prompts/prompt-new-pond'
-import { useAuthStore } from 'src/store/auth.store'
-import { scrollToTop } from 'src/lib/utils'
 
-type PondData = z.infer<typeof pondSchema>
-
-const useCreatePondMutation = (farmerId?: string | null) => {
-  const createPondByFarmer = createPostMutationHook({
-    endpoint: '/ponds/farmers',
-    requestSchema: pondSchema,
-    responseSchema: pondResponseSchema,
-  })
-
-  const createPondByAdmin = createPostMutationHook({
-    endpoint: '/ponds/cluster-managers',
-    requestSchema: pondSchema,
-    responseSchema: z.any(),
-  })
-
-  const farmerMutation = createPondByFarmer()
-  const adminMutation = createPondByAdmin()
-
-  return farmerId ? adminMutation : farmerMutation
-}
+import { FlexBox } from 'src/components/ui/flexbox'
+import PondForm from './forms/pond-form'
+import DiscardChanges from '../prompts/discard-changes'
+import PondPrompt from '../prompts/pond-prompt'
 
 export default function AddPond() {
-  const { pondData, setPondStore } = usePondStore()
-
-  const { user } = useAuthStore()
-
-  const [error, setError] = useState<ClientErrorType | null>()
-  const [open, setOpen] = useState(false)
-  const [openCancelPrompt, setOpenCancelPrompt] = useState(false)
-
   const navigate = useNavigate()
-
   const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const farmerId = searchParams.get('farmerId')
-  const clusterId = searchParams.get('clusterId')
-  const from = searchParams.get('from')
 
-  const createPondMutation = useCreatePondMutation(farmerId)
+  /**
+   * Preserve the origin path for "Maybe later" cases.
+   * If none is provided, default to the ponds list.
+   */
+  const originPath = useRef<string>((location.state as { from?: string })?.from || paths.dashboard.ponds.root).current
 
-  const useFetchCurrentCluster = createGetQueryHook({
-    endpoint: '/clusters/me',
-    responseSchema: z.any(),
-    queryKey: ['cluster_for_current_farmer'],
-    options: {
-      enabled: user?.role === 'FARMER',
-    },
-  })
+  /**
+   * Flag to know if we should drive user directly to the "add fish" flow
+   * (coming from a ponds detail context, e.g., /ponds/:id)
+   */
+  const addFishPreferred: boolean = useRef<boolean>(
+    (location.state as { addFishNext?: boolean })?.addFishNext || false,
+  ).current
 
-  const useGetPonds = createGetQueryHook({
-    endpoint: '/ponds/farmers/me',
-    responseSchema: z.any(),
-    queryKey: ['my-ponds'],
-    options: {
-      enabled: user?.role === 'FARMER',
-    },
-  })
+  const [step, setStep] = useState(1)
+  const [openPrompt, setOpenPrompt] = useState(false)
+  const [openDiscard, setOpenDiscard] = useState(false)
 
-  const { data: current_cluster } = useFetchCurrentCluster()
-  const { data: ponds = [] } = useGetPonds()
+  const handleSuccess = () => {
+    // After a successful create, trigger the prompt step (step = 2)
+    setStep(2)
+    setOpenPrompt(true)
+  }
 
-  const queryClient = useQueryClient()
+  const handleClose = () => setOpenDiscard(true)
 
-  const form = useForm<PondData>({
-    resolver: zodResolver(pondSchema),
-    defaultValues: {
-      name: '',
-      status: 'Active',
-      size: '',
-      length: '',
-      breadth: '',
-      height: '',
-      waterSource: '',
-      pondType: '',
-      clusterId: current_cluster?.id ? current_cluster?.id : clusterId,
-      longitude: '',
-      latitude: '',
-      ...(farmerId && { farmerId }),
-    },
-    mode: 'onChange',
-  })
-
-  const length = form.watch('length')
-  const breadth = form.watch('breadth')
-  const height = form.watch('height')
-
-  const total = String(Number(length) * Number(breadth) * Number(height) || 0)
-
-  const isValidVolume = (value: string) => /^[-+]?\d+(\.\d+)?$/.test(value)
-
-  useEffect(() => {
-    if (isValidVolume(total)) {
-      form.setValue('size', total)
-    }
-  }, [form.setValue, total])
-
-  const onSubmit = async (values: z.infer<typeof pondSchema>) => {
-    try {
-      setError(null)
-      setPondStore({
-        ...pondData,
-        ...values,
-      })
-
-      const mutationData = farmerId ? { ...values, farmerId } : { ...values }
-
-      await createPondMutation.mutateAsync(mutationData)
-
-      queryClient.refetchQueries(['my-ponds'])
-      queryClient.refetchQueries(['all-ponds'])
-      queryClient.refetchQueries(['fish-batches'])
-
-      setOpen(true)
-    } catch (err) {
-      console.error('Error updating pond:', err)
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: ServerErrorType } }
-        const errorData = axiosError.response?.data
-
-        if (errorData) {
-          setError({
-            title: errorData?.error,
-            message: errorData?.message,
-            errors: errorData?.errors ?? null,
-          })
-          scrollToTop()
-        }
-      }
+  const RenderSteps = () => {
+    switch (step) {
+      case 1:
+        return (
+          <Container className="rounded-lg border border-neutral-200 p-6">
+            <PondForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
+          </Container>
+        )
+      case 2:
+        return (
+          <Container className="rounded-lg border border-neutral-200 p-6">
+            <FlexBox direction="col" align="center" justify="center" className="space-y-4">
+              <Heading level={4}>Completed!</Heading>
+              <Text variant="body" color="text-neutral-600">
+                Pond created successfully!
+              </Text>
+            </FlexBox>
+          </Container>
+        )
+      default:
+        return null
     }
   }
-
-  const handleCancelYes = () => {
-    setOpenCancelPrompt(false)
-    if (from || from === 'overview') return navigate(paths.dashboard.home.overview)
-    farmerId ? navigate(paths.dashboard.farmers.view(farmerId)) : navigate(-1)
-  }
-
-  const handleCancelNo = () => {
-    setOpenCancelPrompt(false)
-  }
-
-  const handleYesConditionOnClose = () => {
-    form.reset()
-    setOpen(false)
-  }
-
-  const pondCreated = ponds.totalElements > 1
-
-  const handleNoConditionOnClose = () => {
-    form.reset()
-    setOpen(false)
-    if (from || from === 'overview') return navigate(paths.dashboard.home.overview)
-    user?.role !== 'FARMER'
-      ? navigate(-1)
-      : pondCreated
-      ? navigate(paths.dashboard.ponds.create.addFishToPond)
-      : navigate(paths.dashboard.home.getStarted)
-  }
-
-  useEffect(() => {
-    if (current_cluster?.id) {
-      form.reset({
-        ...form.getValues(),
-        clusterId: current_cluster.id,
-      })
-    }
-  }, [current_cluster?.id])
 
   return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8">
-          {error && <FormValidationErrorAlert error={error} />}
-          <div className="flex w-full flex-col items-start gap-1">
-            <h5 className="text-[1.5rem] font-bold text-[#444955]">Pond Details</h5>
-            <hr className="w-full border border-primary-200" />
-          </div>
-          <AddPondDetailsForm form={form} />
+    <div className="mx-auto w-full max-w-4xl">
+      <RenderSteps />
 
-          <div className="mb-2 w-full items-start">
-            <h5 className="text-[1.5rem] font-bold text-[#444955]">Pond Location</h5>
-            <hr className="w-full border border-primary-200" />
-          </div>
-          <AddPondLocationForm form={form} />
+      {/* Modal prompt shown at step 2 */}
+      <PondPrompt
+        open={openPrompt}
+        setOpen={setOpenPrompt}
+        title="Success! Pond created"
+        message={
+          addFishPreferred
+            ? 'Would you like to add fish to this pond now?'
+            : 'Would you like to add another pond now? You can always do this later from your dashboard.'
+        }
+        primaryText={addFishPreferred ? 'Yes, add fish' : 'Yes, add another pond'}
+        secondaryText={addFishPreferred ? 'No, do this later' : 'No, return'}
+        primaryAction={() => {
+          if (addFishPreferred) {
+            navigate(paths.dashboard.ponds.create.addFishToPond)
+          } else {
+            // restart flow → back to step 1
+            setOpenPrompt(false)
+            setStep(1)
+          }
+        }}
+        secondaryAction={() => navigate(originPath)}
+      />
 
-          <FlexBox justify="between" align="center" className="w-full">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => {
-                setOpenCancelPrompt(true)
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              className="flex items-center gap-2"
-              disabled={!form.formState.isValid}
-            >
-              {createPondMutation.isLoading ? (
-                <>
-                  <Loader type="spinner" size={18} />
-                  <Text color="text-inherit" variant="body">
-                    Updating
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text color="text-inherit" variant="body">
-                    Continue
-                  </Text>
-                </>
-              )}
-            </Button>
-          </FlexBox>
-        </form>
-      </Form>
-      <CancelPrompt
-        openCancelPrompt={openCancelPrompt}
-        setOpenCancelPrompt={setOpenCancelPrompt}
-        handleCancelYes={handleCancelYes}
-        handleCancelNo={handleCancelNo}
-      />
-      <PromptNewPond
-        open={open}
-        pondCreated={pondCreated}
-        setOpen={setOpen}
-        handleNoConditionOnClose={handleNoConditionOnClose}
-        handleYesConditionOnClose={handleYesConditionOnClose}
-      />
-    </>
+      {/* Discard changes modal */}
+      <DiscardChanges open={openDiscard} setOpen={setOpenDiscard} originPath={originPath} />
+    </div>
   )
 }
+
+/*
+  HOW TO LINK TO THIS PAGE WHILE PRESERVING ORIGIN
+  -----------------------------------------------
+  navigate(paths.dashboard.ponds.addNew, {
+    state: {
+      from: location.pathname,      // current route
+      addFishNext: true             // optional flag if we want the prompt to offer add‑fish flow
+    }
+  })
+*/

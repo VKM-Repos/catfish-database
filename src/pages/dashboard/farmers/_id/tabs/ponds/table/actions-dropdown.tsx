@@ -35,7 +35,7 @@ export default function ActionsDropdown({ pond }: ActionsDropdownType) {
           <DropdownMenuItem>Delete pond</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <UpdatePondPage open={open} onOpenChange={setOpen} pond={pond} />
+      <UpdatePondPage />
     </>
   )
 }

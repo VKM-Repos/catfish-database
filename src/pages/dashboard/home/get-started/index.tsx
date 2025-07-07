@@ -279,8 +279,8 @@ export default function GetStarted() {
     : 'Get Started with Your Farm Management'
 
   return (
-    <div className="container mx-auto flex max-w-7xl flex-col gap-6 px-3 py-8">
-      <div className="mt-[3rem] space-y-0 text-center">
+    <div className="container mx-auto flex max-w-7xl flex-col gap-3 px-3 py-8">
+      <div className=" space-y-0 text-center">
         <Heading level={5} className="mb-2" weight="bold">
           {pageTitle}
         </Heading>

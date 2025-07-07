@@ -12,7 +12,7 @@ import { Loader } from 'src/components/ui/loader'
 
 type PondFormValues = z.infer<typeof pondSchema>
 
-export default function AddPondLocationForm({ form }: { form: UseFormReturn<PondFormValues> }) {
+export default function PondLocationForm({ form }: { form: UseFormReturn<PondFormValues> }) {
   const [positionError, setPositionError] = useState<string | null>(null)
   const [positionLoading, setPositionLoading] = useState(false)
 
@@ -144,23 +144,26 @@ export default function AddPondLocationForm({ form }: { form: UseFormReturn<Pond
           </div>
         </FlexBox>
         <Button
-          variant="primary"
+          variant="ghost"
           type="button"
           onClick={handleGetLocation}
-          className="flex h-fit w-full items-center gap-2 md:max-w-[9rem]"
+          className="flex h-fit w-full items-start justify-start gap-2 text-primary-400  md:max-w-[11rem]"
           disabled={positionLoading}
         >
           {positionLoading ? (
             <>
-              <Loader type="spinner" size={18} />
-              <Text color="text-inherit" variant="body">
+              <Loader type="spinner" size={24} />
+              <Text size="sm" color="text-inherit" variant="body">
                 Updating
               </Text>
             </>
           ) : (
-            <Text color="text-inherit" variant="body">
-              Get coordinates
-            </Text>
+            <>
+              <SolarIconSet.MapPointAdd size={24} className="text-primary-500" />
+              <Text size="sm" color="text-inherit" variant="body">
+                use current location
+              </Text>
+            </>
           )}
         </Button>
       </FlexBox>

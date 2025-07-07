@@ -17,6 +17,8 @@ import { Switch } from 'src/components/ui/switch'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { useWaterQualityStore } from 'src/store/water-quality-store'
+import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 
 export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const navigate = useNavigate()
@@ -24,29 +26,35 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
   const timeInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
-
+  const {
+    formData,
+    activeInputs,
+    reportId,
+    setFormData,
+    setActiveInput,
+    setReportId,
+    reset: resetStore,
+  } = useWaterQualityStore()
   const useWaterQuality = createPostMutationHook({
     endpoint: `/water-quality`,
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
   const createWaterQuality = useWaterQuality()
+
+  const useUpdateWaterQuality = createPatchMutationHook({
+    endpoint: `/water-quality/${reportId}`,
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+  const updateWaterQuality = useUpdateWaterQuality()
   const form = useForm<z.infer<typeof waterQualitySchema>>({
     resolver: zodResolver(waterQualitySchema),
-    defaultValues: {
-      dissolvedOxygen: '',
-      phLevel: '',
-      temperature: '',
-      ammonia: '',
-      nitrite: '',
-      alkalinity: '',
-      hardness: '',
-      observation: '',
-    },
+    defaultValues: formData,
   })
 
   const { reset } = form
-  const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
+  // const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const [openDialog, setOpenDialog] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof waterQualitySchema>) => {
@@ -63,9 +71,29 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
         frequency: 'DAILY',
         observation: data.observation,
       }
-      await createWaterQuality.mutateAsync(waterQualityData)
-      if (handleNext) {
-        handleNext()
+      const updateWaterQualityData = {
+        dissolvedOxygen: data.dissolvedOxygen ? Number(data.dissolvedOxygen) : null,
+        phLevel: data.phLevel ? Number(data.phLevel) : null,
+        temperature: data.temperature ? Number(data.temperature) : null,
+        ammonia: data.ammonia ? Number(data.ammonia) : null,
+        nitrite: data.nitrite ? Number(data.nitrite) : null,
+        alkalinity: data.alkalinity ? Number(data.alkalinity) : null,
+        hardness: data.hardness ? Number(data.hardness) : null,
+        frequency: 'DAILY',
+        observation: data.observation,
+      }
+
+      if (reportId) {
+        await updateWaterQuality.mutateAsync(updateWaterQualityData)
+        if (handleNext) {
+          handleNext()
+        }
+      } else {
+        const response = await createWaterQuality.mutateAsync(waterQualityData)
+        setReportId(response.id)
+        if (handleNext) {
+          handleNext()
+        }
       }
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
@@ -83,10 +111,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
     }
   }
   const handleInputChange = (fieldName: string, value: string) => {
-    setActiveInputs((prev) => ({
-      ...prev,
-      [fieldName]: value.trim().length > 0,
-    }))
+    setActiveInput(fieldName, value.trim().length > 0)
   }
 
   const handleIconClick = () => {
@@ -151,7 +176,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
-
+                                    setFormData({ dissolvedOxygen: value })
                                     handleInputChange('dissolvedOxygen', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -200,6 +225,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
+                                    setFormData({ phLevel: value })
                                     handleInputChange('phLevel', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -250,7 +276,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
-
+                                    setFormData({ temperature: value })
                                     handleInputChange('temperature', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -299,7 +325,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
-
+                                    setFormData({ ammonia: value })
                                     handleInputChange('ammonia', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -348,7 +374,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
-
+                                    setFormData({ nitrite: value })
                                     handleInputChange('nitrite', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -395,7 +421,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
-
+                                    setFormData({ alkalinity: value })
                                     handleInputChange('alkalinity', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -446,7 +472,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                       value = value.replace(/^0+/, '')
                                     }
                                     field.onChange(value)
-
+                                    setFormData({ hardness: value })
                                     handleInputChange('hardness', e.target.value)
                                   }}
                                   className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -482,7 +508,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                         <FormControl>
                           <div
                             className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border ${
-                              activeInputs.hardness ? 'bg-neutral-100' : ''
+                              activeInputs.hardness ? 'bg-white' : ''
                             } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
                           >
                             <div className="flex w-full px-2">
@@ -506,6 +532,11 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                 className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                                 {...field}
                                 placeholder="What are your observation about the water today"
+                                onChange={(e) => {
+                                  field.onChange(e.target.value)
+                                  handleInputChange('observation', e.target.value)
+                                  setFormData({ observation: e.target.value })
+                                }}
                               />
                             </div>
                           </div>
@@ -524,7 +555,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
             </Button>
             {recordWaterQuality && (
               <Button disabled={createWaterQuality.isLoading} type="submit">
-                Continue
+                {reportId ? 'Update' : 'Continue'}
               </Button>
             )}
             {!recordWaterQuality && (

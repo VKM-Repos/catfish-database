@@ -3,8 +3,12 @@ import { Button } from 'src/components/ui/button'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes'
 import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
+import { useDailyFeedingStore } from 'src/store/daily-feeding-store'
+import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
+import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import { useSamplingStepperStore } from 'src/store/sampling-stepper-store'
+import { useWaterQualityStore } from 'src/store/water-quality-store'
 
 type CreateReportDialogProps = {
   open: boolean
@@ -17,6 +21,12 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
   const { reset: resetSamplingStepper } = useSamplingStepperStore()
   const { reset: resetDailyFeedingStepper } = useStepperStore()
   const { reset: resetSamplingForm } = useFishSamplingStore()
+  const { reset: resetDailyFeeding } = useDailyFeedingStore()
+  const { reset: resetWaterQuality } = useWaterQualityStore()
+  const { reset: resetFishBehavior } = useFishBehaviorStore()
+  const { reset: resetFishDisease } = useFishDiseaseStore()
+  const { reset: resetStepper } = useStepperStore()
+
   const handleCancel = () => {
     onOpenChange(false)
     resetSamplingStepper()
@@ -31,7 +41,11 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
     resetSamplingStepper()
     resetDailyFeedingStepper()
     resetSamplingForm()
-
+    resetDailyFeeding()
+    resetWaterQuality()
+    resetFishBehavior()
+    resetFishDisease()
+    resetStepper()
     resetForm()
   }
   return (

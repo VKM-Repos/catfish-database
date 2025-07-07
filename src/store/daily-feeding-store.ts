@@ -7,6 +7,8 @@ import { dailyFeedingSchema } from 'src/schemas'
 type DailyFeedingFormData = z.infer<typeof dailyFeedingSchema>
 
 interface DailyFeedingStore {
+  reportId: string | null
+  setReportId: (id: string | null) => void
   formData: DailyFeedingFormData
   activeInputs: Record<string, boolean>
   setFormData: (data: Partial<DailyFeedingFormData>) => void
@@ -19,12 +21,15 @@ const initialValues: DailyFeedingFormData = {
   pelletSize: '',
   feedQuantity: '',
   feedTime: '',
+  combinedDateTime: '',
 }
 
 export const useDailyFeedingStore = create<DailyFeedingStore>()(
   persist(
     (set) => ({
       formData: initialValues,
+      reportId: null,
+      setReportId: (id) => set({ reportId: id }),
       activeInputs: {},
       setFormData: (data) =>
         set((state) => ({
@@ -38,8 +43,6 @@ export const useDailyFeedingStore = create<DailyFeedingStore>()(
     }),
     {
       name: 'daily-feeding-storage',
-      // Optional: Only persist specific fields
-      // partialize: (state) => ({ formData: state.formData }),
     },
   ),
 )

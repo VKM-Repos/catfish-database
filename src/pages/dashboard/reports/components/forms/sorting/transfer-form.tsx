@@ -189,7 +189,7 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
                               </SelectItem>
                             ))}
                             <button
-                              onClick={() => navigate(paths.dashboard.ponds.create.addPond)}
+                              onClick={() => navigate(paths.dashboard.ponds.create.addPond + '?id=' + id)}
                               type="button"
                               className="w-full"
                             >

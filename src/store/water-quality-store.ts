@@ -8,10 +8,12 @@ type WaterQualityFormData = z.infer<typeof waterQualitySchema>
 
 interface WaterQualityStore {
   formData: WaterQualityFormData
+  reportId: string | null
   activeInputs: Record<string, boolean>
   recordWaterQuality: boolean
   setFormData: (data: Partial<WaterQualityFormData>) => void
   setActiveInput: (fieldName: string, isActive: boolean) => void
+  setReportId: (id: string | null) => void
   setRecordWaterQuality: (value: boolean) => void
   reset: () => void
 }
@@ -31,6 +33,8 @@ export const useWaterQualityStore = create<WaterQualityStore>()(
   persist(
     (set) => ({
       formData: initialValues,
+      reportId: null,
+      setReportId: (id) => set({ reportId: id }),
       activeInputs: {},
       recordWaterQuality: false,
       setFormData: (data) =>
@@ -47,15 +51,11 @@ export const useWaterQualityStore = create<WaterQualityStore>()(
           formData: initialValues,
           activeInputs: {},
           recordWaterQuality: false,
+          reportId: null,
         }),
     }),
     {
       name: 'water-quality-storage',
-      // Optional: Only persist specific fields
-      // partialize: (state) => ({
-      //   formData: state.formData,
-      //   recordWaterQuality: state.recordWaterQuality
-      // }),
     },
   ),
 )

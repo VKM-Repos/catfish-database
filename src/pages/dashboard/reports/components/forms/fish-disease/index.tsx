@@ -18,6 +18,9 @@ import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { useDateStore } from 'src/store/report-date-store'
+import { useFishDiseaseStore } from 'src/store/fish-disease-store'
+import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 export function FishDisease({
   handleNext,
@@ -32,34 +35,61 @@ export function FishDisease({
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
   const { reset: resetStepper } = useStepperStore()
-
+  const { combineDateTime } = useDateStore()
+  const {
+    formData,
+    activeInputs,
+    reportId,
+    setFormData,
+    setActiveInput,
+    setReportId,
+    reset: resetStore,
+  } = useFishDiseaseStore()
   const useFishDisease = createPostMutationHook({
     endpoint: `/diseases`,
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
   const createFishDisease = useFishDisease()
+
+  const useUpdateFishDisease = createPutMutationHook({
+    endpoint: `/diseases/${reportId}`,
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+  const updateFishDisease = useUpdateFishDisease()
   const form = useForm<z.infer<typeof fishDiseaseSchema>>({
     resolver: zodResolver(fishDiseaseSchema),
-    defaultValues: {
-      disease: '',
-      observation: '',
-    },
+    defaultValues: formData,
+    mode: 'onChange',
   })
 
   const { reset } = form
   const [openFinalDialog, setOpenFinalDialog] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof fishDiseaseSchema>) => {
-    console.log(data)
     try {
       const fishDiseaseData = {
         pondId: id,
         diseaseType: data.disease,
+        diseaseObservation: data.observation,
         frequency: 'DAILY',
-        time: '2025-07-02T04:10:40.703Z',
+        time: combineDateTime,
       }
-      await createFishDisease.mutateAsync(fishDiseaseData)
+
+      if (reportId) {
+        await updateFishDisease.mutateAsync(fishDiseaseData)
+        if (handleNext) {
+          handleNext()
+        }
+      } else {
+        const response = await createFishDisease.mutateAsync(fishDiseaseData)
+        setReportId(response?.id)
+        if (handleNext) {
+          handleNext()
+        }
+      }
+
       if (isLastStep) {
         setOpenFinalDialog(true)
         if (openFinalDialog) {
@@ -86,7 +116,6 @@ export function FishDisease({
 
   const handleSwitchChange = (checked: boolean) => {
     setRecordFishDisease(checked)
-    // Reset form when switch is turned off
     if (!checked) {
       reset()
     }
@@ -147,7 +176,10 @@ export function FishDisease({
                           <FormControl>
                             <Select
                               value={field.value ? String(field.value) : ''}
-                              onValueChange={(value) => field.onChange(value)}
+                              onValueChange={(value) => {
+                                field.onChange(value)
+                                setFormData({ disease: value })
+                              }}
                               defaultValue={field.value}
                             >
                               <SelectTrigger className="font-light">
@@ -208,6 +240,11 @@ export function FishDisease({
                               <Input
                                 placeholder="Other disease Observation"
                                 {...field}
+                                onChange={(e) => {
+                                  const value = e.target.value
+                                  field.onChange(value)
+                                  setFormData({ observation: value })
+                                }}
                                 className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                               />
                             </div>
@@ -227,16 +264,11 @@ export function FishDisease({
             </Button>
             {recordFishDisease && (
               <Button disabled={createFishDisease.isLoading} type="submit">
-                Continue
+                {reportId ? 'Update' : 'Continue'}
               </Button>
             )}
             {!recordFishDisease && (
-              <Button
-                type="button"
-                onClick={() => {
-                  !isLastStep ? handleNext?.() : setOpenFinalDialog(true)
-                }}
-              >
+              <Button type="button" onClick={handleNext}>
                 Continue
               </Button>
             )}

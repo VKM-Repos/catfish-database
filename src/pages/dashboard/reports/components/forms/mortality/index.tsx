@@ -16,6 +16,11 @@ import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
 import { mortalitySchema } from 'src/schemas'
+import { useDateStore } from 'src/store/report-date-store'
+import { useDailyFeedingStore } from 'src/store/daily-feeding-store'
+import { useWaterQualityStore } from 'src/store/water-quality-store'
+import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
+import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 
 type MortalityFormValues = z.infer<typeof mortalitySchema>
 
@@ -25,7 +30,11 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
   const { reset: resetStepper } = useStepperStore()
-
+  const { combineDateTime } = useDateStore()
+  const { reset: resetDailyFeeding } = useDailyFeedingStore()
+  const { reset: resetWaterQuality } = useWaterQualityStore()
+  const { reset: resetFishBehavior } = useFishBehaviorStore()
+  const { reset: resetFishDisease } = useFishDiseaseStore()
   const useFishDisease = createPostMutationHook({
     endpoint: `/mortalities`,
     requestSchema: z.any(),
@@ -49,9 +58,13 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
         pondId: id,
         mortalityNumber: data.mortalityNumber,
         frequency: 'DAILY',
-        time: '2025-07-02T04:10:40.703Z',
+        time: combineDateTime,
       }
       await createFishDisease.mutateAsync(mortalityData)
+      resetDailyFeeding()
+      resetWaterQuality()
+      resetFishBehavior()
+      resetFishDisease()
       setOpenDialog(true)
       if (openDialog) {
         setInterval(() => {
@@ -94,6 +107,9 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
       const newValue = (currentValue - 1).toString()
       form.setValue(fieldName, newValue, { shouldValidate: true })
     }
+  }
+  const handleEmptyState = () => {
+    setOpenDialog(true)
   }
   return (
     <>
@@ -175,7 +191,7 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
               </Button>
             )}
             {!recordFishDisease && (
-              <Button type="button" onClick={() => setOpenDialog(true)}>
+              <Button type="button" onClick={() => handleEmptyState()}>
                 Continue
               </Button>
             )}

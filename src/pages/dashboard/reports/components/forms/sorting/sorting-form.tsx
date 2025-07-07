@@ -20,6 +20,7 @@ import { ClientErrorType, ServerErrorType } from 'src/types'
 import { ConfirmSamplingSubmission } from '../../modals/confirm-sampling-submission'
 import { useFishHarvestStore } from 'src/store/fish-harvest-store'
 import { useSplitStore } from 'src/store/split-store'
+import { useDateStore } from 'src/store/report-date-store'
 
 export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: () => void; handleNext: () => void }) {
   const { id } = useParams<{ id: string }>()
@@ -49,6 +50,8 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
   const { quantity, totalWeightHarvested, costPerKg, clearStore } = useFishHarvestStore()
 
   const { splitOccur: splitOccurInStore, reason: reasonInStore, setSplitOccur, setReason } = useSplitStore()
+  const { combineDateTime } = useDateStore()
+
   const samplingForm = {
     numberOfFishSampled,
     weightOfFishSampled,
@@ -143,7 +146,7 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
         })),
       },
       harvestCreate: null,
-      time: '2025-07-02T04:10:40.703Z',
+      time: combineDateTime,
     }
   }
 
@@ -175,9 +178,8 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
       } else {
         await createSamplingReport.mutateAsync(samplingData)
         setOpenConfirmDialog(false)
-        handleNext()
+        setOpenDialog(true)
       }
-      // setOpenDialog(true)
     } catch (err) {
       setOpenConfirmDialog(false)
       if (err && typeof err === 'object' && 'response' in err) {

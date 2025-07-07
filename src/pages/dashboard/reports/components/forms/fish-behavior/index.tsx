@@ -17,6 +17,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 's
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { useDateStore } from 'src/store/report-date-store'
+import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
+import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const navigate = useNavigate()
@@ -24,35 +27,66 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
   const timeInputRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<ClientErrorType | null>()
   const { id } = useParams<{ id: string }>()
+  const { combineDateTime } = useDateStore()
+  const {
+    formData,
+    activeInputs,
+    reportId,
+    setFormData,
+    setActiveInput,
+    setReportId,
+    reset: resetStore,
+  } = useFishBehaviorStore()
   const useFishBehavior = createPostMutationHook({
     endpoint: `/behaviors`,
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
   const createFishBehavior = useFishBehavior()
+
+  const useUpdateFishBehavior = createPutMutationHook({
+    endpoint: `/behaviors/${reportId}`,
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+  const updateFishBehavior = useUpdateFishBehavior()
   const form = useForm<z.infer<typeof fishBehaviorSchema>>({
     resolver: zodResolver(fishBehaviorSchema),
-    defaultValues: {
-      behavior: '',
-      observation: '',
-    },
+    defaultValues: formData,
+    mode: 'onChange',
   })
 
   const { reset } = form
-  const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const [openDialog, setOpenDialog] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof fishBehaviorSchema>) => {
+    console.log('hiy')
+
     try {
       const fishBehaviorData = {
         pondId: id,
         behaviorType: data.behavior,
+        behaviorTypeObservation: data.observation,
         frequency: 'DAILY',
-        time: '2025-07-02T04:10:40.703Z',
+        time: combineDateTime,
       }
-      await createFishBehavior.mutateAsync(fishBehaviorData)
-      if (handleNext) {
-        handleNext()
+      const updateFishBehaviorData = {
+        behaviorType: data.behavior,
+        behaviorTypeObservation: data.observation,
+        frequency: 'DAILY',
+        time: combineDateTime,
+      }
+      if (reportId) {
+        await updateFishBehavior.mutateAsync(updateFishBehaviorData)
+        if (handleNext) {
+          handleNext()
+        }
+      } else {
+        const response = await createFishBehavior.mutateAsync(fishBehaviorData)
+        setReportId(response?.id)
+        if (handleNext) {
+          handleNext()
+        }
       }
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
@@ -69,21 +103,12 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
       }
     }
   }
-  const handleInputChange = (fieldName: string, value: string) => {
-    setActiveInputs((prev) => ({
-      ...prev,
-      [fieldName]: value.trim().length > 0,
-    }))
-  }
-
-  const handleIconClick = () => {
-    timeInputRef.current?.showPicker()
-  }
   const handleSwitchChange = (checked: boolean) => {
     setRecordFishBehavior(checked)
-    // Reset form when switch is turned off
     if (!checked) {
       reset()
+    } else if (reportId) {
+      form.reset(formData)
     }
   }
   const behaviors = [
@@ -140,7 +165,10 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
                           <FormControl>
                             <Select
                               value={field.value ? String(field.value) : ''}
-                              onValueChange={(value) => field.onChange(value)}
+                              onValueChange={(value) => {
+                                field.onChange(value)
+                                setFormData({ behavior: value })
+                              }}
                               defaultValue={field.value}
                             >
                               <SelectTrigger className="font-light">
@@ -198,6 +226,11 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
                               <Input
                                 placeholder="Other observations during sorting"
                                 {...field}
+                                onChange={(e) => {
+                                  const value = e.target.value
+                                  setFormData({ observation: value })
+                                  field.onChange(value)
+                                }}
                                 className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                               />
                             </div>
@@ -216,8 +249,8 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
               Back
             </Button>
             {recordFishBehavior && (
-              <Button disabled={createFishBehavior.isLoading} type="submit">
-                Continue
+              <Button disabled={createFishBehavior.isLoading || updateFishBehavior.isLoading} type="submit">
+                {reportId ? 'Update' : 'Continue'}
               </Button>
             )}
             {!recordFishBehavior && (

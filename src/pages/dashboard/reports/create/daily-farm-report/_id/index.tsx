@@ -1,4 +1,3 @@
-import { usePondStore } from 'src/store/pond.store'
 import { useNavigate } from 'react-router-dom'
 import {
   Breadcrumb,
@@ -15,15 +14,15 @@ import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { FishBehavior } from '../../../components/forms/fish-behavior'
 import { FishDisease } from '../../../components/forms/fish-disease'
+import { Mortality } from '../../../components/forms/mortality'
 
 export default function CreateDailyFeedingReportPage() {
-  const { step, next, previous } = useStepperStore()
-  const { pondData, resetPondStore } = usePondStore()
+  const { step, next, previous, setStep } = useStepperStore()
   const navigate = useNavigate()
 
   const handleNext = () => {
     next()
-    console.log('next')
+    // setStep(step + 1)
   }
 
   const handlePrevious = () => {
@@ -32,17 +31,6 @@ export default function CreateDailyFeedingReportPage() {
       return
     }
     previous()
-  }
-
-  const onSubmit = async () => {
-    try {
-      console.log(pondData)
-      navigate('/dashboard/ponds')
-      resetPondStore()
-      useStepperStore.getState().reset() // Reset stepper when form is submitted
-    } catch (error) {
-      console.error(error)
-    }
   }
 
   const RenderSteps = () => {
@@ -54,7 +42,9 @@ export default function CreateDailyFeedingReportPage() {
       case 3:
         return <FishBehavior handleNext={handleNext} handlePrevious={handlePrevious} />
       case 4:
-        return <FishDisease handlePrevious={handlePrevious} />
+        return <FishDisease handlePrevious={handlePrevious} handleNext={handleNext} />
+      case 5:
+        return <Mortality handlePrevious={handlePrevious} />
       default:
         return null
     }
@@ -65,7 +55,7 @@ export default function CreateDailyFeedingReportPage() {
       <FlexBox className="mx-10 w-full">
         <CustomBreadcrumb />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto max-w-[75%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto max-w-[80%]">
         <Stepper />
         <RenderSteps />
       </FlexBox>
@@ -73,13 +63,12 @@ export default function CreateDailyFeedingReportPage() {
   )
 }
 
-// Update Stepper component to use the store
 const Stepper = () => {
   const { step } = useStepperStore()
 
   return (
     <div className="w-full">
-      <div className="mx-auto flex max-w-[80%] items-center justify-center">
+      <div className="mx-auto flex max-w-[90%] items-center justify-center">
         <FlexBox
           gap="gap-[.625rem]"
           align="center"
@@ -140,6 +129,22 @@ const Stepper = () => {
             4
           </span>
           <p className={`${step >= 4 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Fish Diseases</p>
+        </FlexBox>
+        <hr className={`w-full max-w-[1/5] border ${step > 4 ? 'border-primary-500' : ''}`} />
+
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${step > 4 ? 'border-primary-500' : ''} p-[.625rem]`}
+        >
+          <span
+            className={`${
+              step >= 5 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
+          >
+            5
+          </span>
+          <p className={`${step >= 5 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Mortality</p>
         </FlexBox>
       </div>
     </div>

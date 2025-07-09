@@ -4,35 +4,35 @@ import { SuperAdminStatusBadge } from './super-admin-status-badge'
 
 export const clusterPerformanceColumn: ColumnDef<any>[] = [
   {
-    accessorKey: 'cluster',
+    accessorKey: 'clusterName',
     header: 'CLuster',
-    cell: ({ row }) => <Text weight="light">{row.original.cluster}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original?.clusterName}</Text>,
   },
   {
-    accessorKey: 'farmers',
+    accessorKey: 'activeFarmerCount',
     header: 'Farmers',
-    cell: ({ row }) => <Text weight="light">{row.original.farmers}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original?.activeFarmerCount}</Text>,
   },
   {
-    accessorKey: 'harvested',
+    accessorKey: 'totalHarvest',
     header: 'Harvested (kg)',
-    cell: ({ row }) => <Text weight="light">{row.original.harvested}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original?.totalHarvest}</Text>,
   },
   {
-    accessorKey: 'mortality',
+    accessorKey: 'mortalityPercent',
     header: 'Mortality %',
-    cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original?.mortalityPercent}</Text>,
   },
   {
-    accessorKey: 'submission',
+    accessorKey: 'dataSubmissionPercent',
     header: 'Data Submission %',
-    cell: ({ row }) => <Text weight="light">{row.original.submission}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original?.dataSubmissionPercent}</Text>,
   },
   {
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      return <SuperAdminStatusBadge status={row.original.status} />
+      return <SuperAdminStatusBadge status={row?.original?.status?.toLowerCase()} />
     },
   },
 ]

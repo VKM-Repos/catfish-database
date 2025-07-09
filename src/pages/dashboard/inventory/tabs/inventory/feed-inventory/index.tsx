@@ -88,7 +88,7 @@ export default function FeedInventory() {
           <div>{actions}</div>
         </FlexBox>
         <DataTable
-          search={false}
+          search={true}
           columns={columns}
           data={feedInventories?.content ?? []}
           isLoading={isLoading}

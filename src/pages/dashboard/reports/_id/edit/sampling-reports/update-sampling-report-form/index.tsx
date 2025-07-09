@@ -10,9 +10,6 @@ import { paths } from 'src/routes'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import SamplingWeightForm from 'src/pages/dashboard/reports/components/forms/sampling/sampling-weight-from'
 import FeedConsumedForm from 'src/pages/dashboard/reports/components/forms/sampling/feed-consumed-form'
-import MortalityRateForm from 'src/pages/dashboard/reports/components/forms/sampling/mortality-rate-form'
-import DiseaseForm from 'src/pages/dashboard/reports/components/forms/sampling/disease-form'
-import FishBehaviorForm from 'src/pages/dashboard/reports/components/forms/sampling/fish-bevahior-form'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
@@ -40,12 +37,7 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
     weightOfFishSampled,
     avgWeightFishSampled,
     totalWeightGain,
-    totalFeedConsumed,
-    numberOfFishMortalityRecorded,
-    disease,
-    diseaseObservation,
-    behavior,
-    observation,
+
     updateProperty,
     reset,
   } = useFishSamplingStore()
@@ -58,12 +50,6 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
           weightOfFishSampled: samplingData.weight ?? weightOfFishSampled,
           avgWeightFishSampled: samplingData.averageWeightToFish ?? avgWeightFishSampled,
           totalWeightGain: samplingData.weightGain ?? totalWeightGain,
-          totalFeedConsumed: samplingData.feedConsumed ?? totalFeedConsumed,
-          numberOfFishMortalityRecorded: samplingData.mortality ?? numberOfFishMortalityRecorded,
-          disease: samplingData.diseaseType ?? disease,
-          diseaseObservation: samplingData.diseaseObserve ?? diseaseObservation,
-          behavior: samplingData.behaviorType ?? behavior,
-          observation: samplingData.behaviourObserve ?? observation,
         }
       : {},
     mode: 'onChange',
@@ -105,12 +91,6 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
         weight: values.weightOfFishSampled,
         averageWeightToFish: values.avgWeightFishSampled,
         weightGain: values.totalWeightGain,
-        feedConsumed: values.totalFeedConsumed,
-        mortality: values.numberOfFishMortalityRecorded,
-        diseaseType: values.disease,
-        diseaseObserve: values.diseaseObservation,
-        behaviorType: values.behavior,
-        behaviourObserve: values.observation,
       }
       await updateMutation.mutateAsync(payload)
       queryClient.refetchQueries(['sampling-reports-table'])
@@ -192,9 +172,7 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
                 </p>
               </div>
             </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <MortalityRateForm form={form} />
-            </div>
+            <div className="rounded-md border border-neutral-200 p-5">{/* <MortalityRateForm form={form} /> */}</div>
           </div>
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
@@ -205,9 +183,7 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
                 </p>
               </div>
             </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <DiseaseForm form={form} />
-            </div>
+            <div className="rounded-md border border-neutral-200 p-5">{/* <DiseaseForm form={form} /> */}</div>
           </div>
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
@@ -219,9 +195,7 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
                 </p>
               </div>
             </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <FishBehaviorForm form={form} />
-            </div>
+            <div className="rounded-md border border-neutral-200 p-5">{/* <FishBehaviorForm form={form} /> */}</div>
           </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">

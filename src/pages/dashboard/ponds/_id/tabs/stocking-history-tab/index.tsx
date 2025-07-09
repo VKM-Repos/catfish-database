@@ -10,8 +10,9 @@ import { columns } from './table/columns'
 import EmptyTableState from 'src/components/global/empty-state'
 import EmptyClusterManagerImg from 'src/assets/images/empty-cluster-manager.jpg'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedFishBatchResponseSchema } from 'src/schemas'
-import { Loader } from 'src/components/ui/loader'
+import { Heading } from 'src/components/ui/heading'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { z } from 'zod'
 
 export default function StockingHistory() {
   const navigate = useNavigate()
@@ -24,7 +25,7 @@ export default function StockingHistory() {
 
   const useGetFishBatches = createGetQueryHook({
     endpoint: `/fish-batches`,
-    responseSchema: paginatedFishBatchResponseSchema,
+    responseSchema: z.any(),
     queryKey: ['my-fish-batches'],
   })
 
@@ -41,17 +42,15 @@ export default function StockingHistory() {
     </Inline>
   )
 
-  if (isLoading) return <Loader type="spinner" />
-
   return (
     <div className="relative pb-[5rem]">
-      <div className="flex items-center justify-between">
-        <Text className="!text-lg font-bold">Stocking history</Text>
+      <FlexBox direction="row" align="center" justify="between" className="w-full">
+        <Heading level={6}>Stocking history</Heading>
         {actions}
-      </div>
+      </FlexBox>
       <Spacer />
       <>
-        {fishBatches && fishBatches?.content.length > 0 ? (
+        {(fishBatches && fishBatches?.content.length > 0) || isLoading ? (
           <DataTable
             search={false}
             columns={columns}

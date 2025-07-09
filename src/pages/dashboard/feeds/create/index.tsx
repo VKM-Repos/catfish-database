@@ -2,7 +2,7 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { useState } from 'react'
 import { z } from 'zod'
-import CancelPrompt from '../../ponds/create/prompts/cancel-prompt'
+
 import PromptNewFeedType from '../prompts/prompt-new-feed'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
@@ -13,6 +13,7 @@ import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import * as SolarIconSet from 'solar-icon-set'
 import ECLIPSE from 'src/assets/images/ellipse.png'
+import DiscardChanges from '../../ponds/create/prompts/discard-changes'
 
 export default function RegisterFeedTypes() {
   const [open, setOpen] = useState(false)
@@ -27,15 +28,6 @@ export default function RegisterFeedTypes() {
   })
 
   const { data: fishBatches } = useGetFishBatches()
-
-  const handleCancelYes = () => {
-    setOpenCancelPrompt(false)
-    navigate(-1)
-  }
-
-  const handleCancelNo = () => {
-    setOpenCancelPrompt(false)
-  }
 
   const handleYesConditionOnClose = () => {
     setOpen(false)
@@ -119,17 +111,17 @@ export default function RegisterFeedTypes() {
         <RenderSteps />
       </FlexBox>
       <>
-        <CancelPrompt
-          openCancelPrompt={openCancelPrompt}
-          setOpenCancelPrompt={setOpenCancelPrompt}
-          handleCancelYes={handleCancelYes}
-          handleCancelNo={handleCancelNo}
-        />
         <PromptNewFeedType
           open={open}
           setOpen={setOpen}
           handleNoConditionOnClose={handleNoConditionOnClose}
           handleYesConditionOnClose={handleYesConditionOnClose}
+        />
+        <DiscardChanges
+          open={openCancelPrompt}
+          setOpen={setOpenCancelPrompt}
+          originPath=""
+          onDiscard={() => navigate(-1)}
         />
       </>
     </FlexBox>

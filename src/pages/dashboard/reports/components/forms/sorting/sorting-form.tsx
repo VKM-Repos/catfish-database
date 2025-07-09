@@ -14,19 +14,24 @@ import TransferForm from './transfer-form'
 import FishHarvestForm from './fish-harvest-form'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { LoadingScreen } from 'src/components/global/loading-screen'
 import { useParams } from 'react-router-dom'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { ConfirmSamplingSubmission } from '../../modals/confirm-sampling-submission'
 import { useFishHarvestStore } from 'src/store/fish-harvest-store'
 import { useSplitStore } from 'src/store/split-store'
+import { useDateStore } from 'src/store/report-date-store'
 
-export function SortingForm({ handlePrevious }: { handlePrevious: () => void; handleNext: () => void }) {
+export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: () => void; handleNext: () => void }) {
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
   const useSamplingReport = createPostMutationHook({
     endpoint: '/samplings',
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+  const useHarvestReport = createPostMutationHook({
+    endpoint: `/harvests/${id}`,
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
@@ -45,6 +50,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
   const { quantity, totalWeightHarvested, costPerKg, clearStore } = useFishHarvestStore()
 
   const { splitOccur: splitOccurInStore, reason: reasonInStore, setSplitOccur, setReason } = useSplitStore()
+  const { combineDateTime } = useDateStore()
+
   const samplingForm = {
     numberOfFishSampled,
     weightOfFishSampled,
@@ -79,10 +86,11 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
   const reason = form.watch('reason')
 
   const createSamplingReport = useSamplingReport()
+  const createHarvestReport = useHarvestReport()
 
   const validateForm = (data: z.infer<typeof sortingSchema>) => {
     // Validate reason is required when split occurs
-    if (data.splitOccur && !data.reason) {
+    if (data.splitOccur && data.reason === 'sampling') {
       form.setError('reason', {
         type: 'manual',
         message: 'Reason is required when split occurs',
@@ -121,14 +129,14 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
       census: 12,
       sample: Number.parseInt(samplingForm.numberOfFishSampled),
       weight: 10,
-      mortality: Number.parseInt(samplingForm.numberOfFishMortalityRecorded),
-      averageWeightToFish: Number.parseInt(samplingForm.avgWeightFishSampled),
+      mortality: null,
+      averageWeightToFish: 1,
       weightGain: Number.parseInt(samplingForm.totalWeightGain),
-      feedConsumed: Number.parseInt(samplingForm.totalFeedConsumed),
-      behaviourObserve: samplingForm.observation,
-      diseaseObserve: samplingForm.diseaseObservation,
-      diseaseType: samplingForm.disease,
-      behaviorType: samplingForm.behavior,
+      feedConsumed: 0,
+      behaviourObserve: null,
+      diseaseObserve: null,
+      diseaseType: null,
+      behaviorType: null,
       splitOccur: data.splitOccur,
       reason: data.reason?.toUpperCase(),
       splitInfo: {
@@ -137,11 +145,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
           quantity: Number(batch.quantity),
         })),
       },
-      harvestCreate: {
-        quantity: Number(data.quantity),
-        totalWeightHarvested: Number(data.totalWeightHarvested),
-        costPerKg: Number(data.costPerKg),
-      },
+      harvestCreate: null,
+      time: combineDateTime,
     }
   }
 
@@ -154,14 +159,27 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
     setOpenConfirmDialog(true)
   }
 
-  const handleConfirmSubmission = async () => {
+  const handleConfirmSubmission = async (e: any) => {
+    if (!e) return setOpenConfirmDialog(false)
     try {
       if (!samplingData) return
-
-      await createSamplingReport.mutateAsync(samplingData)
-
-      setOpenConfirmDialog(false)
-      setOpenDialog(true)
+      if (reasonInStore === 'harvest') {
+        samplingData.reason = 'SAMPLING'
+        const harvestData = {
+          quantity: Number(quantity),
+          totalWeightHarvested: Number(totalWeightHarvested),
+          costPerKg: Number(costPerKg),
+          costPerFish: 1000,
+        }
+        await createSamplingReport.mutateAsync(samplingData)
+        await createHarvestReport.mutateAsync(harvestData)
+        setOpenConfirmDialog(false)
+        handleNext()
+      } else {
+        await createSamplingReport.mutateAsync(samplingData)
+        setOpenConfirmDialog(false)
+        setOpenDialog(true)
+      }
     } catch (err) {
       setOpenConfirmDialog(false)
       if (err && typeof err === 'object' && 'response' in err) {
@@ -179,9 +197,9 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
     }
   }
 
-  if (createSamplingReport.isLoading) {
-    return <LoadingScreen />
-  }
+  // if (createSamplingReport.isLoading) {
+  //   return <LoadingScreen />
+  // }
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={form.reset} onOpenChange={setOpenDialog} />
@@ -216,6 +234,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
                           checked={field.value}
                           onCheckedChange={(value) => {
                             field.onChange(value)
+                            setReason('sampling')
                             if (!value) {
                               setValue('reason', 'sampling')
                               clearStore()
@@ -296,7 +315,9 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void; ha
             <Button variant={'outline'} onClick={handlePrevious}>
               Back
             </Button>
-            <Button type="submit">Continue</Button>
+            <Button disabled={createSamplingReport.isLoading} type="submit">
+              Continue
+            </Button>
           </div>
         </form>
       </Form>

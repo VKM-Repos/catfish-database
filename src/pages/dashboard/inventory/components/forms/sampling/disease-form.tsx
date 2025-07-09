@@ -3,14 +3,14 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
-import type { samplingSchema } from 'src/schemas'
+import type { fishDiseaseSchema } from 'src/schemas'
 import * as SolarIconSet from 'solar-icon-set'
 
 import type { z } from 'zod'
 import { useRef } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 
-type SamplingFormValues = z.infer<typeof samplingSchema>
+type SamplingFormValues = z.infer<typeof fishDiseaseSchema>
 
 export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingFormValues> }) {
   const timeInputRef = useRef<HTMLInputElement>(null)
@@ -85,7 +85,7 @@ export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingForm
           </Text>
           <FormField
             control={form.control}
-            name="diseaseObservation"
+            name="observation"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

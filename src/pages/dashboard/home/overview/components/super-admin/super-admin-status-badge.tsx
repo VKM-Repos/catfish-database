@@ -58,12 +58,12 @@ export function SuperAdminStatusBadge({
     <div
       className={cn(
         'flex max-w-fit items-center gap-2 rounded-[4rem] border px-2 py-1 text-sm capitalize',
-        currentStatus.bg,
+        currentStatus?.bg,
         className,
       )}
     >
-      {currentStatus.icon}
-      {currentStatus.text}
+      {currentStatus?.icon}
+      {currentStatus?.text}
     </div>
   )
 }

@@ -1,8 +1,5 @@
-import { useState } from 'react'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { usePondStore } from 'src/store/pond.store'
 
-import { useNavigate } from 'react-router-dom'
 import SamplingIndexForm from '../../../components/forms/sampling/sampling-report-index-form'
 import { SortingForm } from '../../../components/forms/sorting/sorting-form'
 import {
@@ -13,37 +10,18 @@ import {
   BreadcrumbSeparator,
 } from 'src/components/ui/breadcrumb'
 import { Text } from 'src/components/ui/text'
+import { useSamplingStepperStore } from 'src/store/sampling-stepper-store'
 
-export default function CreatePondPage() {
-  const [step, setStep] = useState(1)
-  const { pondData, resetPondStore } = usePondStore()
-  const navigate = useNavigate()
-
-  const handleNext = () => {
-    setStep(step + 1)
-    console.log('next')
-  }
-
-  const handlePrevious = () => {
-    setStep(step - 1)
-  }
-
-  const onSubmit = async () => {
-    try {
-      console.log(pondData)
-      navigate('/dashboard/ponds')
-      resetPondStore()
-    } catch (error) {
-      console.error(error)
-    }
-  }
+export default function CreateSampling() {
+  const { step, nextStep, prevStep } = useSamplingStepperStore()
 
   const RenderSteps = () => {
     switch (step) {
       case 1:
-        return <SamplingIndexForm handlePrevious={handlePrevious} handleNext={handleNext} />
+        return <SamplingIndexForm handleNext={nextStep} />
       case 2:
-        return <SortingForm handlePrevious={handlePrevious} handleNext={onSubmit} />
+        return <SortingForm handlePrevious={prevStep} handleNext={nextStep} />
+
       default:
         return null
     }
@@ -54,7 +32,7 @@ export default function CreatePondPage() {
       <FlexBox className="mx-10">
         <CustomBreadcrumb />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[60%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-5 w-full max-w-[60%]">
         <Stepper step={step} />
         <RenderSteps />
       </FlexBox>
@@ -64,8 +42,8 @@ export default function CreatePondPage() {
 
 const Stepper = ({ step }: { step: number }) => {
   return (
-    <div className="w-[50%]">
-      <div className="mx-auto flex max-w-[80%] items-center justify-center">
+    <div className="w-full">
+      <div className="mx-auto flex max-w-[50%] items-center justify-center">
         <FlexBox
           gap="gap-[.625rem]"
           align="center"
@@ -90,12 +68,12 @@ const Stepper = ({ step }: { step: number }) => {
         >
           <span
             className={`${
-              step === 2 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+              step >= 2 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
             } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
           >
             2
           </span>
-          <p className={`${step === 2 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Sorting</p>
+          <p className={`${step >= 2 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Sorting</p>
         </FlexBox>
       </div>
     </div>

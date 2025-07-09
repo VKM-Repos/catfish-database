@@ -2,23 +2,18 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import { SalesRecordsActions } from './actions'
 import { formatPrice } from 'src/lib/utils'
+import { formatDate } from 'src/lib/date'
 
 export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'updatedAt',
     header: 'Date',
-    cell: ({ row }) => {
-      console.log(row?.original)
-
-      return <Text weight="light">{'-'}</Text>
-    },
-    // cell: ({ row }) => <Text weight="light">{formatDate(row.original.updatedAt ?? '') || '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt ?? '') || '-'}</Text>,
   },
   {
     accessorKey: 'pond',
     header: 'Pond name',
     cell: ({ row }) => <Text weight="light">{row?.original?.fishBatch?.pond?.name || '-'}</Text>,
-
   },
   {
     accessorKey: 'totalWeightHarvested',

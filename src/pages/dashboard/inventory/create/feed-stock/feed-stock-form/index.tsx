@@ -67,13 +67,7 @@ export default function FeedStockForm({
 
   const form = useForm<FeedingTypeData>({
     resolver: zodResolver(initialValues ? feedTypeEditSchema : feedTypeCreateSchema),
-    defaultValues: {
-      type: '',
-      sizeInMm: undefined,
-      quantityInKg: undefined,
-      totalCost: '',
-      costPerKg: undefined,
-    },
+    defaultValues: {},
     mode: 'onChange',
   })
 
@@ -90,12 +84,6 @@ export default function FeedStockForm({
       form.setValue('costPerKg', cost)
     }
   }, [form.setValue, cost])
-
-  useEffect(() => {
-    if (initialValues) {
-      form.reset(initialValues)
-    }
-  }, [initialValues])
 
   const onSubmit = async (values: FeedingTypeData) => {
     try {
@@ -292,7 +280,7 @@ export default function FeedStockForm({
               </Text>
               <FormField
                 control={form.control}
-                name="date"
+                name="time"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>

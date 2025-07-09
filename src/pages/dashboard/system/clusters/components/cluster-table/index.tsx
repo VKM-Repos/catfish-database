@@ -1,7 +1,6 @@
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { clusterResponseSchema, paginatedUserResponseSchema } from 'src/schemas/schemas'
 import { z } from 'zod'
 import EmptyTableState from 'src/components/global/empty-state'
 import EmptyFarmersImg from 'src/assets/images/empty-admin.jpg'
@@ -11,13 +10,13 @@ import { paths } from 'src/routes'
 export function ClusterTable() {
   const useGetClusters = createGetQueryHook({
     endpoint: '/clusters',
-    responseSchema: z.array(clusterResponseSchema),
+    responseSchema: z.any(),
     queryKey: ['clusters'],
   })
 
   const useGetClusterManagers = createGetQueryHook({
     endpoint: '/users/cluster-managers',
-    responseSchema: paginatedUserResponseSchema,
+    responseSchema: z.any(),
     queryKey: ['cluster-managers'],
   })
 
@@ -25,9 +24,9 @@ export function ClusterTable() {
   const { data: clusterManagerResponse, isLoading: loadingManagers } = useGetClusterManagers()
   const clusterManagers = clusterManagerResponse?.content || []
 
-  const clustersWithManagers: any = clusters.map((cluster) => ({
+  const clustersWithManagers: any = clusters.map((cluster: any) => ({
     ...cluster,
-    users: clusterManagers.filter((manager) => manager.cluster?.id === cluster.id),
+    users: clusterManagers.filter((manager: any) => manager.cluster?.id === cluster.id),
   }))
   const navigate = useNavigate()
 

@@ -10,9 +10,6 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import FeedConsumedForm from './feed-consumed-form'
-import MortalityRateForm from './mortality-rate-form'
-import DiseaseForm from './disease-form'
-import FishBehaviorForm from './fish-bevahior-form'
 
 type SamplingData = z.infer<typeof samplingSchema>
 
@@ -26,20 +23,8 @@ export default function SamplingIndexForm({
   const navigate = useNavigate()
   const [openDialog, setOpenDialog] = useState(false)
 
-  const {
-    numberOfFishSampled,
-    weightOfFishSampled,
-    avgWeightFishSampled,
-    totalWeightGain,
-    totalFeedConsumed,
-    numberOfFishMortalityRecorded,
-    disease,
-    diseaseObservation,
-    behavior,
-    observation,
-    updateProperty,
-    reset,
-  } = useFishSamplingStore()
+  const { numberOfFishSampled, weightOfFishSampled, avgWeightFishSampled, totalWeightGain, updateProperty, reset } =
+    useFishSamplingStore()
 
   const form = useForm<SamplingData>({
     resolver: zodResolver(samplingSchema),
@@ -48,12 +33,6 @@ export default function SamplingIndexForm({
       weightOfFishSampled,
       avgWeightFishSampled,
       totalWeightGain,
-      totalFeedConsumed,
-      numberOfFishMortalityRecorded,
-      disease,
-      diseaseObservation,
-      behavior,
-      observation,
     },
     mode: 'onChange',
   })
@@ -128,9 +107,7 @@ export default function SamplingIndexForm({
                 </p>
               </div>
             </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <MortalityRateForm form={form} />
-            </div>
+            <div className="rounded-md border border-neutral-200 p-5">{/* <MortalityRateForm form={form} /> */}</div>
           </div>
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
@@ -141,9 +118,7 @@ export default function SamplingIndexForm({
                 </p>
               </div>
             </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <DiseaseForm form={form} />
-            </div>
+            <div className="rounded-md border border-neutral-200 p-5">{/* <DiseaseForm form={form} /> */}</div>
           </div>
           <div className="w-full ">
             <div className="mb-5 w-full items-start">
@@ -155,9 +130,7 @@ export default function SamplingIndexForm({
                 </p>
               </div>
             </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <FishBehaviorForm form={form} />
-            </div>
+            <div className="rounded-md border border-neutral-200 p-5">{/* <FishBehaviorForm form={form} /> */}</div>
           </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">

@@ -11,7 +11,7 @@ import { Grid } from 'src/components/ui/grid'
 
 type PondFormValues = z.infer<typeof pondSchema>
 
-export default function AddPondDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
+export default function PondDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
   const waterSources = ['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers']
   const pondTypes = ['Concrete', 'Earthen', 'Plastic', 'Tarpauline']
   const isWaterSourcesLoading = false

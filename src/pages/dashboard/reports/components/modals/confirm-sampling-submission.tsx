@@ -11,7 +11,7 @@ export function ConfirmSamplingSubmission({ open, onOpenChange }: CreateReportDi
     onOpenChange(false)
   }
   const addReport = () => {
-    onOpenChange(false)
+    onOpenChange(true)
   }
   return (
     <Dialog open={open}>

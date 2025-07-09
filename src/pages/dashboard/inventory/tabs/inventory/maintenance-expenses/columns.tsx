@@ -56,7 +56,7 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'pond',
     header: 'Pond',
-    cell: ({ row }) => <Text weight="light">{row.original.pond?.name ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original.batch.pond?.name ?? '-'}</Text>,
   },
   {
     id: 'actions',

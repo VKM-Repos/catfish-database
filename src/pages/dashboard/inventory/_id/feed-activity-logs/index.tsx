@@ -10,7 +10,7 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 
 const useGetFeedActivityLogs = createGetQueryHook({
-  endpoint: `/feed-inventories/:id/logs?&direction=DESC`,
+  endpoint: `/feed-inventories/:id/feed-logs?&direction=DESC`,
   responseSchema: z.any(),
   queryKey: ['feeding-activity-logs'],
 })
@@ -22,15 +22,13 @@ export default function FeedActivityLogsModal() {
   const location = useLocation()
   const item = location.state?.item
 
-  console.log(item)
-
   const { data, isLoading } = useGetFeedActivityLogs({ route: { id: id! } })
 
   if (!id) return null
 
   return (
     <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.inventory.root)}>
-      <DialogContent className="min-h-[410px] min-w-[80%] overflow-scroll px-8 py-4">
+      <DialogContent className="max-h-[90dvh] min-h-[410px] min-w-[80%] overflow-scroll px-8 py-4">
         <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
           <FlexBox justify="center" align="center" className="w-full">
             <Text className="text-xl font-semibold text-neutral-700">Feed Activity Log</Text>

@@ -48,7 +48,7 @@ export default function UpdatePondPage() {
 
   const form = useForm<PondData>({
     resolver: zodResolver(pondSchema),
-    defaultValues: initialValues,
+    // defaultValues: initialValues,
     mode: 'onChange',
   })
 

@@ -4,6 +4,7 @@ import { columns } from './columns'
 import { memo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
+// import { DataTable } from 'src/components/ui/data-table'
 import { z } from 'zod'
 
 const useGetRoles = createGetQueryHook({
@@ -45,7 +46,7 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
   // Example filter configs
   const filterConfigs: FilterConfig[] = [
     {
-      key: 'cluster',
+      key: 'cluster.name',
       label: 'Cluster',
       type: 'select',
       options: (clustersResp ?? []).filter(Boolean).map((c: any) => ({ value: c.name, label: c.name })),
@@ -56,12 +57,12 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
       key: 'role',
       label: 'Role',
       type: 'select',
-      options: (rolesResp ?? []).filter(Boolean).map((c: any) => ({ value: c.id, label: c.name })),
+      options: (rolesResp ?? []).filter(Boolean).map((c: any) => ({ value: c.name, label: c.name })),
       placeholder: loadingRoles ? 'Loading…' : 'Role',
       loading: loadingRoles,
     },
     {
-      key: 'status',
+      key: 'accountNonLocked',
       label: 'Status',
       type: 'select',
       options: [
@@ -103,13 +104,9 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
       // Search
       search={true}
       searchPlaceholder="Search users..."
-      searchValue={searchTerm}
-      onSearchChange={setSearchTerm}
       // Filters
       enableFilters={true}
       filterConfigs={filterConfigs}
-      appliedFilters={appliedFilters}
-      onFilterChange={(filters) => console.log('Filters:', filters)}
       // Pagination
       enablePagination={true}
       pagination={pagination}
@@ -121,16 +118,16 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
       // Custom styling
       className="my-custom-class"
     />
+    // <DataTable
+    //   search={false}
+    //   hideClusterFilter={false}
+    //   isLoading={isLoading}
+    //   columns={columns}
+    //   data={data}
+    //   emptyStateMessage="No users found"
+    // />
   )
 }
-
-// key: string
-//   label: string
-//   type: 'select' | 'multiselect' | 'input' | 'daterange' | 'boolean'
-//   options?: Array<{ value: any; label: string }>
-//   placeholder?: string
-//   fetchOptions?: () => Promise<Array<{ value: string; label: string }>>
-//   loading?: boolean
 
 // Memoize the component to prevent unnecessary re-renders
 export const UsersTable = memo(UsersTableComponent)

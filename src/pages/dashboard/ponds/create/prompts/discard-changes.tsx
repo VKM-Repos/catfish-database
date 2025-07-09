@@ -1,5 +1,4 @@
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { useNavigate } from 'react-router-dom'
 import { Button } from 'src/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from 'src/components/ui/dialog'
 import { FlexBox } from 'src/components/ui/flexbox'
@@ -14,16 +13,13 @@ import { Text } from 'src/components/ui/text'
 export type DiscardChangesProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  originPath: string
   onDiscard?: () => void // optional extra effect (e.g. mutate state, toast)
 }
 
-export default function DiscardChanges({ open, setOpen, originPath, onDiscard }: DiscardChangesProps) {
-  const navigate = useNavigate()
-
+export default function DiscardChanges({ open, setOpen, onDiscard }: DiscardChangesProps) {
   const handleDiscard = () => {
     onDiscard?.()
-    navigate(originPath)
+    // navigate(originPath)
   }
 
   return (

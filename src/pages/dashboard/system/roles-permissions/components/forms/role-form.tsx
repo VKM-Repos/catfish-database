@@ -5,7 +5,6 @@ import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import { Loader } from 'src/components/ui/loader'
-import * as SolarIconSet from 'solar-icon-set'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
@@ -176,7 +175,6 @@ export function RoleForm({ mode, initialValues, onSuccess, onClose }: RoleFormPr
           )}
           <Text className="flex items-center text-sm font-medium text-neutral-700">
             Role Name <span className="font-bold text-red-500">*</span>
-            <SolarIconSet.QuestionCircle size={16} />
           </Text>
           <FormField
             control={form.control}
@@ -193,7 +191,6 @@ export function RoleForm({ mode, initialValues, onSuccess, onClose }: RoleFormPr
 
           <Text className="flex items-center text-sm font-medium text-neutral-700">
             Role Description <span className="font-bold text-red-500">*</span>
-            <SolarIconSet.QuestionCircle size={16} />
           </Text>
           <FormField
             control={form.control}

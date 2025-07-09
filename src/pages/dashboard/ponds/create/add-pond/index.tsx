@@ -84,16 +84,15 @@ export default function AddPond() {
           if (addFishPreferred) {
             navigate(paths.dashboard.ponds.create.addFishToPond)
           } else {
-            // restart flow → back to step 1
             setOpenPrompt(false)
             setStep(1)
           }
         }}
-        secondaryAction={() => navigate(originPath)}
+        secondaryAction={() => navigate(-1)}
       />
 
       {/* Discard changes modal */}
-      <DiscardChanges open={openDiscard} setOpen={setOpenDiscard} originPath={originPath} />
+      <DiscardChanges open={openDiscard} setOpen={setOpenDiscard} onDiscard={() => navigate(-1)} />
     </div>
   )
 }

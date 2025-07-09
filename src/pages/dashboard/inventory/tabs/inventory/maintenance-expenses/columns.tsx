@@ -8,13 +8,13 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'updatedAt',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original.updatedAt)}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row?.original?.updatedAt)}</Text>,
   },
   {
     accessorKey: 'maintenanceType',
     header: 'Activity type',
     cell: ({ row }) => {
-      const type = row.original.maintenanceType || '-'
+      const type = row?.original?.maintenanceType || '-'
       const colorMap: Record<string, string> = {
         LABOR: '#F59E42',
         CHEMICALS: '#1E90FF',
@@ -51,12 +51,12 @@ export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'cost',
     header: 'Total cost (₦)',
-    cell: ({ row }) => <Text weight="light">{formatPrice(row.original.cost) || '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatPrice(row?.original?.cost) || '-'}</Text>,
   },
   {
     accessorKey: 'pond',
     header: 'Pond',
-    cell: ({ row }) => <Text weight="light">{row.original.batch.pond?.name ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row?.original?.batch?.pond?.name ?? '-'}</Text>,
   },
   {
     id: 'actions',

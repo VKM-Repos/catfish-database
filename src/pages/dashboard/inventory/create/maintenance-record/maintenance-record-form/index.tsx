@@ -74,10 +74,10 @@ export default function MaintenanceRecordsForm({
   const form = useForm<MaintenanceFormData>({
     resolver: zodResolver(maintenanceSchema),
     defaultValues: {
-      date: record?.createdAt || '',
-      maintenanceType: record?.maintenanceType || '',
+      date: record?.createdAt ?? undefined,
+      maintenanceType: record?.maintenanceType ?? '',
       cost: record?.cost ?? undefined,
-      pondId: mode === 'edit' ? undefined : record?.id || '',
+      pondId: record?.id ?? undefined,
     },
     mode: 'onChange',
   })
@@ -169,7 +169,10 @@ export default function MaintenanceRecordsForm({
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormControl>
-                        <Select value={field.value || ''} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value ?? ''}
+                          onValueChange={(val) => field.onChange(val === '' ? undefined : val)}
+                        >
                           <SelectTrigger className="w-full font-light">
                             <SelectValue placeholder="Select activity type" />
                           </SelectTrigger>
@@ -236,7 +239,7 @@ export default function MaintenanceRecordsForm({
                 <div className="flex w-full flex-col gap-2">
                   <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                     Pond
-                    <span className="font-bold text-red-500">*</span>
+                    {/* <span className="font-bold text-red-500">*</span> */}
                     <SolarIconSet.QuestionCircle size={16} />
                   </Text>
                   <FormField

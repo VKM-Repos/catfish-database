@@ -3,8 +3,87 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { Grid } from 'src/components/ui/grid'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
 
-export default function FarmStatistics() {
+const totalFishSchema = z.array(
+  z.object({
+    intervalLabel: z.string(),
+    groupId: z.string(),
+    groupName: z.string(),
+    availableFish: z.number(),
+    soldFish: z.number(),
+  }),
+)
+
+const totalRevenueSchema = z.array(
+  z.object({
+    intervalLabel: z.string(),
+    totalRevenue: z.number(),
+  }),
+)
+
+const averageWeightSchema = z.array(
+  z.object({
+    intervalLabel: z.string(),
+    totalWeight: z.number(),
+    totalRevenue: z.number(),
+    totalQuantity: z.number(),
+    averageSellingPrice: z.number(),
+    averageFishWeight: z.number(),
+  }),
+)
+
+const survivalRateSchema = z.array(
+  z.object({
+    intervalLabel: z.string(),
+    mortalityRate: z.number(),
+    survivalRate: z.number(),
+  }),
+)
+
+interface FarmStatisticsProps {
+  farmerId: string
+}
+
+export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
+  const useGetTotalFish = createGetQueryHook({
+    endpoint: '/dashboards/cluster/group-fish-availability?farmerId=:id',
+    responseSchema: totalFishSchema,
+    queryKey: ['total-fish'],
+  })
+  const useGetRevenueTotal = createGetQueryHook({
+    endpoint: '/dashboards/cluster/revenue/overall??interval=ALL&farmerId=:id',
+    responseSchema: totalRevenueSchema,
+    queryKey: ['total-revenue'],
+  })
+
+  const useGetAverageWeight = createGetQueryHook({
+    endpoint: '/dashboards/cluster/volume-of-sales?interval=ALL&farmerId=:id',
+    responseSchema: averageWeightSchema,
+    queryKey: ['average-weight'],
+  })
+  // const useGetFeedTotal = createGetQueryHook({
+  //   endpoint: '/dashboards/farmer/feed/total?interval=ALL',
+  //   responseSchema: feedTotalSchema,
+  //   queryKey: ['feed-total'],
+  // })
+  const useGetSurvivalRate = createGetQueryHook({
+    endpoint: '/dashboards/cluster/mortality-rate/overall?interval=ALL&farmerId=:id',
+    responseSchema: survivalRateSchema,
+    queryKey: ['survival-rate'],
+  })
+
+  const { data: totalFish, isLoading: totFisIsLoading } = useGetTotalFish({ route: { id: farmerId } })
+  const { data: totalRevenue, isLoading: totRevIsLoading } = useGetRevenueTotal({ route: { id: farmerId } })
+  const { data: averageWeight, isLoading: averWeigIsLoading } = useGetAverageWeight({ route: { id: farmerId } })
+  const { data: survivalRate, isLoading: surRaIsLoading } = useGetSurvivalRate({ route: { id: farmerId } })
+
+  console.log('totalFish: ', totalFish)
+  console.log('totalRevenue: ', totalRevenue)
+  console.log('averageWeight: ', averageWeight)
+  console.log('survivalRate: ', survivalRate)
+
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">

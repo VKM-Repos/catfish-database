@@ -21,6 +21,8 @@ type FarmerProps = {
 export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  console.log('farmer: ', farmer)
+  console.log('id: ', id)
 
   const farmer_details = [
     { label: 'First Name', value: farmer.firstName },
@@ -64,7 +66,7 @@ export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
           ))}
         </Grid>
       )}
-      <FarmStatistics />
+      {id && <FarmStatistics farmerId={id} />}
       <section className="flex w-full flex-col items-center justify-center gap-3 md:flex-row md:items-stretch">
         <AverageWeight />
         <FeedConversionRatio />

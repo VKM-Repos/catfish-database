@@ -257,8 +257,20 @@ export function DataTable<TData>({
 
   // Internal search state
   const [internalSearchValue, setInternalSearchValue] = React.useState('')
+  // Debounced search value
+  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState('')
   // Internal applied filters state
   const [appliedInternalFilters, setAppliedInternalFilters] = React.useState<Record<string, any>>({})
+
+  // Debounce effect for search
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(internalSearchValue)
+    }, 500)
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [internalSearchValue])
 
   // Initialize temp filters with applied filters
   React.useEffect(() => {
@@ -318,16 +330,16 @@ export function DataTable<TData>({
         })
       })
     }
-    // Apply search
-    if (internalSearchValue) {
+    // Apply search (debounced)
+    if (debouncedSearchValue) {
       filtered = filtered.filter((row: any) =>
         Object.values(row).some(
-          (value) => typeof value === 'string' && value.toLowerCase().includes(internalSearchValue.toLowerCase()),
+          (value) => typeof value === 'string' && value.toLowerCase().includes(debouncedSearchValue.toLowerCase()),
         ),
       )
     }
     return filtered
-  }, [data, internalSearchValue, appliedInternalFilters, filterConfigs])
+  }, [data, debouncedSearchValue, appliedInternalFilters, filterConfigs])
 
   // Table configuration
   const table = useReactTable({
@@ -351,15 +363,6 @@ export function DataTable<TData>({
     manualSorting: !!sorting,
     pageCount: paginationData.totalPages,
   })
-
-  // Handle search change - FIXED: Now properly calls the provided handler
-  // const handleSearchChange = React.useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const value = e.target.value
-  //     onSearchChange?.(value)
-  //   },
-  //   [onSearchChange],
-  // )
 
   // Handle filter changes
   const handleFilterChange = (filterKey: string, value: any) => {

@@ -4,7 +4,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/compone
 import { Input } from 'src/components/ui/input'
 import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
-import * as SolarIconSet from 'solar-icon-set'
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
 import { staffRequestSchema, staffResponseSchema } from 'src/schemas/schemas'
@@ -90,7 +89,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
             <FlexBox direction="col" className="w-full" gap="gap-1">
               <Text className="flex items-center text-sm font-medium text-neutral-700">
                 First Name <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
@@ -109,7 +107,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
             <FlexBox direction="col" className="w-full" gap="gap-1">
               <Text className="flex items-center text-sm font-medium text-neutral-700">
                 Last Name <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
@@ -130,7 +127,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
           <div>
             <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
               Email <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
             </Text>
             <FormField
               control={form.control}
@@ -155,7 +151,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
           <div>
             <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
               Phone Number <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
             </Text>
             <FormField
               control={form.control}
@@ -175,7 +170,6 @@ export function StaffForm({ mode, initialValues, onSuccess, onClose }: StaffProp
           <div>
             <Text className="mb-2 flex items-center text-sm font-medium text-neutral-700">
               Address <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
             </Text>
             <FormField
               control={form.control}

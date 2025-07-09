@@ -6,6 +6,7 @@ import EmptyTableState from 'src/components/global/empty-state'
 import EmptyFarmersImg from 'src/assets/images/empty-admin.jpg'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
+// import { DataTable } from 'src/components/ui/enhance-data-tabe'
 
 export function ClusterTable() {
   const useGetClusters = createGetQueryHook({
@@ -36,6 +37,20 @@ export function ClusterTable() {
   return (
     <>
       {clustersWithManagers && clustersWithManagers.length > 0 ? (
+        //   <DataTable
+        //   columns={columns}
+        //   data={clustersWithManagers}
+        //   isLoading={loadingManagers}
+        //   emptyStateMessage="No clusters found"
+        //   // Search
+        //   search={true}
+        //   searchPlaceholder="Search ..."
+        //   // Filters
+        //   enableFilters={false}
+
+        //   // Custom styling
+        //   className="my-custom-class"
+        // />
         <DataTable
           isLoading={loadingClusters}
           columns={columns}

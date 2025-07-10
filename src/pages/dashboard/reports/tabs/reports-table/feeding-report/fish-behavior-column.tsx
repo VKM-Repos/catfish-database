@@ -1,0 +1,26 @@
+import type { ColumnDef } from '@tanstack/react-table'
+import { Text } from 'src/components/ui/text'
+import { formatDate } from 'src/lib/date'
+import { FeedingReportActionsDropdown } from './actions-dropdown'
+
+export const fishBehaviorColumn: ColumnDef<any>[] = [
+  {
+    accessorKey: 'time',
+    header: 'Date',
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original?.time)}</Text>,
+  },
+  {
+    accessorKey: 'behaviorType',
+    header: 'Behavior Type',
+    cell: ({ row }) => <Text weight="light">{row.original?.behaviorType ?? '-'}</Text>,
+  },
+  {
+    accessorKey: 'behaviorTypeObservation',
+    header: 'Observation',
+    cell: ({ row }) => <Text weight="light">{row.original?.behaviorTypeObservation ?? '-'}</Text>,
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <FeedingReportActionsDropdown user={row?.original} />,
+  },
+]

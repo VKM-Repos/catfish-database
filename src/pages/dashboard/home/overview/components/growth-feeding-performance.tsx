@@ -128,7 +128,7 @@ export default function GrowthFeedingPerformance() {
         </div>
         <div className="flex w-[250px] flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
           <Text className="font-medium leading-[20px]">Feed Cost</Text>
-          <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
+          <Text className="text-[16px] font-semibold">₦{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
           <Text className="text-[10px] font-medium text-[#000AFF]">5.5 per kg</Text>
         </div>
       </FlexBox>

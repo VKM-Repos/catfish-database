@@ -158,7 +158,7 @@ const CustomBreadcrumb = () => {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink>
-            <Text className="text-primary-500">Sampling Report</Text>
+            <Text className="text-primary-500">Daily Report</Text>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />

@@ -12,6 +12,8 @@ import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes'
 import { User } from 'src/types'
+import { useState } from 'react'
+import { DateRange } from 'src/components/ui/mega-datepicker'
 
 type FarmerProps = {
   farmer: User
@@ -21,8 +23,11 @@ type FarmerProps = {
 export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  console.log('farmer: ', farmer)
-  console.log('id: ', id)
+
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: new Date(2020, 0, 1), // Default to "All Time"
+    to: new Date(),
+  })
 
   const farmer_details = [
     { label: 'First Name', value: farmer.firstName },
@@ -68,11 +73,11 @@ export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
       )}
       {id && <FarmStatistics farmerId={id} />}
       <section className="flex w-full flex-col items-center justify-center gap-3 md:flex-row md:items-stretch">
-        <AverageWeight />
-        <FeedConversionRatio />
+        <AverageWeight dateRange={dateRange} />
+        <FeedConversionRatio dateRange={dateRange} />
       </section>
       <section className="h-fit w-full">
-        <MonthlyFeedConsumption />
+        <MonthlyFeedConsumption dateRange={dateRange} />
       </section>
     </FlexBox>
   )

@@ -1,11 +1,16 @@
 import { ChartHeader } from 'src/components/global/chart-header'
-import { Button } from 'src/components/ui/button'
 import { Card } from 'src/components/ui/card'
-import * as SolarIconSet from 'solar-icon-set'
 import * as React from 'react'
 import GaugeChart from 'react-gauge-chart'
+import { Interval, IntervalFilter } from 'src/components/ui/interval-filter'
+import { DateRange } from 'src/components/ui/mega-datepicker'
 
-export default function FeedConversionRatio() {
+interface FeedConversionRatioProps {
+  dateRange?: DateRange
+}
+
+export default function FeedConversionRatio({ dateRange }: FeedConversionRatioProps) {
+  const [interval, setInterval] = React.useState<Interval>('MONTHLY')
   const value = 0.98
 
   function roundToHalf(num: number): number {
@@ -42,9 +47,9 @@ export default function FeedConversionRatio() {
       <ChartHeader
         title={'Feed conversion ratio'}
         action={
-          <Button variant="ghost" className="rotate-90">
-            <SolarIconSet.MenuDots color="#A1A4AA" size={28} iconStyle="Bold" />
-          </Button>
+          <div className="flex gap-2">
+            <IntervalFilter value={interval} onChange={setInterval} />
+          </div>
         }
       />
       <div className="flex flex-col justify-between">

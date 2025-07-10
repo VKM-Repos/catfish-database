@@ -39,7 +39,7 @@ export const useDailyFeedingStore = create<DailyFeedingStore>()(
         set((state) => ({
           activeInputs: { ...state.activeInputs, [fieldName]: isActive },
         })),
-      reset: () => set({ formData: initialValues, activeInputs: {} }),
+      reset: () => set({ formData: initialValues, activeInputs: {}, reportId: null }),
     }),
     {
       name: 'daily-feeding-storage',

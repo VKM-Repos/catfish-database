@@ -47,7 +47,7 @@ const useCreatePondMutation = (farmerId?: string | null) => {
   const createPondByFarmer = createPostMutationHook({
     endpoint: '/ponds/farmers',
     requestSchema: pondCreateSchema,
-    responseSchema: pondResponseSchema,
+    responseSchema: z.any(),
   })
 
   const createPondByAdmin = createPostMutationHook({
@@ -216,58 +216,56 @@ export default function PondForm({
   const isLoading = mode === 'edit' ? (pondId ? updatePondMutation?.isLoading : false) : createPondMutation.isLoading
 
   return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8">
-          {error && <FormValidationErrorAlert error={error} />}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8">
+        {error && <FormValidationErrorAlert error={error} />}
 
-          <div className="flex w-full flex-col items-start gap-1">
-            <Heading level={6}>Pond Details</Heading>
-            <div className="h-0.5 w-full bg-neutral-200" />
-          </div>
-          <PondDetailsForm form={form} />
+        <div className="flex w-full flex-col items-start gap-1">
+          <Heading level={6}>Pond Details</Heading>
+          <div className="h-0.5 w-full bg-neutral-200" />
+        </div>
+        <PondDetailsForm form={form} />
 
-          <div className="mb-2 w-full items-start">
-            <Heading level={6}>Pond Location</Heading>
-            <div className="h-0.5 w-full bg-neutral-200" />
-          </div>
-          <PondLocationForm form={form} />
+        <div className="mb-2 w-full items-start">
+          <Heading level={6}>Pond Location</Heading>
+          <div className="h-0.5 w-full bg-neutral-200" />
+        </div>
+        <PondLocationForm form={form} />
 
-          <FlexBox justify="between" align="center" className="w-full">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => {
-                onClose()
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              className="flex items-center gap-2"
-              disabled={!form.formState.isValid || isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader type="spinner" size={18} />
-                  <Text color="text-inherit" variant="body">
-                    {mode === 'edit' ? 'Updating' : 'Creating'}
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text color="text-inherit" variant="body">
-                    {mode === 'edit' ? 'Update Pond' : 'Continue'}
-                  </Text>
-                </>
-              )}
-            </Button>
-          </FlexBox>
-        </form>
-      </Form>
-    </>
+        <FlexBox justify="between" align="center" className="w-full rounded-lg bg-neutral-50 p-4">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={() => {
+              onClose()
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="flex items-center gap-2"
+            disabled={!form.formState.isValid || isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader type="spinner" size={18} />
+                <Text color="text-inherit" variant="body">
+                  {mode === 'edit' ? 'Updating' : 'Creating'}
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text color="text-inherit" variant="body">
+                  {mode === 'edit' ? 'Update Pond' : 'Continue'}
+                </Text>
+              </>
+            )}
+          </Button>
+        </FlexBox>
+      </form>
+    </Form>
   )
 }

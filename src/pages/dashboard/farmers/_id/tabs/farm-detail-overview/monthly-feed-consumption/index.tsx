@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts'
 import { ChartHeader } from 'src/components/global/chart-header'
 import { Card } from 'src/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
+import { Interval, IntervalFilter } from 'src/components/ui/interval-filter'
+import { DateRange } from 'src/components/ui/mega-datepicker'
 
 const monthlyFeedConfig = {
   monthlyFeed: {
@@ -10,10 +13,22 @@ const monthlyFeedConfig = {
   },
 }
 
-export default function MonthlyFeedConsumption() {
+interface MonthlyFeedConsumptionProps {
+  dateRange?: DateRange
+}
+
+export default function MonthlyFeedConsumption({ dateRange }: MonthlyFeedConsumptionProps) {
+  const [interval, setInterval] = useState<Interval>('MONTHLY')
   return (
     <Card className="h-[35rem] w-full rounded-[.875rem] border border-neutral-200 p-4">
-      <ChartHeader title={'Monthly feed consumption (kg)'} action={null} />
+      <ChartHeader
+        title={'Monthly feed consumption (kg)'}
+        action={
+          <div className="flex gap-2">
+            <IntervalFilter value={interval} onChange={setInterval} />
+          </div>
+        }
+      />
       <ChartContainer className="h-[25rem] w-full " config={monthlyFeedConfig}>
         <BarChart accessibilityLayer data={monthlyFeedData} height={100} barCategoryGap={20} margin={{ right: 40 }}>
           <CartesianGrid horizontal={false} vertical={false} />

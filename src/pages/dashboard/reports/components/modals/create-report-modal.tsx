@@ -33,6 +33,11 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
     resetDailyFeedingStepper()
     resetSamplingForm()
     resetForm()
+    resetDailyFeeding()
+    resetWaterQuality()
+    resetFishBehavior()
+    resetFishDisease()
+    resetStepper()
     navigate(paths.dashboard.home.getStarted)
     resetForm()
   }

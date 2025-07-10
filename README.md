@@ -102,4 +102,6 @@ Farmer
 ayomide@gmail.com
 Password@123#
 
-
+cluster manager
+olumidebalogun851+3@gmail.com
+Password7637#

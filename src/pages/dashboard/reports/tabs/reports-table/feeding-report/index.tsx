@@ -1,16 +1,20 @@
-import { DataTable } from 'src/components/ui/data-table'
-import { columns } from './columns'
-import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { z } from 'zod'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Inline } from 'src/components/ui/inline'
 import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
-import { Heading } from 'src/components/ui/heading'
-import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
 import { useState } from 'react'
+import { Tabs, TabsContent, TabsList, VerticalTabsTrigger } from 'src/components/ui/tabs'
+import { useSearchParams } from 'react-router-dom'
+import { DataTable } from 'src/components/ui/data-table'
+import { columns } from './columns'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { Heading } from 'src/components/ui/heading'
 import { waterQualityColumns } from './water-quality-columns'
+import { fishBehaviorColumn } from './fish-behavior-column'
+import { fishDiseaseColumn } from './fish-disease-column'
+import { mortalityColumn } from './mortality-column'
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
@@ -26,13 +30,37 @@ export default function FeedingReportsTable() {
     queryKey: ['water-quality'],
   })
 
+  const useGetFishBehavior = createGetQueryHook({
+    endpoint: '/behaviors',
+    responseSchema: z.any(),
+    queryKey: ['fish-behavior'],
+  })
+
+  const useGetFishDisease = createGetQueryHook({
+    endpoint: '/diseases',
+    responseSchema: z.any(),
+    queryKey: ['fish-diseases'],
+  })
+
+  const useGetMortality = createGetQueryHook({
+    endpoint: '/mortalities/fish-supplies',
+    responseSchema: z.any(),
+    queryKey: ['fish-mortality'],
+  })
+
   const openModal = () => {
     setFarmReportOpen(true)
   }
+  const [searchParams] = useSearchParams()
+
   const { data: feedingReports } = useGetFeedingReports()
   const { data: waterQualityReports } = useGetWaterQualityReports()
+  const { data: fishBehaviorReport } = useGetFishBehavior()
+  const { data: fishDiseaseReport } = useGetFishDisease()
+  const { data: mortalityReport } = useGetMortality()
+  const activeTab = searchParams.get('tab') || 'feeding'
 
-  const title = 'Feeding reports'
+  const title = 'Daily reports'
   const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
@@ -41,39 +69,76 @@ export default function FeedingReportsTable() {
       </Button>
     </Inline>
   )
-  console.log(waterQualityReports)
-
   return (
     <>
-      <FlexBox direction="col" gap="gap-4" className="mb-10 w-full">
-        <FlexBox direction="row" align="center" justify="between" className="w-full">
-          <Heading level={6}>{title}</Heading>
-          {actions && <div>{actions}</div>}
-        </FlexBox>
-        <DataTable
-          search={false}
-          columns={columns}
-          data={feedingReports?.content ?? []}
-          isLoading={false}
-          emptyStateMessage="No feeding reports found"
-        />
-        <Heading className="mt-10" level={6}>
-          Water quality reports
-        </Heading>
-        <DataTable
-          search={false}
-          columns={waterQualityColumns}
-          data={waterQualityReports?.content ?? []}
-          isLoading={false}
-          emptyStateMessage="No water quality reports found"
-        />
+      <FlexBox direction="row" align="center" justify="between" className="w-full pl-[160px]">
+        <Heading level={6}>{title}</Heading>
+        {actions && <div>{actions}</div>}
       </FlexBox>
-      <ReportModal
-        title="Daily Farm Report"
-        open={farmReportOpen}
-        redirect="daily-farm-report"
-        onOpenChange={setFarmReportOpen}
-      />
+      <Tabs defaultValue="feeding" className="flex w-full items-start gap-8">
+        <TabsList className="flex flex-col items-start justify-start text-sm font-semibold">
+          <VerticalTabsTrigger value="feeding" className="data-[state=active]:font-semibold">
+            Feeding
+          </VerticalTabsTrigger>
+          <VerticalTabsTrigger value="water-quality" className="data-[state=active]:font-semibold">
+            Water quality
+          </VerticalTabsTrigger>
+          <VerticalTabsTrigger value="behavior" className="data-[state=active]:font-semibold">
+            Fish behavior
+          </VerticalTabsTrigger>
+          <VerticalTabsTrigger value="disease" className="data-[state=active]:font-semibold">
+            Fish disease
+          </VerticalTabsTrigger>
+          <VerticalTabsTrigger value="mortality" className="data-[state=active]:font-semibold">
+            Mortality
+          </VerticalTabsTrigger>
+        </TabsList>
+        <TabsContent value="feeding" className="w-full">
+          <DataTable
+            search={false}
+            columns={columns}
+            data={feedingReports?.content ?? []}
+            isLoading={false}
+            emptyStateMessage="No feeding reports found"
+          />
+        </TabsContent>
+        <TabsContent value="water-quality" className="w-full">
+          <DataTable
+            search={false}
+            columns={waterQualityColumns}
+            data={waterQualityReports?.content ?? []}
+            isLoading={false}
+            emptyStateMessage="No water quality reports found"
+          />
+        </TabsContent>
+        <TabsContent value="behavior" className="w-full">
+          <DataTable
+            search={false}
+            columns={fishBehaviorColumn}
+            data={fishBehaviorReport?.content ?? []}
+            isLoading={false}
+            emptyStateMessage="No fish behavior reports found"
+          />
+        </TabsContent>
+        <TabsContent value="disease" className="w-full">
+          <DataTable
+            search={false}
+            columns={fishDiseaseColumn}
+            data={fishDiseaseReport?.content ?? []}
+            isLoading={false}
+            emptyStateMessage="No fish disease reports found"
+          />
+        </TabsContent>
+        <TabsContent value="mortality" className="w-full">
+          <DataTable
+            search={false}
+            columns={mortalityColumn}
+            data={mortalityReport?.content ?? []}
+            isLoading={false}
+            emptyStateMessage="No mortality reports found"
+          />
+        </TabsContent>
+      </Tabs>
     </>
   )
 }

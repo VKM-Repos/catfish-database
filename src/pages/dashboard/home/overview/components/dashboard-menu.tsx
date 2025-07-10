@@ -16,7 +16,7 @@ export default function DashboardMenu() {
   const title = user?.role === 'FARMER' ? 'Farm ' : user?.role === 'CLUSTER_MANAGER' ? 'Cluster' : 'System'
 
   return (
-    <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white px-10 py-4">
+    <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white py-4">
       {/* <FlexBox className="w-full">
         <div className="flex w-full place-content-start items-center ">
           <Button

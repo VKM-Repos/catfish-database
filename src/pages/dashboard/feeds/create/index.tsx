@@ -1,12 +1,10 @@
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { useState } from 'react'
-import { z } from 'zod'
 
 import PromptNewFeedType from '../prompts/prompt-new-feed'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
 import FeedStockForm from '../../inventory/create/feed-stock/feed-stock-form'
 import { Dialog, DialogContent, DialogHeader } from 'src/components/ui/dialog'
 import { Button } from 'src/components/ui/button'
@@ -14,20 +12,14 @@ import { Heading } from 'src/components/ui/heading'
 import * as SolarIconSet from 'solar-icon-set'
 import ECLIPSE from 'src/assets/images/ellipse.png'
 import DiscardChanges from '../../ponds/create/prompts/discard-changes'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function RegisterFeedTypes() {
   const [open, setOpen] = useState(false)
   const [openCancelPrompt, setOpenCancelPrompt] = useState(false)
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
-
-  const useGetFishBatches = createGetQueryHook({
-    endpoint: '/fish-batches',
-    responseSchema: z.any(),
-    queryKey: ['fish-batches'],
-  })
-
-  const { data: fishBatches } = useGetFishBatches()
+  const queryClient = useQueryClient()
 
   const handleYesConditionOnClose = () => {
     setOpen(false)
@@ -35,7 +27,8 @@ export default function RegisterFeedTypes() {
 
   const handleNoConditionOnClose = () => {
     setOpen(false)
-    navigate(fishBatches.totalElements > 1 ? paths.dashboard.home.overview : paths.dashboard.home.getStarted)
+    queryClient.refetchQueries(['my-inventory'])
+    navigate(paths.dashboard.home.overview)
   }
 
   const RenderSteps = () => {
@@ -117,12 +110,7 @@ export default function RegisterFeedTypes() {
           handleNoConditionOnClose={handleNoConditionOnClose}
           handleYesConditionOnClose={handleYesConditionOnClose}
         />
-        <DiscardChanges
-          open={openCancelPrompt}
-          setOpen={setOpenCancelPrompt}
-          originPath=""
-          onDiscard={() => navigate(-1)}
-        />
+        <DiscardChanges open={openCancelPrompt} setOpen={setOpenCancelPrompt} onDiscard={() => navigate(-1)} />
       </>
     </FlexBox>
   )

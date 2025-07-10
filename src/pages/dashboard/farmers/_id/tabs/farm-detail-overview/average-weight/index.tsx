@@ -1,9 +1,10 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 import { Card } from 'src/components/ui/card'
-import { Button } from 'src/components/ui/button'
-import * as SolarIconSet from 'solar-icon-set'
 import { ChartHeader } from 'src/components/global/chart-header'
+import { Interval, IntervalFilter } from 'src/components/ui/interval-filter'
+import { DateRange } from 'src/components/ui/mega-datepicker'
+import { useState } from 'react'
 
 const averageWeightConfig = {
   averageWeight: {
@@ -12,15 +13,20 @@ const averageWeightConfig = {
   },
 }
 
-export default function AverageWeight() {
+interface AverageWeightProps {
+  dateRange?: DateRange
+}
+
+export default function AverageWeight({ dateRange }: AverageWeightProps) {
+  const [interval, setInterval] = useState<Interval>('MONTHLY')
   return (
     <Card className="h-[30rem] w-full rounded-[.875rem] border border-neutral-200 p-4 md:w-[60%]">
       <ChartHeader
         title={'Average Weight'}
         action={
-          <Button variant="ghost" className="rotate-90">
-            <SolarIconSet.MenuDots color="#A1A4AA" size={28} iconStyle="Bold" />
-          </Button>
+          <div className="flex gap-2">
+            <IntervalFilter value={interval} onChange={setInterval} />
+          </div>
         }
       />
       <ChartContainer config={averageWeightConfig}>

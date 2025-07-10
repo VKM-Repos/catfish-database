@@ -3,7 +3,6 @@ import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
 import { Spacer } from 'src/components/ui/spacer'
-import { FlexBox } from 'src/components/ui/flexbox'
 import { ScrollArea } from 'src/components/ui/scroll-area'
 import { Inline } from 'src/components/ui/inline'
 import { Button } from 'src/components/ui/button'
@@ -310,13 +309,13 @@ export default function UsersPage() {
         <Container className="!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
-          <FlexBox
+          {/* <FlexBox
             direction="col"
             gap="gap-2"
             className="mb-4 min-h-[5rem] w-full cursor-default rounded-md bg-neutral-50 shadow-sm"
-          >
-            {/* Search and Filter Toggle Row */}
-            <div className="flex w-full flex-1 items-center justify-between p-4">
+          > */}
+          {/* Search and Filter Toggle Row */}
+          {/* <div className="flex w-full flex-1 items-center justify-between p-4">
               <div className="flex justify-between">
                 <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
                   <SolarIconSet.MinimalisticMagnifer />
@@ -333,10 +332,10 @@ export default function UsersPage() {
                 <SolarIconSet.Filter size={20} />
                 <Text>{showFilters ? 'hide filters' : 'show filters'}</Text>
               </Button>
-            </div>
+            </div> */}
 
-            {/* Filter Controls */}
-            {showFilters && (
+          {/* Filter Controls */}
+          {/* {showFilters && (
               <>
                 <div className="px-4 pb-4">
                   <div className=" flex items-end gap-4">
@@ -368,9 +367,9 @@ export default function UsersPage() {
                       Apply
                     </Button>
                   </div>
-                </div>
-                {/* Active Filter Pills */}
-                {hasActiveFilters && (
+                </div> */}
+          {/* Active Filter Pills */}
+          {/* {hasActiveFilters && (
                   <div className="px-4 pb-4">
                     <div className="flex items-center gap-4">
                       {appliedFilters.cluster && (
@@ -409,7 +408,7 @@ export default function UsersPage() {
                 )}
               </>
             )}
-          </FlexBox>
+          </FlexBox> */}
 
           <ScrollArea className="h-[calc(100vh-140px)] w-full">
             <div className="h-fit">

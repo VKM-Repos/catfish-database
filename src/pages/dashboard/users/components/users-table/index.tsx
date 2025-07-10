@@ -2,7 +2,6 @@
 import { DataTable, FilterConfig, PaginationConfig, SortingConfig } from 'src/components/ui/enhance-data-tabe'
 import { columns } from './columns'
 import { memo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 // import { DataTable } from 'src/components/ui/data-table'
 import { z } from 'zod'
@@ -32,11 +31,17 @@ interface UsersTableProps {
 // const title = 'Users'
 
 function UsersTableComponent({ data, isLoading }: UsersTableProps) {
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [showFilters, setShowFilters] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  // Pagination state
+  const [page, setPage] = useState(0)
+  const [size, setSize] = useState(10)
+
+  // Fetch paginated users
+  const {
+    data: usersResp = { content: [], page: 0, size: 10, totalElements: 0, totalPages: 1 },
+    isLoading: loadingUsers,
+  } = useGetUsers({
+    query: { page, size },
+  })
 
   const { data: rolesResp, isLoading: loadingRoles } = useGetRoles()
   const { data: clustersResp, isLoading: loadingClusters } = useGetClusters()
@@ -73,14 +78,17 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     },
   ]
 
-  // Example pagination config
+  // Pagination config from API response
   const pagination: PaginationConfig = {
-    page: 1,
-    size: 10,
-    totalElements: 100,
-    totalPages: 10,
-    onPageChange: (page) => console.log('Page:', page),
-    onSizeChange: (size) => console.log('Size:', size),
+    page: usersResp.page + 1, // DataTable expects 1-based page
+    size: usersResp.size,
+    totalElements: usersResp.totalElements,
+    totalPages: usersResp.totalPages,
+    onPageChange: (newPage: number) => setPage(newPage - 1), // Convert to 0-based for API
+    onSizeChange: (newSize: number) => {
+      setSize(newSize)
+      setPage(0) // Reset to first page when size changes
+    },
   }
 
   // Example sorting config
@@ -90,16 +98,11 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     onSortChange: (field, direction) => console.log('Sort:', field, direction),
   }
 
-  // Example applied filters
-  const appliedFilters = {
-    cluster: 'Cluster A',
-    status: 'Active',
-  }
   return (
     <DataTable
       columns={columns}
-      data={data}
-      isLoading={false}
+      data={usersResp.content}
+      isLoading={loadingUsers}
       emptyStateMessage="No results found"
       // Search
       search={true}
@@ -118,14 +121,6 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
       // Custom styling
       className="my-custom-class"
     />
-    // <DataTable
-    //   search={false}
-    //   hideClusterFilter={false}
-    //   isLoading={isLoading}
-    //   columns={columns}
-    //   data={data}
-    //   emptyStateMessage="No users found"
-    // />
   )
 }
 

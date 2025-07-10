@@ -6,9 +6,12 @@ import EmptyTableState from 'src/components/global/empty-state'
 import EmptyFarmersImg from 'src/assets/images/empty-admin.jpg'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
-// import { DataTable } from 'src/components/ui/enhance-data-tabe'
+// import { DataTable, PaginationConfig } from 'src/components/ui/enhance-data-tabe'
+import { useState } from 'react'
 
 export function ClusterTable() {
+  const [page, setPage] = useState(0)
+  const [size, setSize] = useState(10)
   const useGetClusters = createGetQueryHook({
     endpoint: '/clusters',
     responseSchema: z.any(),
@@ -30,6 +33,19 @@ export function ClusterTable() {
     users: clusterManagers.filter((manager: any) => manager.cluster?.id === cluster.id),
   }))
   const navigate = useNavigate()
+
+  // Pagination config from API response
+  // const pagination: PaginationConfig = {
+  //   page: clusters.page + 1, // DataTable expects 1-based page
+  //   size: clusters.size,
+  //   totalElements: clusters.totalElements,
+  //   totalPages: clusters.totalPages,
+  //   onPageChange: (newPage: number) => setPage(newPage - 1), // Convert to 0-based for API
+  //   onSizeChange: (newSize: number) => {
+  //     setSize(newSize)
+  //     setPage(0) // Reset to first page when size changes
+  //   },
+  // }
 
   const openCreateModal = () => {
     navigate(paths.dashboard.system.clusters.create)

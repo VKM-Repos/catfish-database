@@ -66,11 +66,11 @@ export default function AddBatch() {
           setStep(1)
           setOpenPrompt(false)
         }}
-        secondaryAction={() => navigate(originPath)}
+        secondaryAction={() => navigate(-1)}
       />
 
       {/* Discard modal */}
-      <DiscardChanges open={openDiscard} setOpen={setOpenDiscard} originPath={originPath} />
+      <DiscardChanges open={openDiscard} setOpen={setOpenDiscard} onDiscard={() => navigate(-1)} />
     </div>
   )
 }

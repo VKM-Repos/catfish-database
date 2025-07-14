@@ -5,14 +5,14 @@ import { FeedingReportActionsDropdown } from './actions-dropdown'
 
 export const columns: ColumnDef<any>[] = [
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'time',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original.time)}</Text>,
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'time',
     header: 'Time',
-    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>,
+    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.time)}</Text>,
   },
   {
     accessorKey: 'feedType',
@@ -31,6 +31,6 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <FeedingReportActionsDropdown user={row?.original} />,
+    cell: ({ row }) => <FeedingReportActionsDropdown report={row?.original} step="1" />,
   },
 ]

@@ -510,6 +510,10 @@ export const dailyFeedingSchema = z.object({
   feedTime: z.string().min(1, { message: 'Please select a feeding time' }),
   combinedDateTime: z.string().optional(),
 })
+export const updateDailyFeedingSchema = z.object({
+  feedType: z.string().min(1, { message: 'Please select a feed type' }),
+  feedQuantity: z.string().min(1, { message: 'Please enter the quantity of feed' }),
+})
 
 export const waterQualitySchema = z.object({
   dissolvedOxygen: z.string().optional(),

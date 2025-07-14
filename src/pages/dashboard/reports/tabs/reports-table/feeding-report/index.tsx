@@ -18,6 +18,7 @@ import { mortalityColumn } from './mortality-column'
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
+  const [selectedTab, setSelectedTab] = useState('Daily')
   const useGetFeedingReports = createGetQueryHook({
     endpoint: '/feedings',
     responseSchema: z.any(),
@@ -71,25 +72,45 @@ export default function FeedingReportsTable() {
   )
   return (
     <>
-      <FlexBox direction="row" align="center" justify="between" className="w-full pl-[160px]">
-        <Heading level={6}>{title}</Heading>
+      <FlexBox direction="row" align="center" justify="between" className="mb-5 w-full pl-[160px]">
+        <Heading level={6}>{selectedTab} reports</Heading>
         {actions && <div>{actions}</div>}
       </FlexBox>
       <Tabs defaultValue="feeding" className="flex w-full items-start gap-8">
         <TabsList className="flex flex-col items-start justify-start text-sm font-semibold">
-          <VerticalTabsTrigger value="feeding" className="data-[state=active]:font-semibold">
+          <VerticalTabsTrigger
+            onClick={() => setSelectedTab('Daily')}
+            value="feeding"
+            className="data-[state=active]:font-semibold"
+          >
             Feeding
           </VerticalTabsTrigger>
-          <VerticalTabsTrigger value="water-quality" className="data-[state=active]:font-semibold">
+          <VerticalTabsTrigger
+            onClick={() => setSelectedTab('Water Quality')}
+            value="water-quality"
+            className="data-[state=active]:font-semibold"
+          >
             Water quality
           </VerticalTabsTrigger>
-          <VerticalTabsTrigger value="behavior" className="data-[state=active]:font-semibold">
+          <VerticalTabsTrigger
+            onClick={() => setSelectedTab('Fish Behavior')}
+            value="behavior"
+            className="data-[state=active]:font-semibold"
+          >
             Fish behavior
           </VerticalTabsTrigger>
-          <VerticalTabsTrigger value="disease" className="data-[state=active]:font-semibold">
+          <VerticalTabsTrigger
+            onClick={() => setSelectedTab('Fish Disease')}
+            value="disease"
+            className="data-[state=active]:font-semibold"
+          >
             Fish disease
           </VerticalTabsTrigger>
-          <VerticalTabsTrigger value="mortality" className="data-[state=active]:font-semibold">
+          <VerticalTabsTrigger
+            onClick={() => setSelectedTab('Mortality')}
+            value="mortality"
+            className="data-[state=active]:font-semibold"
+          >
             Mortality
           </VerticalTabsTrigger>
         </TabsList>

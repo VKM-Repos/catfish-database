@@ -8,7 +8,6 @@ import { Loader } from 'src/components/ui/loader'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
-import * as SolarIconSet from 'solar-icon-set'
 import { z } from 'zod'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 'src/components/ui/select'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -132,7 +131,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 First Name
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                {/* <SolarIconSet.QuestionCircle size={16} /> */}
               </Text>
               <FormField
                 control={form.control}
@@ -157,7 +156,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Last Name
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                {/* <SolarIconSet.QuestionCircle size={16} /> */}
               </Text>
               <FormField
                 control={form.control}
@@ -177,7 +176,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
             <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               Email
               <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
+              {/* <SolarIconSet.QuestionCircle size={16} /> */}
             </Text>
             <FormField
               control={form.control}
@@ -201,7 +200,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
             <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               Phone Number
               <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
+              {/* <SolarIconSet.QuestionCircle size={16} /> */}
             </Text>
             <FormField
               control={form.control}
@@ -221,7 +220,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Role
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                {/* <SolarIconSet.QuestionCircle size={16} /> */}
               </Text>
               <FormField
                 control={form.control}
@@ -263,7 +262,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Cluster
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                {/* <SolarIconSet.QuestionCircle size={16} /> */}
               </Text>
               <FormField
                 control={form.control}

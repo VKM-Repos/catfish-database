@@ -2,8 +2,8 @@
 import { DataTable, FilterConfig, PaginationConfig, SortingConfig } from 'src/components/ui/enhance-data-tabe'
 import { columns } from './columns'
 import { memo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
+// import { DataTable } from 'src/components/ui/data-table'
 import { z } from 'zod'
 
 const useGetRoles = createGetQueryHook({
@@ -31,11 +31,17 @@ interface UsersTableProps {
 // const title = 'Users'
 
 function UsersTableComponent({ data, isLoading }: UsersTableProps) {
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [showFilters, setShowFilters] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  // Pagination state
+  const [page, setPage] = useState(0)
+  const [size, setSize] = useState(10)
+
+  // Fetch paginated users
+  const {
+    data: usersResp = { content: [], page: 0, size: 10, totalElements: 0, totalPages: 1 },
+    isLoading: loadingUsers,
+  } = useGetUsers({
+    query: { page, size },
+  })
 
   const { data: rolesResp, isLoading: loadingRoles } = useGetRoles()
   const { data: clustersResp, isLoading: loadingClusters } = useGetClusters()
@@ -45,7 +51,7 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
   // Example filter configs
   const filterConfigs: FilterConfig[] = [
     {
-      key: 'cluster',
+      key: 'cluster.name',
       label: 'Cluster',
       type: 'select',
       options: (clustersResp ?? []).filter(Boolean).map((c: any) => ({ value: c.name, label: c.name })),
@@ -56,12 +62,12 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
       key: 'role',
       label: 'Role',
       type: 'select',
-      options: (rolesResp ?? []).filter(Boolean).map((c: any) => ({ value: c.id, label: c.name })),
+      options: (rolesResp ?? []).filter(Boolean).map((c: any) => ({ value: c.name, label: c.name })),
       placeholder: loadingRoles ? 'Loading…' : 'Role',
       loading: loadingRoles,
     },
     {
-      key: 'status',
+      key: 'accountNonLocked',
       label: 'Status',
       type: 'select',
       options: [
@@ -72,14 +78,17 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     },
   ]
 
-  // Example pagination config
+  // Pagination config from API response
   const pagination: PaginationConfig = {
-    page: 1,
-    size: 10,
-    totalElements: 100,
-    totalPages: 10,
-    onPageChange: (page) => console.log('Page:', page),
-    onSizeChange: (size) => console.log('Size:', size),
+    page: usersResp.page + 1, // DataTable expects 1-based page
+    size: usersResp.size,
+    totalElements: usersResp.totalElements,
+    totalPages: usersResp.totalPages,
+    onPageChange: (newPage: number) => setPage(newPage - 1), // Convert to 0-based for API
+    onSizeChange: (newSize: number) => {
+      setSize(newSize)
+      setPage(0) // Reset to first page when size changes
+    },
   }
 
   // Example sorting config
@@ -89,27 +98,18 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     onSortChange: (field, direction) => console.log('Sort:', field, direction),
   }
 
-  // Example applied filters
-  const appliedFilters = {
-    cluster: 'Cluster A',
-    status: 'Active',
-  }
   return (
     <DataTable
       columns={columns}
-      data={data}
-      isLoading={false}
+      data={usersResp.content}
+      isLoading={loadingUsers}
       emptyStateMessage="No results found"
       // Search
       search={true}
       searchPlaceholder="Search users..."
-      searchValue={searchTerm}
-      onSearchChange={setSearchTerm}
       // Filters
       enableFilters={true}
       filterConfigs={filterConfigs}
-      appliedFilters={appliedFilters}
-      onFilterChange={(filters) => console.log('Filters:', filters)}
       // Pagination
       enablePagination={true}
       pagination={pagination}
@@ -123,14 +123,6 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     />
   )
 }
-
-// key: string
-//   label: string
-//   type: 'select' | 'multiselect' | 'input' | 'daterange' | 'boolean'
-//   options?: Array<{ value: any; label: string }>
-//   placeholder?: string
-//   fetchOptions?: () => Promise<Array<{ value: string; label: string }>>
-//   loading?: boolean
 
 // Memoize the component to prevent unnecessary re-renders
 export const UsersTable = memo(UsersTableComponent)

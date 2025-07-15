@@ -15,6 +15,7 @@ import { waterQualityColumns } from './water-quality-columns'
 import { fishBehaviorColumn } from './fish-behavior-column'
 import { fishDiseaseColumn } from './fish-disease-column'
 import { mortalityColumn } from './mortality-column'
+import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
@@ -160,6 +161,12 @@ export default function FeedingReportsTable() {
           />
         </TabsContent>
       </Tabs>
+      <ReportModal
+        title="Daily Report"
+        open={farmReportOpen}
+        redirect="daily-feeding-report"
+        onOpenChange={setFarmReportOpen}
+      />
     </>
   )
 }

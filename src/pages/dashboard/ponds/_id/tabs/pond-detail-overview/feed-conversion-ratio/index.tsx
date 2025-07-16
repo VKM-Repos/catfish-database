@@ -78,6 +78,8 @@ export default function FeedConversionRatio({ dateRange }: FeedConversionRatioPr
     },
   })
 
+  console.log('fcrData[fcrData.length - 1]: ', fcrData[fcrData.length - 1])
+
   // Get the latest FCR value or average if multiple data points
   const latestFCR = fcrData?.length > 0 ? fcrData[fcrData.length - 1]?.fcrValue || 0 : 0
   const value = Math.min(latestFCR / 3, 1) // Normalize to 0-1 range for gauge display

@@ -73,11 +73,11 @@ export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
       )}
       {id && <FarmStatistics farmerId={id} />}
       <section className="flex w-full flex-col items-center justify-center gap-3 md:flex-row md:items-stretch">
-        <AverageWeight dateRange={dateRange} />
-        <FeedConversionRatio dateRange={dateRange} />
+        <AverageWeight dateRange={dateRange} farmerId={id} />
+        <FeedConversionRatio dateRange={dateRange} farmerId={id} />
       </section>
       <section className="h-fit w-full">
-        <MonthlyFeedConsumption dateRange={dateRange} />
+        <MonthlyFeedConsumption dateRange={dateRange} farmerId={id} />
       </section>
     </FlexBox>
   )

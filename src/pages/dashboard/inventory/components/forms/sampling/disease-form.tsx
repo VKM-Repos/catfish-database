@@ -44,7 +44,7 @@ export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingForm
           </Text>
           <FormField
             control={form.control}
-            name="disease"
+            name="diseaseType"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -85,7 +85,7 @@ export default function DiseaseForm({ form }: { form: UseFormReturn<SamplingForm
           </Text>
           <FormField
             control={form.control}
-            name="observation"
+            name="diseaseObservation"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

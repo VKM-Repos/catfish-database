@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { formatDate } from 'src/lib/date'
+import { extractTimeFromISO, formatDate } from 'src/lib/date'
 import { FeedingReportActionsDropdown } from './actions-dropdown'
 
 export const fishBehaviorColumn: ColumnDef<any>[] = [
@@ -8,6 +8,11 @@ export const fishBehaviorColumn: ColumnDef<any>[] = [
     accessorKey: 'time',
     header: 'Date',
     cell: ({ row }) => <Text weight="light">{formatDate(row.original?.time)}</Text>,
+  },
+  {
+    accessorKey: 'time',
+    header: 'Time',
+    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.time)}</Text>,
   },
   {
     accessorKey: 'behaviorType',
@@ -21,6 +26,6 @@ export const fishBehaviorColumn: ColumnDef<any>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <FeedingReportActionsDropdown user={row?.original} />,
+    cell: ({ row }) => <FeedingReportActionsDropdown report={row?.original} step="3" />,
   },
 ]

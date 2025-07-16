@@ -1,43 +1,39 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes/paths'
-import { useState } from 'react'
-import { Text } from 'src/components/ui/text'
-import { Button } from 'src/components/ui/button'
-import UpdateFeedingReportForm from './update-feeding-report-form'
-
+import { UpdateFeedingReportForm } from './update-feeding-report-form'
+import { UpdateWaterQuality } from './water-quality'
+import { UpdateFishBehavior } from './fish-behavior'
+import { UpdateFishDIsease } from './fish-disease'
+import { UpdateMortality } from './mortality'
+type Params = {
+  id: string
+  step: string
+}
 export default function EditFeedingReportPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<Params>()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [step, setStep] = useState(1)
+  const step = searchParams.get('step')
 
   if (!id) {
     return null
   }
-
+  const handleGoBack = () => {
+    navigate(`${paths.dashboard.reports.root}`)
+  }
   const RenderSteps = () => {
     switch (step) {
-      case 1:
-        return (
-          <UpdateFeedingReportForm setStep={setStep} onCancel={() => navigate(`${paths.dashboard.reports.root}`)} />
-        )
-      case 2:
-        return (
-          <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Feeding report updated successfully!</Text>
-            <Button
-              variant="primary"
-              onClick={() => {
-                navigate(`${paths.dashboard.reports.viewFeedingReport(id)}`)
-                setTimeout(() => {
-                  setStep(1)
-                }, 1000)
-              }}
-            >
-              Continue
-            </Button>
-          </div>
-        )
+      case '1':
+        return <UpdateFeedingReportForm />
+      case '2':
+        return <UpdateWaterQuality handleGoBack={handleGoBack} />
+      case '3':
+        return <UpdateFishBehavior handleGoBack={handleGoBack} />
+      case '4':
+        return <UpdateFishDIsease handleGoBack={handleGoBack} />
+      case '5':
+        return <UpdateMortality handleGoBack={handleGoBack} />
       default:
         return null
     }
@@ -49,7 +45,7 @@ export default function EditFeedingReportPage() {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        className="max-h-[80vh] max-w-[750px] overflow-y-scroll p-8"
+        className="max-h-[80vh] max-w-[60%] overflow-y-scroll p-8"
       >
         <RenderSteps />
       </DialogContent>

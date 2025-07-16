@@ -14,7 +14,6 @@ import { useSamplingStepperStore } from 'src/store/sampling-stepper-store'
 
 export default function CreateSampling() {
   const { step, nextStep, prevStep } = useSamplingStepperStore()
-
   const RenderSteps = () => {
     switch (step) {
       case 1:

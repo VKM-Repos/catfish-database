@@ -516,23 +516,23 @@ export const updateDailyFeedingSchema = z.object({
 })
 
 export const waterQualitySchema = z.object({
-  dissolvedOxygen: z.string().optional(),
-  phLevel: z.string().optional(),
-  temperature: z.string().optional(),
-  ammonia: z.string().optional(),
-  nitrite: z.string().optional(),
-  alkalinity: z.string().optional(),
-  hardness: z.string().optional(),
-  observation: z.string().min(5, 'Water Quality Observations is required'),
+  dissolvedOxygen: z.any().optional(),
+  phLevel: z.any().optional(),
+  temperature: z.any().optional(),
+  ammonia: z.any().optional(),
+  nitrate: z.any().optional(),
+  alkalinity: z.any().optional(),
+  hardness: z.any().optional(),
+  observation: z.string().min(5, 'Water Quality Observations should be at least 5 characters long'),
 })
 export const fishBehaviorSchema = z.object({
-  behavior: z.string().min(1, 'Please select fish behavior'),
+  behaviorType: z.string().min(1, 'Please select fish behavior'),
   observation: z.string().min(1, 'Observation is required'),
 })
 
 export const fishDiseaseSchema = z.object({
-  disease: z.string().min(1, 'Please select fish disease'),
-  observation: z.string().min(1, 'Observation is required'),
+  diseaseType: z.string().min(1, 'Please select fish disease'),
+  diseaseObservation: z.string().min(1, 'Observation is required'),
 })
 export const mortalitySchema = z.object({
   mortalityNumber: z.string().min(1, 'Mortality number is required'),

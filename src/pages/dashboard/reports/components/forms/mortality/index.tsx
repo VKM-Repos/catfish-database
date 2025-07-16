@@ -23,7 +23,6 @@ import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 
 type MortalityFormValues = z.infer<typeof mortalitySchema>
-
 export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const [recordFishDisease, setRecordFishDisease] = useState(false)
   const timeInputRef = useRef<HTMLInputElement>(null)

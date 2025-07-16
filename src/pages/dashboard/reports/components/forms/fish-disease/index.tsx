@@ -71,14 +71,20 @@ export function FishDisease({
     try {
       const fishDiseaseData = {
         pondId: id,
-        diseaseType: data.disease,
-        diseaseObservation: data.observation,
+        diseaseType: data.diseaseType,
+        diseaseObservation: data.diseaseObservation,
+        frequency: 'DAILY',
+        time: combineDateTime,
+      }
+      const updateFishDiseaseData = {
+        diseaseType: data.diseaseType,
+        diseaseObservation: data.diseaseObservation,
         frequency: 'DAILY',
         time: combineDateTime,
       }
 
       if (reportId) {
-        await updateFishDisease.mutateAsync(fishDiseaseData)
+        await updateFishDisease.mutateAsync(updateFishDiseaseData)
         if (handleNext) {
           handleNext()
         }
@@ -170,7 +176,7 @@ export function FishDisease({
                     </Text>
                     <FormField
                       control={form.control}
-                      name="disease"
+                      name="diseaseType"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -213,7 +219,7 @@ export function FishDisease({
                     </Text>
                     <FormField
                       control={form.control}
-                      name="observation"
+                      name="diseaseObservation"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>

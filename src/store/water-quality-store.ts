@@ -23,7 +23,7 @@ const initialValues: WaterQualityFormData = {
   phLevel: '',
   temperature: '',
   ammonia: '',
-  nitrite: '',
+  nitrate: '',
   alkalinity: '',
   hardness: '',
   observation: '',

@@ -14,7 +14,7 @@ interface FishBehaviorStore {
 }
 
 const initialValues: FishBehaviorFormData = {
-  behavior: '',
+  behaviorType: '',
   observation: '',
 }
 export const useFishBehaviorStore = create<FishBehaviorStore>()(

@@ -54,11 +54,6 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.feedConsumed}</Text>,
   },
   {
-    accessorKey: 'mortality',
-    header: 'Mort',
-    cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
-  },
-  {
     accessorKey: 'splitOccur',
     header: () => (
       <div title="Split triggered" className="w-[4rem] truncate font-bold">

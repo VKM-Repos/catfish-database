@@ -64,9 +64,11 @@ export const columns: ColumnDef<PondData>[] = [
     },
   },
   {
-    accessorKey: 'quantity',
+    accessorKey: 'latestQuantity',
     header: 'Fish Quantity',
     cell: ({ row }) => {
+      console.log(row.original, '?????')
+
       const quantity = row.original.quantity
       return (
         <div className="flex flex-col">
@@ -79,11 +81,6 @@ export const columns: ColumnDef<PondData>[] = [
         </div>
       )
     },
-  },
-  {
-    accessorKey: 'weight',
-    header: 'Average Weight',
-    cell: ({ row }) => <Text weight="light">{row.original.weight ?? '—'}</Text>,
   },
   {
     accessorKey: 'lastSampled',

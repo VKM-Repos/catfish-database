@@ -9,7 +9,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import SamplingWeightForm from 'src/pages/dashboard/reports/components/forms/sampling/sampling-weight-from'
-import FeedConsumedForm from 'src/pages/dashboard/reports/components/forms/sampling/feed-consumed-form'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
@@ -30,7 +29,6 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
   const { state } = useLocation()
 
   const samplingData = state?.samplingData
-  console.log(samplingData)
 
   const {
     numberOfFishSampled,
@@ -148,54 +146,6 @@ export default function UpdateSamplingReportForm({ setStep }: { setStep: (step: 
             <div className="rounded-md border border-neutral-200 p-5">
               <SamplingWeightForm form={form} />
             </div>
-          </div>
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Feed consumed</h5>
-                <p className="text-xs font-medium">
-                  Enter the number of fish that died today to help you track survival rates.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">
-              <FeedConsumedForm form={form} />
-            </div>
-          </div>
-
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Mortality Rate</h5>
-                <p className="text-xs font-medium">
-                  Enter the number of fish that died today to help you track survival rates.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">{/* <MortalityRateForm form={form} /> */}</div>
-          </div>
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Diseases</h5>
-                <p className="text-xs font-medium">
-                  Note any disease symptoms or outbreaks observed, including treatments used.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">{/* <DiseaseForm form={form} /> */}</div>
-          </div>
-          <div className="w-full ">
-            <div className="mb-5 w-full items-start">
-              <div className="p-5">
-                <h5 className="text-[1.5rem] font-bold text-[#444955]">Fish Behavior</h5>
-                <p className="text-xs font-medium">
-                  Score and describe fish activity (e.g., feeding response, swimming patterns) to detect stress or
-                  health issues.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-md border border-neutral-200 p-5">{/* <FishBehaviorForm form={form} /> */}</div>
           </div>
 
           <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">

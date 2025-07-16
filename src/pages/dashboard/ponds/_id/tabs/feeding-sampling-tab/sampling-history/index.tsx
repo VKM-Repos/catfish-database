@@ -4,13 +4,17 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
+import { useParams } from 'react-router-dom'
 
 export default function SamplingHistory() {
+  const { id } = useParams<{ id: string }>()
+
   const useGetSamplings = createGetQueryHook({
-    endpoint: '/samplings',
+    endpoint: `/samplings/pond/${id}`,
     responseSchema: z.any(),
-    queryKey: ['samplings'],
+    queryKey: [`samplings-${id}`],
   })
+  console.log(id, '<<<<<')
 
   const { data: samplings, isLoading } = useGetSamplings()
 

@@ -6,7 +6,7 @@ import type { z } from 'zod'
 import { Button } from 'src/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
 import SamplingWeightForm from './sampling-weight-from'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import { Input } from 'src/components/ui/input'
@@ -19,6 +19,8 @@ type SamplingData = z.infer<typeof samplingSchema>
 
 export default function SamplingIndexForm({ handleNext }: { handleNext: () => void }) {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const from = searchParams.get('from')
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const [reportTime, setReportTime] = useState('')
   const timeInputRef = useRef<HTMLInputElement>(null)
@@ -65,6 +67,10 @@ export default function SamplingIndexForm({ handleNext }: { handleNext: () => vo
 
   const handleCancel = () => {
     reset()
+    if (from !== undefined) {
+      navigate(paths.dashboard.reports.root + '?tab=sampling-report')
+      return
+    }
     navigate(paths.dashboard.home.getStarted)
   }
   const handleInputChange = (fieldName: string, value: string) => {

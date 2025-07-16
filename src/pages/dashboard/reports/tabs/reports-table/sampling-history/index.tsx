@@ -51,6 +51,7 @@ export default function SamplingReportsTable() {
         title="Sampling Report"
         open={farmReportOpen}
         redirect="daily-sampling-report"
+        from="sampling-report-list"
         onOpenChange={setFarmReportOpen}
       />
     </>

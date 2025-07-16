@@ -44,16 +44,6 @@ export const columns: ColumnDef<any>[] = [
     ),
     cell: ({ row }) => <Text weight="light">{row.original.weightGain}</Text>,
   },
-  {
-    accessorKey: 'feedConsumed',
-    header: 'Feed Consumed',
-    cell: ({ row }) => <Text weight="light">{row.original.feedConsumed}</Text>,
-  },
-  {
-    accessorKey: 'mortality',
-    header: 'Mortality',
-    cell: ({ row }) => <Text weight="light">{row.original.mortality}</Text>,
-  },
   // {
   //   accessorKey: 'splitTriggered',
   //   header: () => (

@@ -9,7 +9,6 @@ import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { paths } from 'src/routes'
 import { CreateReportDialog } from '../../modals/create-report-modal'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -43,11 +42,12 @@ const initialValues = {
   feedTime: '',
 }
 
-export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
+export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const navigate = useNavigate()
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
+
   const { selectedDate, setSelectedDate, setCombineDateTime } = useDateStore()
   const {
     formData,
@@ -210,7 +210,12 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
     resetFishBehavior()
     resetFishDisease()
     resetStepper()
-    navigate(paths.dashboard.home.getStarted)
+    handlePrevious?.()
+    // if (from) {
+    //   navigate(paths.dashboard.reports.root)
+    // } else {
+    //   navigate(paths.dashboard.home.getStarted)
+    // }
   }
   return (
     <>
@@ -516,16 +521,10 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
             <Button variant={'outline'} onClick={() => handleGoBack()}>
               Back
             </Button>
-            {recordDailyFeeding && (
-              <Button disabled={createDailyFeeding.isLoading || updateDailyFeeding.isLoading} type="submit">
-                {reportId ? 'Update' : 'Continue'}
-              </Button>
-            )}
-            {!recordDailyFeeding && (
-              <Button disabled={!form.getValues('feedTime')} type="button" onClick={handleNext}>
-                Continue
-              </Button>
-            )}
+
+            <Button disabled={createDailyFeeding.isLoading || updateDailyFeeding.isLoading} type="submit">
+              {reportId ? 'Update' : 'Continue'}
+            </Button>
           </div>
         </form>
       </Form>

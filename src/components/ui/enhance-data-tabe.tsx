@@ -480,8 +480,8 @@ export function DataTable<TData>({
                   className="w-[360px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
                   placeholder={searchPlaceholder}
                   value={internalSearchValue}
-                  // onChange={(e) => setInternalSearchValue(e.target.value)}
-                  onChange={(e) => console.log(e.target.value)}
+                  onChange={(e) => setInternalSearchValue(e.target.value)}
+                  // onChange={(e) => console.log(e.target.value)}
                 />
               </div>
             </div>

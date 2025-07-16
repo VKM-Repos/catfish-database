@@ -16,10 +16,13 @@ import { fishBehaviorColumn } from './fish-behavior-column'
 import { fishDiseaseColumn } from './fish-disease-column'
 import { mortalityColumn } from './mortality-column'
 import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
+import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
   const [selectedTab, setSelectedTab] = useState('Daily')
+  const { setStep } = useStepperStore()
+
   const useGetFeedingReports = createGetQueryHook({
     endpoint: '/feedings',
     responseSchema: z.any(),
@@ -67,7 +70,7 @@ export default function FeedingReportsTable() {
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
         <SolarIconSet.AddCircle size={20} />
-        <Text>Submit feeding report</Text>
+        <Text>Submit report</Text>
       </Button>
     </Inline>
   )
@@ -80,35 +83,50 @@ export default function FeedingReportsTable() {
       <Tabs defaultValue="feeding" className="flex w-full items-start gap-8">
         <TabsList className="flex flex-col items-start justify-start text-sm font-semibold">
           <VerticalTabsTrigger
-            onClick={() => setSelectedTab('Daily')}
+            onClick={() => {
+              setSelectedTab('Daily')
+              setStep(1)
+            }}
             value="feeding"
             className="data-[state=active]:font-semibold"
           >
             Feeding
           </VerticalTabsTrigger>
           <VerticalTabsTrigger
-            onClick={() => setSelectedTab('Water Quality')}
+            onClick={() => {
+              setSelectedTab('Water Quality')
+              setStep(2)
+            }}
             value="water-quality"
             className="data-[state=active]:font-semibold"
           >
             Water quality
           </VerticalTabsTrigger>
           <VerticalTabsTrigger
-            onClick={() => setSelectedTab('Fish Behavior')}
+            onClick={() => {
+              setSelectedTab('Fish Behavior')
+              setStep(3)
+            }}
             value="behavior"
             className="data-[state=active]:font-semibold"
           >
             Fish behavior
           </VerticalTabsTrigger>
           <VerticalTabsTrigger
-            onClick={() => setSelectedTab('Fish Disease')}
+            onClick={() => {
+              setSelectedTab('Fish Disease')
+              setStep(4)
+            }}
             value="disease"
             className="data-[state=active]:font-semibold"
           >
             Fish disease
           </VerticalTabsTrigger>
           <VerticalTabsTrigger
-            onClick={() => setSelectedTab('Mortality')}
+            onClick={() => {
+              setSelectedTab('Mortality')
+              setStep(5)
+            }}
             value="mortality"
             className="data-[state=active]:font-semibold"
           >
@@ -164,7 +182,8 @@ export default function FeedingReportsTable() {
       <ReportModal
         title="Daily Report"
         open={farmReportOpen}
-        redirect="daily-feeding-report"
+        redirect="daily-farm-report"
+        from="daily-feeding-report-list"
         onOpenChange={setFarmReportOpen}
       />
     </>

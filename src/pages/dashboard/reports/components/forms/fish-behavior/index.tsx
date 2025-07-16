@@ -65,13 +65,13 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
     try {
       const fishBehaviorData = {
         pondId: id,
-        behaviorType: data.behavior,
+        behaviorType: data.behaviorType,
         behaviorTypeObservation: data.observation,
         frequency: 'DAILY',
         time: combineDateTime,
       }
       const updateFishBehaviorData = {
-        behaviorType: data.behavior,
+        behaviorType: data.behaviorType,
         behaviorTypeObservation: data.observation,
         frequency: 'DAILY',
         time: combineDateTime,
@@ -159,7 +159,7 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
                     </Text>
                     <FormField
                       control={form.control}
-                      name="behavior"
+                      name="behaviorType"
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -167,7 +167,7 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
                               value={field.value ? String(field.value) : ''}
                               onValueChange={(value) => {
                                 field.onChange(value)
-                                setFormData({ behavior: value })
+                                setFormData({ behaviorType: value })
                               }}
                               defaultValue={field.value}
                             >

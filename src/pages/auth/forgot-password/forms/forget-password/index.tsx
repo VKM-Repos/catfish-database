@@ -62,11 +62,11 @@ export default function ForgetPassword({ handleNext }: { handleNext: () => void 
 
   return (
     <>
-      <div className="mt-[2rem] flex flex-col items-center justify-center gap-4">
-        <Heading level={6} weight="normal">
+      <div className="mt-3 flex flex-col items-center justify-center gap-2">
+        <Heading level={6} weight="normal" className="leading-8">
           Reset your password
         </Heading>
-        <Text weight="light" size="base" align="center">
+        <Text weight="light" size="base" align="center" className="">
           Enter your email address, and we&apos;ll send you instructions to reset your password.
         </Text>
       </div>

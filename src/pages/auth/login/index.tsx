@@ -84,11 +84,11 @@ export default function LoginPage() {
 
   return (
     <Container className="w-fit overflow-hidden">
-      <Card className="mx-auto flex min-h-[517px] w-[480px] flex-col gap-2 bg-white p-2 leading-tight tracking-wide lg:min-w-[470px]">
-        <CardHeader className="flex flex-col items-center justify-center gap-y-8">
+      <Card className="mx-auto flex min-h-[517px] w-fit flex-col gap-2 bg-white p-2 leading-tight tracking-wide lg:min-w-[470px]">
+        <CardHeader className="flex flex-col items-center justify-center gap-y-8 px-4 lg:px-4">
           <div className="flex flex-col items-center justify-center">
             <Logo className="text-primary h-[50px] w-[55px] p-1" />
-            <Heading level={5} className="font-semibold text-primary-500">
+            <Heading level={5} className="px-2 font-semibold text-primary-500">
               Catfish Database
             </Heading>
           </div>
@@ -98,7 +98,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               {error && <FormValidationErrorAlert error={error} />}
               <FormField
                 control={form.control}
@@ -210,8 +210,8 @@ export default function LoginPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100">
-          <span className="mt-4 text-sm text-neutral-400">
+        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100 p-0">
+          <span className=" text-sm text-neutral-400">
             Powered by
             <a href="https://www.fao.org/fish4acp" className="ml-2 font-semibold text-info-500 underline">
               FISH4ACP

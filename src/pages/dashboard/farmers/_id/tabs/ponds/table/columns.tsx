@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
 import ActionsDropdown from './actions-dropdown'
+import { formatNumberWithCommas } from 'src/lib/utils'
 
 export const columns: ColumnDef<any>[] = [
   {
@@ -27,8 +28,14 @@ export const columns: ColumnDef<any>[] = [
     accessorFn: (row) => row.original.name ?? '—',
     cell: ({ row }) => {
       const pond = row.original
-
-      return <Text weight="light">{pond.name ?? '—'}</Text>
+      return (
+        <div className="flex flex-col">
+          <Text weight="light">{pond.name ?? '—'}</Text>
+          <Text size="sm" className="text-neutral-500">
+            {pond.cluster.name}
+          </Text>
+        </div>
+      )
     },
   },
   {
@@ -45,6 +52,18 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'lastSampled',
     header: 'Last Sampled',
     cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
+  },
+  {
+    accessorKey: 'size',
+    header: 'Pond Size',
+    cell: ({ row }) => (
+      <div className="flex flex-col">
+        <Text weight="light">{formatNumberWithCommas(row.original.size)}L</Text>
+        <Text size="sm" className="text-neutral-500">
+          {row.original.pondType}
+        </Text>
+      </div>
+    ),
   },
   {
     accessorFn: (row) => row.original.status,

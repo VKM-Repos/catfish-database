@@ -22,6 +22,7 @@ import type { Cluster } from 'src/types/cluster.types'
 import { useAuthStore } from 'src/store/auth.store'
 import { useLocation } from 'react-router-dom'
 import { Text } from 'src/components/ui/text'
+import { Input } from './input'
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
@@ -32,6 +33,7 @@ interface DataTableProps<TData> {
   hideClusterFilter?: boolean
   search?: boolean
   hidePagination?: boolean
+  onFilterApply?: (filters: { actionType: string; startDate: string; endDate: string }) => void // <-- add this line
 }
 
 export function DataTable<TData>({
@@ -42,6 +44,7 @@ export function DataTable<TData>({
   emptyStateMessage = 'No results found',
   hideClusterFilter = false,
   hidePagination = false,
+  onFilterApply,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -50,6 +53,16 @@ export function DataTable<TData>({
   const [globalFilter, setGlobalFilter] = React.useState('')
   const [selectedCluster, setSelectedCluster] = React.useState<string>('')
   const [showFilter, setShowFilter] = React.useState(false)
+  const startDateInputRef = React.useRef<HTMLInputElement>(null)
+  const endDateInputRef = React.useRef<HTMLInputElement>(null)
+
+  const handleStartDateClick = () => {
+    startDateInputRef.current?.showPicker()
+  }
+
+  const handleEndDateClick = () => {
+    endDateInputRef.current?.showPicker()
+  }
 
   // const normalizeClusterName = (name: string) => name.replace(/-/g, '')
   const location = useLocation()
@@ -132,6 +145,76 @@ export function DataTable<TData>({
     { name: 'LOG OUT' },
   ]
 
+  // Helper to get today and 1 week ago in yyyy-mm-dd
+  function getToday() {
+    const d = new Date()
+    return d.toISOString().split('T')[0]
+    // return d.toISOString().slice(0, 10)
+  }
+  function getOneWeekAgo() {
+    const d = new Date()
+    d.setDate(d.getDate() - 7)
+    // return d.toISOString().slice(0, 10)
+    return d.toISOString().split('T')[0]
+  }
+
+  // Local filter state for filter UI (not applied until 'Apply' is clicked)
+  const [pendingActionType, setPendingActionType] = React.useState<string>(' ')
+  const [pendingStartDate, setPendingStartDate] = React.useState<string>(getOneWeekAgo())
+  const [pendingEndDate, setPendingEndDate] = React.useState<string>(getToday())
+
+  // Applied filter state (used for actual filtering/fetching)
+  const [appliedActionType, setAppliedActionType] = React.useState<string>(' ')
+  const [appliedStartDate, setAppliedStartDate] = React.useState<string>('')
+  const [appliedEndDate, setAppliedEndDate] = React.useState<string>('')
+
+  // State for invalid date range
+  const [invalidDateRange, setInvalidDateRange] = React.useState(false)
+
+  // Handler for Apply button
+  const handleApplyFilters = () => {
+    // Prevent applying if start date is after end date
+    if (pendingStartDate && pendingEndDate && pendingStartDate > pendingEndDate) {
+      setInvalidDateRange(true)
+      return
+    } else {
+      setInvalidDateRange(false)
+    }
+    setAppliedActionType(pendingActionType)
+    setAppliedStartDate(pendingStartDate)
+    setAppliedEndDate(pendingEndDate)
+    setShowFilter(false)
+
+    // Optionally call a prop callback here
+    if (typeof (onFilterApply as any) === 'function') {
+      ;(onFilterApply as any)({
+        actionType: pendingActionType,
+        startDate: pendingStartDate ? new Date(pendingStartDate).toISOString() : '',
+        endDate: pendingEndDate ? new Date(pendingEndDate).toISOString() : '',
+      })
+    }
+  }
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = e.target.value
+    setPendingStartDate(dateValue)
+    // const timeValue = form.getValues('feedTime')
+    // handleDateTimeChange(dateValue, timeValue)
+  }
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateValue = e.target.value
+    setPendingEndDate(dateValue)
+    // const timeValue = form.getValues('feedTime')
+    // handleDateTimeChange(dateValue, timeValue)
+  }
+
+  // Handler for Clear Filters
+  const handleClearFilters = () => {
+    setPendingActionType(' ')
+    setPendingStartDate('')
+    setPendingEndDate('')
+  }
   return (
     <div className="w-full">
       {search && (
@@ -146,7 +229,7 @@ export function DataTable<TData>({
                 onChange={(e) => setGlobalFilter(String(e.target.value))}
               />
             </div>
-            <div className="w-[20%]">
+            <div className="w-[20%] justify-center self-center">
               {!hideClusterFilter && !isClustersPage && user?.role === 'SUPER_ADMIN' && (
                 <Select value={selectedCluster} onValueChange={handleClusterChange}>
                   <SelectTrigger className="w-full">
@@ -165,12 +248,12 @@ export function DataTable<TData>({
 
               {hideClusterFilter && (
                 <Button
-                  variant="outline"
-                  className="flex items-center gap-2"
+                  variant="ghost"
+                  className="flex items-center justify-center  gap-2 p-0 text-primary-500"
                   onClick={() => setShowFilter(!showFilter)}
                 >
                   <SolarIconSet.Filter size={20} />
-                  <Text>Show Filters</Text>
+                  <Text className="">{showFilter ? 'hide filters' : 'show filters'}</Text>
                 </Button>
               )}
             </div>
@@ -179,7 +262,7 @@ export function DataTable<TData>({
             <div className="flex items-center justify-between">
               <div className="my-3 flex-1">
                 <Text variant="label">Action type</Text>
-                <Select value={selectedCluster} onValueChange={handleClusterChange}>
+                <Select value={pendingActionType} onValueChange={setPendingActionType}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Activities" />
                   </SelectTrigger>
@@ -197,38 +280,73 @@ export function DataTable<TData>({
               <div className="mx-3 flex-1">
                 <Text variant="label">Date range</Text>
                 <div className="flex gap-2">
-                  <Select value={selectedCluster} onValueChange={handleClusterChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="All clusters" />
-                    </SelectTrigger>
-                    <SelectContent side="top">
-                      <SelectItem value=" ">All Activities</SelectItem>
-                      {clusters?.map((cluster: Cluster) => (
-                        <SelectItem key={cluster.name} value={cluster.name}>
-                          {cluster.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div
+                    className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
+                  >
+                    <SolarIconSet.Calendar size={26} className="m-2" onClick={handleStartDateClick} />
+                    <div className="w-full">
+                      <Input
+                        data-placeholder={'Pick start date'}
+                        type="date"
+                        value={pendingStartDate}
+                        onChange={(e) => {
+                          handleStartDateChange(e)
+                          // handleInputChange('date', e.target.value)
+                        }}
+                        ref={startDateInputRef}
+                        // onChange={(e) => setPendingStartDate(e.target.value)}
+                        className="md:text-md text-md !w-full border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden"
+                      />
+                    </div>
+                  </div>
 
-                  <Select value={selectedCluster} onValueChange={handleClusterChange}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="All clusters" />
-                    </SelectTrigger>
-                    <SelectContent side="top">
-                      <SelectItem value=" ">All Activities</SelectItem>
-                      {clusters?.map((cluster: Cluster) => (
-                        <SelectItem key={cluster.name} value={cluster.name}>
-                          {cluster.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div
+                    className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
+                  >
+                    <SolarIconSet.Calendar size={26} className="m-2" onClick={handleEndDateClick} />
+                    <div className="w-full">
+                      <Input
+                        // data-placeholder={'Pick end date'}
+                        type="date"
+                        value={pendingEndDate}
+                        onChange={(e) => {
+                          handleEndDateChange(e)
+                          // handleInputChange('date', e.target.value)
+                        }}
+                        ref={endDateInputRef}
+                        // onChange={(e) => setPendingEndDate(e.target.value)}
+                        className="md:text-md text-md !w-full border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden"
+                      />
+                    </div>
+                  </div>
                 </div>
+                {invalidDateRange && (
+                  <Text className="text-sm text-error-500">Start date cannot be after end date.</Text>
+                )}
               </div>
 
-              <div className="flex-1" onClick={() => setShowFilter(false)}>
-                <Text variant="label">Clear Filters</Text>
+              <div className="flex flex-1 flex-row items-end gap-2 self-center ">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2 text-neutral-500 hover:text-neutral-700"
+                  onClick={handleClearFilters}
+                >
+                  <SolarIconSet.TrashBinMinimalistic size={16} />
+                  Clear filters
+                </Button>
+                {/* <Button variant="outline" onClick={handleClearFilters}>
+                  <Text variant="label">Clear Filters</Text>
+                </Button> */}
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="flex items-center gap-2 self-center"
+                  onClick={handleApplyFilters}
+                >
+                  Apply
+                </Button>
               </div>
             </div>
           )}

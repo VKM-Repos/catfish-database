@@ -145,8 +145,8 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Text className="w-full text-xl font-semibold text-neutral-700">Farm Statistics</Text>
-        <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="w-auto" />
+        <Text className="flex-1 text-xl font-semibold text-neutral-700">Farm Statistics</Text>
+        <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="flex-1 " />
       </FlexBox>
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
         <div>
@@ -155,6 +155,9 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
               <SelectValue placeholder="Select pond" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem key={'ALL'} value={'ALL'}>
+                All
+              </SelectItem>
               {farmerPonds?.content?.map((pond: any) => (
                 <SelectItem key={pond.id} value={pond.name}>
                   {pond.name}

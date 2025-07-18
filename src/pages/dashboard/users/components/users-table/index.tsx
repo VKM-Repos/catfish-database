@@ -19,7 +19,7 @@ const useGetClusters = createGetQueryHook({
 })
 
 const useGetUsers = createGetQueryHook({
-  endpoint: '/users',
+  endpoint: '/users?size=1000',
   responseSchema: z.any(),
   queryKey: ['users'],
 })
@@ -35,13 +35,8 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
-  // Fetch paginated users
-  const {
-    data: usersResp = { content: [], page: 0, size: 10, totalElements: 0, totalPages: 1 },
-    isLoading: loadingUsers,
-  } = useGetUsers({
-    query: { page, size },
-  })
+  // Fetch all users at once (no page/size query)
+  const { data: usersResp = [], isLoading: loadingUsers } = useGetUsers()
 
   const { data: rolesResp, isLoading: loadingRoles } = useGetRoles()
   const { data: clustersResp, isLoading: loadingClusters } = useGetClusters()
@@ -78,12 +73,19 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     },
   ]
 
-  // Pagination config from API response
+  // Client-side pagination
+  const totalElements = Array.isArray(usersResp.content) ? usersResp.content.length : 0
+  const totalPages = Math.ceil(totalElements / size)
+  const paginatedUsers = Array.isArray(usersResp.content)
+    ? usersResp.content.slice(page * size, page * size + size)
+    : []
+
+  // Pagination config for client-side
   const pagination: PaginationConfig = {
-    page: usersResp.page + 1, // DataTable expects 1-based page
-    size: usersResp.size,
-    totalElements: usersResp.totalElements,
-    totalPages: usersResp.totalPages,
+    page: page + 1, // DataTable expects 1-based page
+    size: size,
+    totalElements: totalElements,
+    totalPages: totalPages,
     onPageChange: (newPage: number) => setPage(newPage - 1), // Convert to 0-based for API
     onSizeChange: (newSize: number) => {
       setSize(newSize)
@@ -97,6 +99,7 @@ function UsersTableComponent({ data, isLoading }: UsersTableProps) {
     direction: 'ASC',
     onSortChange: (field, direction) => console.log('Sort:', field, direction),
   }
+  // console.log("paginatedUsers: ",usersResp.content);
 
   return (
     <DataTable

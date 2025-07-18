@@ -155,6 +155,9 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
               <SelectValue placeholder="Select pond" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem key={'ALL'} value={'ALL'}>
+                All
+              </SelectItem>
               {farmerPonds?.content?.map((pond: any) => (
                 <SelectItem key={pond.id} value={pond.name}>
                   {pond.name}

@@ -7,7 +7,7 @@ export default function Confirmation() {
 
   return (
     <>
-      <div className="mt-[2rem] flex flex-col items-center justify-center gap-4">
+      <div className="mt-3 flex flex-col items-center justify-center gap-4">
         <Heading level={6} weight="normal">
           Email Sent!
         </Heading>

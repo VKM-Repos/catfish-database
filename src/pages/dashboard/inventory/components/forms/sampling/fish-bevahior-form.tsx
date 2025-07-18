@@ -44,7 +44,7 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
           </Text>
           <FormField
             control={form.control}
-            name="behavior"
+            name="behaviorType"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

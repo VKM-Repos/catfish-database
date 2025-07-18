@@ -421,37 +421,6 @@ export function DataTable<TData>({
                   <span className="sr-only">Go to previous page</span>
                   <SolarIconSet.AltArrowLeft size={26} />
                 </Button>
-                {/*
-              {Array.from({ length: Math.min(5, table.getPageCount()) }, (_, i) => {
-                let pageIndex
-                const currentPage = table.getState().pagination.pageIndex
-                const pageCount = table.getPageCount()
-
-                if (pageCount <= 5) {
-                  pageIndex = i
-                } else if (currentPage < 3) {
-                  pageIndex = i
-                } else if (currentPage > pageCount - 4) {
-                  pageIndex = pageCount - 5 + i
-                } else {
-                  pageIndex = currentPage - 2 + i
-                }
-                return (
-                  <Button
-                    key={pageIndex}
-                    variant={currentPage === pageIndex ? 'outline' : 'ghost'}
-                    className={`flex w-14 items-center justify-start px-2 py-2 ${
-                      currentPage !== pageIndex ? 'hidden' : 'block'
-                    }`}
-                    onClick={() => table.setPageIndex(pageIndex)}
-                  >
-                    {pageIndex + 1}
-                  </Button>
-                )
-              })}
-              <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                of {table.getPageCount()} pages
-              </div> */}
                 <Button
                   variant="icon"
                   className="h-8 w-8 p-0"

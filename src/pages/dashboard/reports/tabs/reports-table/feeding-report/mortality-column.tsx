@@ -1,13 +1,18 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import { Text } from 'src/components/ui/text'
-import { formatDate } from 'src/lib/date'
+import { extractTimeFromISO, formatDate } from 'src/lib/date'
 import { FeedingReportActionsDropdown } from './actions-dropdown'
 
 export const mortalityColumn: ColumnDef<any>[] = [
   {
-    accessorKey: 'time',
+    accessorKey: 'createdAt',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original?.time)}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original?.createdAt)}</Text>,
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Time',
+    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'mortalityNumber',
@@ -17,6 +22,6 @@ export const mortalityColumn: ColumnDef<any>[] = [
 
   {
     id: 'actions',
-    cell: ({ row }) => <FeedingReportActionsDropdown user={row?.original} />,
+    cell: ({ row }) => <FeedingReportActionsDropdown report={row?.original} step="5" />,
   },
 ]

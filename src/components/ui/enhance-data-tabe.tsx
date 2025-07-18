@@ -55,14 +55,12 @@ interface DataTableProps<TData> {
   // Search configuration
   search?: boolean
   searchPlaceholder?: string
-  searchValue?: string
-  onSearchChange?: (value: string) => void
+  // Removed: searchValue, onSearchChange
 
   // Filter configuration
   enableFilters?: boolean
   filterConfigs?: FilterConfig[]
-  appliedFilters?: Record<string, any>
-  onFilterChange?: (filters: Record<string, any>) => void
+  // Removed: appliedFilters, onFilterChange
 
   // Pagination configuration
   enablePagination?: boolean
@@ -236,12 +234,10 @@ export function DataTable<TData>({
   emptyStateMessage = 'No results found',
   search = true,
   searchPlaceholder = 'Search...',
-  searchValue = '',
-  onSearchChange,
+  // Removed: searchValue, onSearchChange
   enableFilters = false,
   filterConfigs = [],
-  appliedFilters = {},
-  onFilterChange,
+  // Removed: appliedFilters, onFilterChange
   enablePagination = true,
   pagination,
   enableSorting = false,
@@ -259,10 +255,27 @@ export function DataTable<TData>({
   // Internal sorting state (fallback when no external sorting provided)
   const [internalSorting, setInternalSorting] = React.useState<SortingState>([])
 
+  // Internal search state
+  const [internalSearchValue, setInternalSearchValue] = React.useState('')
+  // Debounced search value
+  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState('')
+  // Internal applied filters state
+  const [appliedInternalFilters, setAppliedInternalFilters] = React.useState<Record<string, any>>({})
+
+  // Debounce effect for search
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(internalSearchValue)
+    }, 500)
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [internalSearchValue])
+
   // Initialize temp filters with applied filters
   React.useEffect(() => {
-    setTempFilters(appliedFilters)
-  }, [appliedFilters])
+    setTempFilters(appliedInternalFilters)
+  }, [appliedInternalFilters])
 
   // Calculate pagination values safely
   const paginationData = React.useMemo(() => {
@@ -293,9 +306,44 @@ export function DataTable<TData>({
     setCurrentPageInput(paginationData.currentPage.toString())
   }, [paginationData.currentPage])
 
+  // Filter data based on search value and applied filters
+  const filteredData = React.useMemo(() => {
+    let filtered = data
+    // Apply filters
+    if (Object.keys(appliedInternalFilters).length > 0) {
+      filtered = filtered.filter((row: any) => {
+        return Object.entries(appliedInternalFilters).every(([key, value]) => {
+          if (value === undefined || value === null || value === '') return true
+          // Find the filter config to determine type
+          const config = filterConfigs.find((c) => c.key === key)
+          if (!config) return true
+          if (config.type === 'select' || config.type === 'input' || config.type === 'boolean') {
+            // For nested fields (e.g., cluster.name), support dot notation
+            const fieldValue = key.includes('.') ? key.split('.').reduce((acc, k) => acc?.[k], row) : row[key]
+            if (config.type === 'boolean') {
+              return fieldValue === value
+            }
+            return String(fieldValue).toLowerCase() === String(value).toLowerCase()
+          }
+          // Add more filter types as needed
+          return true
+        })
+      })
+    }
+    // Apply search (debounced)
+    if (debouncedSearchValue) {
+      filtered = filtered.filter((row: any) =>
+        Object.values(row).some(
+          (value) => typeof value === 'string' && value.toLowerCase().includes(debouncedSearchValue.toLowerCase()),
+        ),
+      )
+    }
+    return filtered
+  }, [data, debouncedSearchValue, appliedInternalFilters, filterConfigs])
+
   // Table configuration
   const table = useReactTable({
-    data,
+    data: filteredData, // Use filteredData for the table
     columns,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -316,15 +364,6 @@ export function DataTable<TData>({
     pageCount: paginationData.totalPages,
   })
 
-  // Handle search change - FIXED: Now properly calls the provided handler
-  const handleSearchChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      onSearchChange?.(value)
-    },
-    [onSearchChange],
-  )
-
   // Handle filter changes
   const handleFilterChange = (filterKey: string, value: any) => {
     setTempFilters((prev) => ({ ...prev, [filterKey]: value }))
@@ -332,28 +371,28 @@ export function DataTable<TData>({
 
   // Apply filters
   const applyFilters = () => {
-    if (onFilterChange) {
-      onFilterChange(tempFilters)
-    }
-    setShowFilters(false)
+    setAppliedInternalFilters({ ...tempFilters })
+    // Do NOT close the filter panel here
   }
 
   // Clear filters
   const clearFilters = () => {
-    const clearedFilters = {}
-    setTempFilters(clearedFilters)
-    if (onFilterChange) {
-      onFilterChange(clearedFilters)
-    }
+    setTempFilters({})
+    setAppliedInternalFilters({})
+    // if (onFilterChange) { // Removed: onFilterChange
+    //   onFilterChange({});
+    // }
   }
 
   // Remove single filter
   const removeSingleFilter = (filterKey: string) => {
-    const updatedFilters = { ...appliedFilters }
+    const updatedFilters = { ...appliedInternalFilters }
     delete updatedFilters[filterKey]
-    if (onFilterChange) {
-      onFilterChange(updatedFilters)
-    }
+    setAppliedInternalFilters(updatedFilters)
+    setTempFilters(updatedFilters)
+    // if (onFilterChange) { // Removed: onFilterChange
+    //   onFilterChange(updatedFilters);
+    // }
   }
 
   // Handle sorting
@@ -421,8 +460,11 @@ export function DataTable<TData>({
   }
 
   // Check if there are active filters
-  const hasActiveFilters = Object.keys(appliedFilters).some(
-    (key) => appliedFilters[key] !== undefined && appliedFilters[key] !== null && appliedFilters[key] !== '',
+  const hasActiveFilters = Object.keys(appliedInternalFilters).some(
+    (key) =>
+      appliedInternalFilters[key] !== undefined &&
+      appliedInternalFilters[key] !== null &&
+      appliedInternalFilters[key] !== '',
   )
 
   return (
@@ -437,8 +479,9 @@ export function DataTable<TData>({
                 <input
                   className="w-[360px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
                   placeholder={searchPlaceholder}
-                  value={searchValue}
-                  onChange={handleSearchChange}
+                  value={internalSearchValue}
+                  onChange={(e) => setInternalSearchValue(e.target.value)}
+                  // onChange={(e) => console.log(e.target.value)}
                 />
               </div>
             </div>
@@ -482,7 +525,7 @@ export function DataTable<TData>({
               {hasActiveFilters && (
                 <div className="px-4 pb-4">
                   <div className="flex items-center gap-4">
-                    {Object.entries(appliedFilters).map(([key, value]) => {
+                    {Object.entries(appliedInternalFilters).map(([key, value]) => {
                       if (value === undefined || value === null || value === '') return null
                       const config = filterConfigs.find((c) => c.key === key)
                       return (
@@ -494,7 +537,6 @@ export function DataTable<TData>({
                         />
                       )
                     })}
-
                     <Button
                       variant="ghost"
                       size="sm"

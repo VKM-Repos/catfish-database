@@ -26,9 +26,10 @@ type ReportModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   redirect: string
+  from?: string
 }
 
-export function ReportModal({ title, open, redirect, onOpenChange }: ReportModalProps) {
+export function ReportModal({ title, open, redirect, onOpenChange, from }: ReportModalProps) {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const { selectedDate, setSelectedDate } = useDateStore()
@@ -83,10 +84,15 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
     // Perform action using values.pondId
     switch (redirect) {
       case 'daily-farm-report':
-        navigate(paths.dashboard.reports.createDailyFarmReport(values.pondId))
+        navigate(
+          paths.dashboard.reports.createDailyFarmReport(values.pondId) +
+            `${from !== undefined ? `'?from=${from}` : ''}`,
+        )
         break
       case 'daily-sampling-report':
-        navigate(paths.dashboard.reports.createSamplingReport(values.pondId))
+        navigate(
+          paths.dashboard.reports.createSamplingReport(values.pondId) + `${from !== undefined ? `'?from=${from}` : ''}`,
+        )
         break
       case 'daily-harvest-report':
         navigate(paths.dashboard.reports.createHarvestReport(values.pondId))

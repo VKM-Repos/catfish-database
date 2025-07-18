@@ -37,7 +37,7 @@ export function AuditLogTable() {
   return (
     <DataTable
       columns={columns}
-      data={audits?.content ?? []}
+      data={audits?.content || []}
       isLoading={isLoading}
       emptyStateMessage="No audits found"
       hideClusterFilter={true}

@@ -174,7 +174,7 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
         await createSamplingReport.mutateAsync(samplingData)
         await createHarvestReport.mutateAsync(harvestData)
         setOpenConfirmDialog(false)
-        handleNext()
+        // handleNext()
       } else {
         await createSamplingReport.mutateAsync(samplingData)
         setOpenConfirmDialog(false)

@@ -9,7 +9,6 @@ import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { paths } from 'src/routes'
 import { CreateReportDialog } from '../../modals/create-report-modal'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -29,6 +28,12 @@ import { useDateStore } from 'src/store/report-date-store'
 import { Card } from 'src/components/ui/card'
 import { Switch } from 'src/components/ui/switch'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
+import { useSamplingStepperStore } from 'src/store/sampling-stepper-store'
+import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
+import { useFishSamplingStore } from 'src/store/fish-sampling.store'
+import { useWaterQualityStore } from 'src/store/water-quality-store'
+import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
+import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 
 const initialValues = {
   feedType: '',
@@ -37,11 +42,12 @@ const initialValues = {
   feedTime: '',
 }
 
-export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
+export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const navigate = useNavigate()
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
+
   const { selectedDate, setSelectedDate, setCombineDateTime } = useDateStore()
   const {
     formData,
@@ -83,7 +89,14 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
 
   const [openDialog, setOpenDialog] = useState(false)
   const [error, setError] = useState<ClientErrorType | null>()
-
+  const { reset: resetSamplingStepper } = useSamplingStepperStore()
+  const { reset: resetDailyFeedingStepper } = useStepperStore()
+  const { reset: resetSamplingForm } = useFishSamplingStore()
+  const { reset: resetDailyFeeding } = useDailyFeedingStore()
+  const { reset: resetWaterQuality } = useWaterQualityStore()
+  const { reset: resetFishBehavior } = useFishBehaviorStore()
+  const { reset: resetFishDisease } = useFishDiseaseStore()
+  const { reset: resetStepper } = useStepperStore()
   // Sync form with store data on mount
   useEffect(() => {
     form.reset(formData)
@@ -188,7 +201,22 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
       reset()
     }
   }
-
+  const handleGoBack = () => {
+    resetSamplingStepper()
+    resetDailyFeedingStepper()
+    resetSamplingForm()
+    resetDailyFeeding()
+    resetWaterQuality()
+    resetFishBehavior()
+    resetFishDisease()
+    resetStepper()
+    handlePrevious?.()
+    // if (from) {
+    //   navigate(paths.dashboard.reports.root)
+    // } else {
+    //   navigate(paths.dashboard.home.getStarted)
+    // }
+  }
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={handleReset} onOpenChange={setOpenDialog} />
@@ -490,19 +518,13 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
           </div>
 
           <div className="flex justify-between bg-neutral-100 p-5">
-            <Button variant={'outline'} onClick={() => navigate(paths.dashboard.home.getStarted)}>
+            <Button variant={'outline'} onClick={() => handleGoBack()}>
               Back
             </Button>
-            {recordDailyFeeding && (
-              <Button disabled={createDailyFeeding.isLoading || updateDailyFeeding.isLoading} type="submit">
-                {reportId ? 'Update' : 'Continue'}
-              </Button>
-            )}
-            {!recordDailyFeeding && (
-              <Button disabled={!form.getValues('feedTime')} type="button" onClick={handleNext}>
-                Continue
-              </Button>
-            )}
+
+            <Button disabled={createDailyFeeding.isLoading || updateDailyFeeding.isLoading} type="submit">
+              {reportId ? 'Update' : 'Continue'}
+            </Button>
           </div>
         </form>
       </Form>

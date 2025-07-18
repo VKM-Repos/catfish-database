@@ -8,32 +8,18 @@ import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { paths } from 'src/routes'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from 'src/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { useDailyFeedingStore } from 'src/store/daily-feeding-store'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { UpdateReportDialog } from '../../components/update-report-dialog'
 import { useQueryClient } from '@tanstack/react-query'
+import { Card } from 'src/components/ui/card'
+import { fishDiseaseSchema } from 'src/schemas'
 
-const initialValues = {
-  feedType: '',
-  pelletSize: '',
-  feedQuantity: '',
-  feedTime: '',
-}
-
-export function UpdateFeedingReportForm() {
+export function UpdateFishDIsease({ handleGoBack }: { handleGoBack: () => void }) {
   const navigate = useNavigate()
   const location = useLocation()
   const queryClient = useQueryClient()
@@ -51,45 +37,28 @@ export function UpdateFeedingReportForm() {
   const { activeInputs, setFormData, setActiveInput, reset: resetStore, reportId } = useDailyFeedingStore()
   const [recordDailyFeeding, setRecordDailyReport] = useState(true)
 
-  const useGetFeedInventory = createGetQueryHook({
-    endpoint: '/feed-inventories',
-    responseSchema: z.any(),
-    queryKey: ['feed-inventory-report'],
-  })
-  const { data: feedInventory } = useGetFeedInventory()
-
-  const useUpdateDailyFeeding = createPutMutationHook({
-    endpoint: `/feedings/${location.state.report.id}`,
+  const useUpdateFishDisease = createPutMutationHook({
+    endpoint: `/diseases/${location.state.report.id}`,
     requestSchema: z.any(),
     responseSchema: z.any(),
   })
-  const updateDailyFeeding = useUpdateDailyFeeding()
-  const dailyFeedingSchema = z.object({
-    feedType: z.string().min(1, 'Feed type is required'),
-    feedQuantity: z.string().min(1, 'Quantity is required').regex(/^\d+$/, 'Must be a number'),
-  })
-  const form = useForm<z.infer<typeof dailyFeedingSchema>>({
-    resolver: zodResolver(dailyFeedingSchema),
-    defaultValues: {
-      feedType:
-        location.state.report.feedType && location.state.report.pelletSize
-          ? `${location.state.report.feedType}${location.state.report.pelletSize}`
-          : '',
-      feedQuantity: String(location.state.report.quantity),
-    },
-  })
-  const { reset } = form
+  const updateFishDisease = useUpdateFishDisease()
 
-  const onSubmit = async (data: z.infer<typeof dailyFeedingSchema>) => {
+  const form = useForm<z.infer<typeof fishDiseaseSchema>>({
+    resolver: zodResolver(fishDiseaseSchema),
+    defaultValues: location.state.report,
+  })
+
+  const onSubmit = async (data: z.infer<typeof fishDiseaseSchema>) => {
     try {
-      const updateFeedingData = {
-        feedType: data.feedType?.replace(/\d+/g, '')?.toUpperCase(),
-        pelletSize: Number(data.feedType.match(/\d+/g)?.join('')),
-        quantity: Number(data.feedQuantity),
-        feedingTime: combinedDateTime,
+      const updateFishBehaviorData = {
+        diseaseType: data.diseaseType,
+        diseaseObservation: data.diseaseObservation,
+        frequency: 'DAILY',
+        time: combinedDateTime,
       }
-      await updateDailyFeeding.mutateAsync(updateFeedingData)
-      queryClient.refetchQueries(['daily-feedings'])
+      await updateFishDisease.mutateAsync(updateFishBehaviorData)
+      queryClient.refetchQueries(['fish-diseases'])
       setOpenDialog(true)
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
@@ -136,18 +105,23 @@ export function UpdateFeedingReportForm() {
   const handleDateClick = () => {
     dateInputRef.current?.showPicker()
   }
-
-  const handleReset = () => {
-    resetStore()
-    form.reset(initialValues)
-  }
-
-  const handleGoBack = () => {
-    navigate(`${paths.dashboard.reports.root}`)
-  }
+  const diseases = [
+    { value: 'NO_SIGNS_OF_DISEASE', text: 'No Signs of Disease' },
+    { value: 'FIN_ROT', text: 'Fin Rot' },
+    { value: 'COLUMNARIS', text: 'Columnaris (Cottonmouth Disease)' },
+    { value: 'ICH_WHITE_SPOT', text: 'Ich (Ichthyophthirius multifiliis) / White Spot' },
+    { value: 'YELLOW_RED_ULCER', text: 'Yellow or Red Ulcer Disease' },
+    { value: 'GILL_FLUKES', text: 'Gill Flukes (Monogenean Parasites)' },
+    { value: 'MOUTH_ROT', text: 'Mouth Rot' },
+    { value: 'TAIL_ROT', text: 'Tail Rot' },
+    { value: 'FUNGAL_SWIM_BLADDER', text: 'Fungal Infection Swim Bladder Disorder' },
+    { value: 'DROPSY', text: 'Dropsy (Bloating/Ascites)' },
+    { value: 'EXTERNAL_PARASITES', text: 'External Parasites' },
+    { value: 'BACTERIAL', text: 'Bacterial' },
+  ]
   return (
     <>
-      <UpdateReportDialog open={openDialog} resetForm={handleReset} onOpenChange={setOpenDialog} />
+      <UpdateReportDialog open={openDialog} onOpenChange={setOpenDialog} />
       {error && <FormValidationErrorAlert error={error} />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
@@ -155,8 +129,12 @@ export function UpdateFeedingReportForm() {
             <FlexBox direction="row" justify="between" align="center" className="mb-10 border-0 border-b pb-5">
               {recordDailyFeeding ? (
                 <div>
-                  <h5 className="text-[1.5rem] font-bold text-[#444955]">Daily Report</h5>
-                  <p className="text-xs font-medium">Collect measurements on a sample of fish to gauge growth.</p>
+                  <h5 className="text-[1.5rem] font-bold text-[#444955]">Fish behavior Report</h5>
+                  <p className="text-xs font-medium">
+                    {' '}
+                    Score and describe fish activity (e.g., feeding response, swimming patterns) to detect stress or
+                    health issues.
+                  </p>
                 </div>
               ) : (
                 <div />
@@ -257,110 +235,102 @@ export function UpdateFeedingReportForm() {
               </div>
             </FlexBox>
             {recordDailyFeeding && (
-              <div className="flex flex-col gap-5 rounded-lg border border-neutral-200 p-5">
-                <div className="flex w-full items-start gap-5">
-                  <div className="flex w-full flex-col gap-2">
-                    <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                      Feed Type <span className="font-bold text-red-500">*</span>
-                      <SolarIconSet.QuestionCircle size={16} />
-                    </Text>
-                    <FormField
-                      control={form.control}
-                      name="feedType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Select
-                              value={field.value || ''}
-                              onValueChange={(value) => {
-                                field.onChange(value)
-                                setFormData({ feedType: value })
-                              }}
-                            >
-                              <SelectTrigger className="font-light">
-                                <div className="mt-2 flex gap-2">
-                                  <div>
-                                    <svg
-                                      width="20"
-                                      height="20"
-                                      viewBox="0 0 20 20"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                        d="M9.11965 1.04163H10.8803C12.4118 1.04161 13.6248 1.0416 14.5742 1.16924C15.5512 1.3006 16.342 1.57736 16.9656 2.201C17.5893 2.82463 17.866 3.61542 17.9974 4.59244C18.125 5.54179 18.125 6.75482 18.125 8.28628V11.7136C18.125 13.2451 18.125 14.4581 17.9974 15.4075C17.866 16.3845 17.5893 17.1753 16.9656 17.7989C16.342 18.4226 15.5512 18.6993 14.5742 18.8307C13.6248 18.9583 12.4118 18.9583 10.8803 18.9583H9.11966C7.58819 18.9583 6.37516 18.9583 5.42581 18.8307C4.4488 18.6993 3.65801 18.4226 3.03437 17.7989C2.41073 17.1753 2.13397 16.3845 2.00261 15.4075C1.87498 14.4581 1.87499 13.2451 1.875 11.7136V8.28628C1.87499 6.75481 1.87498 5.54179 2.00261 4.59244C2.13397 3.61542 2.41073 2.82463 3.03437 2.201C3.65801 1.57736 4.4488 1.3006 5.42581 1.16924C6.37516 1.0416 7.58819 1.04161 9.11965 1.04163ZM5.59237 2.40809C4.75397 2.52081 4.27093 2.7322 3.91825 3.08488C3.56558 3.43755 3.35419 3.92059 3.24147 4.759C3.12633 5.61539 3.125 6.74428 3.125 8.33329V11.6666C3.125 13.2556 3.12633 14.3845 3.24147 15.2409C3.35419 16.0793 3.56558 16.5624 3.91825 16.915C4.27093 17.2677 4.75397 17.4791 5.59237 17.5918C6.44876 17.707 7.57765 17.7083 9.16667 17.7083H10.8333C12.4224 17.7083 13.5512 17.707 14.4076 17.5918C15.246 17.4791 15.7291 17.2677 16.0817 16.915C16.4344 16.5624 16.6458 16.0793 16.7585 15.2409C16.8737 14.3845 16.875 13.2556 16.875 11.6666V8.33329C16.875 6.74428 16.8737 5.61539 16.7585 4.759C16.6458 3.92059 16.4344 3.43755 16.0817 3.08488C15.7291 2.7322 15.246 2.52081 14.4076 2.40809C13.5512 2.29295 12.4224 2.29163 10.8333 2.29163H9.16667C7.57765 2.29163 6.44876 2.29295 5.59237 2.40809ZM6.04167 6.66663C6.04167 6.32145 6.32149 6.04163 6.66667 6.04163H13.3333C13.6785 6.04163 13.9583 6.32145 13.9583 6.66663C13.9583 7.0118 13.6785 7.29163 13.3333 7.29163H6.66667C6.32149 7.29163 6.04167 7.0118 6.04167 6.66663ZM6.04167 9.99996C6.04167 9.65478 6.32149 9.37496 6.66667 9.37496H13.3333C13.6785 9.37496 13.9583 9.65478 13.9583 9.99996C13.9583 10.3451 13.6785 10.625 13.3333 10.625H6.66667C6.32149 10.625 6.04167 10.3451 6.04167 9.99996ZM6.04167 13.3333C6.04167 12.9881 6.32149 12.7083 6.66667 12.7083H10.8333C11.1785 12.7083 11.4583 12.9881 11.4583 13.3333C11.4583 13.6785 11.1785 13.9583 10.8333 13.9583H6.66667C6.32149 13.9583 6.04167 13.6785 6.04167 13.3333Z"
-                                        fill="#444955"
-                                      />
-                                    </svg>
-                                  </div>
-                                  <SelectValue placeholder="Select Feed type" />
-                                </div>
-                              </SelectTrigger>
-                              <SelectContent>
-                                {feedInventory?.content.map((feed: any) => (
-                                  <SelectItem
-                                    className="w-full items-center justify-between "
-                                    key={feed.id}
-                                    value={feed.type + feed.sizeInMm}
-                                  >
-                                    {''}
-                                    <Text>
-                                      {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
-                                    </Text>
-                                    <SelectSeparator />
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex w-full flex-col gap-2">
-                    <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                      Feed Quantity <span className="font-bold text-red-500">*</span>
-                      <SolarIconSet.QuestionCircle size={16} />
-                    </Text>
-                    <FormField
-                      control={form.control}
-                      name="feedQuantity"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div
-                              className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border px-3 ${
-                                activeInputs.feedQuantity ? 'bg-white' : ''
-                              } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
-                            >
-                              <SolarIconSet.Weigher />
-                              <Input
-                                placeholder="input quantity in kg"
-                                {...field}
-                                className="w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                                onChange={(e) => {
-                                  let value = e.target.value.replace(/[^0-9]/g, '')
-                                  if (value.length > 1 && value.startsWith('0')) {
-                                    value = value.replace(/^0+/, '')
-                                  }
+              <Card className="p-[24px]">
+                <FlexBox gap="gap-2" direction="col" className="w-full space-y-3">
+                  <div className="flex w-full items-center gap-5">
+                    <div className="flex w-full flex-col gap-2">
+                      <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                        Disease
+                        <span className="font-bold text-red-500">*</span>
+                        <SolarIconSet.QuestionCircle size={16} />
+                      </Text>
+                      <FormField
+                        control={form.control}
+                        name="diseaseType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Select
+                                value={field.value ? String(field.value) : ''}
+                                onValueChange={(value) => {
                                   field.onChange(value)
-                                  handleInputChange('feedQuantity', value)
-                                  setFormData({ feedQuantity: value })
                                 }}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger className="font-light">
+                                  <div className="flex items-center justify-center gap-2">
+                                    <SelectValue placeholder="Select Disease found" />
+                                  </div>
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {diseases?.map((disease) => (
+                                    <SelectItem
+                                      className="border border-l-0 border-r-0 border-t-0 border-neutral-200"
+                                      key={disease?.value}
+                                      value={disease?.value}
+                                    >
+                                      {disease?.text}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="flex w-full flex-col gap-2">
+                      <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                        Disease observations
+                        <span className="font-bold text-red-500">*</span>
+                        <SolarIconSet.QuestionCircle size={16} />
+                      </Text>
+                      <FormField
+                        control={form.control}
+                        name="diseaseObservation"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div
+                                className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 px-2 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
+                              >
+                                <span>
+                                  {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
+                                  <svg
+                                    width="20"
+                                    height="21"
+                                    viewBox="0 0 20 21"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M9.11965 1.43408H10.8803C12.4118 1.43407 13.6248 1.43406 14.5742 1.56169C15.5512 1.69305 16.342 1.96982 16.9656 2.59345C17.5893 3.21709 17.866 4.00788 17.9974 4.9849C18.125 5.93424 18.125 7.14727 18.125 8.67874V12.1061C18.125 13.6376 18.125 14.8506 17.9974 15.7999C17.866 16.777 17.5893 17.5677 16.9656 18.1914C16.342 18.815 15.5512 19.0918 14.5742 19.2231C13.6248 19.3508 12.4118 19.3508 10.8803 19.3507H9.11966C7.58819 19.3508 6.37516 19.3508 5.42581 19.2231C4.4488 19.0918 3.65801 18.815 3.03437 18.1914C2.41073 17.5677 2.13397 16.777 2.00261 15.7999C1.87498 14.8506 1.87499 13.6376 1.875 12.1061V8.67873C1.87499 7.14727 1.87498 5.93424 2.00261 4.9849C2.13397 4.00788 2.41073 3.21709 3.03437 2.59345C3.65801 1.96982 4.4488 1.69305 5.42581 1.56169C6.37516 1.43406 7.58819 1.43407 9.11965 1.43408ZM5.59237 2.80055C4.75397 2.91327 4.27093 3.12466 3.91825 3.47733C3.56558 3.83001 3.35419 4.31305 3.24147 5.15146C3.12633 6.00784 3.125 7.13673 3.125 8.72575V12.0591C3.125 13.6481 3.12633 14.777 3.24147 15.6334C3.35419 16.4718 3.56558 16.9548 3.91825 17.3075C4.27093 17.6602 4.75397 17.8716 5.59237 17.9843C6.44876 18.0994 7.57765 18.1007 9.16667 18.1007H10.8333C12.4224 18.1007 13.5512 18.0994 14.4076 17.9843C15.246 17.8716 15.7291 17.6602 16.0817 17.3075C16.4344 16.9548 16.6458 16.4718 16.7585 15.6334C16.8737 14.777 16.875 13.6481 16.875 12.0591V8.72575C16.875 7.13673 16.8737 6.00784 16.7585 5.15146C16.6458 4.31305 16.4344 3.83001 16.0817 3.47733C15.7291 3.12466 15.246 2.91327 14.4076 2.80055C13.5512 2.68541 12.4224 2.68408 10.8333 2.68408H9.16667C7.57765 2.68408 6.44876 2.68541 5.59237 2.80055ZM6.04167 7.05908C6.04167 6.7139 6.32149 6.43408 6.66667 6.43408H13.3333C13.6785 6.43408 13.9583 6.7139 13.9583 7.05908C13.9583 7.40426 13.6785 7.68408 13.3333 7.68408H6.66667C6.32149 7.68408 6.04167 7.40426 6.04167 7.05908ZM6.04167 10.3924C6.04167 10.0472 6.32149 9.76742 6.66667 9.76742H13.3333C13.6785 9.76742 13.9583 10.0472 13.9583 10.3924C13.9583 10.7376 13.6785 11.0174 13.3333 11.0174H6.66667C6.32149 11.0174 6.04167 10.7376 6.04167 10.3924ZM6.04167 13.7257C6.04167 13.3806 6.32149 13.1007 6.66667 13.1007H10.8333C11.1785 13.1007 11.4583 13.3806 11.4583 13.7257C11.4583 14.0709 11.1785 14.3507 10.8333 14.3507H6.66667C6.32149 14.3507 6.04167 14.0709 6.04167 13.7257Z"
+                                      fill="#444955"
+                                    />
+                                  </svg>
+                                </span>
+                                <Input
+                                  placeholder="Other disease Observation"
+                                  {...field}
+                                  onChange={(e) => {
+                                    const value = e.target.value
+                                    field.onChange(value)
+                                  }}
+                                  className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
+                </FlexBox>
+              </Card>
             )}
           </div>
 
@@ -368,7 +338,7 @@ export function UpdateFeedingReportForm() {
             <Button variant={'outline'} onClick={() => handleGoBack()}>
               Back
             </Button>
-            <Button disabled={updateDailyFeeding.isLoading} type="submit">
+            <Button disabled={updateFishDisease.isLoading} type="submit">
               {reportId ? 'Update' : 'Continue'}
             </Button>
           </div>

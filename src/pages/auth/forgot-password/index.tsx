@@ -30,7 +30,7 @@ export default function ForgotPassword() {
   return (
     <Container className="w-fit overflow-hidden">
       <Card className="mx-auto flex h-fit w-full max-w-[470px] flex-col gap-2 bg-white p-1 leading-tight tracking-wide lg:min-w-[470px]">
-        <CardHeader className="flex flex-col items-center justify-center gap-y-8">
+        <CardHeader className="flex flex-col items-center justify-center ">
           <div className="flex flex-col items-center justify-center">
             <Logo className="text-primary h-[50px] w-[55px] p-1" />
             <Heading level={5} className="font-semibold text-primary-500">
@@ -41,8 +41,8 @@ export default function ForgotPassword() {
         <CardContent>
           <ResetPasswordForms />
         </CardContent>
-        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100">
-          <span className="mt-4 text-sm text-neutral-400">
+        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100 p-0">
+          <span className="m-0 text-sm text-neutral-400">
             Powered by
             <Link to="https://www.fao.org/fish4acp" className="ml-2 font-semibold text-info-500 underline">
               FISH4ACP

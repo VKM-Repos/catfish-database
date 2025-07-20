@@ -1,24 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 
 import { Card, CardContent } from 'src/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { Text } from 'src/components/ui/text'
 import { z } from 'zod'
+import * as SolarIconSet from 'solar-icon-set'
+import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
+import { Button } from 'src/components/ui/button'
+import { ChartHeader } from 'src/components/global/chart-header'
 
 export const description = 'A multiple bar chart'
-
-const chartData = [
-  { feedType: 'Ajegunle', stocked: 186, harvested: 80 },
-  { feedType: 'Vital', stocked: 305, harvested: 200 },
-  { feedType: 'Camp 74', stocked: 237, harvested: 120 },
-  { feedType: 'Kumbotso', stocked: 73, harvested: 190 },
-  { feedType: 'Waziri', stocked: 209, harvested: 130 },
-  { feedType: 'Eriwe', stocked: 214, harvested: 140 },
-]
 
 const chartConfig = {
   stocked: {
@@ -31,19 +26,82 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function StockedHarvestedByCluster() {
+type Interval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | 'ALL'
+type DateRange = { from: Date; to: Date }
+
+function SelectPopover<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: T[]
+  value: T
+  onChange: (newVal: T) => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="neutral" size="sm" className="flex gap-x-2 !border border-neutral-200 bg-white capitalize">
+          {label} <SolarIconSet.AltArrowDown size={14} />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="flex max-h-64 w-40 flex-col gap-1 overflow-y-scroll p-2">
+        {options.map((opt) => (
+          <Button
+            key={opt}
+            variant={opt === value ? 'neutral' : 'ghost'}
+            size="sm"
+            className="justify-start capitalize"
+            onClick={() => {
+              onChange(opt)
+              setOpen(false)
+            }}
+          >
+            {opt.replaceAll('_', ' ').toLowerCase()}
+          </Button>
+        ))}
+      </PopoverContent>
+    </Popover>
+  )
+}
+function IntervalFilter({ value, onChange }: { value: Interval; onChange: (v: Interval) => void }) {
+  const options: Interval[] = ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL']
+  return <SelectPopover<Interval> label={value.toLowerCase()} options={options} value={value} onChange={onChange} />
+}
+interface StockedHarvestedByClusterProps {
+  dateRange?: DateRange
+}
+export function StockedHarvestedByCluster({ dateRange }: StockedHarvestedByClusterProps) {
+  const [interval, setInterval] = useState<Interval>('MONTHLY')
+
   const useGetFeedConsumed = createGetQueryHook({
     endpoint: '/dashboards/super-admin/group-fish-availability',
     responseSchema: z.any(),
     queryKey: ['group-fish-availability-super-admin'],
   })
-  const { data: groupFishAvailable } = useGetFeedConsumed()
-  console.log(groupFishAvailable)
+  const { data: groupFishAvailable } = useGetFeedConsumed({
+    query: {
+      interval,
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   return (
     <Card className="h-[450px] max-h-[450px] min-h-[450px] w-full border border-neutral-200 p-[16px]">
       <CardContent>
-        <Text className="mb-[20px]  font-semibold">Stocked vs. Harvested by Cluster</Text>
+        <div className="flex">
+          <ChartHeader
+            title={`${interval.charAt(0).toUpperCase()}${interval
+              .slice(1)
+              .toLowerCase()} 'Stocked vs. Harvested by Cluster'`}
+            action={<IntervalFilter value={interval} onChange={setInterval} />}
+          />
+        </div>
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={groupFishAvailable}>
             <CartesianGrid vertical={true} />

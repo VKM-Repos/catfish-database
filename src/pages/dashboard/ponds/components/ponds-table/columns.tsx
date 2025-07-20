@@ -67,8 +67,6 @@ export const columns: ColumnDef<PondData>[] = [
     accessorKey: 'latestQuantity',
     header: 'Fish Quantity',
     cell: ({ row }) => {
-      console.log(row.original, '?????')
-
       const quantity = row.original.quantity
       return (
         <div className="flex flex-col">

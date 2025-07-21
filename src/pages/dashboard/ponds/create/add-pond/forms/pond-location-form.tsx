@@ -69,7 +69,8 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
                 <SolarIconSet.QuestionCircle size={16} />
               </TooltipTrigger>
               <TooltipContent>
-                his is the group or region your pond belongs to. It&apos;s pre-filled based on your profile or location.
+                This is the group or region your pond belongs to. It&apos;s pre-filled based on your profile or
+                location.
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

@@ -228,10 +228,10 @@ export const pondFormSchema = z.object({
     .string()
     .min(1, 'Breadth is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Breadth must be a positive number'),
-  height: z
+  depth: z
     .string()
-    .min(1, 'Height is required')
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Height must be a positive number'),
+    .min(1, 'Depth is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Depth must be a positive number'),
   status: z.enum(['Active', 'Inactive']).default('Active'),
   longitude: z
     .string()
@@ -253,7 +253,7 @@ export const pondCreateSchema = z.object({
   pondType: z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpauline']),
   length: z.number().positive('Length must be positive'),
   breadth: z.number().positive('Breadth must be positive'),
-  height: z.number().positive('Height must be positive'),
+  height: z.number().positive('Depth must be positive'),
   status: z.enum(['Active', 'Inactive']).default('Active'),
   longitude: z.number(),
   latitude: z.number(),
@@ -292,10 +292,10 @@ export const pondResponseSchema = z.object({
 export const transformFormDataToApiData = (formData: z.infer<typeof pondFormSchema>) => {
   return {
     ...formData,
-    size: Number(formData.length) * Number(formData.breadth) * Number(formData.height),
+    size: Number(formData.length) * Number(formData.breadth) * Number(formData.depth),
     length: Number(formData.length),
     breadth: Number(formData.breadth),
-    height: Number(formData.height),
+    height: Number(formData.depth),
     longitude: Number(formData.longitude),
     latitude: Number(formData.latitude),
   }

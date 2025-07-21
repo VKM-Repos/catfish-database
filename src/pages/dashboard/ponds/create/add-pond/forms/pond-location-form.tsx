@@ -9,6 +9,7 @@ import * as SolarIconSet from 'solar-icon-set'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Loader } from 'src/components/ui/loader'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 type PondFormValues = z.infer<typeof pondSchema>
 
@@ -62,7 +63,17 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
           Pond cluster
           <span className="font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <SolarIconSet.QuestionCircle size={16} />
+              </TooltipTrigger>
+              <TooltipContent>
+                This is the group or region your pond belongs to. It&apos;s pre-filled based on your profile or
+                location.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Text>
         <FormField
           control={form.control}
@@ -84,7 +95,17 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
               {' '}
               Gps Longitude
               <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Enter the geographical longitude of the pond’s location. You can also use your current location
+                    automatically.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Text>
             <FormField
               control={form.control}
@@ -116,7 +137,16 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
             <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
               Gps Latitude
               <span className="font-bold text-red-500">*</span>
-              <SolarIconSet.QuestionCircle size={16} />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    Enter the geographical latitude of the pond’s location. Use current location if unsure.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Text>
             <FormField
               control={form.control}

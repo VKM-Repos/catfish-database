@@ -8,6 +8,7 @@ import { pondSchema } from 'src/schemas'
 import { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
 import { Grid } from 'src/components/ui/grid'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 type PondFormValues = z.infer<typeof pondSchema>
 
@@ -24,7 +25,16 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
           Pond Name
           <span className="font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <SolarIconSet.QuestionCircle size={16} />
+              </TooltipTrigger>
+              <TooltipContent>
+                Enter a unique name or identifier for the pond. This helps differentiate between multiple ponds.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Text>
         <FormField
           control={form.control}
@@ -43,7 +53,17 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
       <div className="flex w-full flex-col gap-1">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
           Pond Size
-          <SolarIconSet.QuestionCircle size={16} />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <SolarIconSet.QuestionCircle size={16} />
+              </TooltipTrigger>
+              <TooltipContent>
+                Input the physical dimensions of the pond in meters. Length, breadth, and depth help in estimating water
+                volume and fish stocking density.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Text>
         <Grid cols={3} gap="gap-2" className="!grid-cols-1 md:!grid-cols-3">
           <FlexBox direction="col" gap="gap-2">
@@ -135,7 +155,17 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Water Source
             <span className="font-bold text-red-500">*</span>
-            <SolarIconSet.QuestionCircle size={16} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <SolarIconSet.QuestionCircle size={16} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  Select the source of water used to fill the pond (e.g., borehole, river, tap). This helps track water
+                  quality and sustainability.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </Text>
           <FormField
             control={form.control}
@@ -177,7 +207,14 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Pond Type
             <span className="font-bold text-red-500">*</span>
-            <SolarIconSet.QuestionCircle size={16} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <SolarIconSet.QuestionCircle size={16} />
+                </TooltipTrigger>
+                <TooltipContent>Choose the structural type of pond (e.g., earthen, concrete, plastic).</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </Text>
           <FormField
             control={form.control}

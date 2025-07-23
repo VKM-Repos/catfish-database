@@ -8,29 +8,35 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 
-export default function CostBreakdownOverview() {
+type DateRange = { from: Date; to: Date }
+
+interface CostBreakdownOverviewProps {
+  dateRange?: DateRange
+}
+export default function CostBreakdownOverview({ dateRange }: CostBreakdownOverviewProps) {
   const useGetMaintenanceData = createGetQueryHook({
     endpoint: '/dashboards/farmer/maintenance-cost/breakdown',
     responseSchema: z.any(),
     queryKey: ['maintenance-cost-data'],
   })
-  const { data: maintenanceCostData } = useGetMaintenanceData()
+  const { data: maintenanceCostData } = useGetMaintenanceData({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useGetAveragePrice = createGetQueryHook({
     endpoint: '/dashboards/farmer/average-price',
     responseSchema: z.any(),
     queryKey: ['average-price'],
   })
-  const { data: averagePrice } = useGetAveragePrice()
-  console.log(averagePrice)
-
-  // const chartData = [
-  //   { reason: 'feed', quantity: 275, fill: '#9C27B0' },
-  //   { reason: 'fingerlings', quantity: 200, fill: '#8C4EAD' },
-  //   { reason: 'maintenance', quantity: 187, fill: '#B188C7' },
-  //   { reason: 'labour', quantity: 173, fill: '#D8C4E3' },
-  //   { reason: 'other', quantity: 90, fill: '#F0E8F4' },
-  // ]
+  const { data: averagePrice } = useGetAveragePrice({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const colorMap: any = {
     CHEMICALS: '#9C27B0',
@@ -41,7 +47,7 @@ export default function CostBreakdownOverview() {
   }
   const dataWithColors = maintenanceCostData?.map((item: any) => ({
     ...item,
-    fill: colorMap[item.maintenanceType] || '#CCCCCC', // Fallback color
+    fill: colorMap[item.maintenanceType] || '#CCCCCC',
   }))
   const chartConfig = {
     visitors: {

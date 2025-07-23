@@ -6,8 +6,12 @@ import { Text } from 'src/components/ui/text'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { useEffect, useState } from 'react'
+import { Popover } from '@radix-ui/react-popover'
+import { PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
+import { Button } from 'src/components/ui/button'
+import * as SolarIconSet from 'solar-icon-set'
+import { AvailableFeedTypes } from 'src/lib/constants'
 
 const averageWeightConfig = {
   averageWeight: {
@@ -15,44 +19,130 @@ const averageWeightConfig = {
     color: '#651391B2',
   },
 }
+type Interval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | 'ALL'
+type FeedType = keyof typeof AvailableFeedTypes
+type DateRange = { from: Date; to: Date }
 
-export default function GrowthFeedingPerformance() {
-  const [selectedFeedType, setSelectedFeedType] = useState<string | null>(null)
+const FEED_TYPES = Object.keys(AvailableFeedTypes) as Array<FeedType>
+
+function IntervalFilter({ value, onChange }: { value: Interval; onChange: (v: Interval) => void }) {
+  const options: Interval[] = ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL']
+  return <SelectPopover<Interval> label={value.toLowerCase()} options={options} value={value} onChange={onChange} />
+}
+
+function FeedTypeFilter({
+  feedsConsumed,
+  value,
+  onChange,
+}: {
+  feedsConsumed: any
+  value: string | null | any
+  onChange: (v: FeedType) => void
+}) {
+  const [feedTypes, setFeedTypes] = useState([])
+  useEffect(() => {
+    const extractedFeedTypes = feedsConsumed?.map((item: any) => item?.feedType)
+    setFeedTypes(extractedFeedTypes)
+  }, [feedsConsumed])
+  return (
+    <SelectPopover<FeedType>
+      label={value?.replaceAll('_', ' ').toLowerCase()}
+      options={feedTypes || []}
+      value={value}
+      onChange={onChange}
+    />
+  )
+}
+
+function SelectPopover<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: T[]
+  value: T
+  onChange: (newVal: T) => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="neutral" size="sm" className="flex gap-x-2 !border border-neutral-200 bg-white capitalize">
+          {label} <SolarIconSet.AltArrowDown size={14} />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="flex max-h-64 w-40 flex-col gap-1 overflow-y-scroll p-2">
+        {options.map((opt) => (
+          <Button
+            key={opt}
+            variant={opt === value ? 'neutral' : 'ghost'}
+            size="sm"
+            className="justify-start capitalize"
+            onClick={() => {
+              onChange(opt)
+              setOpen(false)
+            }}
+          >
+            {opt.replaceAll('_', ' ').toLowerCase()}
+          </Button>
+        ))}
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+interface GrowthFeedingProps {
+  dateRange?: DateRange
+}
+export default function GrowthFeedingPerformance({ dateRange }: GrowthFeedingProps) {
+  const [interval, setInterval] = useState<Interval>('MONTHLY')
+  const [feedType, setFeedType] = useState<string | null>(null)
+
   const useGetFcr = createGetQueryHook({
-    endpoint: '/dashboards/farmer/fcr/overall?interval=ALL',
+    endpoint: '/dashboards/farmer/fcr/overall',
     responseSchema: z.any(),
     queryKey: ['fcr-overall'],
   })
-  const { data: fcr } = useGetFcr()
+  const { data: fcr } = useGetFcr({
+    query: {
+      interval: 'ALL',
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useGetFeedConsumed = createGetQueryHook({
-    endpoint: '/dashboards/farmer/feed-consumption-trend?interval=WEEKLY',
+    endpoint: '/dashboards/farmer/feed-consumption-trend',
     responseSchema: z.any(),
     queryKey: ['most-feed-consumed-trend'],
   })
-  const { data: feedConsumed } = useGetFeedConsumed()
+  const { data: feedConsumed } = useGetFeedConsumed({
+    query: {
+      interval,
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
-  // Set the feed type with most data points as default
   useEffect(() => {
-    if (feedConsumed && feedConsumed.length > 0 && !selectedFeedType) {
-      // Find the feed type with most data points
+    if (feedConsumed && feedConsumed.length > 0 && !feedType) {
       const feedWithMostData = feedConsumed.reduce((prev: any, current: any) =>
         prev.dataPoints.length > current.dataPoints.length ? prev : current,
       )
-      setSelectedFeedType(feedWithMostData.feedType)
+      setFeedType(feedWithMostData.feedType)
     }
-  }, [feedConsumed, selectedFeedType])
+  }, [feedConsumed, feedType])
 
-  // Transform the API data into chart format based on selected feed type
   const getChartData = () => {
-    if (!selectedFeedType || !feedConsumed) return []
+    if (!feedType || !feedConsumed) return []
 
-    // Find the selected feed type data
-    const selectedFeedData = feedConsumed.find((feed: any) => feed.feedType === selectedFeedType)
+    const selectedFeedData = feedConsumed.find((feed: any) => feed.feedType === feedType)
 
     if (!selectedFeedData) return []
 
-    // Transform data points into chart format
     return selectedFeedData.dataPoints.map((point: any) => ({
       period: point.intervalLabel,
       averageWeight: point.quantityInKg,
@@ -68,21 +158,15 @@ export default function GrowthFeedingPerformance() {
     >
       <div className="w-[80%] gap-5">
         <div className="flex">
-          <ChartHeader title={'Feed Consumed'} />
-          <div>
-            <Select value={selectedFeedType || ''} onValueChange={(value) => setSelectedFeedType(value)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select feed type" />
-              </SelectTrigger>
-              <SelectContent>
-                {feedConsumed?.map((feed: any) => (
-                  <SelectItem key={feed.feedType} value={feed.feedType}>
-                    {feed.feedType}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ChartHeader
+            title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Feed Consumed'`}
+            action={
+              <div className="flex gap-2">
+                <IntervalFilter value={interval} onChange={setInterval} />
+                <FeedTypeFilter feedsConsumed={feedConsumed} value={feedType} onChange={setFeedType} />
+              </div>
+            }
+          />
         </div>
         <ChartContainer config={averageWeightConfig}>
           {chartData.length > 0 ? (
@@ -94,7 +178,7 @@ export default function GrowthFeedingPerformance() {
                 axisLine={false}
                 tickLine={false}
                 tickMargin={4}
-                width={90} // Slightly wider for numbers
+                width={90}
               />
               <defs>
                 <linearGradient id="colorWeight" x1="0" y1="0" x2="0" y2="1">

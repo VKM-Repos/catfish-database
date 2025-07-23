@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { ChartHeader } from 'src/components/global/chart-header'
 import { Button } from 'src/components/ui/button'
 import { Card } from 'src/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
-import { FlexBox } from 'src/components/ui/flexbox'
 import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
 import { Text } from 'src/components/ui/text'
 import { z } from 'zod'
 import * as SolarIconSet from 'solar-icon-set'
-import { ChartHeader } from 'src/components/global/chart-header'
 
 const monthlyFeedConfig = {
   monthlyFeed: {
@@ -17,7 +16,6 @@ const monthlyFeedConfig = {
     color: '#651391B2',
   },
 }
-
 type Interval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | 'ALL'
 type DateRange = { from: Date; to: Date }
 
@@ -67,15 +65,14 @@ function IntervalFilter({ value, onChange }: { value: Interval; onChange: (v: In
 interface FeedingInsightProps {
   dateRange?: DateRange
 }
-
-export default function FeedInsight({ dateRange }: FeedingInsightProps) {
+export default function FeedingInsight({ dateRange }: FeedingInsightProps) {
   const [selectedFeedType, setSelectedFeedType] = useState<string | null>(null)
   const [interval, setInterval] = useState<Interval>('MONTHLY')
 
   const useGetFeedConsumed = createGetQueryHook({
-    endpoint: '/dashboards/super-admin/feed-consumption-trend',
+    endpoint: '/dashboards/cluster/feed-consumption-trend',
     responseSchema: z.any(),
-    queryKey: ['most-feed-consumed-trend-super-admin'],
+    queryKey: ['most-feed-consumed-trend-cluster-manager'],
   })
   const { data: feedConsumed } = useGetFeedConsumed({
     query: {
@@ -85,21 +82,13 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
     },
   })
 
-  const useGetFeedPriceSummary = createGetQueryHook({
-    endpoint: '/dashboards/super-admin/feed-price-summary',
-    responseSchema: z.any(),
-    queryKey: ['feed-price-summary-summary-super-admin'],
-  })
-  const { data: feedPriceSummary } = useGetFeedPriceSummary()
-  console.log(feedPriceSummary)
-
   const restructuredData = feedConsumed?.map((item: any) => ({
     feedType: item.feedType,
     quantityKg: item.dataPoints[0].quantityInKg,
   }))
 
   return (
-    <Card className="h-[640px] max-h-[640px] w-full rounded-[.875rem] border border-neutral-200 p-4">
+    <Card className="w-full rounded-[.875rem] border border-neutral-200 p-4">
       <div className="flex">
         <ChartHeader
           title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Feed Insights`}
@@ -108,11 +97,10 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
       </div>
       <Text className="text-[14px] font-medium">Most used feed brands (kg)</Text>
       <ChartContainer className="-ml-5 mt-[10px] w-full" config={monthlyFeedConfig}>
-        <BarChart accessibilityLayer data={restructuredData} height={100} barCategoryGap={10}>
+        <BarChart accessibilityLayer data={restructuredData} height={100} barCategoryGap={20}>
           <CartesianGrid />
-          <XAxis dataKey="feedType" tickLine={false} tickMargin={5} axisLine={true} />
+          <XAxis dataKey="feedType" tickLine={false} tickMargin={10} axisLine={false} />
           <YAxis tick={{ fill: '#737780', fontSize: 10 }} axisLine={false} tickLine={false} tickMargin={4} width={90} />
-
           <ChartTooltip
             cursor={false}
             content={<ChartTooltipContent indicator="dot" hideLabel={false} className="!min-w-[10rem] bg-white !p-2" />}
@@ -120,23 +108,25 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
           <Bar dataKey="quantityKg" fill="#651391" radius={5} />
         </BarChart>
       </ChartContainer>
-      <FlexBox direction="col" className="mb-[50px] mt-[30px] w-full">
-        <Text className="text-[14px] font-medium">Feed cost trends (₦/kg)</Text>
-        <FlexBox className="w-full" direction="row">
-          <div className="flex w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
-            <Text className="font-medium leading-[20px]">Lowest</Text>
-            <Text className="text-[16px] font-semibold text-success-500">₦{feedPriceSummary?.lowestPrice}</Text>
-          </div>
-          <div className="flex w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
-            <Text className="font-medium leading-[20px]">Average</Text>
-            <Text className="text-[16px] font-semibold">₦{feedPriceSummary?.averagePrice}</Text>
-          </div>
-          <div className="flex w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
-            <Text className="font-medium leading-[20px]">Highest</Text>
-            <Text className="text-[16px] font-semibold text-error-500">₦{feedPriceSummary?.highestPrice}</Text>
-          </div>
-        </FlexBox>
-      </FlexBox>
     </Card>
   )
 }
+
+const monthlyFeedData = [
+  {
+    feedType: 'Cppens',
+    feedQuantity: '50',
+  },
+  {
+    feedType: 'Vital',
+    feedQuantity: '40',
+  },
+  {
+    feedType: 'Topfeed',
+    feedQuantity: '30',
+  },
+  {
+    feedType: 'Blue Crown',
+    feedQuantity: '20',
+  },
+]

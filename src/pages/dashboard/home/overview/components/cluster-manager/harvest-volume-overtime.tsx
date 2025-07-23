@@ -1,28 +1,21 @@
-'use client'
-
 import { useState } from 'react'
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { Button } from 'src/components/ui/button'
 
 import { Card, CardContent } from 'src/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
-import { FlexBox } from 'src/components/ui/flexbox'
-import { z } from 'zod'
-import * as SolarIconSet from 'solar-icon-set'
 import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
-import { Button } from 'src/components/ui/button'
+import z from 'zod'
+import * as SolarIconSet from 'solar-icon-set'
 import { ChartHeader } from 'src/components/global/chart-header'
 
-export const description = 'A multiple bar chart'
+export const description = 'A simple area chart'
 
 const chartConfig = {
-  stocked: {
-    label: 'Stocked',
+  totalQuantity: {
+    label: 'Quantity',
     color: '#651391',
-  },
-  harvested: {
-    label: 'Harvested',
-    color: '#0DA500',
   },
 } satisfies ChartConfig
 
@@ -72,18 +65,18 @@ function IntervalFilter({ value, onChange }: { value: Interval; onChange: (v: In
   const options: Interval[] = ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL']
   return <SelectPopover<Interval> label={value.toLowerCase()} options={options} value={value} onChange={onChange} />
 }
-interface StockedHarvestedByClusterProps {
+interface HarvestVolumeOvertimeProps {
   dateRange?: DateRange
 }
-export function StockedHarvestedByCluster({ dateRange }: StockedHarvestedByClusterProps) {
-  const [interval, setInterval] = useState<Interval>('MONTHLY')
 
-  const useGetFeedConsumed = createGetQueryHook({
-    endpoint: '/dashboards/super-admin/group-fish-availability',
+export function HarvestVolumeOvertime({ dateRange }: HarvestVolumeOvertimeProps) {
+  const [interval, setInterval] = useState<Interval>('MONTHLY')
+  const useGetRevenuePrice = createGetQueryHook({
+    endpoint: '/dashboards/cluster/volume-of-sales',
     responseSchema: z.any(),
-    queryKey: ['group-fish-availability-super-admin'],
+    queryKey: ['sales-revenue-price-trends-cluster-manager'],
   })
-  const { data: groupFishAvailable } = useGetFeedConsumed({
+  const { data: harvestTrends } = useGetRevenuePrice({
     query: {
       interval,
       startDate: dateRange?.from?.toISOString().split('T')[0],
@@ -92,41 +85,38 @@ export function StockedHarvestedByCluster({ dateRange }: StockedHarvestedByClust
   })
 
   return (
-    <Card className="h-[450px] max-h-[450px] min-h-[450px] w-full border border-neutral-200 p-[16px]">
+    <Card className="mt-10 h-full w-full border-0">
       <CardContent>
         <div className="flex">
           <ChartHeader
             title={`${interval.charAt(0).toUpperCase()}${interval
               .slice(1)
-              .toLowerCase()} 'Stocked vs. Harvested by Cluster'`}
+              .toLowerCase()} 'Harvest volume over time (kg)'`}
             action={<IntervalFilter value={interval} onChange={setInterval} />}
           />
         </div>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={groupFishAvailable}>
+          <AreaChart
+            accessibilityLayer
+            data={harvestTrends}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
             <CartesianGrid vertical={true} />
-            <XAxis dataKey="groupName" tickLine={false} tickMargin={10} axisLine={false} />
+            <XAxis dataKey="intervalLabel" tickLine={false} axisLine={false} tickMargin={8} />
             <YAxis
               tick={{ fill: '#737780', fontSize: 10 }}
               axisLine={false}
               tickLine={false}
               tickMargin={4}
-              width={20}
-              max={100}
+              width={90}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" className="bg-white" />} />
-            <Bar dataKey="availableFish" max={2000} fill="var(--color-stocked)" radius={4} />
-            <Bar dataKey="soldFish" fill="var(--color-harvested)" radius={4} />
-          </BarChart>
+            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+            <Area dataKey="totalQuantity" type="natural" fill="#B188C7" stroke="var(--color-totalQuantity)" />
+          </AreaChart>
         </ChartContainer>
-        <FlexBox justify="center" className="mt-[6px] font-medium">
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-10 bg-primary-500" /> Stocked
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-10 bg-[#0DA500]" /> Harvested
-          </div>
-        </FlexBox>
       </CardContent>
     </Card>
   )

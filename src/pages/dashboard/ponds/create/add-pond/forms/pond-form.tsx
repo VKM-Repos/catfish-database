@@ -119,7 +119,7 @@ export default function PondForm({
       size: transformedInitialValues.size || '',
       length: transformedInitialValues.length || '',
       breadth: transformedInitialValues.breadth || '',
-      height: transformedInitialValues.height || '',
+      depth: transformedInitialValues.depth || '',
       waterSource: transformedInitialValues.waterSource || '',
       pondType: transformedInitialValues.pondType || '',
       clusterId: transformedInitialValues.clusterId || current_cluster?.id || clusterId || urlClusterId || '',
@@ -132,9 +132,9 @@ export default function PondForm({
 
   const length = form.watch('length')
   const breadth = form.watch('breadth')
-  const height = form.watch('height')
+  const depth = form.watch('depth')
 
-  const total = Number(length) * Number(breadth) * Number(height) || 0
+  const total = Number(length) * Number(breadth) * Number(depth) || 0
 
   const isValidVolume = (value: number) => value > 0 && isFinite(value)
 

@@ -8,6 +8,8 @@ export const configSchema = z.object({
   description: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
+  type: z.string(),
+  // category:z.string()
 })
 
 export const paginatedConfigResponseSchema = z.object({

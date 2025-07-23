@@ -67,7 +67,7 @@ export default function SamplingIndexForm({ handleNext }: { handleNext: () => vo
 
   const handleCancel = () => {
     reset()
-    if (from !== undefined) {
+    if (from) {
       navigate(paths.dashboard.reports.root + '?tab=sampling-report')
       return
     }

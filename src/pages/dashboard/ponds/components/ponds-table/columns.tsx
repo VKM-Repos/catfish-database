@@ -80,11 +80,11 @@ export const columns: ColumnDef<PondData>[] = [
       )
     },
   },
-  {
-    accessorKey: 'lastSampled',
-    header: 'Last Sampled',
-    cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
-  },
+  // {
+  //   accessorKey: 'lastSampled',
+  //   header: 'Last Sampled',
+  //   cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
+  // },
   {
     accessorKey: 'size',
     header: 'Pond Size',

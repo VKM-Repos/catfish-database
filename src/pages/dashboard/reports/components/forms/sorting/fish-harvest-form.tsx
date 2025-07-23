@@ -8,6 +8,7 @@ import type { z } from 'zod'
 import { useRef, useState } from 'react'
 import * as SolarIconSet from 'solar-icon-set'
 import { useFishHarvestStore } from 'src/store/fish-harvest-store'
+import { formatCurrency } from 'src/lib/utils'
 
 type SortingFormValues = z.infer<typeof sortingSchema>
 
@@ -116,8 +117,10 @@ export default function FishHarvestForm({ form }: { form: UseFormReturn<SortingF
                       placeholder="Weight Harvested"
                       value={totalWeightHarvested}
                       onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9.]/g, '')
+
                         setTotalWeightHarvested(e.target.value)
-                        field.onChange(e.target.value)
+                        field.onChange(value)
                       }}
                     />
                   </FormControl>
@@ -155,7 +158,7 @@ export default function FishHarvestForm({ form }: { form: UseFormReturn<SortingF
                       <div className="w-full">
                         <Input
                           placeholder="Amount in naira"
-                          value={costPerKg}
+                          value={formatCurrency(costPerKg)}
                           onChange={(e) => {
                             const value = e.target.value.replace(/[^0-9]/g, '')
                             setCostPerKg(value)

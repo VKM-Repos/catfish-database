@@ -20,6 +20,7 @@ import { LoadingScreen } from 'src/components/global/loading-screen'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { useQueryClient } from '@tanstack/react-query'
+import { formatCurrency } from 'src/lib/utils'
 
 type HarvestFormValues = z.infer<typeof harvestSchema>
 
@@ -48,9 +49,12 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   const { reset } = form
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
   const [openDialog, setOpenDialog] = useState(false)
+  // Remove the isCostFocused state
+  // const [isCostFocused, setIsCostFocused] = useState(false);
 
   const createHarvestReport = useHarvestReport()
 
+  // Add currency formatting function
   const onSubmit = async (data: z.infer<typeof harvestSchema>) => {
     try {
       const harvestData = {
@@ -285,11 +289,12 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
                             <div className="w-full">
                               <Input
                                 placeholder="Amount in naira"
-                                {...field}
+                                value={formatCurrency(field.value)}
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^0-9]/g, '')
-                                  field.onChange(value)
-                                  handleInputChange('totalAmountSold', value)
+                                  // Remove all non-digit characters
+                                  const rawValue = e.target.value.replace(/[^0-9]/g, '')
+                                  field.onChange(rawValue)
+                                  handleInputChange('totalAmountSold', rawValue)
                                 }}
                                 className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                               />

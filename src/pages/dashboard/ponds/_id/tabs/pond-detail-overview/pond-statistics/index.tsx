@@ -109,11 +109,11 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
   // Extract pond-specific data
   const pondData = useMemo(() => {
     // Find current pond's weight data
-    const currentPondWeight = totalWeightData?.find((pond) => pond.pondId === pondId)
+    const currentPondWeight = totalWeightData?.find((pond) => pond?.pondId === pondId)
     const currentWeight = currentPondWeight?.weights[0]?.totalWeight || 0
 
     // Find current pond's production cost data
-    const currentPondCost = productionCostData?.find((pond) => pond.pondId === pondId)
+    const currentPondCost = productionCostData?.find((pond) => pond?.pondId === pondId)
     const currentCost = currentPondCost?.costs[0]?.totalCost || 0
 
     return {
@@ -132,7 +132,7 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
         label: 'Total feed consumed',
         value: `${feedTotal?.totalQuantity.toLocaleString()}kg`,
         rate: previousFeedTotal
-          ? calculatePercentageChange(feedTotal?.totalQuantity ?? 0, previousFeedTotal.totalQuantity ?? 0)
+          ? calculatePercentageChange(feedTotal?.totalQuantity ?? 0, previousFeedTotal?.totalQuantity ?? 0)
           : '+0.0%',
       },
       {
@@ -146,13 +146,13 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
       {
         color: '#F8D082',
         label: 'Total weight of fish',
-        value: `${pondData.currentWeight.toLocaleString() ?? '-'}`,
+        value: `${pondData?.currentWeight?.toLocaleString() ?? '-'}`,
         rate: '+0.0%', // No previous data available for comparison
       },
       {
         color: '#A0E8B9',
         label: 'Survival Rate',
-        value: `${mortalityRateData?.survivalRate.toFixed(1) ?? '0'}% `,
+        value: `${mortalityRateData?.survivalRate?.toFixed(1) ?? '0'}% `,
         rate: '+0.0%', // No previous data available for comparison
       },
     ]
@@ -161,15 +161,15 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-4">
-        {pondStatCards.map((pondStat, index) => {
-          const sign = isPositive(pondStat.rate)
+        {pondStatCards?.map((pondStat, index) => {
+          const sign = isPositive(pondStat?.rate)
 
           return (
             <div key={index} style={{ backgroundColor: pondStat.color }} className={`rounded-lg px-5 py-[1.875rem]`}>
               <FlexBox gap="gap-[1.125rem]" direction="col">
-                <Text className="text-xs text-[#37414F]">{pondStat.label}</Text>
+                <Text className="text-xs text-[#37414F]">{pondStat?.label}</Text>
                 <FlexBox direction="col" gap="gap-3">
-                  <Text className="!text-[1.5rem] font-bold text-[#1F2937]">{pondStat.value}</Text>
+                  <Text className="!text-[1.5rem] font-bold text-[#1F2937]">{pondStat?.value}</Text>
                   <div
                     style={{
                       backgroundColor: sign === true ? '#E7F6E5' : '#FFE5E5',
@@ -177,7 +177,7 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
                     }}
                     className="flex items-center justify-center rounded-[.625rem] px-1 py-1"
                   >
-                    {pondStat.rate}
+                    {pondStat?.rate}
                     {sign === true ? (
                       <SolarIconSet.ArrowToTopLeft size={16} iconStyle="Broken" color="currentColor" />
                     ) : (
@@ -195,6 +195,6 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
 }
 
 export function isPositive(value: string): boolean {
-  const numericValue = parseFloat(value.replace('%', '').trim())
+  const numericValue = parseFloat(value?.replace('%', '').trim())
   return numericValue >= 0
 }

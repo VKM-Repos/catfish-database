@@ -171,10 +171,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="Input dissolved oxygen"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ dissolvedOxygen: value })
                                     handleInputChange('dissolvedOxygen', e.target.value)
@@ -220,10 +218,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="Input value"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ phLevel: value })
                                     handleInputChange('phLevel', e.target.value)
@@ -271,10 +267,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="Input temperature"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ temperature: value })
                                     handleInputChange('temperature', e.target.value)
@@ -320,10 +314,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="Input value"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ ammonia: value })
                                     handleInputChange('ammonia', e.target.value)
@@ -369,10 +361,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="input value"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ nitrate: value })
                                     handleInputChange('nitrite', e.target.value)
@@ -416,10 +406,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="input value"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ alkalinity: value })
                                     handleInputChange('alkalinity', e.target.value)
@@ -467,10 +455,8 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                   placeholder="Input value"
                                   {...field}
                                   onChange={(e) => {
-                                    let value = e.target.value.replace(/[^0-9]/g, '')
-                                    if (value.length > 1 && value.startsWith('0')) {
-                                      value = value.replace(/^0+/, '')
-                                    }
+                                    const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                     field.onChange(value)
                                     setFormData({ hardness: value })
                                     handleInputChange('hardness', e.target.value)

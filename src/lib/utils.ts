@@ -122,3 +122,18 @@ export function formatPrice(value: number | string | undefined | null): string {
     })
     .replace('NGN', '₦')
 }
+
+export function formatCurrency(value: string) {
+  if (!value) return ''
+  const num = parseFloat(value)
+  if (isNaN(num)) return ''
+  return new Intl.NumberFormat('en', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+    .format(num)
+    .replace('NGN', '')
+    .trim()
+}

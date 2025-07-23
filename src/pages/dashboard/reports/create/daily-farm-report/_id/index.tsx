@@ -27,7 +27,7 @@ export default function CreateDailyFeedingReportPage() {
   }
 
   const handlePrevious = () => {
-    if (from !== undefined) {
+    if (from) {
       navigate(paths.dashboard.reports.root)
       return
     }

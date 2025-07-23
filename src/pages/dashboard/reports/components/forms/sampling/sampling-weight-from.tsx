@@ -86,7 +86,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                         placeholder="Input total number of fish used for sample data"
                         {...field}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, '')
+                          const value = e.target.value.replace(/[^0-9.]/g, '')
                           field.onChange(value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -136,7 +136,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                         placeholder="Input weight of fish"
                         {...field}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9]/g, '')
+                          const value = e.target.value.replace(/[^0-9.]/g, '')
                           field.onChange(value)
                         }}
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"

@@ -158,6 +158,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
 
 // Component for registered pond state
 function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) => void }) {
+  const { user } = useAuthStore()
   const [farmReportOpen, setFarmReportOpen] = useState(false)
   const [samplingReportOpen, setSamplingReportOpen] = useState(false)
   const [harvestReportOpen, setHarvestReportOpen] = useState(false)
@@ -179,35 +180,43 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
         onOpenChange={setFarmReportOpen}
       />
 
-      <ActionCard
-        title="Sampling Report"
-        description="Record important details from your sampling operation, including fish weight, mortality, total feed consumed, and current stock."
-        icon={<img src="/assets/images/sampling-report.svg" alt="Sampling Report" />}
-        buttonText="Submit Sampling Report"
-        buttonAction={() => setSamplingReportOpen(true)}
-      />
+      {user?.role === 'FARMER' && (
+        <ActionCard
+          title="Sampling Report"
+          description="Record important details from your sampling operation, including fish weight, mortality, total feed consumed, and current stock."
+          icon={<img src="/assets/images/sampling-report.svg" alt="Sampling Report" />}
+          buttonText="Submit Sampling Report"
+          buttonAction={() => setSamplingReportOpen(true)}
+        />
+      )}
 
-      <ReportModal
-        title="Sampling Report"
-        open={samplingReportOpen}
-        redirect="daily-sampling-report"
-        onOpenChange={setSamplingReportOpen}
-      />
+      {user?.role === 'FARMER' && (
+        <ReportModal
+          title="Sampling Report"
+          open={samplingReportOpen}
+          redirect="daily-sampling-report"
+          onOpenChange={setSamplingReportOpen}
+        />
+      )}
 
-      <ActionCard
-        title="Harvest Report"
-        description="Record your farm’s harvest and sales. Submit data on cost of feed, labor, maintenance, and sales revenue."
-        icon={<img src="/assets/images/harvest-report.svg" alt="Harvest Report" />}
-        buttonText="Submit Harvest Report"
-        buttonAction={() => setHarvestReportOpen(true)}
-      />
+      {user?.role === 'FARMER' && (
+        <ActionCard
+          title="Harvest Report"
+          description="Record your farm’s harvest and sales. Submit data on cost of feed, labor, maintenance, and sales revenue."
+          icon={<img src="/assets/images/harvest-report.svg" alt="Harvest Report" />}
+          buttonText="Submit Harvest Report"
+          buttonAction={() => setHarvestReportOpen(true)}
+        />
+      )}
 
-      <ReportModal
-        title="Harvest Report"
-        open={harvestReportOpen}
-        redirect="daily-harvest-report"
-        onOpenChange={setHarvestReportOpen}
-      />
+      {user?.role === 'FARMER' && (
+        <ReportModal
+          title="Harvest Report"
+          open={harvestReportOpen}
+          redirect="daily-harvest-report"
+          onOpenChange={setHarvestReportOpen}
+        />
+      )}
     </>
   )
 }

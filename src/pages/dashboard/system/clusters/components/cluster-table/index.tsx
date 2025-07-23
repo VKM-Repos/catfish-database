@@ -19,7 +19,7 @@ export function ClusterTable() {
   })
 
   const useGetClusterManagers = createGetQueryHook({
-    endpoint: '/users/cluster-managers',
+    endpoint: '/users/cluster-managers?size=1000000',
     responseSchema: z.any(),
     queryKey: ['cluster-managers'],
   })

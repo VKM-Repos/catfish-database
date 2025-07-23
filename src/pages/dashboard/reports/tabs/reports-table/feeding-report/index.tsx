@@ -24,31 +24,31 @@ export default function FeedingReportsTable() {
   const { setStep } = useStepperStore()
 
   const useGetFeedingReports = createGetQueryHook({
-    endpoint: '/feedings',
+    endpoint: '/feedings?size=1000000',
     responseSchema: z.any(),
     queryKey: ['daily-feedings'],
   })
 
   const useGetWaterQualityReports = createGetQueryHook({
-    endpoint: '/water-quality',
+    endpoint: '/water-quality?size=1000000',
     responseSchema: z.any(),
     queryKey: ['water-quality'],
   })
 
   const useGetFishBehavior = createGetQueryHook({
-    endpoint: '/behaviors',
+    endpoint: '/behaviors?size=1000000',
     responseSchema: z.any(),
     queryKey: ['fish-behavior'],
   })
 
   const useGetFishDisease = createGetQueryHook({
-    endpoint: '/diseases',
+    endpoint: '/diseases?size=1000000',
     responseSchema: z.any(),
     queryKey: ['fish-diseases'],
   })
 
   const useGetMortality = createGetQueryHook({
-    endpoint: '/mortalities/fish-supplies',
+    endpoint: '/mortalities/fish-supplies?size=1000000',
     responseSchema: z.any(),
     queryKey: ['fish-mortality'],
   })

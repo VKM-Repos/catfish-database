@@ -21,6 +21,7 @@ import { Loader } from 'src/components/ui/loader'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { PartnersLogo } from 'src/components/ui/partners-logo'
 
 const useLogin = createPostMutationHook({
   endpoint: '/auth/login',
@@ -210,13 +211,15 @@ export default function LoginPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100 p-0">
+        <CardFooter className="flex h-fit flex-col items-center justify-center gap-1 rounded-lg bg-neutral-100 px-8 py-4">
           <span className=" text-sm text-neutral-400">
             Powered by
             <a href="https://www.fao.org/fish4acp" className="ml-2 font-semibold text-info-500 underline">
               FISH4ACP
             </a>
           </span>
+
+          <PartnersLogo />
         </CardFooter>
       </Card>
     </Container>

@@ -6,20 +6,18 @@ import { HarvestVolumeOvertime } from './harvest-volume-overtime'
 import { LineChartHarvestVolume } from './line-chart-harvest-volume'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
+type DateRange = { from: Date; to: Date }
+interface ProductAndHarvestMetricsProps {
+  dateRange?: DateRange
+}
 
-export default function ProductAndHarvestMetrics() {
+export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarvestMetricsProps) {
   const useGetSalesVolume = createGetQueryHook({
     endpoint: '/dashboards/cluster/volume-of-sales?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['sales-volume-cluster-manager'],
   })
   const { data: salesVolume } = useGetSalesVolume()
-  const useGetRevenuePrice = createGetQueryHook({
-    endpoint: '/dashboards/cluster/volume-of-sales?interval=MONTHLY',
-    responseSchema: z.any(),
-    queryKey: ['sales-revenue-price-trends-cluster-manager'],
-  })
-  const { data: salesRevenue } = useGetRevenuePrice()
 
   return (
     <Card className="border border-neutral-200 p-[24px]">
@@ -70,8 +68,8 @@ export default function ProductAndHarvestMetrics() {
         </Card>
       </FlexBox>
       <FlexBox>
-        <HarvestVolumeOvertime harvestTrends={salesRevenue} />
-        <LineChartHarvestVolume />
+        <HarvestVolumeOvertime dateRange={dateRange} />
+        <LineChartHarvestVolume dateRange={dateRange} />
       </FlexBox>
     </Card>
   )

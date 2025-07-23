@@ -53,6 +53,7 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
   const createBatch = useCreateBatch()
   const updateBatch = useUpdateBatch(batchId ?? '')
   const queryClient = useQueryClient()
+
   const [error, setError] = useState<ClientErrorType | null>(null)
 
   const transformedInitial = initialValues ? transformFishApiToForm(initialValues) : {}
@@ -86,6 +87,7 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
   // auto‑calculate cost
   const q = form.watch('quantity')
   const sc = form.watch('singleCost')
+  // sc.replace(',', '')
   const total = String(Number(q) * Number(sc) || 0)
   useEffect(() => {
     if (/^[-+]?\d+(\.\d+)?$/.test(total)) form.setValue('costOfSupply', Number(total))
@@ -99,8 +101,14 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
 
       if (mode === 'edit' && batchId) {
         await updateBatch.mutateAsync(apiData)
+        queryClient.invalidateQueries(['my-fish-batches'])
+        queryClient.invalidateQueries(['my-ponds'])
+        onSuccess()
       } else {
         await createBatch.mutateAsync(apiData)
+        queryClient.invalidateQueries(['my-fish-batches'])
+        queryClient.invalidateQueries(['my-ponds'])
+        onSuccess()
       }
 
       queryClient.invalidateQueries(['my-fish-batches'])

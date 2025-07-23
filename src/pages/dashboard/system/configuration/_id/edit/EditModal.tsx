@@ -1,13 +1,43 @@
 import { z } from 'zod'
 import { Heading } from 'src/components/ui/heading'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-
+import * as SolarIconSet from 'solar-icon-set'
 import { useLocation } from 'react-router-dom'
-import { authCache } from 'src/api'
 import { configSchema } from 'src/schemas/configurationSchema'
+import { Form, FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Input } from 'src/components/ui/input'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { Text } from 'src/components/ui/text'
+import { Grid } from 'src/components/ui/grid'
+import { Alert, AlertDescription, AlertTitle } from 'src/components/ui/alert'
+import { Button } from 'src/components/ui/button'
+import { formatString } from '../../tabs/configuration/columns'
+import { createPutMutationHook } from 'src/api/hooks/usePut'
 
-type ConfigFormValues = z.infer<typeof configSchema>
+const configFormSchema = z.object({
+  title: z.string(),
+  key: z.string(),
+  value: z.string(),
+  listValue: z.array(z.string()),
+  description: z.string(),
+  // type:z.string(),
+  // category:z.string()
+})
+
+const configRequestSchema = z.object({
+  value: z.string(),
+  listValue: z.array(z.string()),
+  description: z.string(),
+  // type:z.string(),
+  category: z.string(),
+})
+
+type ConfigFormValues = z.infer<typeof configFormSchema>
+
+// type ConfigResponseSchema = z.infer<typeof configSchema>
 
 type RoleFormProps = {
   mode: 'create' | 'edit'
@@ -16,66 +46,27 @@ type RoleFormProps = {
   onClose?: () => void
 }
 
-const useGetAllPrivileges = () => {
-  const [allPrivileges, setAllPrivileges] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    let isMounted = true
-    async function fetchAll() {
-      let page = 0
-      const size = 100
-      let privileges: any[] = []
-      let totalPages = 1
-      const baseUrl = import.meta.env.VITE_API_BASE_URL
-      const token = authCache.getToken()
-
-      while (page < totalPages) {
-        const res = await fetch(`${baseUrl}/roles/privileges?page=${page}&size=${size}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        const data = await res.json()
-        privileges = privileges.concat(data?.content || [])
-        totalPages = data?.totalPages
-        page++
-      }
-      if (isMounted) {
-        setAllPrivileges(privileges)
-        setLoading(false)
-      }
-    }
-    fetchAll()
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  return { privileges: allPrivileges, loading }
-}
-
 export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: RoleFormProps) {
   const location = useLocation()
-  const { role, allPrivileges: statePrivileges } = location?.state || {}
+  const { config } = location?.state || {}
 
-  const { privileges: fetchedPrivileges, loading: loadingPrivileges } = useGetAllPrivileges()
-
-  const allPrivileges = mode === 'edit' ? fetchedPrivileges : statePrivileges
+  // console.log("config: ",config)
 
   const queryClient = useQueryClient()
   const [error, setError] = useState<{ title: string; message: string } | null>(null)
-  // const form = useForm<ConfigFormValues>({
-  //   resolver: zodResolver(configRequestSchema),
-  //   defaultValues: initialValues || {
-  //     value: '',
-  //     listValue: [],
-  //     description: '',
-  //     category: '',
-  //   },
-  //   mode: 'onChange',
-  // })
+  const form = useForm<ConfigFormValues>({
+    resolver: zodResolver(configFormSchema),
+    defaultValues: initialValues || {
+      title: formatString(config?.key),
+      key: config?.key,
+      value: config?.value,
+      listValue: config?.listValue,
+      description: config?.description,
+      // category: config?.category,
+      // type: config?.type,
+    },
+    mode: 'onChange',
+  })
 
   // // Create farmer staff
   // const useCreateRole = createPostMutationHook({
@@ -86,40 +77,57 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
 
   // const useCreateRoleMutation = useCreateRole()
 
-  // // PUT mutation
-  // const usePutRole = createPutMutationHook({
-  //   endpoint: `/roles/${initialValues?.id}`,
-  //   requestSchema: roleRequestSchema,
-  //   responseSchema: roleResponseSchema,
-  // })
-  // const updateRoleMutation = usePutRole()
+  // PUT mutation
+  const usePutConfig = createPutMutationHook({
+    endpoint: `/configurations/${config?.id}`,
+    requestSchema: configRequestSchema,
+    responseSchema: configSchema,
+  })
+  const updateConfigMutation = usePutConfig()
 
-  const onSubmit = async (values: ConfigFormValues) => {
-    // try {
-    //   setError(null)
-    //   const formData = { ...values }
-    //   if (mode === 'create') {
-    //     await useCreateRoleMutation.mutateAsync(formData)
-    //     queryClient.invalidateQueries(['roles'])
-    //   } else if (mode === 'edit' && initialValues?.id) {
-    //     await updateRoleMutation.mutateAsync(formData)
-    //     queryClient.invalidateQueries(['roles'])
-    //   }
-    //   form.reset()
-    //   onSuccess?.()
-    // } catch (err) {
-    //   console.error(`${mode === 'create' ? 'Create' : 'Update'} role error:`, err)
-    //   if (err && typeof err === 'object' && 'response' in err) {
-    //     const axiosError = err as { response?: { data?: { error: string; message: string } } }
-    //     const errorData = axiosError.response?.data
-    //     if (errorData) {
-    //       setError({
-    //         title: errorData.error,
-    //         message: errorData.message,
-    //       })
-    //     }
-    //   }
-    // }
+  const onSubmit = async (values: any) => {
+    const isValueSame = config?.value === values.value
+    const isListValueSame =
+      Array.isArray(config?.listValue) &&
+      Array.isArray(values.listValue) &&
+      config.listValue.length === values.listValue.length &&
+      config.listValue.every((value: any, index: any) => value === values.listValue[index])
+
+    if (config?.value && isValueSame && config?.listValue && isListValueSame) {
+      console.log('Close....')
+      onClose?.()
+      return
+    }
+
+    console.log('reach:....')
+    try {
+      setError(null)
+      const formData = { ...values }
+
+      await updateConfigMutation.mutateAsync(formData)
+      queryClient.invalidateQueries(['configurations'])
+
+      form.reset()
+      onSuccess?.()
+    } catch (err) {
+      console.error(` 'Update configuration error:`, err)
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response?: { data?: { error: string; message: string } } }
+        const errorData = axiosError.response?.data
+        if (errorData) {
+          setError({
+            title: errorData.error,
+            message: errorData.message,
+          })
+        }
+      }
+    }
+  }
+
+  // Function to add new value to listValue array
+  const addNewValue = () => {
+    const currentList = form.getValues('listValue') || []
+    form.setValue('listValue', [...currentList, ''])
   }
 
   return (
@@ -133,7 +141,7 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
         </div>
       </div>
 
-      {/* <Form {...form}>
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 flex flex-col gap-3">
           {error && (
             <Alert variant="error" tone="filled">
@@ -145,19 +153,19 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
           <Grid cols={2} gap="gap-2">
             <FlexBox direction="col" className="w-full">
               <Text className="flex items-center text-sm font-medium text-neutral-700">
-                Configuration Title <span className="font-bold text-red-500">*</span>
+                Configuration Title
                 <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
-                name="name"
+                name="title"
                 render={({ field, fieldState }) => (
                   <FormItem className="w-full">
                     <FormControl className="w-full">
                       <Input
                         state={fieldState.error ? 'error' : 'default'}
                         className="w-full"
-                        placeholder="Feeding schedule"
+                        disabled={true}
                         {...field}
                       />
                     </FormControl>
@@ -169,19 +177,19 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
 
             <FlexBox direction="col">
               <Text className="flex items-center text-sm font-medium text-neutral-700">
-                Key (Read-only) <span className="font-bold text-red-500">*</span>
+                Key (Read-only)
                 <SolarIconSet.QuestionCircle size={16} />
               </Text>
               <FormField
                 control={form.control}
-                name="name"
+                name="key"
                 render={({ field, fieldState }) => (
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
                         state={fieldState.error ? 'error' : 'default'}
                         className="w-full"
-                        placeholder="Enter last name"
+                        disabled={true}
                         {...field}
                       />
                     </FormControl>
@@ -193,7 +201,7 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
           </Grid>
 
           <Text className="flex items-center text-sm font-medium text-neutral-700">
-            Description <span className="font-bold text-red-500">*</span>
+            Description
             <SolarIconSet.QuestionCircle size={16} />
           </Text>
           <FormField
@@ -216,7 +224,7 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
                 <div
                   className={`rounded-[4rem] border border-info-500 bg-info-100 px-2 py-1 text-center text-sm capitalize text-info-500`}
                 >
-                  List
+                  {config?.type}
                 </div>
               </FlexBox>
               <FlexBox direction="row">
@@ -229,42 +237,55 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
               </FlexBox>
             </FlexBox>
 
-            <Heading level={6} className="text-lg font-semibold text-neutral-800">
+            <Heading level={6} className="mt-6 text-lg font-semibold text-neutral-800">
               Current Value
             </Heading>
             <FlexBox direction="col">
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input placeholder="Description" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input placeholder="Description" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Render single value field if config has value */}
+              {config?.value && (
+                <FormField
+                  control={form.control}
+                  name="value"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input placeholder="value" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-              <button
-                // onClick={() => openAddModal(config.id)}
-                className="col-span-2 flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-neutral-200 py-2 hover:bg-hover"
-              >
-                <SolarIconSet.AddSquare color="black" size={14} iconStyle="Outline" />
-                <Heading level={6}>Add another</Heading>
-              </button>
+              {/* Render list of values if config has listValue */}
+              {config?.listValue[0] !== '' && Array.isArray(config.listValue) && (
+                <>
+                  {form.watch('listValue')?.map((value, index) => (
+                    <FormField
+                      key={index}
+                      control={form.control}
+                      name={`listValue.${index}`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormControl>
+                            <Input placeholder={`Value ${index + 1}`} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+
+                  <button
+                    type="button" // Important to prevent form submission
+                    onClick={addNewValue}
+                    className="col-span-2 flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-neutral-200 py-2 hover:bg-hover"
+                  >
+                    <SolarIconSet.AddSquare color="black" size={14} iconStyle="Outline" />
+                    <Heading level={6}>Add another</Heading>
+                  </button>
+                </>
+              )}
             </FlexBox>
           </div>
 
@@ -278,20 +299,20 @@ export function EditConfigForm({ mode, initialValues, onSuccess, onClose }: Role
               className="flex items-center gap-2"
               disabled={!form.formState.isValid}
             >
-              {useCreateRoleMutation.isLoading || updateRoleMutation.isLoading ? (
+              {/* {useCreateRoleMutation.isLoading || updateRoleMutation.isLoading ? (
                 <>
                   <Loader type="spinner" size={18} />
                   <Text>{mode === 'create' ? 'Creating...' : 'Updating...'}</Text>
                 </>
-              ) : (
-                <>
-                  <Text>{mode === 'create' ? 'Save' : 'Update'}</Text>
-                </>
-              )}
+              ) : ( */}
+              <>
+                <Text>Save</Text>
+              </>
+              {/* )} */}
             </Button>
           </FlexBox>
         </form>
-      </Form> */}
+      </Form>
     </>
   )
 }

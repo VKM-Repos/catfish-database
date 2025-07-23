@@ -30,7 +30,13 @@ export function ActionsDropdown({ config }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.system.configuration.edit(config.id))}>
+          <DropdownMenuItem
+            onClick={() =>
+              navigate(paths.dashboard.system.configuration.edit(config.id), {
+                state: { config },
+              })
+            }
+          >
             Edit
           </DropdownMenuItem>
         </DropdownMenuContent>

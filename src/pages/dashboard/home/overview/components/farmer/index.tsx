@@ -7,6 +7,7 @@ import CostBreakdownOverview from './cost-breakdown-overview'
 import DashboardMenu from './dashboard-menu'
 import MegaDatePicker, { DateRange } from 'src/components/ui/mega-datepicker'
 import { useState } from 'react'
+import FcrOverall from './fcr.overall'
 
 export default function FarmerDashboardOverview() {
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -24,6 +25,7 @@ export default function FarmerDashboardOverview() {
       </div>
       <FarmOverviewStatistics dateRange={dateRange} />
       <GrowthFeedingPerformance dateRange={dateRange} />
+      <FcrOverall dateRange={dateRange} />
       <FlexBox direction="row" justify="between" className="my-10">
         <StockingHarvestOverview dateRange={dateRange} />
         <CostBreakdownOverview dateRange={dateRange} />

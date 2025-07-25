@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 's
 
 import { feedTypeResponseSchema, feedTypeCreateSchema, feedTypeEditSchema } from 'src/schemas'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { scrollToTop } from 'src/lib/utils'
+import { scrollToTop, cn } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 import DatePicker from 'src/components/ui/datepicker'
@@ -132,6 +132,32 @@ export default function FeedStockForm({
 
   // Hide Feed Type and Pellet Size if initialValues is present (i.e., opened from Add action)
   const hideFeedTypeAndPelletSize = Boolean(initialValues)
+
+  const NairaIcon1 = (
+    <span
+      className={cn(
+        'mr-1 flex h-full w-full items-center justify-center rounded-l-md  border-r border-neutral-200 bg-neutral-100 text-neutral-400',
+      )}
+    >
+      <Text>₦</Text>
+    </span>
+  )
+  const NairaIcon2 = (
+    <span
+      className={cn(
+        'mr-1 flex h-full w-full items-center justify-center rounded-l-md  border-r border-neutral-200 text-neutral-400',
+      )}
+    >
+      <Text>₦</Text>
+    </span>
+  )
+  const KgIcon = (
+    <span className=" flex h-full w-full items-center justify-center rounded-r-md border-l border-neutral-200 bg-neutral-100 text-neutral-400">
+      <Text variant="body" size="base">
+        Kg
+      </Text>
+    </span>
+  )
 
   return (
     <Form {...form}>
@@ -246,6 +272,8 @@ export default function FeedStockForm({
                     <FormControl>
                       <div className="w-full">
                         <Input
+                          icon={KgIcon}
+                          iconPosition="right"
                           placeholder="Input quantity in kg"
                           {...field}
                           value={field.value ?? ''}
@@ -305,6 +333,8 @@ export default function FeedStockForm({
                     <FormControl>
                       <div className="w-full">
                         <Input
+                          icon={NairaIcon1}
+                          iconPosition="left"
                           placeholder="Input cost of feed"
                           {...field}
                           value={field.value ?? ''}
@@ -342,7 +372,14 @@ export default function FeedStockForm({
                   <FormItem className="w-full !space-y-0">
                     <FormControl>
                       <div className="w-full">
-                        <Input placeholder="0" {...field} className="bg-neutral-200 !text-black" disabled />
+                        <Input
+                          icon={NairaIcon2}
+                          iconPosition="left"
+                          placeholder="0"
+                          {...field}
+                          className=" border-neutral-300 bg-neutral-200 !text-black"
+                          disabled
+                        />
                       </div>
                     </FormControl>
                     <div className={`relative min-h-fit`}>

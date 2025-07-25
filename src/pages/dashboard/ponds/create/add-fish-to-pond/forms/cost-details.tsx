@@ -4,15 +4,28 @@ import * as SolarIconSet from 'solar-icon-set'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) {
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <SolarIconSet.QuestionCircle size={16} />
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
   return (
     <FlexBox gap="gap-4" align="center" className="w-full flex-col md:flex-row">
       <FlexBox gap="gap-2" direction="col" className="w-full">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
           Cost of fish per unit
           <span className="gap-2 font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <FormTooltip text="Enter the price per fish in Naira. This will be used to calculate your total fish cost." />
         </Text>
         <FormField
           control={form.control}
@@ -42,7 +55,7 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
           Total Cost
           <span className="gap-2 font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <FormTooltip text="This is the total amount spent on purchasing the fish. It is calculated by multiplying the quantity by the unit cost." />
         </Text>
         <FormField
           control={form.control}

@@ -25,6 +25,7 @@ import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 import DatePicker from 'src/components/ui/datepicker'
 import { AvailableFeedTypes, PelletSizes } from 'src/lib/constants'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 type FeedingTypeData = z.infer<typeof feedTypeCreateSchema> | z.infer<typeof feedTypeEditSchema>
 
@@ -133,6 +134,19 @@ export default function FeedStockForm({
   // Hide Feed Type and Pellet Size if initialValues is present (i.e., opened from Add action)
   const hideFeedTypeAndPelletSize = Boolean(initialValues)
 
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <SolarIconSet.QuestionCircle size={16} />
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
   const NairaIcon1 = (
     <span
       className={cn(
@@ -170,7 +184,7 @@ export default function FeedStockForm({
                 <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                   Feed Type
                   <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
+                  <FormTooltip text="Enter the name or brand of the feed, e.g., Skretting, Top Feed, etc." />
                 </Text>
                 <FormField
                   control={form.control}
@@ -225,7 +239,7 @@ export default function FeedStockForm({
                 <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                   Pellet size
                   <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
+                  <FormTooltip text="Select the size of the feed pellets in millimeters (e.g., 2mm, 3mm). This affects what fish size can eat it." />
                 </Text>
                 <FormField
                   control={form.control}
@@ -262,7 +276,7 @@ export default function FeedStockForm({
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Feed Quantity
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                <FormTooltip text="Enter the total quantity of feed available in kilograms (kg)." />
               </Text>
               <FormField
                 control={form.control}
@@ -304,7 +318,7 @@ export default function FeedStockForm({
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Date
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                <FormTooltip text="Select the date when this feed batch was added to the inventory." />
               </Text>
               <FormField
                 control={form.control}
@@ -324,6 +338,7 @@ export default function FeedStockForm({
                 {' '}
                 Total cost (₦)
                 <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="Enter the total amount you spent on this feed batch in naira." />
               </Text>
               <FormField
                 control={form.control}
@@ -364,6 +379,7 @@ export default function FeedStockForm({
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Cost per kg (₦)
                 <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="This value is automatically calculated by dividing the total cost by the feed quantity." />
               </Text>
               <FormField
                 control={form.control}

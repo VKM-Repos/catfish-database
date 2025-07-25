@@ -4,14 +4,27 @@ import * as SolarIconSet from 'solar-icon-set'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 export default function SupplierInfoForm({ form }: { form: UseFormReturn<any> }) {
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <SolarIconSet.QuestionCircle size={16} />
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
   return (
     <FlexBox direction="col" gap="gap-2" className="w-full">
       <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
         Supplier
         <span className="gap-2 font-bold text-red-500">*</span>
-        <SolarIconSet.QuestionCircle size={16} />
+        <FormTooltip text="The name of the farm or company that supplied the fish." />
       </Text>
       <FormField
         control={form.control}

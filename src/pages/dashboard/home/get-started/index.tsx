@@ -46,7 +46,7 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
         </div>
       </CardContent>
       <CardFooter className="flex-none">
-        <Button className="mx-auto w-fit" onClick={buttonAction} variant={isFirstCard ? 'primary' : 'outline'}>
+        <Button className="mx-auto w-fit" onClick={buttonAction} variant={'primary'}>
           {buttonText}
         </Button>
       </CardFooter>

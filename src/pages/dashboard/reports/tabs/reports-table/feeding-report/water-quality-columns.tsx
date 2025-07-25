@@ -10,9 +10,9 @@ export const waterQualityColumns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{formatDate(row.original.createdAt)}</Text>,
   },
   {
-    accessorKey: 'time',
+    accessorKey: 'createdAt',
     header: 'Time',
-    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.time)}</Text>,
+    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'dissolvedOxygen',

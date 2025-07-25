@@ -8,8 +8,7 @@ import { Text } from 'src/components/ui/text'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { paths } from 'src/routes'
+import { useParams } from 'react-router-dom'
 import { CreateReportDialog } from '../../modals/create-report-modal'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -35,6 +34,7 @@ import { useFishSamplingStore } from 'src/store/fish-sampling.store'
 import { useWaterQualityStore } from 'src/store/water-quality-store'
 import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { useFishDiseaseStore } from 'src/store/fish-disease-store'
+import { useFarmerReportStore } from 'src/store/farmer-report-store'
 
 const initialValues = {
   feedType: '',
@@ -43,12 +43,15 @@ const initialValues = {
   feedTime: '',
 }
 
-export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
-  const navigate = useNavigate()
+export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
+
   const { selectedDate, setSelectedDate, setCombineDateTime } = useDateStore()
+  const { farmerIdForDailyReport } = useFarmerReportStore()
+  console.log(farmerIdForDailyReport, '^^^^^')
+
   const {
     formData,
     activeInputs,
@@ -210,7 +213,12 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
     resetFishBehavior()
     resetFishDisease()
     resetStepper()
-    navigate(paths.dashboard.home.getStarted)
+    handlePrevious?.()
+    // if (from) {
+    //   navigate(paths.dashboard.reports.root)
+    // } else {
+    //   navigate(paths.dashboard.home.getStarted)
+    // }
   }
   return (
     <>
@@ -462,52 +470,6 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
                     />
                   </div>
                 </div>
-
-                {/* <div className="flex w-[32%] flex-col gap-2">
-                  <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                    Enter the Feeding Time <span className="font-bold text-red-500">*</span>
-                    <SolarIconSet.QuestionCircle size={16} />
-                  </Text>
-                  <FormField
-                    control={form.control}
-                    name="feedTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div
-                            className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border ${
-                              activeInputs.feedTime ? 'bg-primary-100' : ''
-                            } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
-                          >
-                            <div className="w-full">
-                              <Input
-                                data-placeholder={'Select Time'}
-                                type="time"
-                                {...field}
-                                onChange={(e) => {
-                                  field.onChange(e.target.value)
-                                  handleInputChange('feedTime', e.target.value)
-                                  setFormData({ feedTime: e.target.value })
-                                }}
-                                ref={timeInputRef}
-                                className="md:text-md text-md !w-full border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden"
-                              />
-                            </div>
-                            <div
-                              className={`h-10 cursor-pointer rounded-br-md rounded-tr-md px-3 py-[.65rem] text-xs ${
-                                activeInputs.feedTime ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-400'
-                              }`}
-                              onClick={handleIconClick}
-                            >
-                              <SolarIconSet.ClockCircle />
-                            </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div> */}
               </div>
             )}
           </div>
@@ -516,16 +478,15 @@ export function DailyFeeding({ handleNext }: { handleNext?: () => void }) {
             <Button variant={'outline'} onClick={() => handleGoBack()}>
               Back
             </Button>
-            {recordDailyFeeding && (
+
+            {reportId && recordDailyFeeding && (
               <Button disabled={createDailyFeeding.isLoading || updateDailyFeeding.isLoading} type="submit">
                 {reportId ? 'Update' : 'Continue'}
               </Button>
             )}
-            {!recordDailyFeeding && (
-              <Button disabled={!form.getValues('feedTime')} type="button" onClick={handleNext}>
-                Continue
-              </Button>
-            )}
+            <Button onClick={handleNext} type="button">
+              Continue
+            </Button>
           </div>
         </form>
       </Form>

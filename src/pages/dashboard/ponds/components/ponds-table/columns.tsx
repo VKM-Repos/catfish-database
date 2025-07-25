@@ -64,7 +64,7 @@ export const columns: ColumnDef<PondData>[] = [
     },
   },
   {
-    accessorKey: 'quantity',
+    accessorKey: 'latestQuantity',
     header: 'Fish Quantity',
     cell: ({ row }) => {
       const quantity = row.original.quantity
@@ -80,16 +80,11 @@ export const columns: ColumnDef<PondData>[] = [
       )
     },
   },
-  {
-    accessorKey: 'weight',
-    header: 'Average Weight',
-    cell: ({ row }) => <Text weight="light">{row.original.weight ?? '—'}</Text>,
-  },
-  {
-    accessorKey: 'lastSampled',
-    header: 'Last Sampled',
-    cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
-  },
+  // {
+  //   accessorKey: 'lastSampled',
+  //   header: 'Last Sampled',
+  //   cell: ({ row }) => <Text weight="light">{row.original.lastSampled ?? '—'}</Text>,
+  // },
   {
     accessorKey: 'size',
     header: 'Pond Size',

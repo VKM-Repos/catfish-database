@@ -229,7 +229,7 @@ function FilterPill({ label, value, onRemove }: { label: string; value: any; onR
 
 export function DataTable<TData>({
   columns,
-  data,
+  data = [],
   isLoading = false,
   emptyStateMessage = 'No results found',
   search = true,
@@ -299,7 +299,7 @@ export function DataTable<TData>({
       totalElements,
       totalPages: Math.max(1, totalPages),
     }
-  }, [pagination, data.length])
+  }, [pagination, data])
 
   // Update current page input when pagination changes
   React.useEffect(() => {
@@ -341,9 +341,19 @@ export function DataTable<TData>({
     return filtered
   }, [data, debouncedSearchValue, appliedInternalFilters, filterConfigs])
 
+  // Client-side pagination: slice filteredData for current page
+  const paginatedData = React.useMemo(() => {
+    if (!enablePagination) return filteredData
+    const page = pagination ? Math.max(1, pagination.page || 1) : 1
+    const size = pagination ? Math.max(1, pagination.size || 10) : 10
+    const start = (page - 1) * size
+    const end = start + size
+    return filteredData.slice(start, end)
+  }, [filteredData, enablePagination, pagination])
+
   // Table configuration
   const table = useReactTable({
-    data: filteredData, // Use filteredData for the table
+    data: paginatedData, // Use paginatedData for the table
     columns,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -480,8 +490,8 @@ export function DataTable<TData>({
                   className="w-[360px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
                   placeholder={searchPlaceholder}
                   value={internalSearchValue}
-                  // onChange={(e) => setInternalSearchValue(e.target.value)}
-                  onChange={(e) => console.log(e.target.value)}
+                  onChange={(e) => setInternalSearchValue(e.target.value)}
+                  // onChange={(e) => console.log(e.target.value)}
                 />
               </div>
             </div>

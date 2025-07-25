@@ -6,7 +6,7 @@ import { paths } from 'src/routes'
 type CreateReportDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  resetForm: () => void
+  resetForm?: () => void
 }
 
 export function UpdateReportDialog({ open, onOpenChange, resetForm }: CreateReportDialogProps) {

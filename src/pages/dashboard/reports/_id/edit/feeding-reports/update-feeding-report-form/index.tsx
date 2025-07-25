@@ -7,7 +7,7 @@ import { Text } from 'src/components/ui/text'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -21,7 +21,6 @@ import {
 } from 'src/components/ui/select'
 import { useDailyFeedingStore } from 'src/store/daily-feeding-store'
 import { ClientErrorType, ServerErrorType } from 'src/types'
-import { useDateStore } from 'src/store/report-date-store'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { UpdateReportDialog } from '../../components/update-report-dialog'
@@ -34,7 +33,7 @@ const initialValues = {
   feedTime: '',
 }
 
-export function UpdateFeedingReportForm({ handleNext }: { handleNext?: () => void }) {
+export function UpdateFeedingReportForm() {
   const navigate = useNavigate()
   const location = useLocation()
   const queryClient = useQueryClient()
@@ -49,8 +48,6 @@ export function UpdateFeedingReportForm({ handleNext }: { handleNext?: () => voi
   const [combinedDateTime, setCombinedDateTime] = useState(location.state.report.time + '.000Z')
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
-  const { id } = useParams<{ id: string }>()
-  const { selectedDate, setSelectedDate, setCombineDateTime } = useDateStore()
   const { activeInputs, setFormData, setActiveInput, reset: resetStore, reportId } = useDailyFeedingStore()
   const [recordDailyFeeding, setRecordDailyReport] = useState(true)
 
@@ -144,13 +141,7 @@ export function UpdateFeedingReportForm({ handleNext }: { handleNext?: () => voi
     resetStore()
     form.reset(initialValues)
   }
-  const handleSwitchChange = (checked: boolean) => {
-    setRecordDailyReport(checked)
-    // Reset form when switch is turned off
-    if (!checked) {
-      reset()
-    }
-  }
+
   const handleGoBack = () => {
     navigate(`${paths.dashboard.reports.root}`)
   }

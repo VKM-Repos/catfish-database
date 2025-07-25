@@ -19,6 +19,7 @@
     "downlevelIteration": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true, // ✅ ADD THIS LINE
     "experimentalDecorators": true,
     "baseUrl": ".",
     "rootDir": ".",

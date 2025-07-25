@@ -1,4 +1,3 @@
-import { Button } from 'src/components/ui/button'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
@@ -7,47 +6,43 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import MegaDatePicker, { DateRange } from 'src/components/ui/mega-datepicker'
 import { useMemo, useState } from 'react'
-
-const totalFishSchema = z.object({
-  availableFish: z.number(),
-  soldFish: z.number(),
-})
-
-const totalRevenueSchema = z.array(
-  z.object({
-    intervalLabel: z.string(),
-    totalRevenue: z.number(),
-  }),
-)
-
-const averageWeightSchema = z.array(
-  z.object({
-    intervalLabel: z.string(),
-    totalWeight: z.number(),
-    totalRevenue: z.number(),
-    totalQuantity: z.number(),
-    averageSellingPrice: z.number(),
-    averageFishWeight: z.number(),
-  }),
-)
-
-const survivalRateSchema = z.array(
-  z.object({
-    intervalLabel: z.string(),
-    mortalityRate: z.number(),
-    survivalRate: z.number(),
-  }),
-)
+import {
+  averageWeightSchema,
+  survivalRateSchema,
+  totalFishSchema,
+  totalRevenueSchema,
+} from 'src/schemas/clusterFarmerSchema'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
+import { useAuthStore } from 'src/store/auth.store'
 
 interface FarmStatisticsProps {
   farmerId: string
 }
 
 export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
+  const { user } = useAuthStore()
+
+  const useFetchClusterManFarmerPonds = createGetQueryHook({
+    endpoint: `/ponds/clusters/me`,
+    responseSchema: z.any(),
+    queryKey: ['all-ponds'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
+  })
+
+  const args = { query: { farmerId: farmerId } }
+
+  const { data: farmerPonds, isLoading: farmerPondsIsLoading } = useFetchClusterManFarmerPonds(args)
+
+  console.log('farmerPonds overvie: ', farmerPonds)
+
   const [dateRange, setDateRange] = useState<DateRange>({
     from: new Date(2020, 0, 1), // Default to "All Time"
     to: new Date(),
   })
+
+  const [selectedPond, setSelectedPond] = useState<string | null>(null)
 
   const useGetTotalFish = createGetQueryHook({
     endpoint: '/dashboards/cluster/fish-availability?farmerId=:id',
@@ -65,11 +60,11 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
     responseSchema: averageWeightSchema,
     queryKey: ['average-weight'],
   })
-  // const useGetFeedTotal = createGetQueryHook({
-  //   endpoint: '/dashboards/farmer/feed/total?interval=ALL',
-  //   responseSchema: feedTotalSchema,
-  //   queryKey: ['feed-total'],
-  // })
+  const useFeedConvRatio = createGetQueryHook({
+    endpoint: '/dashboards/cluster/fcr/overall',
+    responseSchema: z.any(),
+    queryKey: ['fcr'],
+  })
   const useGetSurvivalRate = createGetQueryHook({
     endpoint: '/dashboards/cluster/mortality-rate/overall?interval=ALL&farmerId=:id',
     responseSchema: survivalRateSchema,
@@ -79,73 +74,98 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
   const { data: totalFish, isLoading: totFisIsLoading } = useGetTotalFish({ route: { id: farmerId } })
   const { data: totalRevenue, isLoading: totRevIsLoading } = useGetRevenueTotal({ route: { id: farmerId } })
   const { data: averageWeight, isLoading: averWeigIsLoading } = useGetAverageWeight({ route: { id: farmerId } })
+  const { data: fcrData, isLoading: fcrDataIsLoading } = useFeedConvRatio({
+    query: {
+      interval: 'MONTHLY',
+      farmerId: farmerId,
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
   const { data: survivalRate, isLoading: surRaIsLoading } = useGetSurvivalRate({ route: { id: farmerId } })
 
+  // console.log("fcrData card: ",fcrData)
   const handleDateRangeChange = (newRange: DateRange) => {
     setDateRange(newRange)
     // You can add additional logic here to refetch data with the new date range
     // For example, update query parameters or trigger data refresh
   }
-  console.log('totalFish: ', totalFish?.availableFish)
-  console.log('totalRevenue: ', totalRevenue?.[0]?.totalRevenue)
-  console.log('averageWeight: ', averageWeight)
-  console.log('survivalRate: ', survivalRate?.[0]?.survivalRate)
+
+  // Format number with commas and abbreviations (k, m, b)
+  function formatNumber(value: number | string | undefined): string {
+    if (value === undefined || value === null) return '0'
+    const num = typeof value === 'string' ? parseFloat(value) : value
+    if (isNaN(num)) return '0'
+    if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(num % 1_000_000_000 === 0 ? 0 : 1) + 'b'
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1) + 'm'
+    if (num >= 100_000) return (num / 1_000).toFixed(num % 1_000 === 0 ? 0 : 1) + 'k'
+    return num.toLocaleString()
+  }
 
   const farmStatCards = useMemo(() => {
     return [
       {
         color: '#F1A8D3',
         label: 'Total fish in farm',
-        value: `${totalFish?.availableFish}`,
+        value: totFisIsLoading ? '...' : formatNumber(totalFish?.availableFish),
         rate: '+2.4%',
       },
       {
         color: '#BCADFB',
         label: 'Total revenue generated',
-        value: `N ${totalRevenue?.[0]?.totalRevenue}`,
+        value: totRevIsLoading ? '...' : `₦ ${formatNumber(totalRevenue?.[0]?.totalRevenue)}`,
         rate: '+0%',
       },
       {
         color: '#B9D9FF',
         label: 'Average weight',
-        value: `${averageWeight && averageWeight.length > 0 ? averageWeight[0]?.averageFishWeight : 0}g`,
+        value: averWeigIsLoading
+          ? '...'
+          : `${averageWeight && averageWeight.length > 0 ? averageWeight[0]?.averageFishWeight.toFixed(2) : 0}g`,
         rate: '-2.4%',
       },
       {
         color: '#F8D082',
         label: 'Feed conversion ration',
-        // value: `${(averageWeight && averageWeight.length > 0 ? averageWeight[0]?.averageFishWeight : 0)}kg`,
-        value: `354kg`,
+        value: fcrDataIsLoading
+          ? '...'
+          : `${formatNumber(fcrData && fcrData.length > 0 ? fcrData[fcrData.length - 1].totalFeedConsumed : 0)}kg`,
         rate: '+2.4%',
       },
       {
         color: '#A0E8B9',
         label: 'Survival rate',
-        value: `${survivalRate?.[0]?.survivalRate}%`,
+        value: surRaIsLoading ? '...' : `${survivalRate?.[0]?.survivalRate || 0}%`,
         // value: `${70}%`,
         rate: '+2.4%',
       },
     ]
-  }, [])
+  }, [totFisIsLoading, totRevIsLoading, averWeigIsLoading, surRaIsLoading, fcrDataIsLoading])
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Text className="w-full text-xl font-semibold text-neutral-700">Farm Statistics</Text>
-        <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="w-auto" />
+        <Text className="flex-1 text-xl font-semibold text-neutral-700">Farm Statistics</Text>
+        <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="flex-1 " />
       </FlexBox>
       <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Button
-          size="lg"
-          variant="outline"
-          className=" flex items-center justify-between gap-4 rounded-sm border border-neutral-200 text-neutral-500"
-        >
-          <SolarIconSet.Home color="currentColor" size={20} iconStyle="Outline" />
-          <Text size="sm" weight="light">
-            All Clusters
-          </Text>
-          <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Bold" />
-        </Button>
+        <div>
+          <Select value={selectedPond || ''} onValueChange={(value) => setSelectedPond(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select pond" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem key={'ALL'} value={'ALL'}>
+                All
+              </SelectItem>
+              {farmerPonds?.content?.map((pond: any) => (
+                <SelectItem key={pond.id} value={pond.name}>
+                  {pond.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </FlexBox>
 
       <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-5">

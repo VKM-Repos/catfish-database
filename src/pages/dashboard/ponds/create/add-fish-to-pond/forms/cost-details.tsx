@@ -4,7 +4,11 @@ import * as SolarIconSet from 'solar-icon-set'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
+
+import { formatCurrency } from 'src/lib/utils'
+
 
 export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) {
   const FormTooltip = ({ text }: { text: string }) => {
@@ -38,7 +42,11 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
                   <div className="w-full">
                     <Input
                       placeholder="Amount in naira"
-                      {...field}
+                      value={formatCurrency(field.value)}
+                      onChange={(e) => {
+                        const rawValue = e.target.value.replace(/[^0-9]/g, '')
+                        field.onChange(rawValue)
+                      }}
                       className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
@@ -68,6 +76,7 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
                   <div className="w-full">
                     <Input
                       {...field}
+                      value={formatCurrency(field.value)}
                       placeholder="Amount in naira"
                       className="!w-full border-0 px-3 text-sm !text-black focus-visible:ring-0 focus-visible:ring-offset-0"
                       disabled

@@ -4,42 +4,70 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import StatsCard from './stats-card'
 import { formatNumberWithCommas } from 'src/lib/utils'
-
-export default function FarmOverviewStatistics() {
+type DateRange = { from: Date; to: Date }
+interface FarmOverviewStatisticsProps {
+  dateRange?: DateRange
+}
+export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatisticsProps) {
   const useGetUserStatusCount = createGetQueryHook({
     endpoint: '/dashboards/super-admin/user-status-count',
     responseSchema: z.any(),
     queryKey: ['user-status-count-cluster-manager'],
   })
-  const { data: userStatus } = useGetUserStatusCount()
+  const { data: userStatus } = useGetUserStatusCount({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useGetRegisteredPond = createGetQueryHook({
     endpoint: '/dashboards/cluster/pond-count',
     responseSchema: z.any(),
     queryKey: ['production-cost-overall'],
   })
-  const { data: registeredPonds } = useGetRegisteredPond()
+  const { data: registeredPonds } = useGetRegisteredPond({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useGetAvailableFish = createGetQueryHook({
     endpoint: '/dashboards/cluster/fish-availability',
     responseSchema: z.any(),
     queryKey: ['available-stocked-fish-cluster-manager'],
   })
-  const { data: availableStock } = useGetAvailableFish()
+  const { data: availableStock } = useGetAvailableFish({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useGetRevenue = createGetQueryHook({
     endpoint: '/dashboards/cluster/revenue/overall?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['roi-overall-cluster-manager'],
   })
-  const { data: totalRevenue } = useGetRevenue()
+  const { data: totalRevenue } = useGetRevenue({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useGetMortality = createGetQueryHook({
     endpoint: '/dashboards/cluster/mortality-rate/overall?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['mortality-cluster-manager'],
   })
-  const { data: mortality } = useGetMortality()
+  const { data: mortality } = useGetMortality({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
   // 3. Check loading/error states
 
   // if (isLoading) return <div>Loading...</div>

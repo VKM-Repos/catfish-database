@@ -10,55 +10,60 @@ export default function ConfigurationTable() {
     responseSchema: paginatedConfigResponseSchema,
     queryKey: ['configurations'],
   })
-  // const { data: confis, isLoading } = useGetConfigsLog()
-  const configs = [
-    {
-      id: '3434',
-      key: 'Feed Schedule',
-      listValue: ['Morning', 'Afternoon'],
-      type: 'List',
-      category: 'Feeding',
-      updatedAt: '2025-05-26T14:57:00.717336',
-    },
-    {
-      id: '3439',
+  const { data: configs, isLoading } = useGetConfigsLog()
+  // const configs = [
+  //   {
+  //     id: '3434',
+  //     key: 'Feed Schedule',
+  //     listValue: ['Morning', 'Afternoon'],
+  //     type: 'List',
+  //     category: 'Feeding',
+  //     updatedAt: '2025-05-26T14:57:00.717336',
+  //   },
+  //   {
+  //     id: '3439',
 
-      key: 'Water Temperature Range',
-      listValue: ['22-30C'],
-      type: 'Range',
-      category: 'Maintenance',
-      updatedAt: '2025-05-26T14:57:00.717336',
-    },
-    {
-      id: '3984',
+  //     key: 'Water Temperature Range',
+  //     listValue: ['22-30C'],
+  //     type: 'Range',
+  //     category: 'Maintenance',
+  //     updatedAt: '2025-05-26T14:57:00.717336',
+  //   },
+  //   {
+  //     id: '3984',
 
-      key: 'Default Password',
-      listValue: ['Password@111'],
-      type: 'Text',
-      category: 'Security',
-      updatedAt: '2025-05-26T14:57:00.717336',
-    },
-    {
-      id: '38964',
-      key: 'Reporting Frenquency',
-      listValue: ['Daily', 'Weekly', 'Monthly'],
-      type: 'Select',
-      category: 'Reporting',
-      updatedAt: '2025-05-26T14:57:00.717336',
-    },
-    {
-      id: '389344',
-      key: 'Notification Frenquency',
-      listValue: ['Daily', 'Weekly', 'Monthly'],
-      type: 'Select',
-      category: 'Notification',
-      updatedAt: '2025-05-26T14:57:00.717336',
-    },
-  ]
-  // console.log('confis: ', confis?.content)
+  //     key: 'Default Password',
+  //     listValue: ['Password@111'],
+  //     type: 'Text',
+  //     category: 'Security',
+  //     updatedAt: '2025-05-26T14:57:00.717336',
+  //   },
+  //   {
+  //     id: '38964',
+  //     key: 'Reporting Frenquency',
+  //     listValue: ['Daily', 'Weekly', 'Monthly'],
+  //     type: 'Select',
+  //     category: 'Reporting',
+  //     updatedAt: '2025-05-26T14:57:00.717336',
+  //   },
+  //   {
+  //     id: '389344',
+  //     key: 'Notification Frenquency',
+  //     listValue: ['Daily', 'Weekly', 'Monthly'],
+  //     type: 'Select',
+  //     category: 'Notification',
+  //     updatedAt: '2025-05-26T14:57:00.717336',
+  //   },
+  // ]
+  console.log('confis: ', configs?.content)
   return (
     <FlexBox direction="col" gap="gap-6" className="w-full">
-      <DataTable columns={columns} data={configs || []} isLoading={false} emptyStateMessage="No Configuration found" />
+      <DataTable
+        columns={columns}
+        data={configs?.content || []}
+        isLoading={isLoading}
+        emptyStateMessage="No Configuration found"
+      />
     </FlexBox>
   )
 }

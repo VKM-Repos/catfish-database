@@ -13,11 +13,13 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useAuthStore } from 'src/store/auth.store'
 import { Input } from 'src/components/ui/input'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDateStore } from 'src/store/report-date-store'
+import { useFarmerReportStore } from 'src/store/farmer-report-store'
 
 type FormValues = {
   date: string
+  farmerId: string
   pondId: string
 }
 
@@ -26,24 +28,26 @@ type ReportModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   redirect: string
+  from?: string
 }
 
-export function ReportModal({ title, open, redirect, onOpenChange }: ReportModalProps) {
+export function ReportModal({ title, open, redirect, onOpenChange, from }: ReportModalProps) {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const { selectedDate, setSelectedDate } = useDateStore()
   const timeInputRef = useRef<HTMLInputElement>(null)
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
+  const [filteredPonds, setFilteredPonds] = useState<any[]>([])
 
   const useGetPonds = createGetQueryHook({
-    endpoint: '/ponds/farmers/me',
+    endpoint: '/ponds/farmers/me?size=1000000&sortBy=DESC',
     responseSchema: z.any(),
-    queryKey: ['my-ponds'],
+    queryKey: ['my-ponds-farmer'],
     options: {
       enabled: user?.role === 'FARMER',
     },
   })
-
+  const { setFarmerIdForDailyReport } = useFarmerReportStore()
   const useGetPondByClusterManager = createGetQueryHook({
     endpoint: '/ponds/clusters/me',
     responseSchema: z.any(),
@@ -52,7 +56,16 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
       enabled: user?.role === 'CLUSTER_MANAGER',
     },
   })
+  const useGetFarmers = createGetQueryHook({
+    endpoint: '/users/farmers',
+    responseSchema: z.any(),
+    queryKey: ['farmers_for_cluster_manager_reports'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
+  })
   const { data: clustersManagerPonds = [], isLoading: isLoadingClustersManagerPonds } = useGetPondByClusterManager()
+  const { data: farmers = [], isLoading: isLoadingFarmers } = useGetFarmers()
   const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
 
   const today = new Date()
@@ -62,12 +75,47 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
   const currentDate = `${yyyy}-${mm}-${dd}`
 
   const form = useForm<FormValues>({
-    defaultValues: { pondId: '', date: selectedDate },
+    defaultValues: { pondId: '', farmerId: '', date: selectedDate },
     mode: 'onSubmit', // validate on submit
   })
   useEffect(() => {
     form.setValue('date', selectedDate)
   }, [selectedDate, form])
+  // Filter ponds based on selected farmer
+  const filterPondsByFarmer = useCallback(
+    (farmerId: string) => {
+      if (user?.role === 'FARMER') {
+        setFilteredPonds(ponds.content || [])
+        return
+      }
+
+      if (user?.role === 'CLUSTER_MANAGER') {
+        if (!farmerId) {
+          setFilteredPonds([])
+          return
+        }
+        const farmerPonds = clustersManagerPonds.content?.filter((pond: any) => pond?.farmer?.id === farmerId) || []
+        setFilteredPonds(farmerPonds)
+      }
+    },
+    [user?.role, ponds.content, clustersManagerPonds.content],
+  )
+
+  // Handle farmer selection change
+  const handleFarmerChange = useCallback(
+    (farmerId: string) => {
+      setFarmerIdForDailyReport(farmerId)
+      form.setValue('pondId', '') // Reset pond selection
+      filterPondsByFarmer(farmerId)
+    },
+    [filterPondsByFarmer, form],
+  )
+
+  // Watch farmerId changes
+  const farmerId = form.watch('farmerId')
+  useEffect(() => {
+    filterPondsByFarmer(farmerId)
+  }, [farmerId, filterPondsByFarmer])
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value
@@ -76,17 +124,22 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
     setActiveInputs((prev) => ({ ...prev, date: newDate !== '' }))
   }
   const handleProceed = (values: FormValues) => {
-    if (!values.pondId || !values.date) return
+    if ((!values.farmerId && user?.role === 'CLUSTER_MANAGER') || !values.pondId || !values.date) return
     if (values.pondId === 'add-pond') {
       return navigate(paths.dashboard.ponds.create.addPond)
     }
     // Perform action using values.pondId
     switch (redirect) {
       case 'daily-farm-report':
-        navigate(paths.dashboard.reports.createDailyFarmReport(values.pondId))
+        navigate(
+          paths.dashboard.reports.createDailyFarmReport(values.pondId) +
+            `${from !== undefined ? `'?from=${from}` : ''}`,
+        )
         break
       case 'daily-sampling-report':
-        navigate(paths.dashboard.reports.createSamplingReport(values.pondId))
+        navigate(
+          paths.dashboard.reports.createSamplingReport(values.pondId) + `${from !== undefined ? `'?from=${from}` : ''}`,
+        )
         break
       case 'daily-harvest-report':
         navigate(paths.dashboard.reports.createHarvestReport(values.pondId))
@@ -106,7 +159,7 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[350px] w-[650px] overflow-hidden p-4">
+      <DialogContent className="h-fit w-[650px] overflow-hidden p-4">
         <DialogHeader className="absolute flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
           <Heading level={6}>{title}</Heading>
           <DialogClose className="flex justify-end">
@@ -192,6 +245,53 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                 </FormItem>
               )}
             />
+            {user?.role === 'CLUSTER_MANAGER' && (
+              <FormField
+                control={form.control}
+                name="farmerId"
+                rules={{ required: 'Pond is required' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-start space-x-2 text-neutral-300">
+                      <Text>Farmer</Text>{' '}
+                      <SolarIconSet.QuestionCircle color="text-inherit" size={16} iconStyle="Outline" />
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(e) => {
+                          field.onChange(e)
+                          handleFarmerChange(e)
+                        }}
+                      >
+                        <SelectTrigger
+                          className={form.formState.errors.farmerId ? 'border-red-500 ring-2 ring-red-500' : ''}
+                        >
+                          <div className="flex items-center justify-center gap-3 text-neutral-300">
+                            <SolarIconSet.User color="text-inherit" size={24} iconStyle="Outline" />
+                            <SelectValue placeholder="Select a farmer" />
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {user?.role === 'CLUSTER_MANAGER' && isLoadingFarmers ? (
+                            <SelectItem value="loading" disabled>
+                              <Text>Loading farmers...</Text>
+                            </SelectItem>
+                          ) : (
+                            farmers?.content?.map((farmer: any) => (
+                              <SelectItem key={farmer.id} value={farmer.id}>
+                                {farmer.firstName} {farmer.lastName}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="pondId"
@@ -224,7 +324,7 @@ export function ReportModal({ title, open, redirect, onOpenChange }: ReportModal
                             </SelectItem>
                           ))
                         )}
-                        {clustersManagerPonds.content?.map((pond: unknown) => (
+                        {filteredPonds?.map((pond: unknown) => (
                           <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
                             {(pond as { name: string }).name}
                           </SelectItem>

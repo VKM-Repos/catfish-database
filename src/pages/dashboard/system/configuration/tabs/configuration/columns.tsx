@@ -3,7 +3,7 @@ import { Text } from 'src/components/ui/text'
 import { extractTimeFromISO, formatDate } from 'src/lib/date'
 import { ActionsDropdown } from './action-dropdown'
 
-const formatString = (key: string) => {
+export const formatString = (key: string) => {
   if (!key) return ''
   return key
     .replace(/_/g, ' ') // Replace underscores with space
@@ -28,7 +28,7 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const values = row.original?.listValue as any[]
 
-      if (values.length === 0) return '-'
+      // if (values.length === 0) return '-'
 
       // Slice first 4, rest is overflow
       const visibleChips = values.slice(0, 3)
@@ -36,18 +36,28 @@ export const columns: ColumnDef<any>[] = [
 
       return (
         <div className="flex flex-wrap items-center gap-2">
-          {visibleChips.map((chip, index) => (
-            <div
-              key={index}
-              className="rounded-[4rem] border border-neutral-200 bg-primary-100 px-2 py-1 text-sm capitalize text-primary-500"
-            >
-              {chip}
+          {row.original?.value && (
+            <div className="rounded-[4rem] border border-neutral-200 bg-primary-100 px-2 py-1 text-sm capitalize text-primary-500">
+              {row.original?.value}
             </div>
-          ))}
-          {remainingCount > 0 && (
-            <div className="rounded-[4rem] border border-neutral-200 bg-primary-100 px-2 py-1 text-sm text-primary-500">
-              +{remainingCount}
-            </div>
+          )}
+
+          {row.original?.listValue[0] !== '' && (
+            <>
+              {visibleChips.map((chip, index) => (
+                <div
+                  key={index}
+                  className="rounded-[4rem] border border-neutral-200 bg-primary-100 px-2 py-1 text-sm capitalize text-primary-500"
+                >
+                  {chip}
+                </div>
+              ))}
+              {remainingCount > 0 && (
+                <div className="rounded-[4rem] border border-neutral-200 bg-primary-100 px-2 py-1 text-sm text-primary-500">
+                  +{remainingCount}
+                </div>
+              )}
+            </>
           )}
         </div>
       )

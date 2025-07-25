@@ -17,7 +17,14 @@ export const fishDiseaseColumn: ColumnDef<any>[] = [
   {
     accessorKey: 'diseaseType',
     header: 'Disease Type',
-    cell: ({ row }) => <Text weight="light">{row.original?.diseaseType ?? '-'}</Text>,
+    cell: ({ row }) => (
+      <Text weight="light">
+        {row.original?.diseaseType
+          ?.toLowerCase()
+          .replace(/_/g, ' ')
+          .replace(/^\w/, (firstChar: string) => firstChar.toUpperCase()) ?? '-'}
+      </Text>
+    ),
   },
   {
     accessorKey: 'diseaseObservation',

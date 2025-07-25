@@ -23,7 +23,7 @@ export default function EditConfigPage() {
   return (
     <Dialog open>
       <DialogContent
-        className={`max-h-[80vh] max-w-[${step === 1 ? '600px' : '400px'}] overflow-hidden ${
+        className={`max-h-[90vh] max-w-[${step === 1 ? '600px' : '400px'}] overflow-hidden ${
           step === 1 ? 'overflow-y-scroll' : null
         } p-8`}
       >
@@ -38,7 +38,7 @@ export default function EditConfigPage() {
                   <div className="flex h-[3rem] w-full flex-col items-center justify-center space-y-4">
                     <Heading level={6}>Completed!</Heading>
                     <Text weight="light" size="base">
-                      Your role and permission settings have been saved
+                      Your configuration have been saved
                     </Text>
                     <Button variant="primary" onClick={handleClose}>
                       Continue

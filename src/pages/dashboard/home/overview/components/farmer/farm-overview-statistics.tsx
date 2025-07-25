@@ -2,37 +2,61 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Grid } from 'src/components/ui/grid'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
-import StatsCard from './stats-card'
+import StatsCard from '../cluster-manager/stats-card'
 import { formatNumberWithCommas } from 'src/lib/utils'
 
-export default function FarmOverviewStatistics() {
+type DateRange = { from: Date; to: Date }
+interface FarmOverviewStatisticsProps {
+  dateRange?: DateRange
+}
+export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatisticsProps) {
   const useGetRevenueOverall = createGetQueryHook({
     endpoint: '/dashboards/farmer/revenue/overall?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['revenue-overall'],
   })
-  const { data: revenueOverall } = useGetRevenueOverall()
+  const { data: revenueOverall } = useGetRevenueOverall({
+    // query: {
+    //   startDate: dateRange?.from?.toISOString().split('T')[0],
+    //   endDate: dateRange?.to?.toISOString().split('T')[0],
+    // },
+  })
 
   const useGetProductionCost = createGetQueryHook({
     endpoint: '/dashboards/farmer/production-cost/overall?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['production-cost-overall'],
   })
-  const { data: productionCost } = useGetProductionCost()
+  const { data: productionCost } = useGetProductionCost({
+    // query: {
+    //   startDate: dateRange?.from?.toISOString().split('T')[0],
+    //   endDate: dateRange?.to?.toISOString().split('T')[0],
+    // },
+  })
 
   const useGetGrossProfit = createGetQueryHook({
     endpoint: '/dashboards/farmer/gross-profit/overall?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['gross-profit-overall'],
   })
-  const { data: grossProfits } = useGetGrossProfit()
+  const { data: grossProfits } = useGetGrossProfit({
+    // query: {
+    //   startDate: dateRange?.from?.toISOString().split('T')[0],
+    //   endDate: dateRange?.to?.toISOString().split('T')[0],
+    // },
+  })
 
   const useGetRoi = createGetQueryHook({
     endpoint: '/dashboards/farmer/roi/overall?interval=ALL',
     responseSchema: z.any(),
     queryKey: ['roi-overall'],
   })
-  const { data: roiOverall } = useGetRoi()
+  const { data: roiOverall } = useGetRoi({
+    // query: {
+    //   startDate: dateRange?.from?.toISOString().split('T')[0],
+    //   endDate: dateRange?.to?.toISOString().split('T')[0],
+    // },
+  })
   // 3. Check loading/error states
 
   // if (isLoading) return <div>Loading...</div>

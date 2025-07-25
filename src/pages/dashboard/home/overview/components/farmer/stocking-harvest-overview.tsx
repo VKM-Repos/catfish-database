@@ -7,31 +7,41 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { Text } from 'src/components/ui/text'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
+type DateRange = { from: Date; to: Date }
 
-export default function StockingHarvestOverview() {
+interface StockingHarvestOverviewProps {
+  dateRange?: DateRange
+}
+export default function StockingHarvestOverview({ dateRange }: StockingHarvestOverviewProps) {
   const useGetStockingHarvestData = createGetQueryHook({
     endpoint: '/dashboards/farmer/fish-availability',
     responseSchema: z.any(),
-    queryKey: ['stocking-harvest-data'],
+    queryKey: [`stocking-harvest-data`],
   })
-  const { data: stockHarvestData } = useGetStockingHarvestData()
+  const { data: stockHarvestData } = useGetStockingHarvestData({
+    query: {
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
   const useMortalitySurvival = createGetQueryHook({
-    endpoint: '/dashboards/farmer/mortality-rate/overall?interval=ALL',
+    endpoint: '/dashboards/farmer/mortality-rate/overall',
     responseSchema: z.any(),
-    queryKey: ['mortality-survival-rate-overall'],
+    queryKey: [`mortality-survival-rate-overall`],
   })
-  const { data: mortalitySurvival } = useMortalitySurvival()
-  console.log(mortalitySurvival)
-
+  const { data: mortalitySurvival } = useMortalitySurvival({
+    query: {
+      interval: 'ALL',
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
   const chartData = [
     { reason: 'stocked', quantity: stockHarvestData?.availableFish, fill: '#9C27B0' },
     { reason: 'harvested', quantity: stockHarvestData?.soldFish, fill: '#FF9040' },
   ]
   const chartConfig = {
-    visitors: {
-      label: 'Visitors',
-    },
     stocked: {
       label: 'Stocked',
       color: '#9C27B0',
@@ -52,7 +62,7 @@ export default function StockingHarvestOverview() {
             <PieChart>
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent className="h-16 w-[100px] bg-black text-white" nameKey="reason" />}
+                content={<ChartTooltipContent className="h-16 w-full bg-black text-white" nameKey="reason" />}
               />
               <Pie width={250} height={250} data={chartData} dataKey="quantity" nameKey="reason" innerRadius={60} />
             </PieChart>

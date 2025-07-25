@@ -8,7 +8,7 @@ import {
 } from 'src/components/ui/dropdown-menu'
 import { useLocation } from 'react-router-dom'
 import { pondResponseType } from 'src/types/ponds.types'
-import UpdatePondPage from '../edit'
+
 import { useState } from 'react'
 
 type ActionsDropdownType = {
@@ -35,7 +35,6 @@ export default function ActionsDropdown({ pond }: ActionsDropdownType) {
           <DropdownMenuItem>Delete pond</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <UpdatePondPage />
     </>
   )
 }

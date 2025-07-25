@@ -17,12 +17,19 @@ export const fishBehaviorColumn: ColumnDef<any>[] = [
   {
     accessorKey: 'behaviorType',
     header: 'Behavior Type',
-    cell: ({ row }) => <Text weight="light">{row.original?.behaviorType ?? '-'}</Text>,
+    cell: ({ row }) => (
+      <Text weight="light">
+        {row.original?.behaviorType
+          .toLowerCase()
+          .replace(/_/g, ' ')
+          .replace(/^\w/, (firstChar: string) => firstChar.toUpperCase()) ?? '-'}
+      </Text>
+    ),
   },
   {
     accessorKey: 'behaviorTypeObservation',
     header: 'Observation',
-    cell: ({ row }) => <Text weight="light">{row.original?.behaviorTypeObservation ?? '-'}</Text>,
+    cell: ({ row }) => <Text weight="light">{row.original?.behaviorTypeObservation}</Text>,
   },
   {
     id: 'actions',

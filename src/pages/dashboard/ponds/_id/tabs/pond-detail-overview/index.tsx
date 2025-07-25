@@ -47,7 +47,7 @@ export default function PondDetailOverview() {
           : '',
     },
     { label: 'Location', value: pondInfo?.cluster.name },
-    { label: 'Created on', value: pondInfo?.createdAt ? formatDate(pondInfo.createdAt) : '' },
+    { label: 'Created on', value: pondInfo?.createdAt ? formatDate(pondInfo?.createdAt) : '' },
   ]
 
   const handleDateRangeChange = (newRange: DateRange) => {
@@ -80,7 +80,7 @@ export default function PondDetailOverview() {
       </FlexBox>
 
       <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3 text-sm">
-        {pond.map((item) => (
+        {pond?.map((item) => (
           <FlexBox key={item.label} gap="gap-2" direction="col">
             <Text variant="body" color="text-neutral-500" weight="semibold">
               {item.label}

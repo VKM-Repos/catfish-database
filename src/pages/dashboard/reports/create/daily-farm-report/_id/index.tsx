@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -17,15 +17,20 @@ import { FishDisease } from '../../../components/forms/fish-disease'
 import { Mortality } from '../../../components/forms/mortality'
 
 export default function CreateDailyFeedingReportPage() {
-  const { step, next, previous, setStep } = useStepperStore()
+  const { step, next, previous } = useStepperStore()
   const navigate = useNavigate()
-
+  const [searchParams] = useSearchParams()
+  const from = searchParams.get('from')
   const handleNext = () => {
     next()
     // setStep(step + 1)
   }
 
   const handlePrevious = () => {
+    if (from) {
+      navigate(paths.dashboard.reports.root)
+      return
+    }
     if (step === 1) {
       navigate(paths.dashboard.home.getStarted)
       return
@@ -36,7 +41,7 @@ export default function CreateDailyFeedingReportPage() {
   const RenderSteps = () => {
     switch (step) {
       case 1:
-        return <DailyFeeding handleNext={handleNext} />
+        return <DailyFeeding handleNext={handleNext} handlePrevious={handlePrevious} />
       case 2:
         return <WaterQuality handleNext={handleNext} handlePrevious={handlePrevious} />
       case 3:

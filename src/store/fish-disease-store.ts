@@ -14,8 +14,8 @@ interface FishDiseaseStore {
 }
 
 const initialValues: FishDiseaseFormData = {
-  disease: '',
-  observation: '',
+  diseaseType: '',
+  diseaseObservation: '',
 }
 export const useFishDiseaseStore = create<FishDiseaseStore>()(
   persist(

@@ -2,6 +2,10 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes/paths'
 import { UpdateFeedingReportForm } from './update-feeding-report-form'
+import { UpdateWaterQuality } from './water-quality'
+import { UpdateFishBehavior } from './fish-behavior'
+import { UpdateFishDIsease } from './fish-disease'
+import { UpdateMortality } from './mortality'
 type Params = {
   id: string
   step: string
@@ -15,19 +19,21 @@ export default function EditFeedingReportPage() {
   if (!id) {
     return null
   }
-
+  const handleGoBack = () => {
+    navigate(`${paths.dashboard.reports.root}`)
+  }
   const RenderSteps = () => {
     switch (step) {
       case '1':
         return <UpdateFeedingReportForm />
       case '2':
-        return <div>Water quality</div>
+        return <UpdateWaterQuality handleGoBack={handleGoBack} />
       case '3':
-        return <div>FIsh behavior</div>
+        return <UpdateFishBehavior handleGoBack={handleGoBack} />
       case '4':
-        return <div>Fish disease</div>
+        return <UpdateFishDIsease handleGoBack={handleGoBack} />
       case '5':
-        return <div>Mortality</div>
+        return <UpdateMortality handleGoBack={handleGoBack} />
       default:
         return null
     }

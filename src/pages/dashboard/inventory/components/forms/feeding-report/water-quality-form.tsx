@@ -204,7 +204,7 @@ export default function WaterQualityForm({ form }: { form: UseFormReturn<WaterQu
           </Text>
           <FormField
             control={form.control}
-            name="nitrite"
+            name="nitrate"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

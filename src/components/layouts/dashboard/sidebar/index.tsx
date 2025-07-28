@@ -18,7 +18,7 @@ export function Sidebar() {
   }
 
   return (
-    <Section className="inset-y-0 h-[calc(100vh-100px)] w-full overflow-y-auto rounded-lg border border-neutral-200 bg-neutral-50 p-2 shadow-sm">
+    <Section className="inset-y-0 w-full overflow-y-auto rounded-lg border border-neutral-200 bg-neutral-50 p-2 shadow-sm lg:h-[calc(100vh-100px)]">
       <motion.ul variants={container} initial="hidden" animate="visible" className="flex flex-col gap-y-2">
         {links.map(({ path, icon, label, subLinks }) => (
           <motion.li key={label} variants={item} className="flex flex-col">

@@ -3,7 +3,7 @@ import { Grid } from 'src/components/ui/grid'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import StatsCard from './stats-card'
-import { formatNumberWithCommas } from 'src/lib/utils'
+import { formatNumber } from 'src/lib/utils'
 type DateRange = { from: Date; to: Date }
 interface FarmOverviewStatisticsProps {
   dateRange?: DateRange
@@ -46,24 +46,26 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
   })
 
   const useGetRevenue = createGetQueryHook({
-    endpoint: '/dashboards/cluster/revenue/overall?interval=ALL',
+    endpoint: '/dashboards/cluster/revenue/overall',
     responseSchema: z.any(),
     queryKey: ['roi-overall-cluster-manager'],
   })
   const { data: totalRevenue } = useGetRevenue({
     query: {
+      interval: 'ALL',
       startDate: dateRange?.from?.toISOString().split('T')[0],
       endDate: dateRange?.to?.toISOString().split('T')[0],
     },
   })
 
   const useGetMortality = createGetQueryHook({
-    endpoint: '/dashboards/cluster/mortality-rate/overall?interval=ALL',
+    endpoint: '/dashboards/cluster/mortality-rate/overall',
     responseSchema: z.any(),
     queryKey: ['mortality-cluster-manager'],
   })
   const { data: mortality } = useGetMortality({
     query: {
+      interval: 'ALL',
       startDate: dateRange?.from?.toISOString().split('T')[0],
       endDate: dateRange?.to?.toISOString().split('T')[0],
     },
@@ -79,27 +81,28 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
         <StatsCard
           color={'#F8D082'}
           label={'Active farmers'}
-          value={`${userStatus ? formatNumberWithCommas(userStatus?.activeUsers) : 0}`}
+          value={`${userStatus ? formatNumber(userStatus?.activeUsers) : 0}`}
         />
         <StatsCard
           color={'#A0E8B9'}
           label={'Total registered ponds'}
-          value={`${registeredPonds ? formatNumberWithCommas(registeredPonds?.totalPonds) : 0}`}
+          value={`${registeredPonds ? formatNumber(registeredPonds?.totalPonds) : 0}`}
         />
         <StatsCard
           color={'#B9D9FF'}
           label={'Fish stocked'}
-          value={`${availableStock ? formatNumberWithCommas(availableStock?.availableFish) : 0}`}
+          value={`${availableStock ? formatNumber(availableStock?.availableFish) : 0}`}
         />
         <StatsCard
           color={'#F1A8D3'}
           label={'Avg mortality rate'}
-          value={`${mortality ? mortality[0]?.mortalityRate : 0}`}
+          value={`${mortality ? mortality[0]?.mortalityRate : 0}%`}
         />
         <StatsCard
           color={'#BCADFB'}
           label={'Total volume of sales'}
-          value={`₦${totalRevenue ? totalRevenue[0]?.totalRevenue : 0}`}
+          value={`₦${totalRevenue ? formatNumber(totalRevenue[0]?.totalRevenue) : 0}`}
+          // value={`₦${totalRevenue ? formatNumberWithCommas(totalRevenue[0]?.totalRevenue) : 0}`}
         />
       </Grid>
     </FlexBox>

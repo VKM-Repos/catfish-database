@@ -42,7 +42,6 @@ export default function LoginPage() {
     defaultValues: {},
     mode: 'onChange',
   })
-
   const loginMutation = useLogin()
 
   const onSubmit = async (values: FormValues) => {
@@ -60,7 +59,7 @@ export default function LoginPage() {
       authCache.setRefreshToken(refreshToken)
       authCache.setExpiresAt(expiresAt)
       authCache.setUser(userDto)
-
+      console.log(userDto, '???')
       // Update auth store
       login(userDto, accessToken, refreshToken, expiresAt)
     } catch (err) {

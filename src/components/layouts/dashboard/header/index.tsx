@@ -17,7 +17,7 @@ export function Header() {
           <img src="/fish-logo.webp" alt="Logo" className="aspect-square w-[38px]" />
         </picture>
         <Divider orientation="vertical" className="invisible lg:visible" />
-        <div className="hidden">
+        <div className="hidden lg:inline">
           <ProfileMenu />
         </div>
       </Inline>

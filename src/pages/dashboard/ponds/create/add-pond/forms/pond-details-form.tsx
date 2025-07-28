@@ -14,7 +14,7 @@ type PondFormValues = z.infer<typeof pondSchema>
 
 export default function PondDetailsForm({ form }: { form: UseFormReturn<PondFormValues> }) {
   const waterSources = ['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers']
-  const pondTypes = ['Concrete', 'Earthen', 'Plastic', 'Tarpauline']
+  const pondTypes = ['Concrete', 'Earthen', 'Plastic', 'Tarpaulin']
   const isWaterSourcesLoading = false
   const isPondTypesLoading = false
 

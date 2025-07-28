@@ -4,15 +4,29 @@ import * as SolarIconSet from 'solar-icon-set'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'src/components/ui/select'
 import { Input } from 'src/components/ui/input'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 export default function BatchPondSelection({ form, pondNames }: { form: UseFormReturn<any>; pondNames: string[] }) {
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <SolarIconSet.QuestionCircle size={16} />
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
   return (
     <>
       <div className="flex w-full flex-col gap-2">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
           Batch name
           <span className="gap-2 font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          {/* <SolarIconSet.QuestionCircle size={16} /> */}
         </Text>
         <FormField
           control={form.control}
@@ -31,7 +45,7 @@ export default function BatchPondSelection({ form, pondNames }: { form: UseFormR
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
           Select the pond to which you want to add the fish
           <span className="gap-2 font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <FormTooltip text="Select the pond where you want to add the fish batch. This is required." />
         </Text>
         <FormField
           control={form.control}

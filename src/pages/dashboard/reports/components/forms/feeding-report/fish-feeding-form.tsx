@@ -35,6 +35,7 @@ import { useWaterQualityStore } from 'src/store/water-quality-store'
 import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 import { useFarmerReportStore } from 'src/store/farmer-report-store'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 const initialValues = {
   feedType: '',
@@ -220,6 +221,20 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
     //   navigate(paths.dashboard.home.getStarted)
     // }
   }
+
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <SolarIconSet.QuestionCircle size={16} />
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={handleReset} onOpenChange={setOpenDialog} />
@@ -230,7 +245,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
             <div className="flex flex-col items-start space-y-[8px]">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Do you want to record daily feeding report ? <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                <FormTooltip text="This will allow you to track daily feeding activities and fish growth." />
               </Text>
               <Switch id="recordDailyFeeding" checked={recordDailyFeeding} onCheckedChange={handleSwitchChange} />
             </div>
@@ -372,7 +387,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Feed Type <span className="font-bold text-red-500">*</span>
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Select the type or brand of feed you are using, e.g., Skretting, Blue Crown, Top Feed. This helps track feed performance over time." />
                     </Text>
                     <FormField
                       control={form.control}
@@ -434,7 +449,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Feed Quantity <span className="font-bold text-red-500">*</span>
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the total amount of feed available in kilograms (kg). This will be used to monitor feed usage and calculate cost per kg." />
                     </Text>
                     <FormField
                       control={form.control}

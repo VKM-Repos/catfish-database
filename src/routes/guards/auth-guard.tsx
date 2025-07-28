@@ -13,9 +13,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
   const { isAuthenticated, user } = useAuthStore()
   const location = useLocation()
 
-  // if (!isAuthenticated) {
-  //   return <Navigate to={paths.auth.login} state={{ from: location }} replace />
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to={paths.auth.login} state={{ from: location }} replace />
+  }
 
   const getFallbackPath = () => {
     if (user?.defaultPassword) {

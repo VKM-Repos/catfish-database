@@ -250,7 +250,7 @@ export const pondCreateSchema = z.object({
   name: z.string().min(1, 'Pond name is required'),
   size: z.number().positive('Size must be positive'),
   waterSource: z.enum(['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers']),
-  pondType: z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpauline']),
+  pondType: z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpaulin']),
   length: z.number().positive('Length must be positive'),
   breadth: z.number().positive('Breadth must be positive'),
   height: z.number().positive('Depth must be positive'),
@@ -267,7 +267,7 @@ export const pondEditSchema = pondCreateSchema.extend({
 
 export const waterSourceEnum = z.enum(['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers'])
 
-export const pondTypeEnum = z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpauline'])
+export const pondTypeEnum = z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpaulin'])
 
 // response
 export const pondResponseSchema = z.object({

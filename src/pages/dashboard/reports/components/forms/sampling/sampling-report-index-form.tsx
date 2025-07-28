@@ -9,11 +9,10 @@ import SamplingWeightForm from './sampling-weight-from'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { paths } from 'src/routes'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
-import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { useDateStore } from 'src/store/report-date-store'
 import { Text } from 'src/components/ui/text'
-import * as SolarIconSet from 'solar-icon-set'
+import { Alert, AlertDescription } from 'src/components/ui/alert'
 
 type SamplingData = z.infer<typeof samplingSchema>
 
@@ -94,23 +93,6 @@ export default function SamplingIndexForm({ handleNext }: { handleNext: () => vo
     return null
   }
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateValue = e.target.value
-    setSelectedDate(dateValue)
-
-    handleDateTimeChange(dateValue, reportTime)
-  }
-
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const timeValue = e.target.value
-    setReportTime(timeValue)
-    setSelectedTime(timeValue)
-    handleDateTimeChange(selectedDate, timeValue)
-  }
-  const handleDateClick = () => {
-    dateInputRef.current?.showPicker()
-  }
-
   return (
     <>
       <Form {...form}>
@@ -120,10 +102,24 @@ export default function SamplingIndexForm({ handleNext }: { handleNext: () => vo
               <div className="mb-5 flex w-full flex-col items-start gap-1">
                 <div className="p-5">
                   <h5 className="text-[1.5rem] font-bold text-[#444955]">Sample Weight</h5>
-                  <p className="text-xs font-medium">Collect measurements on a sample of fish to gauge growth.</p>
+                  <div className="mt-[20px] space-y-3 text-[#333740]">
+                    <Text className="text-[14px] font-normal">
+                      To help you track how well your fish are growing, this section focuses on weight gain during
+                      sampling.
+                    </Text>
+                    <ul className="list-disc pl-10 text-[14px] font-normal">
+                      <li>Average Weight Gain </li>
+                      <li>Total Weight Gain</li>
+                    </ul>
+                    <Text className="text-[14px] font-normal">
+                      We already know the number of fish you sampled and their starting average weight, so no need to
+                      enter those again.
+                    </Text>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-5">
+              {/* Data and time section */}
+              {/* <div className="flex items-center gap-5">
                 <div className="flex flex-col">
                   <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                     Change Date <span className="font-bold text-red-500">*</span>
@@ -221,9 +217,19 @@ export default function SamplingIndexForm({ handleNext }: { handleNext: () => vo
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </FlexBox>
-            <div className="rounded-md border border-neutral-200 p-5">
+            <div className="space-y-5 rounded-md border border-neutral-200 p-5">
+              <Alert className="bg-[#E5E7FF] text-[#000AFF]">
+                <AlertDescription>
+                  <Text> Just enter the Current Average Weight from your recent sample.</Text>
+                  <Text>
+                    {' '}
+                    The system will calculate how much weight they’ve gained since the last check—no need to do any
+                    math.
+                  </Text>
+                </AlertDescription>
+              </Alert>
               <SamplingWeightForm form={form} />
             </div>
           </div>

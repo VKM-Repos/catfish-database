@@ -300,7 +300,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                 <FormItem>
                   <FormLabel className="flex items-center justify-start space-x-2 text-neutral-300">
                     <Text>Pond Name</Text>{' '}
-                    <SolarIconSet.QuestionCircle color="text-inherit" size={16} iconStyle="Outline" />
+                    {/* <SolarIconSet.QuestionCircle color="text-inherit" size={16} iconStyle="Outline" /> */}
                   </FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>

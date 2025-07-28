@@ -19,6 +19,7 @@ import { ClientErrorType, ServerErrorType } from 'src/types'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { useWaterQualityStore } from 'src/store/water-quality-store'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const navigate = useNavigate()
@@ -124,6 +125,20 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
       reset()
     }
   }
+
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <SolarIconSet.QuestionCircle size={16} />
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
@@ -134,7 +149,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
             <div className="flex flex-col items-start space-y-[8px]">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Do you want to record Water Quality ?<span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                <FormTooltip text="This will allow you to track daily water quality parameters and ensure optimal conditions for fish health." />
               </Text>
               <Switch id="recordWaterQuality" checked={recordWaterQuality} onCheckedChange={handleSwitchChange} />
             </div>
@@ -152,7 +167,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Dissolved Oxygen
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the amount of oxygen present in the water. Good oxygen levels help fish breathe and stay healthy." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -199,7 +214,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       PH Level
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the pH level of the water. It tells if the water is acidic, neutral, or alkaline. Fish grow well when pH is between 6.5 and 8." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -248,7 +263,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Temperature
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the water temperature in degrees Celsius. Keeping the right temperature helps fish grow faster." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -295,7 +310,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Ammonia
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the ammonia level in the water. High ammonia can harm or kill fish, so it should be kept low." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -342,7 +357,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Nitrate
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the nitrate level in the water. Too much nitrate can stress fish and affect their health." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -387,7 +402,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Alkalinity
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the alkalinity of the water. This helps to keep pH stable and protects fish from sudden changes." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -436,7 +451,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Hardness
-                      <SolarIconSet.QuestionCircle size={16} />
+                      <FormTooltip text="Enter the water hardness (amount of calcium and magnesium). It helps fish build strong bones and scales." />
                       <span className="text-neutral-500">optional</span>
                     </Text>
                     <FormField
@@ -484,7 +499,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                 <div className="flex w-full flex-col gap-2">
                   <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                     Water Quality Observations <span className="font-bold text-red-500">*</span>
-                    <SolarIconSet.QuestionCircle size={16} />
+                    <FormTooltip text="Write down anything you noticed about the water – like color, smell, or if it's cloudy. This helps track unusual changes." />
                   </Text>
                   <FormField
                     control={form.control}

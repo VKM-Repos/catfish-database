@@ -91,7 +91,7 @@ export function HarvestVolumeOvertime({ dateRange }: HarvestVolumeOvertimeProps)
           <ChartHeader
             title={`${interval.charAt(0).toUpperCase()}${interval
               .slice(1)
-              .toLowerCase()} 'Harvest volume over time (kg)'`}
+              .toLowerCase()} Harvest volume over time (kg)`}
             action={<IntervalFilter value={interval} onChange={setInterval} />}
           />
         </div>

@@ -11,6 +11,7 @@ import {
 } from 'src/components/ui/breadcrumb'
 import { Text } from 'src/components/ui/text'
 import { useSamplingStepperStore } from 'src/store/sampling-stepper-store'
+import { DateTimePicker } from '../../../components/forms/date-time-picker'
 
 export default function CreateSampling() {
   const { step, nextStep, prevStep } = useSamplingStepperStore()
@@ -28,8 +29,9 @@ export default function CreateSampling() {
 
   return (
     <>
-      <FlexBox className="mx-10">
+      <FlexBox className="mx-10 flex items-center justify-between">
         <CustomBreadcrumb />
+        <DateTimePicker dateLabel="Change Date" timeLabel="Time" required={true} className="items-start" />
       </FlexBox>
       <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-5 w-full max-w-[60%]">
         <Stepper step={step} />
@@ -42,7 +44,7 @@ export default function CreateSampling() {
 const Stepper = ({ step }: { step: number }) => {
   return (
     <div className="w-full">
-      <div className="mx-auto flex max-w-[50%] items-center justify-center">
+      <div className="mx-auto flex max-w-[70%] items-center justify-center">
         <FlexBox
           gap="gap-[.625rem]"
           align="center"

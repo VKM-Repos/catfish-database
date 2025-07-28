@@ -47,24 +47,26 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
   })
 
   const useGetRevenue = createGetQueryHook({
-    endpoint: '/dashboards/super-admin/revenue/overall?interval=ALL',
+    endpoint: '/dashboards/super-admin/revenue/overall',
     responseSchema: z.any(),
     queryKey: ['roi-overall-super-admin'],
   })
   const { data: totalRevenue } = useGetRevenue({
     query: {
+      interval: 'ALL',
       startDate: dateRange?.from?.toISOString().split('T')[0],
       endDate: dateRange?.to?.toISOString().split('T')[0],
     },
   })
 
   const useGetMortality = createGetQueryHook({
-    endpoint: '/dashboards/cluster/mortality-rate/overall?interval=ALL',
+    endpoint: '/dashboards/super-admin/mortality-rate/overall',
     responseSchema: z.any(),
     queryKey: ['mortality-cluster-manager'],
   })
   const { data: mortality } = useGetMortality({
     query: {
+      interval: 'ALL',
       startDate: dateRange?.from?.toISOString().split('T')[0],
       endDate: dateRange?.to?.toISOString().split('T')[0],
     },

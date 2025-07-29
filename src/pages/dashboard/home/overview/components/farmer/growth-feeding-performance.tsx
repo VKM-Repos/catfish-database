@@ -170,7 +170,7 @@ export default function GrowthFeedingPerformance({ dateRange }: GrowthFeedingPro
         <div className="w-full gap-5">
           <div className="flex">
             <ChartHeader
-              title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Feed Consumed'`}
+              title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} Feed Consumed`}
               action={
                 <div className="flex gap-2">
                   <IntervalFilter value={interval} onChange={setInterval} />
@@ -216,7 +216,7 @@ export default function GrowthFeedingPerformance({ dateRange }: GrowthFeedingPro
           <ChartHeader
             title={`${perPondInterval.charAt(0).toUpperCase()}${perPondInterval
               .slice(1)
-              .toLowerCase()} 'Feed Consumed by Pond`}
+              .toLowerCase()} Feed Consumed by Pond`}
             action={<IntervalFilter value={perPondInterval} onChange={setPerPondInterval} />}
           />
         </div>

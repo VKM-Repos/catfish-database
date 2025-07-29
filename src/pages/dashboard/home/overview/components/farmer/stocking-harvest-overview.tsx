@@ -91,7 +91,9 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
           {chartData.map((item, index) => (
             <FlexBox className="w-full" key={index} gap="gap-2" direction="col">
               <div className="flex w-full items-center justify-between text-[14px] font-medium">
-                <span className="text-sm">{item.reason}</span>
+                <span className="text-sm">
+                  {item.reason.charAt(0).toUpperCase() + item.reason.slice(1).toLowerCase()}
+                </span>
                 <span className="text-sm">{item.quantity}</span>
               </div>
               <div className="relative max-w-full rounded-full bg-gray-200" style={{ width: '300px', height: '8px' }}>

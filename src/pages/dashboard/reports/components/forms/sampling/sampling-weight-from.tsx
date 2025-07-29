@@ -243,7 +243,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
             className="bg-neutral-100"
             inputMode="numeric"
             readOnly
-            value={activeFishBatch[0]?.latestQuantity || 0}
+            value={activeFishBatch ? activeFishBatch[0]?.latestQuantity : 0}
           />
         </div>
         <div className="flex w-full flex-col gap-2">

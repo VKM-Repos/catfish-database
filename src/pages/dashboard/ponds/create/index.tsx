@@ -12,7 +12,7 @@ export default function CreatePondPage() {
   const isAddFish = pathname.includes('add-fish-to-pond')
 
   return (
-    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full lg:max-w-[50%]">
       {isAddPond && (
         <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full text-center">
           <h1 className="flex items-center gap-2 text-[1.5rem] font-bold">

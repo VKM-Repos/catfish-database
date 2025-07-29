@@ -46,7 +46,7 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
         </div>
       </CardContent>
       <CardFooter className="flex-none">
-        <Button className="mx-auto w-fit" onClick={buttonAction} variant={'primary'}>
+        <Button className="mx-auto w-fit" onClick={buttonAction} variant={isFirstCard ? 'primary' : 'outline'}>
           {buttonText}
         </Button>
       </CardFooter>
@@ -187,6 +187,7 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
           icon={<img src="/assets/images/sampling-report.svg" alt="Sampling Report" />}
           buttonText="Submit Sampling Report"
           buttonAction={() => setSamplingReportOpen(true)}
+          isFirstCard={true}
         />
       )}
 
@@ -206,6 +207,7 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
           icon={<img src="/assets/images/harvest-report.svg" alt="Harvest Report" />}
           buttonText="Submit Harvest Report"
           buttonAction={() => setHarvestReportOpen(true)}
+          isFirstCard={true}
         />
       )}
 

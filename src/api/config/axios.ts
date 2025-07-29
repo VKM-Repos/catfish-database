@@ -2,14 +2,15 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { APP_CONFIG } from 'src/assets/resources/config'
 import { authCache } from './query-client'
 import { useAuthStore } from 'src/store/auth.store'
-import { getCurrentSubdomain } from 'src/lib/subdomain'
-import subdomainConfig from './subdomains'
+// import { getCurrentSubdomain } from 'src/lib/subdomain'
+// import subdomainConfig from './subdomains'
 
-const subdomain = getCurrentSubdomain()
-const config = subdomainConfig[subdomain] || subdomainConfig.default
+// const subdomain = getCurrentSubdomain()
+// const config = subdomainConfig[subdomain] || subdomainConfig.default
 // Create axios instance
 export const axiosInstance = axios.create({
-  baseURL: config.apiBaseUrl,
+  // baseURL: config.apiBaseUrl,
+  baseURL: APP_CONFIG.api.baseUrl,
   timeout: APP_CONFIG.api.timeout,
   headers: {
     'Content-Type': 'application/json',

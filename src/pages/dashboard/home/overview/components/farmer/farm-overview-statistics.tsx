@@ -3,7 +3,7 @@ import { Grid } from 'src/components/ui/grid'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import StatsCard from '../cluster-manager/stats-card'
-import { formatNumberWithCommas } from 'src/lib/utils'
+import { formatNumber } from 'src/lib/utils'
 
 type DateRange = { from: Date; to: Date }
 interface FarmOverviewStatisticsProps {
@@ -68,17 +68,17 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
         <StatsCard
           color={'#F8D082'}
           label={'Total revenue generated'}
-          value={`₦${revenueOverall ? formatNumberWithCommas(revenueOverall[0]?.totalRevenue) : 0}`}
+          value={`₦${revenueOverall ? formatNumber(revenueOverall[0]?.totalRevenue) : 0}`}
         />
         <StatsCard
           color={'#A0E8B9'}
           label={'Total running cost'}
-          value={`₦${productionCost ? formatNumberWithCommas(productionCost[0]?.totalCost) : 0}`}
+          value={`₦${productionCost ? formatNumber(productionCost[0]?.totalCost) : 0}`}
         />
         <StatsCard
           color={'#B9D9FF'}
           label={'Gross profit'}
-          value={`₦${grossProfits ? formatNumberWithCommas(grossProfits[0]?.grossProfit) : 0}`}
+          value={`₦${grossProfits ? formatNumber(grossProfits[0]?.grossProfit) : 0}`}
         />
         <StatsCard color={'#F1A8D3'} label={'ROI'} value={`${roiOverall ? roiOverall[0]?.roi : 0}%`} />
       </Grid>

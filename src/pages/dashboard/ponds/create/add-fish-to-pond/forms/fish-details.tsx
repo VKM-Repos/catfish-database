@@ -36,7 +36,14 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
             render={({ field }) => (
               <FormItem className="!space-y-0">
                 <FormControl>
-                  <Input placeholder="Input number of fish added to pond" {...field} type="number" />
+                  <Input
+                    placeholder="Input number of fish added to pond"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      field.onChange(value)
+                    }}
+                  />
                 </FormControl>
                 <div className={`relative min-h-fit `}>
                   <FormMessage className="absolute my-2 transition-opacity duration-200" />
@@ -92,11 +99,18 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
         </Text>
         <FormField
           control={form.control}
-          name="fishDescription"
+          name="initialWeight"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Input initial average body weight of fish in grams" {...field} />
+                <Input
+                  placeholder="Input initial average body weight of fish in grams"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9]/g, '')
+                    field.onChange(value)
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

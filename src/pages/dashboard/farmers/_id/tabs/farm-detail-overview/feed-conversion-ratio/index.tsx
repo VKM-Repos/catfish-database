@@ -98,7 +98,6 @@ export default function FeedConversionRatio({ dateRange, farmerId }: FeedConvers
               colors={['#FAC898', '#FF5F15', '#CC5500']}
               percent={value}
               arcPadding={0.01}
-              // formatTextValue={(value: string) => (Number(value) / 100).toString()}
               formatTextValue={() => latestFCR.toFixed(2)}
               textColor="#000"
             />

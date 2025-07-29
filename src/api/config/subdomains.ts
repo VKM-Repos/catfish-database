@@ -7,6 +7,7 @@ const subdomainConfig: any = {
   },
   dev: {
     apiBaseUrl: 'https://dev.aquadata.com.ng/api',
+    // apiBaseUrl: 'http://ec2-34-227-110-20.compute-1.amazonaws.com/api',
   },
   'eriwe-test-cluster': {
     apiBaseUrl: 'https://eriwe-test-cluster.aquadata.com.ng/api',

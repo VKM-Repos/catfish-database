@@ -5,12 +5,12 @@ import FeedActivityLogsTable from './table'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
-import * as SolarIconSet from 'solar-icon-set'
+import MegaDatePicker, { DateRange } from 'src/components/ui/mega-datepicker'
+import { useState } from 'react'
 
 const useGetFeedActivityLogs = createGetQueryHook({
-  endpoint: `/feed-inventories/:id/feed-logs?&direction=DESC`,
+  endpoint: `/feed-inventories/:id/feed-logs`,
   responseSchema: z.any(),
   queryKey: ['feeding-activity-logs'],
 })
@@ -19,10 +19,26 @@ export default function FeedActivityLogsModal() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: new Date(2020, 0, 1),
+    to: new Date(),
+  })
+
   const location = useLocation()
   const item = location.state?.item
 
-  const { data, isLoading } = useGetFeedActivityLogs({ route: { id: id! } })
+  const { data, isLoading } = useGetFeedActivityLogs({
+    route: { id: id! },
+    query: {
+      direction: 'DESC',
+      startDate: dateRange.from.toISOString().split('T')[0],
+      endDate: dateRange.to.toISOString().split('T')[0],
+    },
+  })
+
+  const handleDateRangeChange = (newRange: DateRange) => {
+    setDateRange(newRange)
+  }
 
   if (!id) return null
 
@@ -35,24 +51,9 @@ export default function FeedActivityLogsModal() {
           </FlexBox>
         </div>
         <FlexBox gap="gap-unset" justify="between" align="center" className="w-full pt-[3rem]">
-          <Button
-            variant="outline"
-            className=" flex items-center justify-between gap-4 rounded-sm border border-neutral-200 text-neutral-500"
-          >
-            <Text size="sm" weight="light">
-              May 21 - 27, 2024
-            </Text>
-            <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
-          </Button>
-          <Button
-            variant="outline"
-            className=" flex items-center justify-between gap-4 rounded-sm border border-primary-500 text-primary-500"
-          >
-            <SolarIconSet.Download color="currentColor" size={20} iconStyle="Outline" />
-            <Text size="sm" weight="light">
-              Export CSV file
-            </Text>
-          </Button>
+          <div className="flex h-fit w-full items-center justify-end bg-white py-4">
+            <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="w-auto" />
+          </div>
         </FlexBox>
         <FeedActivityLogsTable data={data} isLoading={isLoading} item={item} />
       </DialogContent>

@@ -49,7 +49,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
   })
   const { setFarmerIdForDailyReport } = useFarmerReportStore()
   const useGetPondByClusterManager = createGetQueryHook({
-    endpoint: '/ponds/clusters/me',
+    endpoint: '/ponds/clusters/me?size=1000000&sortBy=DESC',
     responseSchema: z.any(),
     queryKey: ['ponds_for_cluster_manager'],
     options: {
@@ -57,7 +57,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
     },
   })
   const useGetFarmers = createGetQueryHook({
-    endpoint: '/users/farmers',
+    endpoint: '/users/farmers?size=1000000&sortBy=DESC',
     responseSchema: z.any(),
     queryKey: ['farmers_for_cluster_manager_reports'],
     options: {

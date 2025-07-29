@@ -17,7 +17,7 @@ export default function FarmersPage() {
   const navigate = useNavigate()
 
   const useGetFarmers = createGetQueryHook({
-    endpoint: '/users/farmers?direction=DESC',
+    endpoint: '/users/farmers?direction=DESC&size=100',
     responseSchema: z.any(),
     queryKey: ['farmers'],
   })

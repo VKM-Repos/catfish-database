@@ -91,7 +91,7 @@ export default function FeedingInsight({ dateRange }: FeedingInsightProps) {
     <Card className="w-full rounded-[.875rem] border border-neutral-200 p-4">
       <div className="flex">
         <ChartHeader
-          title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Feed Insights`}
+          title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} Feed Insights`}
           action={<IntervalFilter value={interval} onChange={setInterval} />}
         />
       </div>

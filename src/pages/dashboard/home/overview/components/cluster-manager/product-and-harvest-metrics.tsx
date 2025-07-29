@@ -6,6 +6,7 @@ import { HarvestVolumeOvertime } from './harvest-volume-overtime'
 import { LineChartHarvestVolume } from './line-chart-harvest-volume'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
+import { formatNumber } from 'src/lib/utils'
 type DateRange = { from: Date; to: Date }
 interface ProductAndHarvestMetricsProps {
   dateRange?: DateRange
@@ -28,7 +29,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
               Total harvest volume
             </Text>
             <Text size="lg" weight="semibold">
-              {salesVolume && salesVolume[0]?.totalWeight} kg
+              {salesVolume && formatNumber(salesVolume[0]?.totalWeight)} kg
             </Text>
             <Text size="xs">YTD</Text>
           </FlexBox>

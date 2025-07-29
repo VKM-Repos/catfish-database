@@ -101,7 +101,7 @@ export function LineChartHarvestVolume({ dateRange }: LineChartHarvestVolumeProp
           <ChartHeader
             title={`${interval.charAt(0).toUpperCase()}${interval
               .slice(1)
-              .toLowerCase()} 'Revenue & Average Price Trends'`}
+              .toLowerCase()} Revenue & Average Price Trends`}
             action={<IntervalFilter value={interval} onChange={setInterval} />}
           />
         </div>

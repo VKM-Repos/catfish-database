@@ -92,7 +92,7 @@ export default function HarvestVolumeTrends({ dateRange }: HarvestVolumeTrendsPr
       <CardContent>
         <div className="flex">
           <ChartHeader
-            title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Harvest Volume Trend'`}
+            title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} Harvest Volume Trend`}
             action={<IntervalFilter value={interval} onChange={setInterval} />}
           />
         </div>

@@ -2,7 +2,7 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Grid } from 'src/components/ui/grid'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
-import { formatNumberWithCommas } from 'src/lib/utils'
+import { formatNumber } from 'src/lib/utils'
 import StatsCard from '../cluster-manager/stats-card'
 
 type DateRange = { from: Date; to: Date }
@@ -82,23 +82,23 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
         <StatsCard
           color={'#F8D082'}
           label={'Active farmers'}
-          value={`${userStatus ? formatNumberWithCommas(userStatus?.activeUsers) : 0}`}
+          value={`${userStatus ? formatNumber(userStatus?.activeUsers) : 0}`}
         />
         <StatsCard
           color={'#A0E8B9'}
           label={'Total registered ponds'}
-          value={`${registeredPonds ? formatNumberWithCommas(registeredPonds?.totalPonds) : 0}`}
+          value={`${registeredPonds ? formatNumber(registeredPonds?.totalPonds) : 0}`}
         />
         <StatsCard
           color={'#B9D9FF'}
           label={'Fish stocked'}
-          value={`${availableStock ? formatNumberWithCommas(availableStock?.availableFish) : 0}`}
+          value={`${availableStock ? formatNumber(availableStock?.availableFish) : 0}`}
         />
 
         <StatsCard
           color={'#BCADFB'}
           label={'Total volume of sales'}
-          value={`₦${totalRevenue ? formatNumberWithCommas(totalRevenue[0]?.totalRevenue) : 0}`}
+          value={`₦${totalRevenue ? formatNumber(totalRevenue[0]?.totalRevenue) : 0}`}
         />
       </Grid>
     </FlexBox>

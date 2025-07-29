@@ -98,7 +98,7 @@ export function StockedHarvestedByCluster({ dateRange }: StockedHarvestedByClust
           <ChartHeader
             title={`${interval.charAt(0).toUpperCase()}${interval
               .slice(1)
-              .toLowerCase()} 'Stocked vs. Harvested by Cluster'`}
+              .toLowerCase()} Stocked vs. Harvested by Cluster`}
             action={<IntervalFilter value={interval} onChange={setInterval} />}
           />
         </div>

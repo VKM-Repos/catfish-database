@@ -332,7 +332,7 @@ export const fishDetailsSchema = z.object({
   quantity: z.coerce.number().positive('Quantity must be greater than 0'),
   singleCost: z.coerce.number().positive('Cost must be greater than 0'),
   costOfSupply: z.coerce.number().positive(),
-  fishDescription: z.string().min(3, { message: 'Description must not be less than 3 characters' }),
+  initialWeight: z.coerce.number().positive('Initial weight must be greater than 0'),
   fishSize: z.string().min(1, { message: 'Please input size of fish' }),
 })
 

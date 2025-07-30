@@ -113,11 +113,11 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
           <XAxis
             dataKey="feedType"
             // tick={<CustomizedAxisTick />}
-            tick={{ fontSize: 10 }}
+            tick={{ fontSize: 8 }}
+            angle={-30}
             tickLine={false}
             tickMargin={8}
             hide={false}
-            angle={-30}
             axisLine={true}
           />
           <YAxis tick={{ fill: '#737780', fontSize: 10 }} axisLine={false} tickLine={false} tickMargin={4} width={90} />

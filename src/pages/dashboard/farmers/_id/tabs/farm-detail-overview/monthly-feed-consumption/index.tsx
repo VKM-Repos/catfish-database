@@ -67,8 +67,14 @@ export default function MonthlyFeedConsumption({ dateRange, farmerId }: MonthlyF
             <CartesianGrid horizontal={false} vertical={false} />
             <XAxis
               dataKey="intervalLabel"
+              tick={{
+                fontSize: Math.max(6, 10 - restructuredData?.length * 0.2), // Adjust these values as needed
+              }}
+              angle={restructuredData?.length > 6 ? -45 : 0}
               tickLine={false}
-              tickMargin={10}
+              tickMargin={20} // Increased margin for angled text
+              interval={0} // Critical - forces all labels to show
+              height={60} // Give more vertical space for labels
               axisLine={false}
               // tickFormatter={(value) => value.slice(0, 3)}
             />

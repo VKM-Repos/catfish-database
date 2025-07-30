@@ -16,6 +16,10 @@ import { Input } from 'src/components/ui/input'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDateStore } from 'src/store/report-date-store'
 import { useFarmerReportStore } from 'src/store/farmer-report-store'
+import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'src/components/ui/command'
+import { Check, ChevronDown } from 'lucide-react'
+import { cn } from 'src/lib/utils'
 
 type FormValues = {
   date: string
@@ -57,7 +61,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
     },
   })
   const useGetFarmers = createGetQueryHook({
-    endpoint: '/users/farmers?size=1000000&sortBy=DESC',
+    endpoint: '/users/farmers?size=1000000&direction=DESC',
     responseSchema: z.any(),
     queryKey: ['farmers_for_cluster_manager_reports'],
     options: {
@@ -76,7 +80,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
 
   const form = useForm<FormValues>({
     defaultValues: { pondId: '', farmerId: '', date: selectedDate },
-    mode: 'onSubmit', // validate on submit
+    mode: 'onChange', // validate on submit
   })
   useEffect(() => {
     form.setValue('date', selectedDate)
@@ -156,7 +160,9 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
       [fieldName]: value.trim().length > 0,
     }))
   }
-
+  const [openCommand, setOpenCommand] = useState(false)
+  const [value, setValue] = useState('')
+  const [selectedPond, setSelectedPond] = useState('')
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="h-fit w-[650px] overflow-hidden p-4">
@@ -245,6 +251,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                 </FormItem>
               )}
             />
+
             {user?.role === 'CLUSTER_MANAGER' && (
               <FormField
                 control={form.control}
@@ -300,37 +307,71 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                 <FormItem>
                   <FormLabel className="flex items-center justify-start space-x-2 text-neutral-300">
                     <Text>Pond Name</Text>{' '}
-                    {/* <SolarIconSet.QuestionCircle color="text-inherit" size={16} iconStyle="Outline" /> */}
                   </FormLabel>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className={form.formState.errors.pondId ? 'border-red-500 ring-2 ring-red-500' : ''}
-                      >
-                        <div className="flex items-center justify-center gap-3 text-neutral-300">
-                          <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
-                          <SelectValue placeholder="Select a pond" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {user?.role === 'FARMER' && isLoadingPonds ? (
-                          <SelectItem value="loading" disabled>
-                            <Text>Loading ponds...</Text>
-                          </SelectItem>
-                        ) : (
-                          ponds.content?.map((pond: unknown) => (
-                            <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
-                              {(pond as { name: string }).name}
-                            </SelectItem>
-                          ))
-                        )}
-                        {filteredPonds?.map((pond: unknown) => (
-                          <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
-                            {(pond as { name: string }).name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Popover open={openCommand} onOpenChange={setOpenCommand}>
+                      <PopoverTrigger className="w-full" asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full justify-between border-neutral-200 py-2 text-neutral-500"
+                        >
+                          <div className="flex items-center gap-5">
+                            {' '}
+                            <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
+                            {value ? ponds.content?.find((pond: any) => pond.name === value)?.name : 'Select Pond'}
+                          </div>
+                          <ChevronDown className="opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[600px]">
+                        <Command>
+                          <CommandInput placeholder="Search pond..." className="h-9" />
+                          <CommandList>
+                            <CommandEmpty>No pond found.</CommandEmpty>
+                            <CommandGroup>
+                              {user?.role === 'FARMER' &&
+                                ponds.content?.map((pond: any) => (
+                                  <CommandItem
+                                    key={pond.id}
+                                    value={pond.name}
+                                    onSelect={(currentValue) => {
+                                      setValue(currentValue === value ? '' : currentValue)
+                                      setOpenCommand(false)
+                                      field.onChange(pond.id)
+                                      form.trigger('pondId')
+                                    }}
+                                  >
+                                    {(pond as { name: string }).name}
+                                    <Check
+                                      className={cn('ml-auto', value === pond.name ? 'opacity-100' : 'opacity-0')}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              {user?.role === 'CLUSTER_MANAGER' &&
+                                filteredPonds?.map((pond: any) => (
+                                  <CommandItem
+                                    key={pond.id}
+                                    value={pond.name}
+                                    onSelect={(currentValue) => {
+                                      setValue(currentValue === value ? '' : currentValue)
+                                      setOpenCommand(false)
+                                      field.onChange(pond.id)
+                                      form.trigger('pondId')
+                                    }}
+                                  >
+                                    {(pond as { name: string }).name}
+                                    <Check
+                                      className={cn('ml-auto', value === pond.name ? 'opacity-100' : 'opacity-0')}
+                                    />
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

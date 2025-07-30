@@ -5,19 +5,21 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Form, FormField, FormItem, FormControl, FormMessage } from 'src/components/ui/form'
-import { Button } from 'src/components/ui/button'
 import { Text } from 'src/components/ui/text'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { Loader } from 'src/components/ui/loader'
 import { Input } from 'src/components/ui/input'
 import { Grid } from 'src/components/ui/grid'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { scrollToTop } from 'src/lib/utils'
+import { cn, scrollToTop } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import * as SolarIconSet from 'solar-icon-set'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
+import { Check, ChevronDown } from 'lucide-react'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'src/components/ui/command'
+import { Button } from 'src/components/ui/button'
 
 // Schema for UI validation only
 const salesRecordSchema = z.object({
@@ -56,7 +58,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
   const useGetPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me?size=1000000&sortBy=DESC',
     responseSchema: z.any(),
-    queryKey: ['my-ponds'],
+    queryKey: ['my-ponds-in-create-sales'],
   })
   const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
   const pondId = initialValues?.pondId || form.watch('pondId')
@@ -126,7 +128,8 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
       }
     }
   }
-
+  const [openCommand, setOpenCommand] = useState(false)
+  const [value, setValue] = useState('')
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mt-12 flex w-full flex-col gap-10">
@@ -201,7 +204,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      {/* <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger
                           className={form.formState.errors.pondId ? 'border-red-500 ring-2 ring-red-500' : ''}
                         >
@@ -223,7 +226,51 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
                             ))
                           )}
                         </SelectContent>
-                      </Select>
+                      </Select> */}
+                      <Popover open={openCommand} onOpenChange={setOpenCommand}>
+                        <PopoverTrigger className="w-full" asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openCommand}
+                            className="w-full justify-between border-neutral-200 py-2 text-neutral-500"
+                          >
+                            <div className="flex items-center gap-5">
+                              {' '}
+                              <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
+                              {value ? ponds.content?.find((pond: any) => pond.name === value)?.name : 'Select Pond'}
+                            </div>
+                            <ChevronDown className="opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[600px]">
+                          <Command>
+                            <CommandInput placeholder="Search pond..." className="h-9" />
+                            <CommandList>
+                              <CommandEmpty>No pond found.</CommandEmpty>
+                              <CommandGroup>
+                                {ponds.content?.map((pond: any) => (
+                                  <CommandItem
+                                    key={pond.id}
+                                    value={pond.name}
+                                    onSelect={(currentValue) => {
+                                      setValue(currentValue === value ? '' : currentValue)
+                                      setOpenCommand(false)
+                                      field.onChange(pond.id)
+                                      form.trigger('pondId')
+                                    }}
+                                  >
+                                    {(pond as { name: string }).name}
+                                    <Check
+                                      className={cn('ml-auto', value === pond.name ? 'opacity-100' : 'opacity-0')}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -245,7 +292,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
             type="submit"
             variant="primary"
             className="flex items-center gap-2"
-            disabled={!form.formState.isValid}
+            disabled={!form.formState.isValid || createHarvestMutation.isLoading || updateSalesRecordMutation.isLoading}
           >
             {createHarvestMutation.isLoading || updateSalesRecordMutation.isLoading ? (
               <>

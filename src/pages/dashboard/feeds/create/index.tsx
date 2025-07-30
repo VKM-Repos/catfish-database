@@ -43,7 +43,9 @@ export default function RegisterFeedTypes() {
                   <SolarIconSet.MoneyBag />
                 </span>
               </h1>
-              <Text>Add each feed’s name, pellet size, and cost to populate your daily feeding options</Text>
+              <Text className="text-center text-sm lg:text-base">
+                Add each feed’s name, pellet size, and cost to populate your daily feeding options
+              </Text>
             </FlexBox>
             <div className="relative left-0 w-full rounded-lg border border-neutral-200 p-4">
               <Heading level={6} className="absolute left-0 top-0 w-full border-b border-neutral-200 p-3 text-left ">
@@ -61,7 +63,7 @@ export default function RegisterFeedTypes() {
               onInteractOutside={(e) => {
                 e.preventDefault()
               }}
-              className="h-fit w-fit overflow-y-scroll p-8"
+              className="h-fit w-[90%] overflow-y-scroll rounded-lg p-8 lg:w-fit"
             >
               <>
                 <picture>
@@ -99,7 +101,7 @@ export default function RegisterFeedTypes() {
   }
 
   return (
-    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full lg:max-w-[50%]">
       <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full text-center">
         <RenderSteps />
       </FlexBox>

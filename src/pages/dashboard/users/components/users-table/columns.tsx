@@ -36,11 +36,11 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{row?.original.cluster?.name}</Text>,
   },
   {
-    accessorKey: 'accountNonLocked',
+    accessorKey: 'enabled',
     header: 'Status',
     cell: ({ row }) => (
       <StatusBadge
-        status={row.getValue('accountNonLocked')}
+        status={row.getValue('enabled')}
         activeText="Active"
         inactiveText="Deactivated"
         size="sm"

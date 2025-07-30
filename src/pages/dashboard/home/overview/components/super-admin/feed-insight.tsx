@@ -102,7 +102,7 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
     <Card className="h-[640px] max-h-[640px] w-full rounded-[.875rem] border border-neutral-200 p-4">
       <div className="flex">
         <ChartHeader
-          title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Feed Insights`}
+          title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} Feed Insights`}
           action={<IntervalFilter value={interval} onChange={setInterval} />}
         />
       </div>
@@ -110,7 +110,20 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
       <ChartContainer className="-ml-5 mt-[10px] w-full" config={monthlyFeedConfig}>
         <BarChart accessibilityLayer data={restructuredData} height={100} barCategoryGap={10}>
           <CartesianGrid />
-          <XAxis dataKey="feedType" tickLine={false} tickMargin={5} axisLine={true} />
+          <XAxis
+            dataKey="feedType"
+            // tick={<CustomizedAxisTick />}
+            tick={{
+              fontSize: Math.max(6, 10 - restructuredData?.length * 0.2), // Adjust these values as needed
+            }}
+            angle={restructuredData?.length > 6 ? -45 : 0}
+            tickLine={false}
+            tickMargin={20} // Increased margin for angled text
+            interval={0} // Critical - forces all labels to show
+            height={60} // Give more vertical space for labels
+            hide={false}
+            axisLine={true}
+          />
           <YAxis tick={{ fill: '#737780', fontSize: 10 }} axisLine={false} tickLine={false} tickMargin={4} width={90} />
 
           <ChartTooltip

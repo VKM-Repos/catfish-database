@@ -76,7 +76,18 @@ export default function PondRevenue() {
       <ChartContainer className="h-[25rem] w-full" config={pondRevenueConfig}>
         <BarChart accessibilityLayer data={transformedData} height={100} barCategoryGap={20} margin={{ right: 40 }}>
           <CartesianGrid stroke="#E5E7EB" />
-          <XAxis dataKey="pond" tickLine={false} tickMargin={10} axisLine={false} />
+          <XAxis
+            dataKey="pond"
+            tick={{
+              fontSize: Math.max(6, 10 - transformedData?.length * 0.2), // Adjust these values as needed
+            }}
+            angle={transformedData?.length > 6 ? -45 : 0}
+            tickLine={false}
+            tickMargin={20} // Increased margin for angled text
+            interval={0} // Critical - forces all labels to show
+            height={60} // Give more vertical space for labels
+            axisLine={false}
+          />
           <YAxis
             domain={[0, 'auto']}
             tickLine={false}

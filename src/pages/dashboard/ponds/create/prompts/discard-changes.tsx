@@ -25,7 +25,7 @@ export default function DiscardChanges({ open, setOpen, onDiscard }: DiscardChan
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="max-h-fit w-fit overflow-hidden px-[2.5rem] py-[3.75rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]"
+        className="max-h-fit w-[90%] overflow-hidden rounded-lg px-[2.5rem] py-[3.75rem] shadow-[0px_4px_16px_-8px_#0F4B2F29] lg:w-fit"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <VisuallyHidden>

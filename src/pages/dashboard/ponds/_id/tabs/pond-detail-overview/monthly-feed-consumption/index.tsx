@@ -145,8 +145,14 @@ export default function MonthlyFeedConsumption({ dateRange }: MonthlyFeedConsump
             <CartesianGrid horizontal={false} vertical={false} />
             <XAxis
               dataKey="month"
+              tick={{
+                fontSize: Math.max(6, 10 - chartData?.length * 0.2), // Adjust these values as needed
+              }}
+              angle={chartData?.length > 6 ? -45 : 0}
               tickLine={false}
-              tickMargin={10}
+              tickMargin={20} // Increased margin for angled text
+              interval={0} // Critical - forces all labels to show
+              height={60} // Give more vertical space for labels
               axisLine={false}
               tickFormatter={(value) => formatDate(value)}
             />

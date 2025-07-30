@@ -113,10 +113,14 @@ export default function FeedInsight({ dateRange }: FeedingInsightProps) {
           <XAxis
             dataKey="feedType"
             // tick={<CustomizedAxisTick />}
-            tick={{ fontSize: 8 }}
-            angle={-30}
+            tick={{
+              fontSize: Math.max(6, 10 - restructuredData?.length * 0.2), // Adjust these values as needed
+            }}
+            angle={restructuredData?.length > 6 ? -45 : 0}
             tickLine={false}
-            tickMargin={8}
+            tickMargin={20} // Increased margin for angled text
+            interval={0} // Critical - forces all labels to show
+            height={60} // Give more vertical space for labels
             hide={false}
             axisLine={true}
           />

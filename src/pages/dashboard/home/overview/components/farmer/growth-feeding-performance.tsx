@@ -223,7 +223,18 @@ export default function GrowthFeedingPerformance({ dateRange }: GrowthFeedingPro
         <ChartContainer className="-ml-5 mt-[10px] w-full" config={feedConsumedByPondConfig}>
           <BarChart accessibilityLayer data={restructuredData} height={100} barCategoryGap={20}>
             <CartesianGrid />
-            <XAxis dataKey="pondName" tickLine={false} tickMargin={10} axisLine={false} />
+            <XAxis
+              dataKey="pondName"
+              tick={{
+                fontSize: Math.max(6, 10 - restructuredData?.length * 0.2), // Adjust these values as needed
+              }}
+              angle={restructuredData?.length > 6 ? -45 : 0}
+              tickLine={false}
+              tickMargin={20} // Increased margin for angled text
+              interval={0} // Critical - forces all labels to show
+              height={60} // Give more vertical space for labels
+              axisLine={false}
+            />
             <YAxis
               tick={{ fill: '#737780', fontSize: 10 }}
               axisLine={false}

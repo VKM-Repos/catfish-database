@@ -1,12 +1,13 @@
 import { ChartHeader } from 'src/components/global/chart-header'
 import { Card } from 'src/components/ui/card'
 import * as React from 'react'
-import GaugeChart from 'react-gauge-chart'
+// import GaugeChart from 'react-gauge-chart'
 import { Interval, IntervalFilter } from 'src/components/ui/interval-filter'
 import { DateRange } from 'src/components/ui/mega-datepicker'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import { Text } from 'src/components/ui/text'
+import GaugeChartWrapper from 'src/components/ui/GaugeChartWrapper'
 
 interface FeedConversionRatioProps {
   dateRange?: DateRange
@@ -91,14 +92,13 @@ export default function FeedConversionRatio({ dateRange, farmerId }: FeedConvers
           </div>
         ) : (
           <>
-            <GaugeChart
+            <GaugeChartWrapper
               className="min-h-fit"
               nrOfLevels={420}
               arcsLength={[1.5, 2.0, 1.5]}
               colors={['#FAC898', '#FF5F15', '#CC5500']}
               percent={value}
               arcPadding={0.01}
-              // formatTextValue={(value: string) => (Number(value) / 100).toString()}
               formatTextValue={() => latestFCR.toFixed(2)}
               textColor="#000"
             />

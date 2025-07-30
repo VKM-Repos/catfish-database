@@ -20,7 +20,7 @@ import CostDetailsForm from './cost-details'
 import { ClientErrorType } from 'src/types'
 
 const useGetPonds = createGetQueryHook({
-  endpoint: '/ponds/farmers/me',
+  endpoint: '/ponds/farmers/me?size=1000000&sortBy=DESC',
   responseSchema: z.any(),
   queryKey: ['my-ponds'],
 })
@@ -67,7 +67,7 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
       supplier: '',
       singleCost: '',
       costOfSupply: '',
-      fishDescription: '',
+      initialWeight: '',
       fishSize: '',
       ...transformedInitial,
     },

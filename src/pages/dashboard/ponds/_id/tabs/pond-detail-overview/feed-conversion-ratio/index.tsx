@@ -7,7 +7,7 @@ import { Card } from 'src/components/ui/card'
 import * as SolarIconSet from 'solar-icon-set'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Text } from 'src/components/ui/text'
-import GaugeChart from 'react-gauge-chart'
+import GaugeChartWrapper from 'src/components/ui/GaugeChartWrapper'
 
 type Interval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | 'ALL'
 type DateRange = { from: Date; to: Date }
@@ -129,7 +129,7 @@ export default function FeedConversionRatio({ dateRange }: FeedConversionRatioPr
           </div>
         ) : (
           <>
-            <GaugeChart
+            <GaugeChartWrapper
               className="min-h-fit"
               nrOfLevels={420}
               arcsLength={[1.5, 2.0, 1.5]}

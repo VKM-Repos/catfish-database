@@ -171,7 +171,7 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
                 </FormControl>
                 <FormMessage />
                 <Text align="left" size="base" color="text-neutral-500" weight="light">
-                  {description.length}/500
+                  {(description ?? '').length}/500
                 </Text>
               </FormItem>
             )}

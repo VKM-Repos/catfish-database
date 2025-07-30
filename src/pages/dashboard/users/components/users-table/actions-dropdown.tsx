@@ -32,7 +32,7 @@ export function ActionsDropdown({ user }: ActionsDropdownProps) {
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.users.view(user.id))}>View</DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate(paths.dashboard.users.edit(user.id))}>Edit</DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setMenu(true)}>
-            {user.accountNonLocked ? 'Deactivate User' : 'Activate User'}{' '}
+            {user.enabled ? 'Deactivate User' : 'Activate User'}{' '}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

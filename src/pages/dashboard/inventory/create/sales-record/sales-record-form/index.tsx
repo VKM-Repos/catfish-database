@@ -54,7 +54,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
 
   // Fetch ponds
   const useGetPonds = createGetQueryHook({
-    endpoint: '/ponds/farmers/me',
+    endpoint: '/ponds/farmers/me?size=1000000&sortBy=DESC',
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
   })

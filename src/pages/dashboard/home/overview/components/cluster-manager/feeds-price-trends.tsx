@@ -88,7 +88,7 @@ export function FeedsPriceTrends({ dateRange }: FeedsPriceTrendsProps) {
     <Card className=" w-full border border-neutral-200 p-4">
       <div className="flex">
         <ChartHeader
-          title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} 'Trend of feed prices per kg'`}
+          title={`${interval.charAt(0).toUpperCase()}${interval.slice(1).toLowerCase()} Trend of feed prices per kg`}
           action={<IntervalFilter value={interval} onChange={setInterval} />}
         />
       </div>

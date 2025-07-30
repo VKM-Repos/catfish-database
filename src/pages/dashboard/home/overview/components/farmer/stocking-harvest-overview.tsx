@@ -88,25 +88,31 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
       </div>
       <FlexBox className="w-full" direction="col">
         <FlexBox direction="col" className="w-full gap-2">
-          {chartData.map((item, index) => (
-            <FlexBox className="w-full" key={index} gap="gap-2" direction="col">
-              <div className="flex w-full items-center justify-between text-[14px] font-medium">
-                <span className="text-sm">{item.reason}</span>
-                <span className="text-sm">{item.quantity}</span>
-              </div>
-              <div className="relative max-w-full rounded-full bg-gray-200" style={{ width: '300px', height: '8px' }}>
-                <div
-                  className="max-w-full rounded-full"
-                  style={{
-                    backgroundColor: item.fill,
-                    width: `${item.quantity / 100}px`,
-                    maxWidth: '300px',
-                    height: '8px',
-                  }}
-                />
-              </div>
-            </FlexBox>
-          ))}
+          {/* Calculate max quantity once */}
+          {(() => {
+            const maxQuantity = Math.max(...chartData.map((item) => item.quantity), 1) // Ensure at least 1 to avoid division by zero
+
+            return chartData.map((item, index) => (
+              <FlexBox className="w-full" key={index} gap="gap-2" direction="col">
+                <div className="flex w-full items-center justify-between text-[14px] font-medium">
+                  <span className="text-sm">{item.reason}</span>
+                  <span className="text-sm">{item.quantity}</span>
+                </div>
+                <div className="relative max-w-full rounded-full bg-gray-200" style={{ width: '300px', height: '8px' }}>
+                  <div
+                    className="max-w-full rounded-full"
+                    style={{
+                      backgroundColor: item.fill,
+                      width: `${(item.quantity / maxQuantity) * 300}px`, // Scale to 300px container
+                      maxWidth: '300px',
+                      height: '8px',
+                      transition: 'width 0.3s ease', // Optional: Add smooth animation
+                    }}
+                  />
+                </div>
+              </FlexBox>
+            ))
+          })()}
         </FlexBox>
         <FlexBox className="mt-[24px] w-full" direction="row">
           <Card className="w-full p-[10px]">

@@ -107,7 +107,7 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
                   placeholder="Input initial average body weight of fish in grams"
                   {...field}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9]/g, '')
+                    const value = e.target.value.replace(/[^0-9.]/g, '')
                     field.onChange(value)
                   }}
                 />

@@ -132,7 +132,7 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
       mortality: null,
       averageWeightToFish: 1,
       weightGain: Number.parseInt(samplingForm.totalWeightGain),
-      feedConsumed: 0,
+      feedConsumed: 0.1,
       behaviourObserve: null,
       diseaseObserve: null,
       diseaseType: null,

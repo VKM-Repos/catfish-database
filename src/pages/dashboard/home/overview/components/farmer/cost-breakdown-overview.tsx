@@ -111,7 +111,7 @@ export default function CostBreakdownOverview({ dateRange }: CostBreakdownOvervi
               Cost per Kg of Fish
             </Text>
             <Text size="lg" weight="semibold">
-              87%
+              ₦152
             </Text>
             <Text size="xs">At market average</Text>
           </Card>

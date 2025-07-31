@@ -29,7 +29,7 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
   const { reset: resetStepper } = useStepperStore()
-  const { combineDateTime } = useDateStore()
+  const { combineDateTime, resetDateTime } = useDateStore()
   const { reset: resetDailyFeeding } = useDailyFeedingStore()
   const { reset: resetWaterQuality } = useWaterQualityStore()
   const { reset: resetFishBehavior } = useFishBehaviorStore()
@@ -64,6 +64,7 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
       resetWaterQuality()
       resetFishBehavior()
       resetFishDisease()
+      resetDateTime()
       setOpenDialog(true)
       if (openDialog) {
         setInterval(() => {
@@ -185,7 +186,7 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
               Back
             </Button>
             {recordFishDisease && (
-              <Button disabled={createFishDisease.isLoading} type="submit">
+              <Button disabled={createFishDisease.isLoading || !combineDateTime} type="submit">
                 Continue
               </Button>
             )}

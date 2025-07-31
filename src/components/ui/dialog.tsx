@@ -50,6 +50,20 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+export const SideDialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPrimitive.Content
+    ref={ref}
+    className={cn('fixed z-50 grid border bg-white shadow-lg duration-200 sm:rounded-lg', className)}
+    {...props}
+  >
+    {children}
+  </DialogPrimitive.Content>
+))
+SideDialogContent.displayName = 'SideDialogContent'
+
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
 )

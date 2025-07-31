@@ -269,7 +269,10 @@ export function FishDisease({
               Back
             </Button>
             {recordFishDisease && (
-              <Button disabled={createFishDisease.isLoading} type="submit">
+              <Button
+                disabled={createFishDisease.isLoading || updateFishDisease.isLoading || !combineDateTime}
+                type="submit"
+              >
                 {reportId ? 'Update' : 'Continue'}
               </Button>
             )}

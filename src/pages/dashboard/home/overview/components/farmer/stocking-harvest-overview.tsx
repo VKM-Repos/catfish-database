@@ -87,32 +87,34 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
       </div>
       <FlexBox className="w-full" direction="col">
         <FlexBox direction="col" className="w-full gap-2">
-          {chartData.map((item, index) => (
-            <FlexBox className="w-full text-gray-500" key={index} gap="gap-2" direction="col">
-              <div className="flex w-full flex-col items-start  justify-between text-[14px] font-medium lg:flex-row lg:items-center">
-                <span className="text-sm ">
-                  {item.reason.charAt(0).toUpperCase() + item.reason.slice(1).toLowerCase()}
-                </span>
-                <span className="text-sm">{item.quantity}</span>
-              </div>
-              <div
-                className="relative max-w-[104px] rounded-full bg-gray-200 lg:w-[300px] lg:max-w-full"
-                style={{ height: '8px' }}
-              >
-                <div
-                  className="max-w-full rounded-full lg:max-w-[300px]"
-                  style={{
-                    backgroundColor: item.fill,
-                    width: `${item.quantity / 100}px`,
-                    // maxWidth: '300px',
-                    height: '8px',
-                  }}
-                />
-              </div>
-            </FlexBox>
-          ))}
+          {/* Calculate max quantity once */}
+          {(() => {
+            const maxQuantity = Math.max(...chartData.map((item) => item.quantity), 1) // Ensure at least 1 to avoid division by zero
+
+            return chartData.map((item, index) => (
+              <FlexBox className="w-full text-gray-500" key={index} gap="gap-2" direction="col">
+                <div className="flex w-full flex-col items-start justify-between text-[14px] font-medium lg:flex-row lg:items-center">
+                  <span className="text-sm">{item.reason}</span>
+                  <span className="text-sm">{item.quantity}</span>
+                </div>
+
+                <div className="relative h-[8px] w-full rounded-full bg-gray-200 ">
+                  <div
+                    className="h-[8px] rounded-full transition-all duration-300 ease-in-out"
+                    style={{
+                      backgroundColor: item.fill,
+                      width: `${(item.quantity / maxQuantity) * 100}%`,
+                      maxWidth: '100%',
+                      height: '8px',
+                      transition: 'width 0.3s ease', // Optional: Add smooth animation
+                    }}
+                  />
+                </div>
+              </FlexBox>
+            ))
+          })()}
         </FlexBox>
-        <FlexBox className="mt-[24px] w-full flex-col lg:flex-row" direction="row">
+        <FlexBox className="mt-[24px] flex-col lg:w-full lg:flex-row" direction="row">
           <Card className="w-full p-[10px]">
             <Text size="sm" weight="normal">
               Survival Rate

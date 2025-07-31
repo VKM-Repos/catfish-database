@@ -24,26 +24,26 @@ export default function FcrOverall({ dateRange }: FcrOverallProps) {
   })
   return (
     <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full items-center lg:p-[24px]">
-      <div className="flex  w-full flex-col">
-        <CardContent className="">
-          <FlexBox className="mt-[20px] w-full" direction="col">
-            <FlexBox className="mt-[20px] w-full" direction="row">
-              <div className="flex h-[140px] w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px] lg:h-fit">
-                <Text className="font-medium leading-[20px]">Feed Conversion Ratio</Text>
-                <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.fcrValue : 0}</Text>
-                <Text className="text-[10px] font-medium text-success-500">Good</Text>
+      <div className="flex w-full flex-col lg:h-full lg:py-5">
+        <CardContent className="flex-1">
+          <FlexBox className="my-[20px] h-full w-full" direction="col">
+            <FlexBox className="  w-full lg:flex-1" direction="row">
+              <div className="flex h-[140px] w-full flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px]">
+                <Text className="font-medium leading-[20px] lg:text-lg">Feed Conversion Ratio</Text>
+                <Text className="text-[16px] font-semibold lg:text-xl">{fcr ? fcr[0]?.fcrValue : 0}</Text>
+                <Text className="text-[10px] font-medium text-success-500 lg:text-sm">Good</Text>
               </div>
-              <div className="flex min-h-[140px] w-full flex-col justify-around gap-2 rounded-md border border-neutral-100 p-[10px] lg:min-h-fit">
-                <Text className="font-medium leading-[20px]">Feed Cost</Text>
-                <Text className="text-[16px] font-semibold">₦{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
-                <Text className="text-[10px] font-medium text-[#000AFF]">₦5.5 per kg</Text>
+              <div className="flex min-h-[140px] w-full flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px] lg:min-h-fit">
+                <Text className="font-medium leading-[20px] lg:text-lg">Feed Cost</Text>
+                <Text className="text-[16px] font-semibold  lg:text-xl">₦{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
+                <Text className="text-[10px] font-medium text-[#000AFF] lg:text-sm">₦5.5 per kg</Text>
               </div>
             </FlexBox>
 
-            <div className="flex w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
-              <Text className="font-medium leading-[20px]">Total Feed Consumed</Text>
-              <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.totalFeedConsumed : 0} kg</Text>
-              <Text className="text-[10px] font-medium">For current production cycle</Text>
+            <div className="flex w-full flex-1 flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px]">
+              <Text className="text-lg font-medium leading-[20px]">Total Feed Consumed</Text>
+              <Text className="text-xl font-semibold">{fcr ? fcr[0]?.totalFeedConsumed : 0} kg</Text>
+              <Text className="text-sm font-medium">For current production cycle</Text>
             </div>
           </FlexBox>
         </CardContent>

@@ -5,7 +5,7 @@ import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Heading } from 'src/components/ui/heading'
-import { FarmersForm } from '../components/forms/farmers-form'
+import { FarmersForm } from './forms/farmers-form'
 
 export default function CreateFarmersPage() {
   const navigate = useNavigate()

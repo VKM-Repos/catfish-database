@@ -4,12 +4,13 @@ import { persist } from 'zustand/middleware'
 
 interface DateStore {
   selectedDate: string
-  selectedTime?: string
+  selectedTime?: string | undefined
   combineDateTime?: string | null
   setSelectedDate: (date: string) => void
   setCombineDateTime: (dateTime: string) => void
   setSelectedTime: (time: string) => void
   resetDate: () => void
+  resetDateTime: () => void
 }
 
 const getDefaultDate = () => {
@@ -27,6 +28,7 @@ export const useDateStore = create<DateStore>()(
       setCombineDateTime: (dateTime) => set({ combineDateTime: dateTime }),
       setSelectedTime: (time) => set({ selectedTime: time }),
       resetDate: () => set({ selectedDate: getDefaultDate() }),
+      resetDateTime: () => set({ selectedDate: getDefaultDate(), combineDateTime: null, selectedTime: '' }),
     }),
     {
       name: 'date-storage',

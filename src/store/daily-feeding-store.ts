@@ -20,8 +20,6 @@ const initialValues: DailyFeedingFormData = {
   feedType: '',
   pelletSize: '',
   feedQuantity: '',
-  feedTime: '',
-  combinedDateTime: '',
 }
 
 export const useDailyFeedingStore = create<DailyFeedingStore>()(

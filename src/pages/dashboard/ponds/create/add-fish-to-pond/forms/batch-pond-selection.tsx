@@ -2,9 +2,14 @@ import { UseFormReturn } from 'react-hook-form'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'src/components/ui/select'
 import { Input } from 'src/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
+import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
+import { Button } from 'src/components/ui/button'
+import { Check, ChevronDown } from 'lucide-react'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'src/components/ui/command'
+import { cn } from 'src/lib/utils'
+import { useState } from 'react'
 
 export default function BatchPondSelection({ form, pondNames }: { form: UseFormReturn<any>; pondNames: string[] }) {
   const FormTooltip = ({ text }: { text: string }) => {
@@ -19,7 +24,8 @@ export default function BatchPondSelection({ form, pondNames }: { form: UseFormR
       </TooltipProvider>
     )
   }
-
+  const [openCommand, setOpenCommand] = useState(false)
+  const [value, setValue] = useState('')
   return (
     <>
       <div className="flex w-full flex-col gap-2">
@@ -53,24 +59,48 @@ export default function BatchPondSelection({ form, pondNames }: { form: UseFormR
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Select
-                  value={field.value ? String(field.value) : ''}
-                  onValueChange={(value) => field.onChange(value)}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="font-light">
-                    <div className="flex items-center justify-center gap-2">
-                      <SelectValue placeholder="Select pond" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {pondNames?.map((name: string, index: number) => (
-                      <SelectItem key={index} value={name}>
-                        {name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Popover open={openCommand} onOpenChange={setOpenCommand}>
+                  <PopoverTrigger className="w-full" asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openCommand}
+                      className="w-full justify-between border-neutral-200 py-2 text-neutral-500"
+                    >
+                      <div className="flex items-center gap-5">
+                        {' '}
+                        <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
+                        {value ? pondNames?.find((name: string) => name === value) : 'Select Pond'}
+                      </div>
+                      <ChevronDown className="opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[600px]">
+                    <Command>
+                      <CommandInput placeholder="Search pond..." className="h-9" />
+                      <CommandList>
+                        <CommandEmpty>No pond found.</CommandEmpty>
+                        <CommandGroup>
+                          {pondNames?.map((name: string) => (
+                            <CommandItem
+                              key={name}
+                              value={name}
+                              onSelect={(currentValue) => {
+                                setValue(currentValue === value ? '' : currentValue)
+                                setOpenCommand(false)
+                                field.onChange(name)
+                                form.trigger('pondId')
+                              }}
+                            >
+                              {name}
+                              <Check className={cn('ml-auto', value === name ? 'opacity-100' : 'opacity-0')} />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </FormControl>
               <FormMessage />
             </FormItem>

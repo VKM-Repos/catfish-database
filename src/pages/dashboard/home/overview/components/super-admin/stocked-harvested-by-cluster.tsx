@@ -105,7 +105,18 @@ export function StockedHarvestedByCluster({ dateRange }: StockedHarvestedByClust
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={groupFishAvailable}>
             <CartesianGrid vertical={true} />
-            <XAxis dataKey="groupName" tickLine={false} tickMargin={10} axisLine={false} />
+            <XAxis
+              dataKey="groupName"
+              tick={{
+                fontSize: Math.max(6, 10 - groupFishAvailable?.length * 0.2), // Adjust these values as needed
+              }}
+              angle={groupFishAvailable?.length > 6 ? -45 : 0}
+              tickLine={false}
+              tickMargin={20} // Increased margin for angled text
+              interval={0} // Critical - forces all labels to show
+              height={60} // Give more vertical space for labels
+              axisLine={false}
+            />
             <YAxis
               tick={{ fill: '#737780', fontSize: 10 }}
               axisLine={false}

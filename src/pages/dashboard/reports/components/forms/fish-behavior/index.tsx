@@ -37,6 +37,7 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
     setReportId,
     reset: resetStore,
   } = useFishBehaviorStore()
+
   const useFishBehavior = createPostMutationHook({
     endpoint: `/behaviors`,
     requestSchema: z.any(),
@@ -249,7 +250,10 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
               Back
             </Button>
             {recordFishBehavior && (
-              <Button disabled={createFishBehavior.isLoading || updateFishBehavior.isLoading} type="submit">
+              <Button
+                disabled={createFishBehavior.isLoading || updateFishBehavior.isLoading || !combineDateTime}
+                type="submit"
+              >
                 {reportId ? 'Update' : 'Continue'}
               </Button>
             )}

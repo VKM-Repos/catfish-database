@@ -20,7 +20,7 @@ export default function CreateSampling() {
       case 1:
         return <SamplingIndexForm handleNext={nextStep} />
       case 2:
-        return <SortingForm handlePrevious={prevStep} handleNext={nextStep} />
+        return <SortingForm handlePrevious={prevStep} />
 
       default:
         return null

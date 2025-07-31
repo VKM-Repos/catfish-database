@@ -7,6 +7,7 @@ import { useDailyFeedingStore } from 'src/store/daily-feeding-store'
 import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 import { useFishSamplingStore } from 'src/store/fish-sampling.store'
+import { useDateStore } from 'src/store/report-date-store'
 import { useSamplingStepperStore } from 'src/store/sampling-stepper-store'
 import { useWaterQualityStore } from 'src/store/water-quality-store'
 
@@ -26,6 +27,7 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
   const { reset: resetFishBehavior } = useFishBehaviorStore()
   const { reset: resetFishDisease } = useFishDiseaseStore()
   const { reset: resetStepper } = useStepperStore()
+  const { resetDateTime } = useDateStore()
 
   const handleCancel = () => {
     onOpenChange(false)
@@ -37,7 +39,7 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
     resetWaterQuality()
     resetFishBehavior()
     resetFishDisease()
-    resetStepper()
+    resetDateTime()
     navigate(paths.dashboard.home.getStarted)
     resetForm()
   }
@@ -51,6 +53,7 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
     resetFishBehavior()
     resetFishDisease()
     resetStepper()
+    resetDateTime()
     resetForm()
   }
   return (

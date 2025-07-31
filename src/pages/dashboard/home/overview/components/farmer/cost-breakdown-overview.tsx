@@ -75,10 +75,10 @@ export default function CostBreakdownOverview({ dateRange }: CostBreakdownOvervi
     },
   } satisfies ChartConfig
   return (
-    <Card className="flex  h-[400px] max-h-[400px] min-h-[400px] w-full items-center p-[24px]">
-      <div className="flex w-full flex-col">
+    <Card className="flex  max-h-[400px] w-full items-center   pl-2  lg:h-[400px] lg:min-h-[400px] lg:p-[24px] ">
+      <div className="flex h-full w-full flex-col justify-between">
         <ChartHeader title={'Cost Breakdown'} />
-        <CardContent>
+        <CardContent className="p-0 lg:p-6">
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px] px-0">
             <PieChart>
               <ChartTooltip
@@ -96,16 +96,16 @@ export default function CostBreakdownOverview({ dateRange }: CostBreakdownOvervi
           </ChartContainer>
         </CardContent>
       </div>
-      <FlexBox className="w-full" direction="row" align="center">
-        <FlexBox direction="col" className="w-full gap-2">
+      <FlexBox className="h-full w-fit lg:w-full" direction="row" align="center">
+        <FlexBox direction="col" className="h-full w-fit gap-0 lg:h-fit lg:w-full lg:gap-2" justify="end">
           {dataWithColors?.map((item: any, index: number) => (
-            <FlexBox key={index} align="center" gap="gap-2">
-              <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item?.fill }} />
-              <span className="text-sm !capitalize">{item?.maintenanceType}</span>
+            <FlexBox key={index} align="end" gap="gap-2" className="gap-0 lg:gap-2">
+              <div className="h-2 w-2  rounded-full lg:h-4 lg:w-4" style={{ backgroundColor: item?.fill }} />
+              <span className="text-[10px] lg:text-sm">{item?.maintenanceType}</span>
             </FlexBox>
           ))}
         </FlexBox>
-        <FlexBox className="mt-[24px] w-full" direction="col">
+        <FlexBox className="mt-[24px] hidden w-full lg:flex" direction="col">
           <Card className="w-full p-[10px]">
             <Text size="sm" weight="medium">
               Cost per Kg of Fish

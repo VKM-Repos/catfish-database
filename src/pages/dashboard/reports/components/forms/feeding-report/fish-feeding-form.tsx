@@ -499,9 +499,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                 {reportId ? 'Update' : 'Continue'}
               </Button>
             )}
-            <Button onClick={handleNext} type="button">
-              Continue
-            </Button>
+            <Button type="submit">Continue</Button>
           </div>
         </form>
       </Form>

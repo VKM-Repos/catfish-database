@@ -64,7 +64,7 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-4">
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm md:grid-cols-4">
         <StatsCard
           color={'#F8D082'}
           label={'Total revenue generated'}

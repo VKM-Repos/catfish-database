@@ -165,7 +165,7 @@ export default function GrowthFeedingPerformance({ dateRange }: GrowthFeedingPro
     },
   }
   return (
-    <div className="flex w-full gap-[20px]">
+    <div className="flex w-full flex-col gap-[20px] lg:flex-row">
       <Card className="w-full rounded-[.875rem] border border-neutral-200 p-4">
         <div className="w-full gap-5">
           <div className="flex">

@@ -19,13 +19,13 @@ export default function DashboardMenu() {
     <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white py-4">
       <FlexBox justify="between" align="center" className="sticky mb-[2rem] mt-4 w-full py-[.625rem]">
         <FlexBox direction="col" gap="gap-1">
-          <Heading className="!text-[1.875rem] font-semibold">{title} Overview</Heading>
-          <Text className="text-sm text-neutral-700">
+          <Heading className="!text-base font-semibold lg:!text-[1.875rem]">{title} Overview</Heading>
+          <Text className="hidden text-sm text-neutral-700 lg:inline">
             View and manage your {title.toLowerCase()} performance metrics
           </Text>
         </FlexBox>
         {user?.role !== 'SUPER_ADMIN' && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 lg:gap-2">
             {user?.role === 'FARMER' ? (
               <DropDownOption />
             ) : (

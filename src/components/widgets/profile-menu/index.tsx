@@ -75,7 +75,7 @@ const ProfileMenu = () => {
   ]
 
   return (
-    <div className="flex items-center">
+    <div className="flex h-fit items-center">
       <Popover>
         <PopoverTrigger>
           <div className="flex cursor-pointer items-center gap-4">
@@ -93,7 +93,7 @@ const ProfileMenu = () => {
             <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
           </div>
         </PopoverTrigger>
-        <PopoverContent className="relative mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
+        <PopoverContent className="relative z-[91] mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
           {profileLinks.map(({ label, href, action, icon }) => {
             const content = (
               <div className="flex items-center gap-2 rounded-md p-2 hover:bg-primary-100">

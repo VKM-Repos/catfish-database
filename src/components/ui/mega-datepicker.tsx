@@ -216,7 +216,7 @@ export default function MegaDatePicker({ value, onChange, className }: MegaDateP
         </PopoverTrigger>
       </div>
 
-      <PopoverContent className="min-w-[450px] overflow-hidden p-0" align="end">
+      <PopoverContent className="min-w-[390px] overflow-hidden p-0 lg:min-w-[450px]" align="end">
         <div className="grid max-h-[450px] grid-cols-12 rounded-lg bg-white shadow-lg">
           {/* Left Panel - Predefined Filters */}
           <div className="col-span-4 min-w-[100px] border-r border-neutral-200 p-0">

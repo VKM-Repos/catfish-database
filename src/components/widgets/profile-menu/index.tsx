@@ -127,7 +127,7 @@ const ProfileMenu = ({ onLinkClick }: ProfileMenuProps) => {
       {/* Logout Confirmation Dialog */}
       <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
         <DialogOverlay
-          className="fixed inset-0 z-[95] bg-black/70 backdrop-blur-lg"
+          className="fixed inset-0 z-[95] bg-black/70 backdrop-blur-lg lg:bg-black/50 lg:backdrop-blur-sm"
           onClick={() => setIsLogoutDialogOpen(false)}
         />
         <DialogContent className="z-[100] w-[90%] overflow-hidden rounded-lg p-8 lg:w-[full]">

@@ -15,6 +15,7 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FishBehavior } from '../../../components/forms/fish-behavior'
 import { FishDisease } from '../../../components/forms/fish-disease'
 import { Mortality } from '../../../components/forms/mortality'
+import { DateTimePicker } from '../../../components/forms/date-time-picker'
 
 export default function CreateDailyFeedingReportPage() {
   const { step, next, previous } = useStepperStore()
@@ -57,10 +58,11 @@ export default function CreateDailyFeedingReportPage() {
 
   return (
     <>
-      <FlexBox className="mx-10 w-full">
+      <FlexBox className="mx-10 flex items-center justify-between">
         <CustomBreadcrumb />
+        <DateTimePicker dateLabel="Change Date" timeLabel="Time" required={true} className="items-start" />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto max-w-[80%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-5 max-w-[80%]">
         <Stepper />
         <RenderSteps />
       </FlexBox>

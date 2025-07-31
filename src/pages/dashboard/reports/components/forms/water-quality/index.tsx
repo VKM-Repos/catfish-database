@@ -8,7 +8,7 @@ import { Text } from 'src/components/ui/text'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { CreateReportDialog } from '../../modals/create-report-modal'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Textarea } from 'src/components/ui/textarea'
@@ -20,13 +20,15 @@ import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { useWaterQualityStore } from 'src/store/water-quality-store'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
+import { useDateStore } from 'src/store/report-date-store'
 
 export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
-  const navigate = useNavigate()
   const [recordWaterQuality, setRecordWaterQuality] = useState(false)
   const timeInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
+  const { combineDateTime } = useDateStore()
+
   const {
     formData,
     activeInputs,
@@ -555,7 +557,10 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
               Back
             </Button>
             {recordWaterQuality && (
-              <Button disabled={createWaterQuality.isLoading} type="submit">
+              <Button
+                disabled={createWaterQuality.isLoading || updateWaterQuality.isLoading || !combineDateTime}
+                type="submit"
+              >
                 {reportId ? 'Update' : 'Continue'}
               </Button>
             )}

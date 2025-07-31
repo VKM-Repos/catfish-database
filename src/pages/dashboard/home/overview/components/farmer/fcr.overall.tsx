@@ -23,17 +23,17 @@ export default function FcrOverall({ dateRange }: FcrOverallProps) {
     },
   })
   return (
-    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full items-center p-[24px]">
-      <div className="flex w-full flex-col">
-        <CardContent>
+    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full items-center lg:p-[24px]">
+      <div className="flex  w-full flex-col">
+        <CardContent className="">
           <FlexBox className="mt-[20px] w-full" direction="col">
             <FlexBox className="mt-[20px] w-full" direction="row">
-              <div className="flex w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
+              <div className="flex h-[140px] w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px] lg:h-fit">
                 <Text className="font-medium leading-[20px]">Feed Conversion Ratio</Text>
                 <Text className="text-[16px] font-semibold">{fcr ? fcr[0]?.fcrValue : 0}</Text>
                 <Text className="text-[10px] font-medium text-success-500">Good</Text>
               </div>
-              <div className="flex w-full flex-col gap-2 rounded-md border border-neutral-100 p-[10px]">
+              <div className="flex min-h-[140px] w-full flex-col justify-around gap-2 rounded-md border border-neutral-100 p-[10px] lg:min-h-fit">
                 <Text className="font-medium leading-[20px]">Feed Cost</Text>
                 <Text className="text-[16px] font-semibold">₦{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
                 <Text className="text-[10px] font-medium text-[#000AFF]">₦5.5 per kg</Text>

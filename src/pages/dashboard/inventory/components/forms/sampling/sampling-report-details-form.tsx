@@ -113,7 +113,7 @@ export default function SamplingDetailForm({
         <Text className="text-sm font-medium text-neutral-500">Feeding Time</Text>
         <FormField
           control={form.control}
-          name="feedTime"
+          name="feedQuantity"
           render={({ field }) => (
             <FormItem>
               <FormControl>

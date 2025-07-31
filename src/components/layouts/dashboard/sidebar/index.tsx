@@ -8,7 +8,11 @@ import { useState } from 'react'
 import { container, item } from 'src/components/animation'
 import { AnchorButton } from 'src/components/ui/anchor-button'
 
-export function Sidebar() {
+type SidebarProps = {
+  onLinkClick?: () => void
+}
+
+export function Sidebar({ onLinkClick }: SidebarProps) {
   const { pathname } = useLocation()
   const { links } = useSideBar()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -58,6 +62,7 @@ export function Sidebar() {
                         <motion.li key={label} variants={item}>
                           <Link
                             to={typeof path === 'string' ? path : ''}
+                            onClick={onLinkClick}
                             className={`${
                               pathname === path ? '!font-semibold text-primary-500' : 'text-neutral-500'
                             } flex items-center justify-start space-x-4 hover:text-primary-600`}
@@ -74,6 +79,7 @@ export function Sidebar() {
                 <AnchorButton size={'lg'} active={pathname === path}>
                   <Link
                     to={typeof path === 'string' ? path : path.root}
+                    onClick={onLinkClick}
                     className={`${
                       pathname === path ? ' text-inherit' : 'text-neutral-500'
                     } flex w-full items-center justify-start space-x-3 whitespace-nowrap hover:text-primary-600`}

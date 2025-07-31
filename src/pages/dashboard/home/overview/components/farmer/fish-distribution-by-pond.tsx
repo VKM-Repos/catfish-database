@@ -57,9 +57,9 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
   } satisfies ChartConfig
   const totalQuantity = chartData.reduce((sum, item) => sum + item.quantity, 0)
   return (
-    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full items-center p-[24px]">
+    <Card className="flex max-h-[400px] w-full items-center pr-4 lg:h-[400px] lg:min-h-[400px] lg:p-[24px]">
       <div className="flex w-full flex-col">
-        <CardContent>
+        <CardContent className="py-2 pl-2 pr-0 lg:p-6">
           <ChartHeader title={'Fish Distribution by Pond'} />
 
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
@@ -74,14 +74,20 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
         </CardContent>
       </div>
 
-      <FlexBox direction="col" className="w-full">
+      <FlexBox direction="col" className="w-fit min-w-fit text-gray-500 lg:w-full">
         {chartData?.map((item: any, index: number) => (
           <>
-            <FlexBox key={index} align="center" gap="gap-2">
-              <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item?.fill }} />
-              <span className="text-sm !capitalize">{item?.reason}</span>
+            <FlexBox direction="col" className="!gap-0 lg:!gap-4">
+              <FlexBox key={index} align="center" gap="gap-2" justify="center">
+                <div className="h-3 w-3 rounded-full lg:h-4 lg:w-4" style={{ backgroundColor: item?.fill }} />
+                <span className="text-sm !capitalize">{item?.reason}</span>
+              </FlexBox>
+              <div className="ml-5">
+                <span className=" text-sm !capitalize">
+                  {item?.quantity} Fish <span className="hidden lg:inline">(30%)</span>
+                </span>
+              </div>
             </FlexBox>
-            <span className="text-sm !capitalize">{item?.quantity} Fish (30%)</span>
           </>
         ))}
       </FlexBox>

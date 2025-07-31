@@ -22,7 +22,7 @@ import { useFishHarvestStore } from 'src/store/fish-harvest-store'
 import { useSplitStore } from 'src/store/split-store'
 import { useDateStore } from 'src/store/report-date-store'
 
-export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: () => void; handleNext: () => void }) {
+export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) {
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
   const useSamplingReport = createPostMutationHook({
@@ -50,7 +50,7 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
   const { quantity, totalWeightHarvested, costPerKg, clearStore } = useFishHarvestStore()
 
   const { splitOccur: splitOccurInStore, reason: reasonInStore, setSplitOccur, setReason } = useSplitStore()
-  const { combineDateTime } = useDateStore()
+  const { combineDateTime, resetDateTime } = useDateStore()
 
   const samplingForm = {
     numberOfFishSampled,
@@ -89,7 +89,6 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
   const createHarvestReport = useHarvestReport()
 
   const validateForm = (data: z.infer<typeof sortingSchema>) => {
-    // Validate reason is required when split occurs
     if (data.splitOccur && data.reason === 'sampling') {
       form.setError('reason', {
         type: 'manual',
@@ -98,9 +97,7 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
       return false
     }
 
-    // Additional validation for transfer
     if (data.reason === 'transfer') {
-      // Validate at least one batch exists
       if (!data.batches || data.batches.length === 0) {
         form.setError('batches', {
           type: 'manual',
@@ -109,7 +106,6 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
         return false
       }
 
-      // Validate each batch has destinationPond and numberOfFishMoved
       const invalidBatches = data.batches.filter((batch) => !batch.pondId || !batch.quantity)
 
       if (invalidBatches.length > 0) {
@@ -172,10 +168,11 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
         }
         await createSamplingReport.mutateAsync(samplingData)
         await createHarvestReport.mutateAsync(harvestData)
+        resetDateTime()
         setOpenConfirmDialog(false)
-        // handleNext()
       } else {
         await createSamplingReport.mutateAsync(samplingData)
+        resetDateTime()
         setOpenConfirmDialog(false)
         setOpenDialog(true)
       }
@@ -196,9 +193,6 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
     }
   }
 
-  // if (createSamplingReport.isLoading) {
-  //   return <LoadingScreen />
-  // }
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={form.reset} onOpenChange={setOpenDialog} />
@@ -314,7 +308,7 @@ export function SortingForm({ handlePrevious, handleNext }: { handlePrevious: ()
             <Button variant={'outline'} onClick={handlePrevious}>
               Back
             </Button>
-            <Button disabled={createSamplingReport.isLoading} type="submit">
+            <Button disabled={createSamplingReport.isLoading || !combineDateTime} type="submit">
               Continue
             </Button>
           </div>

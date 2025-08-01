@@ -75,7 +75,7 @@ export default function CostBreakdownOverview({ dateRange }: CostBreakdownOvervi
     },
   } satisfies ChartConfig
   return (
-    <Card className="flex  max-h-[400px] w-full items-center   pl-2  lg:h-[400px] lg:min-h-[400px] lg:p-[24px] ">
+    <Card className="flex max-h-[400px] w-full items-center border-neutral-200   pl-2  lg:h-[400px] lg:min-h-[400px] lg:p-[24px] ">
       <div className="flex h-full w-full flex-col justify-between">
         <ChartHeader title={'Cost Breakdown'} />
         <CardContent className="p-0 lg:p-6">

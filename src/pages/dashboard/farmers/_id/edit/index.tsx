@@ -47,7 +47,7 @@ export default function EditFarmerPage() {
 
   return (
     <Dialog open={true} onOpenChange={() => navigate(-1)}>
-      <DialogContent className="max-w-[478px] overflow-hidden p-8">
+      <DialogContent className="overflow-hidden p-8 lg:max-w-[478px]">
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader type="dots" size={24} />

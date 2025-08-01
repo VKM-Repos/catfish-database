@@ -58,13 +58,24 @@ export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
       {isLoading ? (
         <Loader type="spinner" />
       ) : (
-        <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3 text-sm">
+        <Grid
+          style={{ wordBreak: 'break-word' }}
+          cols={3}
+          gap="gap-6"
+          className="w-full grid-cols-2 break-words lg:!grid-cols-3"
+        >
+          {' '}
           {farmer_details.map((item) => (
             <FlexBox key={item.label} gap="gap-2" direction="col">
               <Text variant="body" color="text-neutral-500" weight="semibold">
                 {item.label}
               </Text>
-              <Text variant="body" color="text-neutral-500" weight="light">
+              <Text
+                variant="body"
+                color="text-neutral-500"
+                weight="light"
+                className="w-full break-words break-all text-sm lg:text-base"
+              >
                 {item.value}
               </Text>
             </FlexBox>

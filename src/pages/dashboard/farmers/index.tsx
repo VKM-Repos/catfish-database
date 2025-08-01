@@ -30,7 +30,7 @@ export default function FarmersPage() {
 
   const actions = farmers && farmers?.content.length > 0 && (
     <Inline>
-      <Button variant="outline" className="flex items-center gap-2 border-primary-400">
+      <Button variant="outline" className="flex  hidden items-center gap-2 border-primary-400">
         <SolarIconSet.CircleBottomUp color="#651391" size={20} iconStyle="Outline" />
         <Text className="text-primary-400">Import</Text>
       </Button>
@@ -45,7 +45,7 @@ export default function FarmersPage() {
     <div className="relative pb-[5rem]">
       <PageTransition>
         <Container className="lg:max-w-screen-xl lg:!px-12 ">
-          <PageHeader className="flex flex-col lg:flex-row" title={title} actions={actions} />
+          <PageHeader className="flex flex-row" title={title} actions={actions} />
           <Spacer />
           <FarmersTable useGetFarmers={useGetFarmers} />
         </Container>

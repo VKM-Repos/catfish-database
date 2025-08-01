@@ -63,10 +63,10 @@ export function DateTimePicker({
   }
 
   return (
-    <FlexBox direction="col">
-      <FlexBox align="center" gap={'gap-5'}>
+    <FlexBox direction="col" className="w-full lg:w-fit">
+      <FlexBox align="center" gap={'lg:gap-5 gap-[10px]'} className="w-full justify-between lg:w-fit">
         {/* Date Picker */}
-        <div className="flex flex-col">
+        <div className="flex w-full max-w-[50%] flex-col lg:max-w-full ">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             {dateLabel} {required && <span className="font-bold text-red-500">*</span>}
           </Text>
@@ -82,7 +82,7 @@ export function DateTimePicker({
                 value={selectedDate}
                 onChange={handleDateChange}
                 ref={dateInputRef}
-                className="md:text-md text-md !w-full border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-calendar-picker-indicator]:hidden"
+                className="md:text-md text-md border-0 px-3 [-moz-appearance:textfield] [appearance:textfield] focus-visible:ring-0 focus-visible:ring-offset-0 lg:!w-full [&::-webkit-calendar-picker-indicator]:hidden"
               />
             </div>
             <div
@@ -126,7 +126,7 @@ export function DateTimePicker({
         </div>
 
         {/* Time Picker */}
-        <div className="flex flex-col">
+        <div className="flex w-fit flex-col lg:w-full">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             {timeLabel} {required && <span className="font-bold text-red-500">*</span>}
           </Text>

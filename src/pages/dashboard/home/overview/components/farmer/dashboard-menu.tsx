@@ -18,7 +18,7 @@ export default function DashboardMenu() {
   return (
     <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white py-4 md:px-6">
       <FlexBox justify="between" align="center" className="sticky mb-[2rem] mt-4 w-full py-[.625rem]">
-        <FlexBox direction="col" gap="gap-1">
+        <FlexBox direction="col" gap="gap-3">
           <Heading className="!text-base font-semibold lg:!text-[1.875rem]">{title} Overview</Heading>
           <Text className="hidden text-sm text-neutral-700 lg:inline">
             View and manage your {title.toLowerCase()} performance metrics

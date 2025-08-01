@@ -27,6 +27,9 @@ type HarvestFormValues = z.infer<typeof harvestSchema>
 export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; handleNext: () => void }) {
   const navigate = useNavigate()
   const [error, setError] = useState<ClientErrorType | null>()
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split('T')[0], // Default: today's date
+  )
   const { id } = useParams<{ id: string }>()
   const queryClient = useQueryClient()
 
@@ -57,11 +60,13 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   // Add currency formatting function
   const onSubmit = async (data: z.infer<typeof harvestSchema>) => {
     try {
+      const harvestDateTime = new Date(`${selectedDate}T${new Date().toTimeString().slice(0, 8)}`).toISOString()
       const harvestData = {
         quantity: Number(data.numberOfFishHarvested),
         totalWeightHarvested: Number(data.totalWeightHarvested),
         costPerKg: Number(data.costPerKg),
         costPerFish: 10,
+        harvestTime: harvestDateTime,
       }
       await createHarvestReport.mutateAsync(harvestData)
       await queryClient.refetchQueries(['fish-batches-in-ponds'])
@@ -116,6 +121,7 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   const handleIconClick = () => {
     timeInputRef.current?.showPicker()
   }
+  console.log('Selected Date (Independent):', selectedDate)
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
@@ -137,8 +143,9 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
                   <Input
                     data-placeholder={'Select date'}
                     type="date"
-                    value={new Date().toISOString().split('T')[0]}
+                    value={selectedDate || new Date().toISOString().split('T')[0]}
                     onChange={(e) => {
+                      setSelectedDate(e.target.value)
                       handleInputChange('date', e.target.value)
                     }}
                     ref={timeInputRef}
@@ -313,7 +320,9 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
             <Button variant={'outline'} onClick={() => navigate(paths.dashboard.home.getStarted)}>
               Back
             </Button>
-            <Button type="submit">Continue</Button>
+            <Button type="submit" disabled={createHarvestReport.isLoading || !selectedDate}>
+              Continue
+            </Button>
           </div>
         </form>
       </Form>

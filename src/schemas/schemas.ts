@@ -597,7 +597,7 @@ export const sortingSchema = z.object({
 // })
 
 export const harvestSchema = z.object({
-  numberOfFishHarvested: z.string(),
-  totalWeightHarvested: z.string(),
-  costPerKg: z.string(),
+  numberOfFishHarvested: z.string().min(1, 'Number of fish harvested is required'),
+  totalWeightHarvested: z.string().min(1, 'Weight of fish harvested is required'),
+  costPerKg: z.string().min(1, 'Cost per kg is required'),
 })

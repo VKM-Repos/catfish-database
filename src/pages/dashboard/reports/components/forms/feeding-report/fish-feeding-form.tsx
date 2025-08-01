@@ -338,7 +338,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                 disabled={createDailyFeeding.isLoading || updateDailyFeeding.isLoading || !combineDateTime}
                 type="submit"
               >
-                {reportId ? 'Update' : 'Continuess'}
+                {reportId ? 'Update' : 'Continue'}
               </Button>
             )}
             {!recordDailyFeeding && (

@@ -55,7 +55,7 @@ export function Header() {
 
             <SideDialogContent className="right-0 top-[68px] z-[90] flex h-screen w-[calc(100vw-50px)] flex-col justify-start gap-10 overflow-y-auto bg-white p-4 shadow-lg focus:outline-none lg:hidden">
               <div className="mt-5">
-                <ProfileMenu />
+                <ProfileMenu onLinkClick={() => setIsSidebarOpen(false)} />
               </div>
               <div className="rounded-lg">
                 <Sidebar onLinkClick={() => setIsSidebarOpen(false)} />

@@ -56,7 +56,6 @@ export default function AccountTab() {
               color="text-neutral-500"
               weight="light"
               className="w-full break-words break-all text-sm lg:text-base"
-              // className="wrap break-words text-sm lg:text-base"
             >
               {item.value}
             </Text>

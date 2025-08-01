@@ -136,7 +136,12 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
+      <FlexBox
+        gap="gap-unset"
+        // justify="between"
+        // align="center"
+        className="w-full flex-col lg:flex-row"
+      >
         <Text className="flex-1 text-xl font-semibold text-neutral-700">Farm Statistics</Text>
         <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="flex-1 " />
       </FlexBox>
@@ -160,7 +165,7 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
         </div>
       </FlexBox>
 
-      <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-5">
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-5">
         {farmStatCards.map((farmStat, index) => {
           const sign = isPositive(farmStat.rate)
 

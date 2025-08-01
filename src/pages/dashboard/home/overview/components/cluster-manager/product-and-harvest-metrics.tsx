@@ -22,14 +22,14 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
 
   return (
     <Card className="border border-neutral-200 p-[24px]">
-      <FlexBox>
+      <FlexBox className="lg:flex-row" direction="col">
         <Card className="w-full p-[10px]">
           <FlexBox direction="col" gap="gap-1">
             <Text size="sm" weight="medium">
               Total harvest volume
             </Text>
             <Text size="lg" weight="semibold">
-              {salesVolume && formatNumber(salesVolume[0]?.totalWeight)} kg
+              {salesVolume && formatNumber(salesVolume[0]?.totalWeight.toFixed(2))} kg
             </Text>
             <Text size="xs">YTD</Text>
           </FlexBox>
@@ -40,7 +40,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
               Average selling price
             </Text>
             <Text size="lg" weight="semibold">
-              ₦{salesVolume && salesVolume[0]?.averageSellingPrice}
+              ₦{salesVolume && formatNumber(salesVolume[0]?.averageSellingPrice.toFixed(2))}
             </Text>
             <Text size="xs">Current</Text>
           </FlexBox>
@@ -51,7 +51,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
               Total revenue
             </Text>
             <Text size="lg" weight="semibold">
-              ₦{salesVolume && salesVolume[0]?.totalRevenue}
+              ₦{salesVolume && formatNumber(salesVolume[0]?.totalRevenue.toFixed(2))}
             </Text>
             <Text size="xs">YTD</Text>
           </FlexBox>
@@ -62,13 +62,13 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
               Average fish weight
             </Text>
             <Text size="lg" weight="semibold">
-              {salesVolume && salesVolume[0]?.averageFishWeight} kg
+              {salesVolume && formatNumber(salesVolume[0]?.averageFishWeight)} kg
             </Text>
             <Text size="xs">Current</Text>
           </FlexBox>
         </Card>
       </FlexBox>
-      <FlexBox>
+      <FlexBox className="lg:flex-row" direction="col">
         <HarvestVolumeOvertime dateRange={dateRange} />
         <LineChartHarvestVolume dateRange={dateRange} />
       </FlexBox>

@@ -44,8 +44,8 @@ export default function FarmersPage() {
   return (
     <div className="relative pb-[5rem]">
       <PageTransition>
-        <Container className="!px-12">
-          <PageHeader title={title} actions={actions} />
+        <Container className="lg:max-w-screen-xl lg:!px-12 ">
+          <PageHeader className="flex flex-col lg:flex-row" title={title} actions={actions} />
           <Spacer />
           <FarmersTable useGetFarmers={useGetFarmers} />
         </Container>

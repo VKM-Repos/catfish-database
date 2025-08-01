@@ -18,7 +18,7 @@ export function DashboardLayout() {
           </aside>
 
           <main className={cn('lg:flex-1', 'w-full', 'lg:pl-64')}>
-            <div className="mx-5 ">
+            <div className="mx-auto max-w-screen-2xl px-4 lg:p-6">
               <Outlet />
             </div>
           </main>

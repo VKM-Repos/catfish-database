@@ -85,7 +85,7 @@ export default function BatchPondSelection({ form, pondNames }: { form: UseFormR
                             <CommandItem
                               key={name}
                               value={name}
-                              onSelect={(currentValue) => {
+                              onSelect={(currentValue: string) => {
                                 setValue(currentValue === value ? '' : currentValue)
                                 setOpenCommand(false)
                                 field.onChange(name)

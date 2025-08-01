@@ -62,10 +62,10 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
   }, [chartData])
   const totalQuantity = chartData.reduce((sum: any, item: any) => sum + item.quantity, 0)
   return (
-    <Card className="flex max-h-[400px] w-full flex-col justify-between lg:h-[400px] lg:px-6 lg:py-4 lg:pr-4">
-      <ChartHeader className="mt-2 px-3 pb-0 lg:mb-0 lg:mt-0 lg:px-0 " title={'Fish Distribution by Pond'} />
-      <FlexBox direction="row" justify="between" className="w-full items-center lg:gap-4" gap="gap-0">
-        <div className="flex w-2/3 flex-col lg:w-1/2">
+    <Card className="flex h-[400px] max-h-[400px] w-1/2 flex-col rounded-[.875rem] border-neutral-200 px-6 py-4">
+      <ChartHeader className="mb-12 pb-0" title={'Fish Distribution by Pond'} />
+      <FlexBox direction="row" justify="between" className="w-full items-center">
+        <div className="flex w-1/2 flex-col">
           <CardContent className="p-0">
             <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
               <PieChart width={250} height={250}>
@@ -89,11 +89,6 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
                   <div className="h-3 w-3 rounded-full lg:h-4 lg:w-4" style={{ backgroundColor: item.fill }} />
                   <span className="text-sm !capitalize">{item.reason}</span>
                 </FlexBox>
-                <div className="ml-5">
-                  <span className="text-muted-foreground text-xs">
-                    {item.quantity.toLocaleString()} Fish <span className="hidden lg:inline">({percentage}%)</span>
-                  </span>
-                </div>
               </FlexBox>
             )
           })}

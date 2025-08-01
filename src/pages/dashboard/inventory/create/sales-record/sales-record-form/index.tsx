@@ -253,7 +253,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
                                   <CommandItem
                                     key={pond.id}
                                     value={pond.name}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(pond.id)

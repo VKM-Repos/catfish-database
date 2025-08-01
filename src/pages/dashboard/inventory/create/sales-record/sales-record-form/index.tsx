@@ -358,7 +358,12 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
             type="submit"
             variant="primary"
             className="flex items-center gap-2"
-            disabled={!form.formState.isValid || createHarvestMutation.isLoading || updateSalesRecordMutation.isLoading}
+            disabled={
+              !form.formState.isValid ||
+              createHarvestMutation.isLoading ||
+              updateSalesRecordMutation.isLoading ||
+              !selectedDate
+            }
           >
             {createHarvestMutation.isLoading || updateSalesRecordMutation.isLoading ? (
               <>

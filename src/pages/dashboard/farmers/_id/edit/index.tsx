@@ -7,7 +7,7 @@ import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { userSchema } from 'src/schemas/schemas'
-import { FarmersForm } from '../../components/forms/farmers-form'
+import { FarmersForm } from '../../create/forms/farmers-form'
 
 const useGetFarmer = createGetQueryHook<typeof userSchema, { id: string }>({
   endpoint: '/users/:id',

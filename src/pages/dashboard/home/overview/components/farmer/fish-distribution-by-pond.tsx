@@ -73,25 +73,22 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
                   cursor={false}
                   content={<ChartTooltipContent className="h-16 w-full bg-black text-white" nameKey="reason" />}
                 />
-                <Pie data={chartData} dataKey="quantity" nameKey="reason" innerRadius={60} outerRadius={100} />
+                <Pie data={chartData} dataKey="quantity" nameKey="reason" innerRadius={60} />
               </PieChart>
             </ChartContainer>
           </CardContent>
         </div>
 
         {/* Scrollable Legend */}
-        <div className="align-center justity-center flex max-h-[200px] w-1/2 flex-col overflow-y-auto px-2">
+        <div className="align-center flex  max-h-[200px] w-1/3 flex-col justify-center overflow-y-auto lg:w-1/2 lg:px-2">
           {chartData.map((item: any, index: any) => {
             const percentage = ((item.quantity / totalQuantity) * 100).toFixed(2)
             return (
-              <FlexBox key={index} direction="col" className="mb-2">
-                <FlexBox align="center" gap="gap-2">
-                  <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item.fill }} />
+              <FlexBox key={index} direction="col" className="mb-2 !gap-0 lg:!gap-4">
+                <FlexBox align="center" gap="gap-2" justify="center">
+                  <div className="h-3 w-3 rounded-full lg:h-4 lg:w-4" style={{ backgroundColor: item.fill }} />
                   <span className="text-sm !capitalize">{item.reason}</span>
                 </FlexBox>
-                {/* <span className="text-muted-foreground text-xs">
-                  {item.quantity.toLocaleString()} Fish ({percentage}%)
-                </span> */}
               </FlexBox>
             )
           })}

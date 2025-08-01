@@ -18,37 +18,29 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
   const { id } = useParams<{ id: string }>()
   const weightOfFishSampled = watch('weightOfFishSampled')
   const numberOfFishSampled = watch('numberOfFishSampled')
-  const avgWeightFishSampled = watch('avgWeightFishSampled')
   const useGetActiveFishBatch = createGetQueryHook({
     endpoint: `/fish-batches/pond/${id}/active`,
     responseSchema: z.any(),
-    queryKey: ['fish-batch-for-sampling'],
+    queryKey: [`fish-batch-for-sampling-${id}`],
   })
   const { data: activeFishBatch } = useGetActiveFishBatch()
-  console.log(activeFishBatch, 'activeFishBatch')
+  // Calculate derived values
+  const currentAvgWeight = Number(weightOfFishSampled) / Number(numberOfFishSampled) || 0
+  const initialWeightInGrams = activeFishBatch?.[0]?.initialWeight || 0
+  const initialWeightInKg = initialWeightInGrams / 1000 // convert g to kg
 
+  const avgWeightGain = currentAvgWeight - initialWeightInKg
+  const totalFishInPond = activeFishBatch?.[0]?.latestQuantity || 0
+  const totalWeightGain = avgWeightGain * totalFishInPond
+
+  // Update form values whenever calculations change
   useEffect(() => {
-    if (weightOfFishSampled && numberOfFishSampled) {
-      const weight: any = weightOfFishSampled
-      const count: any = numberOfFishSampled
-
-      if (!Number.isNaN(weight) && !Number.isNaN(count) && count > 0) {
-        const avg = (weight / count).toFixed(2)
-        setValue('avgWeightFishSampled', avg)
-      }
+    if (Number(numberOfFishSampled) > 0) {
+      setValue('avgWeightFishSampled', currentAvgWeight.toFixed(2))
     }
-  }, [weightOfFishSampled, numberOfFishSampled, setValue])
+    setValue('totalWeightGain', totalWeightGain.toFixed(2))
+  }, [currentAvgWeight, totalWeightGain, numberOfFishSampled, setValue])
 
-  useEffect(() => {
-    if (avgWeightFishSampled) {
-      const avgWeight: any = avgWeightFishSampled
-
-      if (!Number.isNaN(avgWeight)) {
-        const avg = (avgWeight - 0).toFixed(2)
-        setValue('totalWeightGain', avg)
-      }
-    }
-  }, [avgWeightFishSampled, setValue])
   const handleIncrement = (fieldName: keyof SamplingFormValues) => {
     // biome-ignore lint/style/useNumberNamespace: <explanation>
     const currentValue = parseFloat(form.getValues(fieldName) || '0')
@@ -169,148 +161,100 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
           />
         </div>
       </div>
+
       <div className="flex w-full items-start gap-5">
+        {/* Current average body weight */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Current average body weight
             <span className="font-bold text-red-500">*</span>
           </Text>
-
-          <div
-            className={
-              'focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
-            }
-          >
+          <div className="flex max-h-fit items-center rounded-md border border-neutral-200">
             <div className="w-full">
               <Input
-                placeholder=" Current average body weight"
+                placeholder="Current average body weight"
                 className="bg-neutral-100"
                 disabled
-                inputMode="numeric"
                 readOnly
-                value={
-                  Number(form.getValues('weightOfFishSampled')) / Number(form.getValues('numberOfFishSampled')) || 0
-                }
+                value={currentAvgWeight.toFixed(2)}
               />
             </div>
-            <div
-              className={`flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 ${
-                form.getValues('weightOfFishSampled') ? 'bg-primary-500 text-xs text-white' : 'bg-neutral-100 text-xs'
-              }`}
-            >
+            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
               Kg
             </div>
           </div>
         </div>
+
+        {/* Initial average body weight */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Initial average body weight
           </Text>
-
-          <div
-            className={
-              'focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
-            }
-          >
+          <div className="flex max-h-fit items-center rounded-md border border-neutral-200">
             <div className="w-full">
               <Input
                 placeholder="Initial average body weight"
                 className="bg-neutral-100"
                 disabled
-                inputMode="numeric"
                 readOnly
+                value={initialWeightInGrams.toFixed(2)}
               />
             </div>
-            <div
-              className={`flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 ${
-                form.getValues('weightOfFishSampled') ? 'bg-primary-500 text-xs text-white' : 'bg-neutral-100 text-xs'
-              }`}
-            >
+            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
               Kg
             </div>
           </div>
         </div>
       </div>
+
+      {/* Third row - Total fish and Average weight gain */}
       <div className="flex w-full items-start gap-5">
+        {/* Total number of fish in pond */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
             Total number of fish in pond
           </Text>
-
-          <Input
-            placeholder="Input  avg. Weigh of sample"
-            disabled
-            className="bg-neutral-100"
-            inputMode="numeric"
-            readOnly
-            value={activeFishBatch ? activeFishBatch[0]?.latestQuantity : 0}
-          />
+          <Input placeholder="Total fish count" className="bg-neutral-100" disabled readOnly value={totalFishInPond} />
         </div>
+
+        {/* Average Weight gain */}
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">Average Weight gain</Text>
-          <FormField
-            control={form.control}
-            name="totalWeightGain"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div
-                    className={
-                      'focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
-                    }
-                  >
-                    <div className="w-full">
-                      <Input
-                        placeholder="Average Weight gain"
-                        className="bg-neutral-100"
-                        disabled
-                        inputMode="numeric"
-                        readOnly
-                        {...field}
-                      />
-                    </div>
-                    <div
-                      className={`flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 ${
-                        form.getValues('weightOfFishSampled')
-                          ? 'bg-primary-500 text-xs text-white'
-                          : 'bg-neutral-100 text-xs'
-                      }`}
-                    >
-                      Kg
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
-      <div className="flex w-full items-start gap-5">
-        <div className="flex w-full flex-col gap-2">
-          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">Total weight gain </Text>
-
-          <div
-            className={
-              'focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2'
-            }
-          >
+          <div className="flex max-h-fit items-center rounded-md border border-neutral-200">
             <div className="w-full">
-              <Input placeholder="Total weight gain" className="bg-neutral-100" disabled inputMode="numeric" readOnly />
+              <Input
+                placeholder="Average Weight gain"
+                className="bg-neutral-100"
+                disabled
+                readOnly
+                value={avgWeightGain.toFixed(2)}
+              />
             </div>
-            <div
-              className={`flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 ${
-                form.getValues('weightOfFishSampled') ? 'bg-primary-500 text-xs text-white' : 'bg-neutral-100 text-xs'
-              }`}
-            >
+            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
               Kg
             </div>
           </div>
         </div>
-        <div className="flex w-full flex-col gap-2">
-          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">Feed Conversion Ratio</Text>
+      </div>
 
-          <Input placeholder=" Feed Conversion Ratio" className="bg-neutral-100" disabled readOnly />
+      {/* Fourth row - Total weight gain */}
+      <div className="flex w-full items-start gap-5">
+        <div className="flex w-full flex-col gap-2">
+          <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">Total weight gain</Text>
+          <div className="flex max-h-fit items-center rounded-md border border-neutral-200">
+            <div className="w-full">
+              <Input
+                placeholder="Total weight gain"
+                className="bg-neutral-100"
+                disabled
+                readOnly
+                value={totalWeightGain.toFixed(2)}
+              />
+            </div>
+            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
+              Kg
+            </div>
+          </div>
         </div>
       </div>
     </FlexBox>

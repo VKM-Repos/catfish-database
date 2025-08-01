@@ -1,10 +1,8 @@
-// src/components/dialogs/ReportModal.tsx
 import { Dialog, DialogContent, DialogHeader, DialogClose } from 'src/components/ui/dialog'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { Text } from 'src/components/ui/text'
 import { useForm } from 'react-hook-form'
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 'src/components/ui/select'
 import { Form, FormField, FormItem, FormControl, FormMessage, FormLabel } from 'src/components/ui/form'
 import * as SolarIconSet from 'solar-icon-set'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -12,6 +10,11 @@ import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from 'src/store/auth.store'
 import { paths } from 'src/routes'
+import { Popover, PopoverContent, PopoverTrigger } from 'src/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'src/components/ui/command'
+import { Check, ChevronDown } from 'lucide-react'
+import { cn } from 'src/lib/utils'
+import { useState } from 'react'
 
 type FormValues = {
   farmerId: string
@@ -52,6 +55,8 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
         }&from=overview`,
       )
   }
+  const [openCommand, setOpenCommand] = useState(false)
+  const [value, setValue] = useState('')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -75,7 +80,7 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                     <Text>Select the farmer</Text>{' '}
                   </FormLabel>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    {/* <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         className={form.formState.errors.farmerId ? 'border-red-500 ring-2 ring-red-500' : ''}
                       >
@@ -97,7 +102,65 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                           ))
                         )}
                       </SelectContent>
-                    </Select>
+                    </Select> */}
+                    <Popover open={openCommand} onOpenChange={setOpenCommand}>
+                      <PopoverTrigger className="w-full" asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={open}
+                          className="w-full justify-between border-neutral-200 py-2 text-neutral-500"
+                        >
+                          <div className="flex items-center gap-5">
+                            {' '}
+                            <SolarIconSet.User color="text-inherit" size={24} iconStyle="Outline" />
+                            {value
+                              ? (() => {
+                                  const selectedFarmer = farmers.content?.find(
+                                    (farmer: any) => farmer.firstName === value,
+                                  )
+                                  return selectedFarmer
+                                    ? `${selectedFarmer.firstName} ${selectedFarmer.lastName}`
+                                    : 'Select Pond'
+                                })()
+                              : 'Select Pond'}
+                          </div>
+                          <ChevronDown className="opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[600px]">
+                        <Command>
+                          <CommandInput placeholder="Search pond..." className="h-9" />
+                          <CommandList>
+                            <CommandEmpty>No pond found.</CommandEmpty>
+                            <CommandGroup>
+                              {user?.role === 'CLUSTER_MANAGER' &&
+                                farmers.content?.map((farmer: any) => (
+                                  <CommandItem
+                                    key={farmer.id}
+                                    value={farmer.firstName}
+                                    onSelect={(currentValue: string) => {
+                                      setValue(currentValue === value ? '' : currentValue)
+                                      setOpenCommand(false)
+                                      field.onChange(farmer.id)
+                                      form.trigger('farmerId')
+                                    }}
+                                  >
+                                    {(farmer as { firstName: string }).firstName}{' '}
+                                    {(farmer as { lastName: string }).lastName}
+                                    <Check
+                                      className={cn(
+                                        'ml-auto',
+                                        value === farmer.firstName ? 'opacity-100' : 'opacity-0',
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

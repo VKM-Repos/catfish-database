@@ -20,9 +20,9 @@ import CostDetailsForm from './cost-details'
 import { ClientErrorType } from 'src/types'
 
 const useGetPonds = createGetQueryHook({
-  endpoint: '/ponds/farmers/me?size=1000000&sortBy=DESC',
+  endpoint: '/ponds/farmers/me?size=1000000',
   responseSchema: z.any(),
-  queryKey: ['my-ponds'],
+  queryKey: ['my-ponds-in-creating-fish-batch'],
 })
 
 const useCreateBatch = createPostMutationHook({
@@ -103,16 +103,22 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
         await updateBatch.mutateAsync(apiData)
         queryClient.invalidateQueries(['my-fish-batches'])
         queryClient.invalidateQueries(['my-ponds'])
+        queryClient.invalidateQueries(['my-ponds-in-creating-fish-batch'])
+
         onSuccess()
       } else {
         await createBatch.mutateAsync(apiData)
         queryClient.invalidateQueries(['my-fish-batches'])
         queryClient.invalidateQueries(['my-ponds'])
+        queryClient.invalidateQueries(['my-ponds-in-creating-fish-batch'])
+
         onSuccess()
       }
 
       queryClient.invalidateQueries(['my-fish-batches'])
       queryClient.invalidateQueries(['my-ponds'])
+      queryClient.invalidateQueries(['my-ponds-in-creating-fish-batch'])
+
       onSuccess()
     } catch (err: any) {
       const data = err?.response?.data

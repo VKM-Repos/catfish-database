@@ -187,6 +187,10 @@ export default function PondForm({
       queryClient.refetchQueries(['all-ponds'])
       queryClient.refetchQueries(['fish-batches'])
       queryClient.refetchQueries(['pond-details-for-farmer'])
+      queryClient.invalidateQueries(['my-ponds-in-creating-fish-batch'])
+      queryClient.invalidateQueries(['my-ponds-farmer'])
+      queryClient.invalidateQueries(['ponds_for_cluster_manager'])
+      queryClient.invalidateQueries(['my-ponds-in-create-sales'])
 
       onSuccess()
     } catch (err) {

@@ -9,7 +9,7 @@ export default function StatsCard({ color, label, value }: { color: string; labe
       <FlexBox gap="gap-[1.125rem]" direction="col">
         <Text className="text-xs text-[#37414F]">{label}</Text>
         <FlexBox direction="col" gap="gap-3">
-          <Text className="!text-[1.5rem] font-bold text-[#1F2937]">{value}</Text>
+          <Text className="!text-[1rem] font-bold text-[#1F2937] lg:!text-[1.5rem]">{value}</Text>
           <div
             style={{
               backgroundColor: '#E7F6E5',

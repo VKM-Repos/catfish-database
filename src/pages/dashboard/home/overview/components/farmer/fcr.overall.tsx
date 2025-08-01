@@ -23,7 +23,7 @@ export default function FcrOverall({ dateRange }: FcrOverallProps) {
     },
   })
   return (
-    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full">
+    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-1/2 border-neutral-200">
       <div className="flex h-full w-full flex-col py-5">
         <CardContent className="flex-1">
           <FlexBox className="my-[20px] h-full w-full" direction="col">

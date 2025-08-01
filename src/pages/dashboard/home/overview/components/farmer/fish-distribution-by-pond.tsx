@@ -62,7 +62,7 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
   }, [chartData])
   const totalQuantity = chartData.reduce((sum: any, item: any) => sum + item.quantity, 0)
   return (
-    <Card className="flex flex h-[400px] max-h-[400px] w-full flex-col px-6 py-4">
+    <Card className="flex h-[400px] max-h-[400px] w-1/2 flex-col rounded-[.875rem] border-neutral-200 px-6 py-4">
       <ChartHeader className="mb-12 pb-0" title={'Fish Distribution by Pond'} />
       <FlexBox direction="row" justify="between" className="w-full items-center">
         <div className="flex w-1/2 flex-col">
@@ -89,9 +89,9 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
                   <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item.fill }} />
                   <span className="text-sm !capitalize">{item.reason}</span>
                 </FlexBox>
-                <span className="text-muted-foreground text-xs">
+                {/* <span className="text-muted-foreground text-xs">
                   {item.quantity.toLocaleString()} Fish ({percentage}%)
-                </span>
+                </span> */}
               </FlexBox>
             )
           })}

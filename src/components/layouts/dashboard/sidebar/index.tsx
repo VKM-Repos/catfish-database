@@ -76,7 +76,7 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
               </>
             ) : (
               path && (
-                <AnchorButton size={'lg'} active={pathname === path}>
+                <AnchorButton asChild size="lg" active={pathname === path}>
                   <Link
                     to={typeof path === 'string' ? path : path.root}
                     onClick={onLinkClick}

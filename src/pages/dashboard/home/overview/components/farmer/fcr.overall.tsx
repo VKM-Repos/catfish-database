@@ -23,25 +23,25 @@ export default function FcrOverall({ dateRange }: FcrOverallProps) {
     },
   })
   return (
-    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-1/2 border-neutral-200">
+    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full border-neutral-200 lg:w-1/2">
       <div className="flex h-full w-full flex-col py-5">
         <CardContent className="flex-1">
           <FlexBox className="my-[20px] h-full w-full" direction="col">
             <FlexBox className="  w-full lg:flex-1" direction="row">
               <div className="flex h-[140px] w-full flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px]">
-                <Text className="font-medium leading-[20px] lg:text-lg">Feed Conversion Ratio</Text>
+                <Text className="text-sm font-medium leading-[20px] lg:text-lg">Feed Conversion Ratio</Text>
                 <Text className="text-[16px] font-semibold lg:text-xl">{fcr ? fcr[0]?.fcrValue : 0}</Text>
-                <Text className="text-[10px] font-medium text-success-500 lg:text-sm">Good</Text>
+                <Text className="text-[10px] font-medium text-success-500 lg:text-sm">-</Text>
               </div>
-              <div className="flex min-h-[140px] w-full flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px] lg:min-h-fit">
-                <Text className="font-medium leading-[20px] lg:text-lg">Feed Cost</Text>
+              <div className="flex min-h-[140px] w-full flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px] ">
+                <Text className="text-sm  font-medium leading-[20px] lg:text-lg">Feed Cost</Text>
                 <Text className="text-[16px] font-semibold  lg:text-xl">₦{fcr ? fcr[0]?.totalWeightGained : 0}</Text>
-                <Text className="text-[10px] font-medium text-[#000AFF] lg:text-sm">₦5.5 per kg</Text>
+                <Text className="text-[10px] font-medium text-[#000AFF] lg:text-sm">-</Text>
               </div>
             </FlexBox>
 
             <div className="flex w-full flex-1 flex-col justify-center gap-2 rounded-md border-2 border-neutral-100 p-[10px]">
-              <Text className="text-lg font-medium leading-[20px]">Total Feed Consumed</Text>
+              <Text className="text-lg  text-sm font-medium leading-[20px]">Total Feed Consumed</Text>
               <Text className="text-xl font-semibold">{fcr ? fcr[0]?.totalFeedConsumed : 0} kg</Text>
               <Text className="text-sm font-medium">For current production cycle</Text>
             </div>

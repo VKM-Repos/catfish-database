@@ -290,7 +290,8 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
               )}
             />
           </FlexBox>
-          <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
+          {/* <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3"> */}
+          <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
@@ -318,7 +319,8 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
                 </>
               )}
             </Button>
-          </div>
+          </FlexBox>
+          {/* </div> */}
         </form>
       </Form>
     </>

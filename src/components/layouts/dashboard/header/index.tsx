@@ -14,7 +14,7 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky left-0 top-0 z-[80] flex h-[68px] w-full items-center justify-between bg-neutral-50 px-[20px] py-4 md:px-8 lg:px-3">
+      <header className="sticky left-0 top-0 z-[10] flex h-[68px] w-full items-center justify-between bg-neutral-50 px-[20px] py-4 md:px-8 lg:px-3">
         <Inline className="h-full w-full" gap="gap-4">
           <picture>
             <img src="/fish-logo.webp" alt="Logo" className="aspect-square w-[38px]" />

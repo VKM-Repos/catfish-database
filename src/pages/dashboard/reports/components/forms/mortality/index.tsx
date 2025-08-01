@@ -21,6 +21,7 @@ import { useDailyFeedingStore } from 'src/store/daily-feeding-store'
 import { useWaterQualityStore } from 'src/store/water-quality-store'
 import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { useFishDiseaseStore } from 'src/store/fish-disease-store'
+import { CircularProgress } from '../../../create/daily-farm-report/_id'
 
 type MortalityFormValues = z.infer<typeof mortalitySchema>
 export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
@@ -114,7 +115,17 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
-
+      <div className="flex w-full justify-between gap-3 lg:hidden">
+        <CircularProgress />
+        <FlexBox direction="row" justify="between" align="center" className="min-w-[70%]">
+          <div>
+            <h5 className="text-[1.5rem] font-bold text-[#22252B]">Mortality</h5>
+            <p className=" text-xs font-medium">
+              Enter the number of fish that died today to help you track survival rates.
+            </p>
+          </div>
+        </FlexBox>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <Card className="p-[24px]">
@@ -127,7 +138,7 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
             </div>
           </Card>
           {recordFishDisease && (
-            <div className="border-0 border-b p-5">
+            <div className="hidden border-0 border-b p-5 lg:inline">
               <Text className="text-[1.5rem] font-bold text-[#444955]">Mortality</Text>
               <Text className="text-xs font-medium">record mortality rate</Text>
             </div>
@@ -181,7 +192,7 @@ export function Mortality({ handleNext, handlePrevious }: { handleNext?: () => v
               </FlexBox>
             </Card>
           )}
-          <div className="flex justify-between bg-neutral-100 p-5">
+          <div className=" flex justify-between bg-neutral-100 p-5">
             <Button type="button" variant={'outline'} onClick={handlePrevious}>
               Back
             </Button>

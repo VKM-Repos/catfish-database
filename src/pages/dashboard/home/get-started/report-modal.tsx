@@ -336,7 +336,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                   <CommandItem
                                     key={pond.id}
                                     value={pond.name}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(pond.id)
@@ -354,7 +354,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                   <CommandItem
                                     key={pond.id}
                                     value={pond.name}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(pond.id)

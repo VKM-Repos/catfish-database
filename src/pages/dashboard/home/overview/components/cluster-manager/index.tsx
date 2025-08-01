@@ -26,11 +26,11 @@ export default function CLusterManagerDashboardOverview() {
       </div>
       <FlexBox direction="col" className="mt-5">
         <ClusterFarmOverviewStats dateRange={dateRange} />
-        <FlexBox className="mb-[20px] w-full" direction="row">
+        <FlexBox className="mb-[20px] w-full lg:flex-row" direction="col">
           <FeedingInsight dateRange={dateRange} />
           <FeedsPriceTrends dateRange={dateRange} />
         </FlexBox>
-        <FlexBox className="mb-[20px] w-full" direction="row">
+        <FlexBox className="mb-[20px] w-full lg:flex-row" direction="col">
           <KeyHealthMetrics />
           <ClusterHealthAlert />
         </FlexBox>

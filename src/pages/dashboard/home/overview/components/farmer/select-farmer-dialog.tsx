@@ -139,7 +139,7 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                                   <CommandItem
                                     key={farmer.id}
                                     value={farmer.firstName}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(farmer.id)

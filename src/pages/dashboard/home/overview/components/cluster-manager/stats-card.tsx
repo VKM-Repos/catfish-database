@@ -2,10 +2,21 @@ import React from 'react'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
+import { cn } from 'src/lib/utils'
 
-export default function StatsCard({ color, label, value }: { color: string; label: string; value: any }) {
+export default function StatsCard({
+  color,
+  label,
+  value,
+  className,
+}: {
+  color: string
+  label: string
+  value: any
+  className?: string
+}) {
   return (
-    <div style={{ backgroundColor: color }} className={`rounded-lg px-5 py-[1.875rem] shadow-md`}>
+    <div style={{ backgroundColor: color }} className={cn(`rounded-lg px-5 py-[1.875rem] shadow-md`, className)}>
       <FlexBox gap="gap-[1.125rem]" direction="col">
         <Text className="text-xs text-[#37414F]">{label}</Text>
         <FlexBox direction="col" gap="gap-3">

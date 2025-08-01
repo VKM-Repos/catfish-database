@@ -96,7 +96,7 @@ export function LineChartHarvestVolume({ dateRange }: LineChartHarvestVolumeProp
 
   return (
     <Card className="mt-10 w-full border-0">
-      <CardContent>
+      <CardContent className="p-0">
         <div className="flex">
           <ChartHeader
             title={`${interval.charAt(0).toUpperCase()}${interval

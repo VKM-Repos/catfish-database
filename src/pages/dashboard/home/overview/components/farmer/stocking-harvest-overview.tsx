@@ -53,7 +53,7 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
   } satisfies ChartConfig
   const totalQuantity = chartData.reduce((sum, item) => sum + item.quantity, 0)
   return (
-    <Card className="flex h-[400px] max-h-[400px] w-full items-center px-2 pb-2  lg:h-[400px] lg:min-h-[400px]  lg:p-[24px] ">
+    <Card className="flex h-[400px] max-h-[400px] w-full items-center border-neutral-200 px-2 pb-2  lg:h-[400px] lg:min-h-[400px]  lg:p-[24px] ">
       <div className="flex h-full w-full flex-col justify-between">
         <CardContent className="space-y-7 px-0 py-2 lg:space-y-0 lg:p-6">
           <ChartHeader title={'Stocking & Harvest Overview'} />

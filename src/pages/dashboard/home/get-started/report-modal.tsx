@@ -163,8 +163,9 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
   const [openCommand, setOpenCommand] = useState(false)
   const [value, setValue] = useState('')
   const [selectedPond, setSelectedPond] = useState('')
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog key="yolo" open={open}>
       <DialogContent className="h-fit w-[650px] overflow-hidden p-4">
         <DialogHeader className="absolute flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
           <Heading level={6}>{title}</Heading>

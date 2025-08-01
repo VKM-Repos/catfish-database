@@ -309,9 +309,9 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
                             <ChevronDown className="opacity-50" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[600px]">
+                        <PopoverContent className="z-[2000] w-[600px]">
                           <Command>
-                            <CommandInput placeholder="Search pond..." className="h-9" />
+                            <CommandInput placeholder="Search pond..." className="z-[2000] h-9" />
                             <CommandList>
                               <CommandEmpty>No pond found.</CommandEmpty>
                               <CommandGroup>

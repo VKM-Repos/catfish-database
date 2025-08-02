@@ -30,7 +30,7 @@ export default function Settings() {
 
   return (
     <PageTransition>
-      <Container className="!px-12">
+      <Container className="lg:!px-12">
         <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
           <PageHeader title={title} />
           <Tabs

@@ -21,7 +21,8 @@ export default function CLusterManagerDashboardOverview() {
   return (
     <PageTransition>
       <DashboardMenu />
-      <div className="sticky left-0 top-[100px] z-50 flex h-fit w-full items-center justify-end bg-white py-4">
+
+      <div className="sticky left-0 top-[100px] z-0 flex h-fit w-full items-center justify-end bg-white py-4">
         <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="w-auto" />
       </div>
       <FlexBox direction="col" className="mt-5">

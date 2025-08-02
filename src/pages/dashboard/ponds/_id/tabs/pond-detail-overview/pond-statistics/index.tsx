@@ -160,7 +160,7 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-4">
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-4">
         {pondStatCards?.map((pondStat, index) => {
           const sign = isPositive(pondStat?.rate)
 

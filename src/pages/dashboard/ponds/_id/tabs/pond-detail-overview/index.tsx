@@ -93,7 +93,12 @@ export default function PondDetailOverview() {
       </Grid>
 
       {/* Filter Section with Mega Date Picker */}
-      <FlexBox direction="row" align="center" justify="between" className="w-full">
+      <FlexBox
+        direction="row"
+        // align="center"
+        justify="between"
+        className="w-full flex-col items-start gap-4 lg:flex-row lg:items-center"
+      >
         <Heading level={6}>Pond Statistics</Heading>
         <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="w-auto" />
       </FlexBox>

@@ -10,7 +10,7 @@ type PageHeaderProps = {
 
 export const PageHeader = ({ title, actions, className = '', subtitle = '' }: PageHeaderProps) => {
   return (
-    <header className={`flex h-16 items-center justify-between py-[3rem] ${className}`}>
+    <header className={`flex h-16 justify-between gap-2 py-[3rem] lg:items-center ${className}`}>
       <div>
         <Heading level={5}>{title}</Heading>
         {subtitle && <Text>{subtitle}</Text>}

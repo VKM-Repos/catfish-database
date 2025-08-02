@@ -59,12 +59,12 @@ export default function FarmDetailsPage() {
               <SolarIconSet.AltArrowRight color="#651391" size={16} />
               <Text className="text-xs text-neutral-600">Farmer details</Text>
             </FlexBox>
-            <Heading className="!text-[1.875rem] font-semibold">{title}</Heading>
+            <Heading className="text-[25px] font-semibold lg:!text-[1.875rem]">{title}</Heading>
           </FlexBox>
           <StatusBadge status={farmStatus} activeIcon={<SolarIconSet.CheckCircle color="currentColor" size={16} />} />
         </FlexBox>
         <Spacer />
-        <Container className="!px-12">
+        <Container className="px-2 lg:!px-12">
           <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
             <Tabs
               defaultValue={activeTab}

@@ -60,7 +60,7 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className=" w-[650px] overflow-hidden p-4">
+      <DialogContent className="w-[350px] overflow-hidden p-4 lg:w-[650px]">
         <DialogHeader className="absolute flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
           <Heading level={6}>{title}</Heading>
           <DialogClose className="flex justify-end">
@@ -80,29 +80,6 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                     <Text>Select the farmer</Text>{' '}
                   </FormLabel>
                   <FormControl>
-                    {/* <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        className={form.formState.errors.farmerId ? 'border-red-500 ring-2 ring-red-500' : ''}
-                      >
-                        <div className="flex items-center justify-center gap-3 text-neutral-300">
-                          <SolarIconSet.User color="text-inherit" size={24} iconStyle="Outline" />
-                          <SelectValue placeholder="Select farmer" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {user?.role === 'FARMER' && isLoadingFarmers ? (
-                          <SelectItem value="loading" disabled>
-                            <Text>Loading farmers...</Text>
-                          </SelectItem>
-                        ) : (
-                          farmers.content?.map((farmer: unknown) => (
-                            <SelectItem key={(farmer as { id: string }).id} value={(farmer as { id: string }).id}>
-                              {(farmer as { firstName: string }).firstName} {(farmer as { lastName: string }).lastName}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select> */}
                     <Popover open={openCommand} onOpenChange={setOpenCommand}>
                       <PopoverTrigger className="w-full" asChild>
                         <Button
@@ -128,7 +105,7 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                           <ChevronDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[600px]">
+                      <PopoverContent className="z-[2000] w-[600px]">
                         <Command>
                           <CommandInput placeholder="Search pond..." className="h-9" />
                           <CommandList>
@@ -139,7 +116,7 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                                   <CommandItem
                                     key={farmer.id}
                                     value={farmer.firstName}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(farmer.id)

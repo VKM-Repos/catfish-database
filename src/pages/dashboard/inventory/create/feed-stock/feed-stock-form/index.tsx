@@ -141,7 +141,7 @@ export default function FeedStockForm({
           <TooltipTrigger>
             <SolarIconSet.QuestionCircle size={16} />
           </TooltipTrigger>
-          <TooltipContent>{text}</TooltipContent>
+          <TooltipContent className="w-[70%]">{text}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     )

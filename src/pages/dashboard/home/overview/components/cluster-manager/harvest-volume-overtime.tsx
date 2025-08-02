@@ -86,7 +86,7 @@ export function HarvestVolumeOvertime({ dateRange }: HarvestVolumeOvertimeProps)
 
   return (
     <Card className="mt-10 h-full w-full border-0">
-      <CardContent>
+      <CardContent className="p-0">
         <div className="flex">
           <ChartHeader
             title={`${interval.charAt(0).toUpperCase()}${interval

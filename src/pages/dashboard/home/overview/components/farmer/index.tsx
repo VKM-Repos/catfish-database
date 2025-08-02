@@ -21,17 +21,17 @@ export default function FarmerDashboardOverview() {
   return (
     <PageTransition>
       <DashboardMenu />
-      <div className="sticky left-0 top-[100px] z-50 flex h-fit w-full items-center justify-end bg-white py-4">
+      <div className="sticky left-0 top-[100px] z-0 flex h-fit w-full items-center justify-end bg-white py-4">
         <MegaDatePicker value={dateRange} onChange={handleDateRangeChange} className="w-auto" />
       </div>
       <FarmOverviewStatistics dateRange={dateRange} />
       <GrowthFeedingPerformance dateRange={dateRange} />
-      <FlexBox direction="row" justify="between" className="my-10">
+      <FlexBox direction="row" justify="between" className="my-10 flex-col lg:flex-row">
         <FcrOverall dateRange={dateRange} />
         <FishDistribution dateRange={dateRange} />
       </FlexBox>
 
-      <FlexBox direction="row" justify="between" className="my-10">
+      <FlexBox direction="row" justify="between" className="my-10 flex-col lg:flex-row">
         <StockingHarvestOverview dateRange={dateRange} />
         <CostBreakdownOverview dateRange={dateRange} />
       </FlexBox>

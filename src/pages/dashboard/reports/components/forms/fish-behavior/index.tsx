@@ -20,6 +20,7 @@ import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { useDateStore } from 'src/store/report-date-store'
 import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
+import { CircularProgress } from '../../../create/daily-farm-report/_id'
 
 export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const navigate = useNavigate()
@@ -128,6 +129,18 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
       {error && <FormValidationErrorAlert error={error} />}
+      <div className="flex gap-3 lg:hidden">
+        <CircularProgress />
+        <FlexBox direction="row" justify="between" align="center" className="">
+          <div>
+            <h5 className="text-[1.5rem] font-bold text-[#22252B]">Fish Behavior</h5>
+            <p className="text-xs font-medium">
+              Score and describe fish activity (e.g., feeding response, swimming patterns) to detect stress or health
+              issues.
+            </p>
+          </div>
+        </FlexBox>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <Card className="p-[24px]">
@@ -140,7 +153,7 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
             </div>
           </Card>
           {recordFishBehavior && (
-            <div className="border-0 border-b p-5">
+            <div className="hidden border-0 border-b p-5 lg:inline">
               <Text className="text-[1.5rem] font-bold text-[#444955]">Fish Behavior</Text>
               <Text className="text-xs font-medium">
                 Score and describe fish activity (e.g., feeding response, swimming patterns) to detect stress or health
@@ -151,7 +164,7 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
           {recordFishBehavior && (
             <Card className="p-[24px]">
               <FlexBox gap="gap-2" direction="col" className="w-full space-y-3">
-                <div className="flex w-full items-center gap-5">
+                <div className="flex w-full flex-col items-center gap-5 lg:flex-row">
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Behavior

@@ -163,9 +163,10 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
   const [openCommand, setOpenCommand] = useState(false)
   const [value, setValue] = useState('')
   const [selectedPond, setSelectedPond] = useState('')
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-fit w-[650px] overflow-hidden p-4">
+      <DialogContent className="h-fit w-[90%] overflow-hidden rounded-lg p-4 lg:w-[650px]">
         <DialogHeader className="absolute flex w-full flex-row items-center justify-between border-b border-b-neutral-100 p-2 px-4">
           <Heading level={6}>{title}</Heading>
           <DialogClose className="flex justify-end">
@@ -325,7 +326,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                           <ChevronDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[600px]">
+                      <PopoverContent className="z-[82] lg:w-[600px]">
                         <Command>
                           <CommandInput placeholder="Search pond..." className="h-9" />
                           <CommandList>
@@ -336,7 +337,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                   <CommandItem
                                     key={pond.id}
                                     value={pond.name}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(pond.id)
@@ -354,7 +355,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                   <CommandItem
                                     key={pond.id}
                                     value={pond.name}
-                                    onSelect={(currentValue) => {
+                                    onSelect={(currentValue: string) => {
                                       setValue(currentValue === value ? '' : currentValue)
                                       setOpenCommand(false)
                                       field.onChange(pond.id)

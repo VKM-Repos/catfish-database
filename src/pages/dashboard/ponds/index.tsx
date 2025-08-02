@@ -30,7 +30,7 @@ export default function PondsPage() {
   return (
     <div className="relative pb-[5rem]">
       <PageTransition>
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
           <PondsTable />

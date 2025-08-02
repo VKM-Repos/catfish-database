@@ -53,11 +53,10 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
   } satisfies ChartConfig
   const totalQuantity = chartData.reduce((sum, item) => sum + item.quantity, 0)
   return (
-    <Card className="flex h-[400px] max-h-[400px] min-h-[400px] w-full items-center p-[24px]">
-      <div className="flex w-full flex-col">
-        <CardContent>
+    <Card className="flex h-[400px] max-h-[400px] w-full items-center border-neutral-200 px-2 pb-2  lg:h-[400px] lg:min-h-[400px]  lg:p-[24px] ">
+      <div className="flex h-full w-full flex-col justify-between">
+        <CardContent className="space-y-7 px-0 py-2 lg:space-y-0 lg:p-6">
           <ChartHeader title={'Stocking & Harvest Overview'} />
-
           <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
             <PieChart>
               <ChartTooltip
@@ -93,18 +92,19 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
             const maxQuantity = Math.max(...chartData.map((item) => item.quantity), 1) // Ensure at least 1 to avoid division by zero
 
             return chartData.map((item, index) => (
-              <FlexBox className="w-full" key={index} gap="gap-2" direction="col">
-                <div className="flex w-full items-center justify-between text-[14px] font-medium">
+              <FlexBox className="w-full text-gray-500" key={index} gap="gap-2" direction="col">
+                <div className="flex w-full flex-col items-start justify-between text-[14px] font-medium lg:flex-row lg:items-center">
                   <span className="text-sm">{item.reason}</span>
                   <span className="text-sm">{item.quantity}</span>
                 </div>
-                <div className="relative max-w-full rounded-full bg-gray-200" style={{ width: '300px', height: '8px' }}>
+
+                <div className="relative h-[8px] w-full rounded-full bg-gray-200 ">
                   <div
-                    className="max-w-full rounded-full"
+                    className="h-[8px] rounded-full transition-all duration-300 ease-in-out"
                     style={{
                       backgroundColor: item.fill,
-                      width: `${(item.quantity / maxQuantity) * 300}px`, // Scale to 300px container
-                      maxWidth: '300px',
+                      width: `${(item.quantity / maxQuantity) * 100}%`,
+                      maxWidth: '100%',
                       height: '8px',
                       transition: 'width 0.3s ease', // Optional: Add smooth animation
                     }}
@@ -114,7 +114,7 @@ export default function StockingHarvestOverview({ dateRange }: StockingHarvestOv
             ))
           })()}
         </FlexBox>
-        <FlexBox className="mt-[24px] w-full" direction="row">
+        <FlexBox className="mt-[24px] flex-col lg:w-full lg:flex-row" direction="row">
           <Card className="w-full p-[10px]">
             <Text size="sm" weight="normal">
               Survival Rate

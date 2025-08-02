@@ -16,6 +16,7 @@ import { FishBehavior } from '../../../components/forms/fish-behavior'
 import { FishDisease } from '../../../components/forms/fish-disease'
 import { Mortality } from '../../../components/forms/mortality'
 import { DateTimePicker } from '../../../components/forms/date-time-picker'
+import { useMemo } from 'react'
 
 export default function CreateDailyFeedingReportPage() {
   const { step, next, previous } = useStepperStore()
@@ -57,16 +58,16 @@ export default function CreateDailyFeedingReportPage() {
   }
 
   return (
-    <>
-      <FlexBox className="mx-10 flex items-center justify-between">
+    <div className="flex flex-col justify-center lg:items-center">
+      <FlexBox className="flex w-full  flex-col lg:mx-10 lg:max-w-[80%] lg:flex-row lg:items-center" justify="between">
         <CustomBreadcrumb />
         <DateTimePicker dateLabel="Change Date" timeLabel="Time" required={true} className="items-start" />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-5 max-w-[80%]">
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-5 w-full lg:max-w-[80%]">
         <Stepper />
         <RenderSteps />
       </FlexBox>
-    </>
+    </div>
   )
 }
 
@@ -74,7 +75,7 @@ const Stepper = () => {
   const { step } = useStepperStore()
 
   return (
-    <div className="w-full">
+    <div className="hidden w-full lg:flex">
       <div className="mx-auto flex max-w-[90%] items-center justify-center">
         <FlexBox
           gap="gap-[.625rem]"
@@ -176,5 +177,53 @@ const CustomBreadcrumb = () => {
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
+  )
+}
+
+{
+  /* Circular Progress Bar for mobile screens.*/
+}
+
+const TOTAL_STEPS = 5
+
+export const CircularProgress = () => {
+  const { step } = useStepperStore()
+
+  const radius = 50
+  const stroke = 15
+  const normalizedRadius = radius - stroke / 2
+  const circumference = 2 * Math.PI * normalizedRadius
+
+  const strokeDashoffset = useMemo(() => {
+    const clampedStep = Math.min(step, TOTAL_STEPS)
+    const progress = clampedStep / TOTAL_STEPS
+    return circumference - progress * circumference
+  }, [step, circumference])
+
+  return (
+    <div className="">
+      <svg width={radius * 2} height={radius * 2} className="">
+        {/* Background Circle */}
+        <circle cx={radius} cy={radius} r={normalizedRadius} fill="transparent" stroke="#e5e7eb" strokeWidth={stroke} />
+        {/* Progress Circle */}
+        <circle
+          cx={radius}
+          cy={radius}
+          r={normalizedRadius}
+          fill="transparent"
+          stroke="#651391" // Primary color
+          strokeWidth={stroke}
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="butt"
+          transform={`rotate(-90 ${radius} ${radius})`} // Rotate around center
+          style={{ transition: 'stroke-dashoffset 0.4s ease' }}
+        />
+        {/* Text in the center */}
+        <text x="50%" y="50%" textAnchor="middle" dy=".3em" className=" text-[1rem] font-semibold">
+          {step} of {TOTAL_STEPS}
+        </text>
+      </svg>
+    </div>
   )
 }

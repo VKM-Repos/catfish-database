@@ -223,7 +223,7 @@ export function DataTable<TData>({
             <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
               <SolarIconSet.MinimalisticMagnifer />
               <input
-                className="w-[390px] border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500"
+                className="border-none focus:outline-none focus-visible:border-none focus-visible:ring-primary-500 lg:w-[390px]"
                 placeholder="Search..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(String(e.target.value))}

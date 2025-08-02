@@ -58,7 +58,7 @@ export function CreateReportDialog({ open, onOpenChange, resetForm }: CreateRepo
   }
   return (
     <Dialog open={open}>
-      <DialogContent className="overflow-hidden p-8">
+      <DialogContent className="w-[90%] overflow-hidden rounded-lg p-8 lg:w-[full]">
         <div className="my-5">
           <h2 className="text-center text-[2rem] font-semibold">Recorded!</h2>
           <p className="text-center">

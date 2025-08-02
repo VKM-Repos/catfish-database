@@ -77,7 +77,7 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-5">
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-5">
         <StatsCard
           color={'#F8D082'}
           label={'Active farmers'}
@@ -102,6 +102,7 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
           color={'#BCADFB'}
           label={'Total volume of sales'}
           value={`₦${totalRevenue ? formatNumber(totalRevenue[0]?.totalRevenue) : 0}`}
+          className="col-span-2 lg:col-span-1"
           // value={`₦${totalRevenue ? formatNumberWithCommas(totalRevenue[0]?.totalRevenue) : 0}`}
         />
       </Grid>

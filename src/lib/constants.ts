@@ -36,7 +36,19 @@ export const MaintenanceActivityTypes = {
   OTHER: 'OTHER',
 }
 
-export const PelletSizes = ['0.5mm', '1.0mm', '2.0mm', '3.0mm', '4.0mm', '5.0mm', '6.0mm', '7.0mm', '8.0mm']
+export const PelletSizes = [
+  '0.5mm',
+  '0.8mm',
+  '1.0mm',
+  '1.2mm',
+  '1.5mm',
+  '1.8mm',
+  '2.0mm',
+  '3.0mm',
+  '4.0mm',
+  '6.0mm',
+  '9.0mm',
+]
 
 export interface RoleConfig {
   label: string

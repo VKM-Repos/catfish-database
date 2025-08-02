@@ -58,7 +58,7 @@ export default function AddFeedStock() {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        className="h-fit max-h-[80vh] w-fit max-w-[750px] overflow-y-scroll p-8"
+        className="h-fit max-h-[80vh] w-fit max-w-[750px] !overflow-visible overflow-y-scroll p-8"
       >
         <RenderSteps />
       </DialogContent>

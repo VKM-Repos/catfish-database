@@ -23,7 +23,7 @@ export default function DatePicker({ value, onChange, ...props }: DatePickerProp
   return (
     <Popover>
       <div
-        className="focus-within:ring-offset-background flex h-10 max-h-fit items-center overflow-hidden rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
+        className="focus-within:ring-offset-background  flex h-10 max-h-fit items-center overflow-hidden rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
         {...props}
       >
         <div className="w-full px-3 text-sm font-light">
@@ -35,7 +35,7 @@ export default function DatePicker({ value, onChange, ...props }: DatePickerProp
           </div>
         </PopoverTrigger>
       </div>
-      <PopoverContent className="w-auto p-0" align="end">
+      <PopoverContent className="z-[82] w-auto p-0" align="end">
         <Calendar mode="single" selected={selectedDate} onSelect={handleSelect} autoFocus />
       </PopoverContent>
     </Popover>

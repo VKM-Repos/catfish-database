@@ -208,7 +208,7 @@ export default function FeedStockForm({
                               <SelectValue placeholder="Select Feed Type" />
                             </div>
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[82]">
                             {Object.values(AvailableFeedTypes).map((type) => {
                               // Format: remove underscores, capitalize each word
                               const label = type
@@ -257,7 +257,7 @@ export default function FeedStockForm({
                               <SelectValue placeholder="Select Pellet size" />
                             </div>
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[82]">
                             {PelletSizes?.map((pellet) => (
                               <SelectItem key={pellet} value={parseFloat(pellet).toString()}>
                                 {pellet}

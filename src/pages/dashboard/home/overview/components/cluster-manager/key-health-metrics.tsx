@@ -76,7 +76,21 @@ export default function KeyHealthMetrics({ dateRange }: KeyHealthMetricsProps) {
     },
   })
 
-  console.log(averageFcr, '?????')
+  const getAverageMortalityRate = createGetQueryHook({
+    endpoint: '/dashboards/cluster/mortality-rate/overall?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['mortality-rate-cluster-manage-key-metrix'],
+  })
+  const { data: averageMortalityRate } = getAverageMortalityRate()
+
+  const useGetSubmission = createGetQueryHook({
+    endpoint: '/dashboards/cluster/submission-stats/overall?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['submission-count-cluster-manage-key-metrics'],
+  })
+  const { data: submissionRate } = useGetSubmission()
+
+  console.log(submissionRate, '?????')
 
   return (
     <Card className="h-fit w-full border border-neutral-200 px-[20px] py-[10px]">
@@ -106,8 +120,60 @@ export default function KeyHealthMetrics({ dateRange }: KeyHealthMetricsProps) {
               }}
               className="flex items-center justify-center rounded-[.625rem] px-1 py-1"
             >
-              +15%
-              <SolarIconSet.ArrowToTopLeft size={16} iconStyle="Broken" color="currentColor" />
+              -{/* <SolarIconSet.ArrowToTopLeft size={16} iconStyle="Broken" color="currentColor" /> */}
+              {/* <SolarIconSet.ArrowToDownLeft size={16} iconStyle="Broken" color="currentColor" /> */}
+            </div>
+          </FlexBox>
+        </FlexBox>
+
+        <FlexBox
+          className="w-full rounded-[8px] bg-neutral-100 p-[10px]"
+          direction="row"
+          align="center"
+          justify="between"
+        >
+          <FlexBox gap="gap-[4px]" direction="col" justify="between">
+            <Text className="text-[14px] font-medium">Mortality Rate</Text>
+            <Text className="text-[12px] font-normal">Target: {'<3.2%'}</Text>
+          </FlexBox>
+          <FlexBox direction="row" align="center">
+            <Text className="text-[16px] font-semibold">
+              {averageMortalityRate ? averageMortalityRate[0]?.mortalityRate : ''}
+            </Text>
+            <div
+              style={{
+                backgroundColor: '#E7F6E5',
+                color: '#0DA500',
+              }}
+              className="flex items-center justify-center rounded-[.625rem] px-1 py-1"
+            >
+              -{/* <SolarIconSet.ArrowToTopLeft size={16} iconStyle="Broken" color="currentColor" /> */}
+              {/* <SolarIconSet.ArrowToDownLeft size={16} iconStyle="Broken" color="currentColor" /> */}
+            </div>
+          </FlexBox>
+        </FlexBox>
+        <FlexBox
+          className="w-full rounded-[8px] bg-neutral-100 p-[10px]"
+          direction="row"
+          align="center"
+          justify="between"
+        >
+          <FlexBox gap="gap-[4px]" direction="col" justify="between">
+            <Text className="text-[14px] font-medium">Data Submission</Text>
+            <Text className="text-[12px] font-normal">Target: {'>90%'}</Text>
+          </FlexBox>
+          <FlexBox direction="row" align="center">
+            <Text className="text-[16px] font-semibold">
+              {submissionRate ? submissionRate[0]?.submissionPercentage : ''}
+            </Text>
+            <div
+              style={{
+                backgroundColor: '#E7F6E5',
+                color: '#0DA500',
+              }}
+              className="flex items-center justify-center rounded-[.625rem] px-1 py-1"
+            >
+              -{/* <SolarIconSet.ArrowToTopLeft size={16} iconStyle="Broken" color="currentColor" /> */}
               {/* <SolarIconSet.ArrowToDownLeft size={16} iconStyle="Broken" color="currentColor" /> */}
             </div>
           </FlexBox>

@@ -75,10 +75,10 @@ export default function BatchPondSelection({ form, pondNames }: { form: UseFormR
                       <ChevronDown className="opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[600px]">
+                  <PopoverContent className="z-[2000] w-[600px]">
                     <Command>
                       <CommandInput placeholder="Search pond..." className="h-9" />
-                      <CommandList>
+                      <CommandList className="z-[2000]">
                         <CommandEmpty>No pond found.</CommandEmpty>
                         <CommandGroup>
                           {pondNames?.map((name: string) => (

@@ -7,10 +7,13 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs'
 import FeedingReportsTable from './tabs/reports-table/feeding-report'
 import SamplingReportsTable from './tabs/reports-table/sampling-history'
+import { useAuthStore } from 'src/store/auth.store'
 
 export default function ClusterManagersPage() {
   const title = 'Reports'
   const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
+
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'feeding-reports'
   const handleTabChange = (tab: string) => {
@@ -34,9 +37,11 @@ export default function ClusterManagersPage() {
                   <TabsTrigger value="feeding-reports" className="data-[state=active]:font-semibold">
                     Feeding reports
                   </TabsTrigger>
-                  <TabsTrigger value="sampling-report" className="data-[state=active]:font-semibold">
-                    Sampling report
-                  </TabsTrigger>
+                  {user?.role === 'FARMER' && (
+                    <TabsTrigger value="sampling-report" className="data-[state=active]:font-semibold">
+                      Sampling report
+                    </TabsTrigger>
+                  )}
                   {/* <TabsTrigger value="harvest-reports" className="data-[state=active]:font-semibold">
                     Harvest reports
                   </TabsTrigger> */}

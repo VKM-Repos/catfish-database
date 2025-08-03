@@ -74,7 +74,7 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
                         <SelectValue placeholder="Select size of fish" />
                       </div>
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[2000]">
                       {fishSizes?.map((fishSize, index) => (
                         <SelectItem key={index} value={fishSize}>
                           {fishSize}

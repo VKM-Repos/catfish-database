@@ -7,6 +7,8 @@ import { Text } from 'src/components/ui/text'
 import { Loader } from 'src/components/ui/loader'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
+import * as SolarIconSet from 'solar-icon-set'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
 import { z } from 'zod'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from 'src/components/ui/select'
@@ -21,6 +23,7 @@ import { Textarea } from 'src/components/ui/textarea'
 import { useAuthStore } from 'src/store/auth.store'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { ClientErrorType, ServerErrorType } from 'src/types'
+import { FlexBox } from 'src/components/ui/flexbox'
 
 type FarmerValues = z.infer<typeof farmerRequestSchema> & { id?: string }
 
@@ -30,6 +33,17 @@ type FarmerProps = {
   onSuccess?: () => void
   onClose?: () => void
 }
+
+const FormTooltip = ({ text }: { text: string }) => (
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger>
+        <SolarIconSet.QuestionCircle size={16} />
+      </TooltipTrigger>
+      <TooltipContent>{text}</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+)
 
 export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerProps) {
   const queryClient = useQueryClient()
@@ -129,115 +143,155 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {error && <FormValidationErrorAlert error={error} />}
           <Grid cols={2} gap="gap-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field, fieldState }) => {
-                return (
-                  <FormItem>
+            <FlexBox direction="col" gap="gap-2">
+              <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                First Name
+                <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="Enter the farmer's first name." />
+              </Text>
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
                     <FormControl>
                       <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter first name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                )
-              }}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                )}
+              />
+            </FlexBox>
+            <FlexBox direction="col" gap="gap-2">
+              <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                Last Name
+                <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="Enter the farmer's last name." />
+              </Text>
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter last name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FlexBox>
           </Grid>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    state={fieldState.error ? 'error' : 'default'}
-                    placeholder="Enter email"
-                    {...field}
-                    disabled={mode === 'edit'}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {user?.role === 'SUPER_ADMIN' && (
+          <FlexBox direction="col" gap="gap-2">
+            <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+              Email
+              <span className="font-bold text-red-500">*</span>
+              <FormTooltip text="Enter the farmer's email address." />
+            </Text>
             <FormField
               control={form.control}
-              name="clusterId"
+              name="email"
               render={({ field, fieldState }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormControl>
-                    <Select
-                      value={field.value ? String(field.value) : ''}
-                      onValueChange={(value) => field.onChange(value)}
-                      // state={fieldState.error ? 'error' : 'default'}
-                    >
-                      <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light`}>
-                        <SelectValue placeholder="Cluster" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isLoadingClusters ? (
-                          <SelectItem value="loading" disabled>
-                            <Text>Loading clusters...</Text>
-                          </SelectItem>
-                        ) : (
-                          clusters?.map((cluster: Cluster) => (
-                            <SelectItem key={cluster.id} value={String(cluster.id)}>
-                              {cluster.name}
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      state={fieldState.error ? 'error' : 'default'}
+                      placeholder="Enter email"
+                      {...field}
+                      disabled={mode === 'edit'}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </FlexBox>
+          {user?.role === 'SUPER_ADMIN' && (
+            <FlexBox direction="col" gap="gap-2">
+              <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                Cluster
+                <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="Select the cluster this farmer belongs to." />
+              </Text>
+              <FormField
+                control={form.control}
+                name="clusterId"
+                render={({ field, fieldState }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <Select
+                        value={field.value ? String(field.value) : ''}
+                        onValueChange={(value) => field.onChange(value)}
+                      >
+                        <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light`}>
+                          <SelectValue placeholder="Cluster" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {isLoadingClusters ? (
+                            <SelectItem value="loading" disabled>
+                              <Text>Loading clusters...</Text>
+                            </SelectItem>
+                          ) : (
+                            clusters?.map((cluster: Cluster) => (
+                              <SelectItem key={cluster.id} value={String(cluster.id)}>
+                                {cluster.name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FlexBox>
           )}
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter phone " {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    state={fieldState.error ? 'error' : 'default'}
-                    placeholder="Address "
-                    {...field}
-                    className="text-neutral-900"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3">
+          <FlexBox direction="col" gap="gap-2">
+            <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+              Phone
+              <span className="font-bold text-red-500">*</span>
+              <FormTooltip text="Enter the farmer's phone number." />
+            </Text>
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field, fieldState }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input state={fieldState.error ? 'error' : 'default'} placeholder="Enter phone" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </FlexBox>
+          <FlexBox direction="col" gap="gap-2">
+            <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+              Address
+              <span className="font-bold text-red-500">*</span>
+              <FormTooltip text="Enter the farmer's address." />
+            </Text>
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field, fieldState }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Textarea
+                      state={fieldState.error ? 'error' : 'default'}
+                      placeholder="Address"
+                      {...field}
+                      className="text-neutral-900"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </FlexBox>
+          {/* <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[98%] items-start justify-between rounded-md bg-neutral-50 p-3"> */}
+          <FlexBox justify="between" align="center" className="w-full bg-neutral-50 px-6 py-3">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
@@ -265,7 +319,8 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
                 </>
               )}
             </Button>
-          </div>
+          </FlexBox>
+          {/* </div> */}
         </form>
       </Form>
     </>

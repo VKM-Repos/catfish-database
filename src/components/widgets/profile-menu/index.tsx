@@ -10,7 +10,7 @@ import { createPostMutationHook } from 'src/api/hooks/usePost'
 import { z } from 'zod'
 import { userSchema } from 'src/schemas'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { Dialog, DialogClose, DialogContent, DialogHeader } from 'src/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogOverlay } from 'src/components/ui/dialog'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { X } from 'lucide-react'
@@ -35,7 +35,11 @@ export const useGetCurrentUser = createGetQueryHook({
   requiresAuth: true,
 })
 
-const ProfileMenu = () => {
+type ProfileMenuProps = {
+  onLinkClick?: () => void
+}
+
+const ProfileMenu = ({ onLinkClick }: ProfileMenuProps) => {
   const { data: user } = useGetCurrentUser()
   const token = useAuthStore((state) => state.accessToken)
   const userName = user ? `${user.firstName} ${user.lastName?.charAt(0).toUpperCase()}.` : 'User'
@@ -75,7 +79,7 @@ const ProfileMenu = () => {
   ]
 
   return (
-    <div className="flex items-center">
+    <div className="flex h-fit items-center">
       <Popover>
         <PopoverTrigger>
           <div className="flex cursor-pointer items-center gap-4">
@@ -93,7 +97,7 @@ const ProfileMenu = () => {
             <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
           </div>
         </PopoverTrigger>
-        <PopoverContent className="relative mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
+        <PopoverContent className="relative z-[91] mt-2 w-48 rounded-md bg-white p-2 shadow-lg ring-1 ring-neutral-100 ring-opacity-5">
           {profileLinks.map(({ label, href, action, icon }) => {
             const content = (
               <div className="flex items-center gap-2 rounded-md p-2 hover:bg-primary-100">
@@ -102,11 +106,17 @@ const ProfileMenu = () => {
               </div>
             )
             return href ? (
-              <Link key={label} to={href} className="block w-full">
+              <Link key={label} to={href} onClick={onLinkClick} className="block w-full">
                 {content}
               </Link>
             ) : (
-              <button key={label} onClick={action} className="block w-full text-left">
+              <button
+                key={label}
+                onClick={() => {
+                  action?.()
+                }}
+                className="block w-full text-left"
+              >
                 {content}
               </button>
             )
@@ -116,7 +126,11 @@ const ProfileMenu = () => {
 
       {/* Logout Confirmation Dialog */}
       <Dialog open={isLogoutDialogOpen} onOpenChange={setIsLogoutDialogOpen}>
-        <DialogContent className=" overflow-hidden p-8">
+        <DialogOverlay
+          className="fixed inset-0 z-[95] bg-black/70 backdrop-blur-lg lg:bg-black/50 lg:backdrop-blur-sm"
+          onClick={() => setIsLogoutDialogOpen(false)}
+        />
+        <DialogContent className="z-[100] w-[90%] overflow-hidden rounded-lg p-8 lg:w-[full]">
           <picture>
             <img className="absolute left-0 top-0 w-[10rem]" src={ECLIPSE} alt="Decorative" />
           </picture>

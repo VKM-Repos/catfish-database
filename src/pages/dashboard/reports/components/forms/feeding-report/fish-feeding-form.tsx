@@ -36,6 +36,7 @@ import { useFishBehaviorStore } from 'src/store/fish-behavior-store'
 import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 import { useFarmerReportStore } from 'src/store/farmer-report-store'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
+import { CircularProgress } from '../../../create/daily-farm-report/_id'
 
 const initialValues = {
   feedType: '',
@@ -199,6 +200,15 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
     <>
       <CreateReportDialog open={openDialog} resetForm={handleReset} onOpenChange={setOpenDialog} />
       {error && <FormValidationErrorAlert error={error} />}
+      <div className="mt-5 flex gap-3 lg:hidden">
+        <CircularProgress />
+        <FlexBox direction="row" justify="between" align="center" className="">
+          <div>
+            <h5 className="text-[1.5rem] font-bold text-[#22252B]">Daily Report</h5>
+            <p className="text-xs font-medium">Collect measurements on a sample of fish to gauge growth.</p>
+          </div>
+        </FlexBox>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <Card className="p-[24px]">
@@ -213,7 +223,12 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
 
           <div>
             {recordDailyFeeding && (
-              <FlexBox direction="row" justify="between" align="center" className="mb-10 border-0 border-b pb-5">
+              <FlexBox
+                direction="row"
+                justify="between"
+                align="center"
+                className="mb-10 hidden border-0 border-b pb-5 lg:flex"
+              >
                 <div>
                   <h5 className="text-[1.5rem] font-bold text-[#444955]">Daily Report</h5>
                   <p className="text-xs font-medium">Collect measurements on a sample of fish to gauge growth.</p>
@@ -222,7 +237,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
             )}
             {recordDailyFeeding && (
               <div className="flex flex-col gap-5 rounded-lg border border-neutral-200 p-5">
-                <div className="flex w-full items-start gap-5">
+                <div className="flex w-full flex-col items-start gap-5 lg:flex-row">
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Feed Type <span className="font-bold text-red-500">*</span>
@@ -328,7 +343,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
             )}
           </div>
 
-          <div className="flex justify-between bg-neutral-100 p-5">
+          <div className=" flex justify-between bg-neutral-100 p-5 ">
             <Button variant={'outline'} onClick={() => handleGoBack()}>
               Back
             </Button>

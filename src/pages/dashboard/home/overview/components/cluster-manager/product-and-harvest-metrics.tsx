@@ -70,7 +70,8 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
           </Card>
         </FlexBox>
       }
-      <FlexBox>
+
+      <FlexBox className="lg:flex-row" direction="col">
         <HarvestVolumeOvertime dateRange={dateRange} />
         <LineChartHarvestVolume dateRange={dateRange} />
       </FlexBox>

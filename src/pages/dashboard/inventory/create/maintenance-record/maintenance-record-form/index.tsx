@@ -176,7 +176,7 @@ export default function MaintenanceRecordsForm({
                           <SelectTrigger className="w-full font-light">
                             <SelectValue placeholder="Select activity type" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[2000]">
                             {Object.values(MaintenanceActivityTypes).map((type) => {
                               // Format: remove underscores, capitalize each word
                               const label = type
@@ -257,7 +257,7 @@ export default function MaintenanceRecordsForm({
                                 <SelectValue placeholder="Select a pond" />
                               </div>
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[2000]">
                               {isLoadingPonds ? (
                                 <SelectItem value="loading" disabled>
                                   <Text>Loading ponds...</Text>

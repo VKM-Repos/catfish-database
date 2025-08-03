@@ -96,16 +96,16 @@ export default function HelpCenter() {
   return (
     <PageTransition>
       <Container>
-        <Center className="flex-col gap-10 ">
+        <Center className="flex-col gap-10">
           <Center className="flex-col gap-2">
             <PageHeader title={title} actions={actions} className="!h-fit !py-0" />
-            <Text variant="body" color="text-[#333740]" align="center" className="w-[571px]" size="base">
+            <Text variant="body" color="text-[#333740]" align="center" className="lg:w-[571px]" size="base">
               Find answers to common questions and watch quick tutorials to get started with the Catfish Farm Management
               System.
             </Text>
           </Center>
           <Input
-            className=" w-[391px] py-2"
+            className=" py-2 lg:w-[391px]"
             placeholder="Search FAQs...."
             icon={Icon}
             value={value}
@@ -113,12 +113,12 @@ export default function HelpCenter() {
           />
           <Center className="flex-col gap-2">
             <PageHeader title={'Frequently Asked Questions'} actions={actions} className="!h-fit !py-0" />
-            <Text variant="body" color="text-[#333740]" align="center" className="w-[571px]" size="base">
+            <Text variant="body" color="text-[#333740]" align="center" className="lg:w-[571px]" size="base">
               Get quick answers to the most common questions about CFMS
             </Text>
           </Center>
-          <Center className="flex-col">
-            <Accordion type="multiple" className="mx-auto w-[673px]">
+          <Center className="mb-10 flex-col">
+            <Accordion type="multiple" className="mx-auto lg:w-[673px]">
               {searchedFaqs?.map((faq, i) => (
                 <AccordionItem key={i} value={`item-${i}`}>
                   <AccordionTrigger>

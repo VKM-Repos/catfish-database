@@ -21,7 +21,7 @@ export function DropDownOption() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant={'link'}>
+          <Button variant={'link'} className="p-1 lg:p-[15px]">
             <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
               <mask
                 id="path-1-outside-1_3421_26554"

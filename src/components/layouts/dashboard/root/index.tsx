@@ -17,8 +17,8 @@ export function DashboardLayout() {
             </ScrollArea>
           </aside>
 
-          <main className={cn('flex-1', 'lg:pl-64')}>
-            <div className="container mx-auto">
+          <main className={cn('lg:flex-1', 'w-full', 'lg:pl-64')}>
+            <div className="mx-auto max-w-screen-xl px-4 lg:p-6">
               <Outlet />
             </div>
           </main>

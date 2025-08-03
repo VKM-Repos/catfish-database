@@ -60,12 +60,11 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
     })
     return config
   }, [chartData])
-  const totalQuantity = chartData.reduce((sum: any, item: any) => sum + item.quantity, 0)
   return (
-    <Card className="flex flex h-[400px] max-h-[400px] w-full flex-col px-6 py-4">
+    <Card className="flex h-[400px] max-h-[400px] w-full flex-col rounded-[.875rem] border-neutral-200 px-6 py-4 lg:w-1/2">
       <ChartHeader className="mb-12 pb-0" title={'Fish Distribution by Pond'} />
       <FlexBox direction="row" justify="between" className="w-full items-center">
-        <div className="flex w-1/2 flex-col">
+        <div className="w-1/2 flex-1 flex-col">
           <CardContent className="p-0">
             <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
               <PieChart width={250} height={250}>
@@ -73,25 +72,21 @@ export default function FishDistribution({ dateRange }: StockingHarvestOverviewP
                   cursor={false}
                   content={<ChartTooltipContent className="h-16 w-full bg-black text-white" nameKey="reason" />}
                 />
-                <Pie data={chartData} dataKey="quantity" nameKey="reason" innerRadius={60} outerRadius={100} />
+                <Pie data={chartData} dataKey="quantity" nameKey="reason" innerRadius={60} />
               </PieChart>
             </ChartContainer>
           </CardContent>
         </div>
 
         {/* Scrollable Legend */}
-        <div className="align-center justity-center flex max-h-[200px] w-1/2 flex-col overflow-y-auto px-2">
+        <div className="align-center flex  max-h-[200px] w-1/3 flex-col justify-center overflow-y-auto lg:w-1/3 lg:px-2">
           {chartData.map((item: any, index: any) => {
-            const percentage = ((item.quantity / totalQuantity) * 100).toFixed(2)
             return (
-              <FlexBox key={index} direction="col" className="mb-2">
-                <FlexBox align="center" gap="gap-2">
-                  <div className="h-4 w-4 rounded-full" style={{ backgroundColor: item.fill }} />
+              <FlexBox key={index} direction="col" className="mb-2 !gap-0 lg:!gap-4">
+                <FlexBox align="center" gap="gap-2" justify="center">
+                  <div className="h-3 w-3 rounded-full lg:h-4 lg:w-4" style={{ backgroundColor: item.fill }} />
                   <span className="text-sm !capitalize">{item.reason}</span>
                 </FlexBox>
-                <span className="text-muted-foreground text-xs">
-                  {item.quantity.toLocaleString()} Fish ({percentage}%)
-                </span>
               </FlexBox>
             )
           })}

@@ -72,7 +72,7 @@ export default function PondsDetailsPage() {
           />
         </FlexBox>
         <Spacer />
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
             <Tabs
               defaultValue={activeTab}

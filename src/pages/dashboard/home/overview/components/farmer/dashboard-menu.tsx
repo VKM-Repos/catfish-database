@@ -16,23 +16,24 @@ export default function DashboardMenu() {
   const title = user?.role === 'FARMER' ? 'Farm ' : user?.role === 'CLUSTER_MANAGER' ? 'Cluster' : 'System'
 
   return (
-    <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white py-4">
+    <nav className="sticky left-0 top-[68px] z-50 flex h-fit w-full flex-col items-center justify-between bg-white py-4 md:px-6">
       <FlexBox justify="between" align="center" className="sticky mb-[2rem] mt-4 w-full py-[.625rem]">
-        <FlexBox direction="col" gap="gap-1">
-          <Heading className="!text-[1.875rem] font-semibold">{title} Overview</Heading>
-          <Text className="text-sm text-neutral-700">
+        <FlexBox direction="col" gap="gap-3">
+          <Heading className="!text-base font-semibold lg:!text-[1.875rem]">{title} Overview</Heading>
+          <Text className="hidden text-sm text-neutral-700 lg:inline">
             View and manage your {title.toLowerCase()} performance metrics
           </Text>
         </FlexBox>
         {user?.role !== 'SUPER_ADMIN' && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 lg:gap-2">
             {user?.role === 'FARMER' ? (
               <DropDownOption />
             ) : (
               <Button
                 onClick={() => setOpenSelectFarmerDialog(true)}
                 variant={'outline'}
-                className="flex items-center gap-2"
+                // size={'xs'}
+                className="flex items-center gap-2 rounded-full md:rounded-lg"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -44,7 +45,7 @@ export default function DashboardMenu() {
                     fill="#651391"
                   />
                 </svg>
-                <Text className="text-[14px] font-semibold">Add Pond</Text>
+                <Text className="hidden text-xs font-medium md:inline md:text-sm">Add Pond</Text>
               </Button>
             )}
             <Button onClick={() => navigate(paths.dashboard.home.getStarted)}>Submit Report</Button>

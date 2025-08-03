@@ -7,7 +7,7 @@ import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { userSchema } from 'src/schemas/schemas'
-import { FarmersForm } from '../../components/forms/farmers-form'
+import { FarmersForm } from '../../create/forms/farmers-form'
 
 const useGetFarmer = createGetQueryHook<typeof userSchema, { id: string }>({
   endpoint: '/users/:id',
@@ -47,7 +47,7 @@ export default function EditFarmerPage() {
 
   return (
     <Dialog open={true} onOpenChange={() => navigate(-1)}>
-      <DialogContent className="max-w-[478px] overflow-hidden p-8">
+      <DialogContent className="overflow-hidden p-8 lg:max-w-[478px]">
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader type="dots" size={24} />

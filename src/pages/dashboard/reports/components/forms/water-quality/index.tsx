@@ -21,6 +21,7 @@ import { useWaterQualityStore } from 'src/store/water-quality-store'
 import { createPatchMutationHook } from 'src/api/hooks/usePatch'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 import { useDateStore } from 'src/store/report-date-store'
+import { CircularProgress } from '../../../create/daily-farm-report/_id'
 
 export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () => void; handlePrevious?: () => void }) {
   const [recordWaterQuality, setRecordWaterQuality] = useState(false)
@@ -145,6 +146,15 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
       {error && <FormValidationErrorAlert error={error} />}
+      <div className="mt-5 flex gap-3 lg:hidden">
+        <CircularProgress />
+        <FlexBox direction="row" justify="between" align="center" className="">
+          <div>
+            <h5 className="text-[1.5rem] font-bold text-[#22252B]">Daily Water Quality</h5>
+            <p className="text-xs font-medium">Record key water parameters to monitor pond health.</p>
+          </div>
+        </FlexBox>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <Card className="p-[24px]">
@@ -157,7 +167,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
             </div>
           </Card>
           {recordWaterQuality && (
-            <div className="border-0 border-b p-5">
+            <div className="hidden border-0 border-b p-5 lg:inline">
               <Text className="text-[1.5rem] font-bold text-[#444955]">Daily Water Quality</Text>
               <Text className="text-xs font-medium">Record key water parameters to monitor pond health.</Text>
             </div>
@@ -165,7 +175,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
           {recordWaterQuality && (
             <Card className="p-[24px]">
               <FlexBox gap="gap-2" direction="col" className="w-full space-y-3">
-                <div className="flex h-full w-full items-start gap-5">
+                <div className="flex h-full w-full flex-col items-start gap-5 lg:flex-row">
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Dissolved Oxygen
@@ -245,7 +255,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                                 />
                               </div>
                               <div
-                                className={`h-10 w-[95px] rounded-br-md rounded-tr-md px-3 py-[.65rem] text-xs ${
+                                className={`flex h-10 w-[95px] items-center rounded-br-md rounded-tr-md px-3 py-[.65rem] text-center text-xs ${
                                   activeInputs.phLevel
                                     ? 'bg-primary-500  text-white'
                                     : 'bg-neutral-100 text-neutral-400'
@@ -261,7 +271,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                     />
                   </div>
                 </div>
-                <div className="flex w-full items-start gap-5">
+                <div className="flex w-full flex-col items-start gap-5 lg:flex-row">
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Temperature
@@ -355,7 +365,7 @@ export function WaterQuality({ handleNext, handlePrevious }: { handleNext?: () =
                     />
                   </div>
                 </div>
-                <div className="flex w-full items-start gap-5">
+                <div className="flex w-full flex-col items-start gap-5 lg:flex-row">
                   <div className="flex w-full flex-col gap-2">
                     <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                       Nitrate

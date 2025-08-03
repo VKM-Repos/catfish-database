@@ -90,8 +90,6 @@ export default function KeyHealthMetrics({ dateRange }: KeyHealthMetricsProps) {
   })
   const { data: submissionRate } = useGetSubmission()
 
-  console.log(submissionRate, '?????')
-
   return (
     <Card className="h-fit w-full border border-neutral-200 px-[20px] py-[10px]">
       <div className="flex">
@@ -112,7 +110,7 @@ export default function KeyHealthMetrics({ dateRange }: KeyHealthMetricsProps) {
             <Text className="text-[12px] font-normal">Target: {'<2.0'}</Text>
           </FlexBox>
           <FlexBox direction="row" align="center">
-            <Text className="text-[16px] font-semibold">{averageFcr ? averageFcr[0]?.fcrValue : ''}</Text>
+            <Text className="text-[16px] font-semibold">{averageFcr ? averageFcr[0]?.fcrValue : '-'}</Text>
             <div
               style={{
                 backgroundColor: '#E7F6E5',
@@ -138,7 +136,7 @@ export default function KeyHealthMetrics({ dateRange }: KeyHealthMetricsProps) {
           </FlexBox>
           <FlexBox direction="row" align="center">
             <Text className="text-[16px] font-semibold">
-              {averageMortalityRate ? averageMortalityRate[0]?.mortalityRate : ''}
+              {averageMortalityRate ? averageMortalityRate[0]?.mortalityRate : '-'}
             </Text>
             <div
               style={{
@@ -164,7 +162,7 @@ export default function KeyHealthMetrics({ dateRange }: KeyHealthMetricsProps) {
           </FlexBox>
           <FlexBox direction="row" align="center">
             <Text className="text-[16px] font-semibold">
-              {submissionRate ? submissionRate[0]?.submissionPercentage : ''}
+              {submissionRate ? submissionRate[0]?.submissionPercentage : '-'}
             </Text>
             <div
               style={{

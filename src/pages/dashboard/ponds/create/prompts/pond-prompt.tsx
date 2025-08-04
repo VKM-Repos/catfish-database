@@ -45,7 +45,7 @@ export default function PondPrompt({
 
         <FlexBox direction="col" justify="between" gap="gap-[3.25rem]" align="center">
           <FlexBox direction="col" gap="gap-2" align="center">
-            <Heading level={5} weight="bold">
+            <Heading level={5} weight="bold" className="text-center">
               {title}
             </Heading>
             <Text className="text-center">{message}</Text>

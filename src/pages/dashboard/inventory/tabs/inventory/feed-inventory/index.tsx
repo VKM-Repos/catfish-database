@@ -42,7 +42,7 @@ export default function FeedInventory() {
     queryKey: ['feed-quantity'],
   })
   const useGetFeedStatistics = createGetQueryHook({
-    endpoint: `/dashboards/farmer/feed/total?interval=ALL`,
+    endpoint: `/feed-inventories/total-cost`,
     responseSchema: z.any(),
     queryKey: ['feed-statistics'],
   })
@@ -57,7 +57,7 @@ export default function FeedInventory() {
   const { data: feedQuantity } = useGetFeedQuantity()
   const { data: lowStockFeeds } = useGetLowStockFeeds()
 
-  const totalFeedCost = feedStatistics?.totalCost ?? '₦0'
+  const totalFeedCost = feedStatistics ?? '₦0'
   // Calculate total feed types (unique feedType)
   const totalFeedTypes = feedQuantity ? Array.from(new Set(feedQuantity.map((item) => item.feedType))).length : 0
 

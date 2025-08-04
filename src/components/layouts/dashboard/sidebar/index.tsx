@@ -82,7 +82,7 @@ export function Sidebar({ onLinkClick }: SidebarProps) {
                     onClick={onLinkClick}
                     className={`${
                       pathname === path ? ' text-inherit' : 'text-neutral-500'
-                    } flex w-full items-center justify-start space-x-3 whitespace-nowrap hover:text-primary-600`}
+                    } flex w-full items-center !justify-start space-x-3 whitespace-nowrap hover:text-primary-600`}
                   >
                     <span className="mt-[6px]">{icon}</span>
                     <Text size="base">{label}</Text>

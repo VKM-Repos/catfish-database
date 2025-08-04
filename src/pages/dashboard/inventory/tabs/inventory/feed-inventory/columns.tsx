@@ -21,7 +21,7 @@ export const columns: ColumnDef<any>[] = [
   },
   // {
   //   accessorKey: 'quantityInKg',
-  //   header: 'Total feed stocked (kg)',
+  //   header: 'Initial feed stocked (kg)',
   //   cell: ({ row }) => <Text weight="light">{row.original.quantityInKg || '-'}</Text>,
   // },
   {

@@ -6,7 +6,6 @@ import { HarvestVolumeOvertime } from './harvest-volume-overtime'
 import { LineChartHarvestVolume } from './line-chart-harvest-volume'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
-import { formatNumber } from 'src/lib/utils'
 type DateRange = { from: Date; to: Date }
 interface ProductAndHarvestMetricsProps {
   dateRange?: DateRange
@@ -30,7 +29,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
                 Total harvest volume
               </Text>
               <Text size="lg" weight="semibold">
-                {salesVolume && formatNumber(salesVolume[0]?.totalWeight !== null ? salesVolume[0]?.totalWeight : 0)} kg
+                {salesVolume && salesVolume[0]?.totalWeight !== null ? salesVolume[0]?.totalWeight : 0} kg
               </Text>
               <Text size="xs">YTD</Text>
             </FlexBox>
@@ -41,7 +40,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
                 Average selling price
               </Text>
               <Text size="lg" weight="semibold">
-                ₦{salesVolume && salesVolume[0]?.averageSellingPrice}
+                ₦{salesVolume && salesVolume[0]?.averageSellingPrice !== null ? salesVolume[0]?.averageSellingPrice : 0}
               </Text>
               <Text size="xs">Current</Text>
             </FlexBox>
@@ -52,7 +51,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
                 Total revenue
               </Text>
               <Text size="lg" weight="semibold">
-                ₦{salesVolume && salesVolume[0]?.totalRevenue}
+                ₦{salesVolume && salesVolume[0]?.totalRevenue !== null ? salesVolume[0]?.totalRevenue : 0}
               </Text>
               <Text size="xs">YTD</Text>
             </FlexBox>
@@ -63,7 +62,7 @@ export default function ProductAndHarvestMetrics({ dateRange }: ProductAndHarves
                 Average fish weight
               </Text>
               <Text size="lg" weight="semibold">
-                {salesVolume && salesVolume[0]?.averageFishWeight} kg
+                {salesVolume && salesVolume[0]?.averageFishWeight !== null ? salesVolume[0]?.averageFishWeight : 0} kg
               </Text>
               <Text size="xs">Current</Text>
             </FlexBox>

@@ -3,7 +3,6 @@ import { Grid } from 'src/components/ui/grid'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import StatsCard from './stats-card'
-import { formatNumber } from 'src/lib/utils'
 type DateRange = { from: Date; to: Date }
 interface FarmOverviewStatisticsProps {
   dateRange?: DateRange
@@ -74,20 +73,16 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-5">
-        <StatsCard
-          color={'#F8D082'}
-          label={'Active farmers'}
-          value={`${userStatus ? formatNumber(userStatus?.activeUsers) : 0}`}
-        />
+        <StatsCard color={'#F8D082'} label={'Active farmers'} value={`${userStatus ? userStatus?.activeUsers : 0}`} />
         <StatsCard
           color={'#A0E8B9'}
           label={'Total registered ponds'}
-          value={`${registeredPonds ? formatNumber(registeredPonds?.totalPonds) : 0}`}
+          value={`${registeredPonds ? registeredPonds?.totalPonds : 0}`}
         />
         <StatsCard
           color={'#B9D9FF'}
           label={'Fish stocked'}
-          value={`${availableStock ? formatNumber(availableStock?.availableFish) : 0}`}
+          value={`${availableStock ? availableStock?.availableFish : 0}`}
         />
         <StatsCard
           color={'#F1A8D3'}
@@ -97,7 +92,7 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
         <StatsCard
           color={'#BCADFB'}
           label={'Total volume of sales'}
-          value={`₦${totalRevenue ? formatNumber(totalRevenue[0]?.totalRevenue) : 0}`}
+          value={`₦${totalRevenue ? totalRevenue[0]?.totalRevenue : 0}`}
         />
       </Grid>
     </FlexBox>

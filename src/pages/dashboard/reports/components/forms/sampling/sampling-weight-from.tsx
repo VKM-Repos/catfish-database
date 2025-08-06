@@ -176,7 +176,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 className="bg-neutral-100"
                 disabled
                 readOnly
-                value={currentAvgWeight.toFixed(2)}
+                value={currentAvgWeight.toFixed(4)}
               />
             </div>
             <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
@@ -201,7 +201,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
               />
             </div>
             <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
-              Kg
+              g
             </div>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 className="bg-neutral-100"
                 disabled
                 readOnly
-                value={avgWeightGain.toFixed(2)}
+                value={avgWeightGain.toFixed(4)}
               />
             </div>
             <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">

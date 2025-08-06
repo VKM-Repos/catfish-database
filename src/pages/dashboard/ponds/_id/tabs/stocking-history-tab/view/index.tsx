@@ -20,7 +20,7 @@ export default function ViewBatchDetails({ open, setOpenEdit, batch, onOpenChang
     { label: 'Date', value: batch?.createdAt && formatDate(batch?.createdAt) },
     { label: 'Source', value: 'Supplier' },
     { label: 'Batch', value: 'Batch L5' },
-    { label: 'Description', value: '1mm' },
+    { label: 'Initial weight', value: '1mm' },
     { label: 'Average weight', value: '8g' },
     { label: 'Fish size', value: 'Fingerlings' },
   ]
@@ -28,6 +28,7 @@ export default function ViewBatchDetails({ open, setOpenEdit, batch, onOpenChang
     onOpenChange(false)
     setOpenEdit(true)
   }
+  console.log(batch, '????')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

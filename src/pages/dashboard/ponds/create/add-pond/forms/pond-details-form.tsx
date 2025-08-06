@@ -183,7 +183,7 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
                         <SelectValue placeholder="Select Source" />
                       </div>
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[2000]">
                       {isWaterSourcesLoading ? (
                         <SelectItem value="loading" disabled>
                           <Text>Loading sources...</Text>
@@ -232,7 +232,7 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
                         <SelectValue placeholder="Select pond type" />
                       </div>
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[2000]">
                       {isPondTypesLoading ? (
                         <SelectItem value="loading" disabled>
                           <Text>Loading types...</Text>

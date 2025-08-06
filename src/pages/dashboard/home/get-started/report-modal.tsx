@@ -136,13 +136,12 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
     switch (redirect) {
       case 'daily-farm-report':
         navigate(
-          paths.dashboard.reports.createDailyFarmReport(values.pondId) +
-            `${from !== undefined ? `'?from=${from}` : ''}`,
+          paths.dashboard.reports.createDailyFarmReport(values.pondId) + `${from !== undefined ? `?from=${from}` : ''}`,
         )
         break
       case 'daily-sampling-report':
         navigate(
-          paths.dashboard.reports.createSamplingReport(values.pondId) + `${from !== undefined ? `'?from=${from}` : ''}`,
+          paths.dashboard.reports.createSamplingReport(values.pondId) + `${from !== undefined ? `?from=${from}` : ''}`,
         )
         break
       case 'daily-harvest-report':
@@ -163,6 +162,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
   const [openCommand, setOpenCommand] = useState(false)
   const [value, setValue] = useState('')
   const [selectedPond, setSelectedPond] = useState('')
+  console.log(value, '??')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -280,7 +280,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                             <SelectValue placeholder="Select a farmer" />
                           </div>
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[2000]">
                           {user?.role === 'CLUSTER_MANAGER' && isLoadingFarmers ? (
                             <SelectItem value="loading" disabled>
                               <Text>Loading farmers...</Text>
@@ -318,15 +318,24 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                           aria-expanded={open}
                           className="w-full justify-between border-neutral-200 py-2 text-neutral-500"
                         >
-                          <div className="flex items-center gap-5">
-                            {' '}
-                            <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
-                            {value ? ponds.content?.find((pond: any) => pond.name === value)?.name : 'Select Pond'}
-                          </div>
+                          {user?.role === 'FARMER' && (
+                            <div className="flex items-center gap-5">
+                              {' '}
+                              <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
+                              {value ? ponds.content?.find((pond: any) => pond.name === value)?.name : 'Select Pond'}
+                            </div>
+                          )}
+                          {user?.role === 'CLUSTER_MANAGER' && (
+                            <div className="flex items-center gap-5">
+                              {' '}
+                              <SolarIconSet.Water color="text-inherit" size={24} iconStyle="Outline" />
+                              {value ? filteredPonds?.find((pond: any) => pond.name === value)?.name : 'Select Pond'}
+                            </div>
+                          )}
                           <ChevronDown className="opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="z-[82] lg:w-[600px]">
+                      <PopoverContent className="z-[2000] lg:w-[600px]">
                         <Command>
                           <CommandInput placeholder="Search pond..." className="h-9" />
                           <CommandList>
@@ -343,6 +352,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                       field.onChange(pond.id)
                                       form.trigger('pondId')
                                     }}
+                                    className="hover: bg-primary-100"
                                   >
                                     {(pond as { name: string }).name}
                                     <Check
@@ -361,6 +371,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                       field.onChange(pond.id)
                                       form.trigger('pondId')
                                     }}
+                                    className="hover:bg-primary-100"
                                   >
                                     {(pond as { name: string }).name}
                                     <Check

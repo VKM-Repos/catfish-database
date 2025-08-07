@@ -36,6 +36,7 @@ export function PondsTable() {
 
   const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
   const isLoading = isPondsLoading || isFishBatchesLoading
+
   return (
     <>
       {!isLoading && totalPonds <= 0 ? (

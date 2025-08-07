@@ -56,47 +56,67 @@ interface PondStatisticsProps {
 export default function PondStatistics({ pondId }: PondStatisticsProps) {
   // Hook to fetch feed total data
   const useGetFeedTotal = createGetQueryHook({
-    endpoint: '/dashboards/farmer/feed/total?interval=ALL',
-    responseSchema: feedTotalSchema,
+    endpoint: '/dashboards/farmer/fcr/per-pond',
+    responseSchema: z.any(),
     queryKey: ['feed-total'],
   })
 
   // Hook to fetch previous week's feed data for comparison
-  const useGetPreviousFeedTotal = createGetQueryHook({
-    endpoint: '/dashboards/farmer/feed/total?interval=ALL',
-    responseSchema: feedTotalSchema,
-    queryKey: ['feed-total-previous'],
+  const useGetTotalCostFeedTotal = createGetQueryHook({
+    endpoint: '/dashboards/farmer/feed-consumption/per-pond',
+    responseSchema: z.any(),
+    queryKey: ['total-cost-feed'],
   })
 
   // Hook to fetch total weight per pond
   const useGetTotalWeightPerPond = createGetQueryHook({
-    endpoint: '/dashboards/farmer/total-weight/per-pond?interval=ALL',
-    responseSchema: totalWeightPerPondSchema,
+    endpoint: '/dashboards/farmer/volume-of-sales/per-pond',
+    responseSchema: z.any(),
     queryKey: ['total-weight-per-pond'],
   })
 
-  // Hook to fetch production cost per pond
-  const useGetProductionCostPerPond = createGetQueryHook({
-    endpoint: '/dashboards/farmer/production-cost/per-pond?interval=ALL',
-    responseSchema: productionCostPerPondSchema,
-    queryKey: ['production-cost-per-pond'],
-  })
-
   // Hook to fetch average mortality rate (for survival rate)
-  const useGetAverageMortalityRate = createGetQueryHook({
-    endpoint: '/dashboards/farmer/average-mortality-rate',
-    responseSchema: averageMortalityRateSchema,
-    queryKey: ['average-mortality-rate'],
+  const useGetMortalityRate = createGetQueryHook({
+    endpoint: '/dashboards/farmer/mortality-rate/per-pond',
+    responseSchema: z.any(),
+    queryKey: ['mortality-rate'],
   })
 
-  const { data: feedTotal, isLoading: feedTotalLoading } = useGetFeedTotal()
-  const { data: previousFeedTotal, isLoading: previousFeedTotalLoading } = useGetPreviousFeedTotal()
-  const { data: totalWeightData, isLoading: totalWeightLoading } = useGetTotalWeightPerPond()
-  const { data: productionCostData, isLoading: productionCostLoading } = useGetProductionCostPerPond()
-  const { data: mortalityRateData, isLoading: mortalityRateLoading } = useGetAverageMortalityRate()
+  const { data: feedTotal, isLoading: feedTotalLoading } = useGetFeedTotal({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+  const { data: totalCostFeed, isLoading: totalCostFeedLoading } = useGetTotalCostFeedTotal({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+  const { data: totalWeightData, isLoading: totalWeightLoading } = useGetTotalWeightPerPond({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
 
-  const isLoading =
-    feedTotalLoading || previousFeedTotalLoading || totalWeightLoading || productionCostLoading || mortalityRateLoading
+  const { data: mortalityRateData, isLoading: mortalityRateLoading } = useGetMortalityRate({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+
+  const isLoading = feedTotalLoading || totalCostFeedLoading || totalWeightLoading || mortalityRateLoading
 
   // Calculate percentage changes
   const calculatePercentageChange = (current: number, previous: number): string => {
@@ -106,57 +126,50 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
     return `${sign}${change.toFixed(1)}%`
   }
 
-  // Extract pond-specific data
-  const pondData = useMemo(() => {
-    // Find current pond's weight data
-    const currentPondWeight = totalWeightData?.find((pond) => pond?.pondId === pondId)
-    const currentWeight = currentPondWeight?.weights[0]?.totalWeight || 0
-
-    // Find current pond's production cost data
-    const currentPondCost = productionCostData?.find((pond) => pond?.pondId === pondId)
-    const currentCost = currentPondCost?.costs[0]?.totalCost || 0
-
-    return {
-      currentWeight,
-      currentCost,
-    }
-  }, [totalWeightData, productionCostData, pondId])
-
   // Create pond stat cards with real data
   const pondStatCards = useMemo(() => {
-    // if (!feedTotal || !mortalityRateData) return []
-
     return [
       {
         color: '#F1A8D3',
         label: 'Total feed consumed',
-        value: `${feedTotal?.totalQuantity.toLocaleString()}kg`,
-        rate: previousFeedTotal
-          ? calculatePercentageChange(feedTotal?.totalQuantity ?? 0, previousFeedTotal?.totalQuantity ?? 0)
-          : '+0.0%',
+        value: feedTotalLoading ? '...' : `${feedTotal?.fcrValues?.[0]?.totalFeedConsumed ?? 0}kg`,
+        rate: '+0.0%',
       },
       {
         color: '#B9D9FF',
         label: 'Total cost of feed',
-        value: formatPrice(feedTotal?.totalCost),
-        rate: previousFeedTotal
-          ? calculatePercentageChange(feedTotal?.totalCost ?? 0, previousFeedTotal?.totalCost ?? 0)
-          : '+0.0%',
+        value: totalCostFeedLoading
+          ? '...'
+          : formatPrice(totalCostFeed?.consumptionByInterval?.[0]?.totalCost) ?? '₦ 0.00',
+        rate: '+0.0%',
       },
       {
         color: '#F8D082',
         label: 'Total weight of fish',
-        value: `${pondData?.currentWeight?.toLocaleString() ?? '-'}`,
-        rate: '+0.0%', // No previous data available for comparison
+        value: totalWeightLoading
+          ? '...'
+          : totalWeightData && totalWeightData?.sales > 0
+          ? `${totalWeightData?.sales?.[0]?.totalWeight?.toLocaleString()}`
+          : '0',
+        rate: '+0.0%',
       },
       {
         color: '#A0E8B9',
         label: 'Survival Rate',
-        value: `${mortalityRateData?.survivalRate?.toFixed(1) ?? '0'}% `,
-        rate: '+0.0%', // No previous data available for comparison
+        value: mortalityRateLoading ? '...' : `${mortalityRateData?.rates?.[0]?.survivalRate?.toFixed(1) ?? '0'}%`,
+        rate: '+0.0%',
       },
     ]
-  }, [feedTotal, previousFeedTotal, pondData, mortalityRateData])
+  }, [
+    feedTotalLoading,
+    feedTotal,
+    totalCostFeedLoading,
+    totalCostFeed,
+    totalWeightLoading,
+    totalWeightData,
+    mortalityRateLoading,
+    mortalityRateData,
+  ])
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">

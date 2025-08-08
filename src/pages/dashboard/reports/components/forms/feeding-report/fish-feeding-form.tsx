@@ -106,15 +106,16 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
     form.reset(formData)
   }, [form, formData])
 
-  console.log(combineDateTime, 'combine')
-
   const onSubmit = async (data: z.infer<typeof dailyFeedingSchema>) => {
     try {
+      console.log(data.feedType)
+
       setError(null)
       setFormData(data)
-      const numbers = data.feedType.match(/\d+/g)
+      const numbers = data.feedType.match(/\d+\.\d+|\d+/)
       data.pelletSize = numbers ? numbers.join('') : ''
       data.feedType = data.feedType.replace(/\d+/g, '')
+      data.feedType = data.feedType.replace('.', '')
       const feedingData = {
         pondId: id,
         feedType: data.feedType?.toUpperCase(),
@@ -322,10 +323,8 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                                 {...field}
                                 className="w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                                 onChange={(e) => {
-                                  let value = e.target.value.replace(/[^0-9]/g, '')
-                                  if (value.length > 1 && value.startsWith('0')) {
-                                    value = value.replace(/^0+/, '')
-                                  }
+                                  const value = e.target.value.replace(/[^0-9.]/g, '')
+
                                   field.onChange(value)
                                   handleInputChange('feedQuantity', value)
                                   setFormData({ feedQuantity: value })

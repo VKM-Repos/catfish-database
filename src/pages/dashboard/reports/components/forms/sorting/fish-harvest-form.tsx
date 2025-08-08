@@ -9,12 +9,14 @@ import { useRef, useState } from 'react'
 import * as SolarIconSet from 'solar-icon-set'
 import { useFishHarvestStore } from 'src/store/fish-harvest-store'
 import { formatCurrency } from 'src/lib/utils'
+import { useDateStore } from 'src/store/report-date-store'
 
 type SortingFormValues = z.infer<typeof sortingSchema>
 
 export default function FishHarvestForm({ form }: { form: UseFormReturn<SortingFormValues> }) {
   const timeInputRef = useRef<HTMLInputElement>(null)
   const [activeInputs, setActiveInputs] = useState<Record<string, boolean>>({})
+  const { combineDateTime } = useDateStore()
 
   // Get values and actions from the store
   const {

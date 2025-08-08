@@ -165,16 +165,20 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
           totalWeightHarvested: Number(totalWeightHarvested),
           costPerKg: Number(costPerKg),
           costPerFish: 1000,
+          harvestTime: combineDateTime,
         }
         await createSamplingReport.mutateAsync(samplingData)
         await createHarvestReport.mutateAsync(harvestData)
         resetDateTime()
         setOpenConfirmDialog(false)
+        setOpenDialog(true)
+        form.reset()
       } else {
         await createSamplingReport.mutateAsync(samplingData)
         resetDateTime()
         setOpenConfirmDialog(false)
         setOpenDialog(true)
+        form.reset()
       }
     } catch (err) {
       setOpenConfirmDialog(false)

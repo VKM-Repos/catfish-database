@@ -352,7 +352,7 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
                                       field.onChange(pond.id)
                                       form.trigger('pondId')
                                     }}
-                                    className="hover: bg-primary-100"
+                                    className="hover:bg-primary-100"
                                   >
                                     {(pond as { name: string }).name}
                                     <Check

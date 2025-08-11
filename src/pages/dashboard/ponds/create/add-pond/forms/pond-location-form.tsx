@@ -65,8 +65,10 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
           <span className="font-bold text-red-500">*</span>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <SolarIconSet.QuestionCircle size={16} />
+              <TooltipTrigger asChild>
+                <span className="cursor-pointer">
+                  <SolarIconSet.QuestionCircle size={16} />
+                </span>
               </TooltipTrigger>
               <TooltipContent>
                 This is the group or region your pond belongs to. It&apos;s pre-filled based on your profile or
@@ -97,8 +99,10 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
               <span className="font-bold text-red-500">*</span>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
-                    <SolarIconSet.QuestionCircle size={16} />
+                  <TooltipTrigger asChild>
+                    <span className="cursor-pointer">
+                      <SolarIconSet.QuestionCircle size={16} />
+                    </span>
                   </TooltipTrigger>
                   <TooltipContent>
                     Enter the geographical longitude of the pond’s location. You can also use your current location
@@ -139,8 +143,10 @@ export default function PondLocationForm({ form }: { form: UseFormReturn<PondFor
               <span className="font-bold text-red-500">*</span>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
-                    <SolarIconSet.QuestionCircle size={16} />
+                  <TooltipTrigger asChild>
+                    <span className="cursor-pointer">
+                      <SolarIconSet.QuestionCircle size={16} />
+                    </span>
                   </TooltipTrigger>
                   <TooltipContent>
                     Enter the geographical latitude of the pond’s location. Use current location if unsure.

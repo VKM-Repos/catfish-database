@@ -27,8 +27,10 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
           <span className="font-bold text-red-500">*</span>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <SolarIconSet.QuestionCircle size={16} />
+              <TooltipTrigger asChild>
+                <span className="cursor-pointer">
+                  <SolarIconSet.QuestionCircle size={16} />
+                </span>
               </TooltipTrigger>
               <TooltipContent>
                 Enter a unique name or identifier for the pond. This helps differentiate between multiple ponds.
@@ -55,8 +57,10 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
           Pond Size
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <SolarIconSet.QuestionCircle size={16} />
+              <TooltipTrigger asChild>
+                <span className="cursor-pointer">
+                  <SolarIconSet.QuestionCircle size={16} />
+                </span>
               </TooltipTrigger>
               <TooltipContent>
                 Input the physical dimensions of the pond in meters. Length, breadth, and depth help in estimating water
@@ -157,8 +161,10 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
             <span className="font-bold text-red-500">*</span>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
-                  <SolarIconSet.QuestionCircle size={16} />
+                <TooltipTrigger asChild>
+                  <span className="cursor-pointer">
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent>
                   Select the source of water used to fill the pond (e.g., borehole, river, tap). This helps track water
@@ -209,8 +215,10 @@ export default function PondDetailsForm({ form }: { form: UseFormReturn<PondForm
             <span className="font-bold text-red-500">*</span>
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
-                  <SolarIconSet.QuestionCircle size={16} />
+                <TooltipTrigger asChild>
+                  <span className="cursor-pointer">
+                    <SolarIconSet.QuestionCircle size={16} />
+                  </span>
                 </TooltipTrigger>
                 <TooltipContent>Choose the structural type of pond (e.g., earthen, concrete, plastic).</TooltipContent>
               </Tooltip>

@@ -2,7 +2,6 @@ import { Outlet, useNavigate, useSearchParams } from 'react-router-dom'
 import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
-import { Spacer } from 'src/components/ui/spacer'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs'
 import FeedingReportsTable from './tabs/reports-table/feeding-report'
@@ -24,7 +23,8 @@ export default function ClusterManagersPage() {
       <PageTransition>
         <Container className="!px-12">
           <PageHeader title={title} actions={null} />
-          <Spacer />
+          {/* <Spacer /> */}
+
           <FeedingReportsTable />
           {user?.role === 'FARMER' && (
             <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">

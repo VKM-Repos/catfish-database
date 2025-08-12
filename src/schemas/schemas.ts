@@ -529,7 +529,7 @@ export const fishBehaviorSchema = z.object({
 })
 
 export const fishDiseaseSchema = z.object({
-  diseaseType: z.string().min(1, 'Please select fish disease'),
+  diseaseType: z.string().optional(),
   diseaseObservation: z.string().min(1, 'Observation is required'),
 })
 export const mortalitySchema = z.object({

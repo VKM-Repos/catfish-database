@@ -116,6 +116,11 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
     },
   })
 
+  // console.log('feedTotal: ', feedTotal)
+  // console.log('totalCostFeed: ', totalCostFeed)
+  // console.log('totalWeightData: ', totalWeightData)
+  // console.log('mortalityRateData: ', mortalityRateData)
+
   const isLoading = feedTotalLoading || totalCostFeedLoading || totalWeightLoading || mortalityRateLoading
 
   // Calculate percentage changes
@@ -132,7 +137,7 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
       {
         color: '#F1A8D3',
         label: 'Total feed consumed',
-        value: feedTotalLoading ? '...' : `${feedTotal?.fcrValues?.[0]?.totalFeedConsumed ?? 0}kg`,
+        value: feedTotalLoading ? '...' : `${feedTotal[0]?.fcrValues?.[0]?.totalFeedConsumed ?? 0}kg`,
         rate: '+0.0%',
       },
       {
@@ -140,7 +145,7 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
         label: 'Total cost of feed',
         value: totalCostFeedLoading
           ? '...'
-          : formatPrice(totalCostFeed?.consumptionByInterval?.[0]?.totalCost) ?? '₦ 0.00',
+          : formatPrice(totalCostFeed[0]?.consumptionByInterval?.[0]?.totalCost) ?? '₦ 0.00',
         rate: '+0.0%',
       },
       {
@@ -148,15 +153,15 @@ export default function PondStatistics({ pondId }: PondStatisticsProps) {
         label: 'Total weight of fish',
         value: totalWeightLoading
           ? '...'
-          : totalWeightData && totalWeightData?.sales > 0
-          ? `${totalWeightData?.sales?.[0]?.totalWeight?.toLocaleString()}`
+          : totalWeightData && totalWeightData[0]?.sales
+          ? `${totalWeightData[0]?.sales?.[0]?.totalWeight?.toLocaleString()}`
           : '0',
         rate: '+0.0%',
       },
       {
         color: '#A0E8B9',
         label: 'Survival Rate',
-        value: mortalityRateLoading ? '...' : `${mortalityRateData?.rates?.[0]?.survivalRate?.toFixed(1) ?? '0'}%`,
+        value: mortalityRateLoading ? '...' : `${mortalityRateData[0]?.rates?.[0]?.survivalRate?.toFixed(2) ?? '0'}%`,
         rate: '+0.0%',
       },
     ]

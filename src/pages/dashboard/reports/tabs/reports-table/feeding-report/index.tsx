@@ -17,11 +17,13 @@ import { fishDiseaseColumn } from './fish-disease-column'
 import { mortalityColumn } from './mortality-column'
 import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
 import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
+import { useAuthStore } from 'src/store/auth.store'
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
-  const [selectedTab, setSelectedTab] = useState('Daily')
+  const [selectedTab, setSelectedTab] = useState('Feeding')
   const { setStep } = useStepperStore()
+  const user = useAuthStore((state) => state.user)
 
   const useGetFeedingReports = createGetQueryHook({
     endpoint: '/feedings?size=1000000',
@@ -65,7 +67,7 @@ export default function FeedingReportsTable() {
   const { data: mortalityReport } = useGetMortality()
   const activeTab = searchParams.get('tab') || 'feeding'
 
-  const title = 'Daily reports'
+  const title = user?.role === 'FARMER' ? 'Daily reports' : 'Feeding reports'
   const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
@@ -84,7 +86,7 @@ export default function FeedingReportsTable() {
         <TabsList className="flex flex-col items-start justify-start text-sm font-semibold">
           <VerticalTabsTrigger
             onClick={() => {
-              setSelectedTab('Daily')
+              setSelectedTab('Feeding')
               setStep(1)
             }}
             value="feeding"

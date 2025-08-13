@@ -95,7 +95,7 @@ export default function FeedInventory() {
           emptyStateMessage="No feed inventory found"
         />
       </FlexBox>
-      <Section className="mt-6">
+      <Section className="mt-6 flex justify-center lg:inline">
         <FeedPriceTrends />
       </Section>
     </Container>

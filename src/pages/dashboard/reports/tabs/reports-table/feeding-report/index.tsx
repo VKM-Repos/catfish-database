@@ -17,11 +17,26 @@ import { fishDiseaseColumn } from './fish-disease-column'
 import { mortalityColumn } from './mortality-column'
 import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
 import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
+import { useAuthStore } from 'src/store/auth.store'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
+
+const tabs = [
+  { label: 'Feeding', value: 'feeding' },
+  { label: 'Water Quality', value: 'water-quality' },
+  { label: 'Fish Behavior', value: 'behavior' },
+  { label: 'Fish Disease', value: 'disease' },
+  { label: 'Mortality', value: 'mortality' },
+]
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
-  const [selectedTab, setSelectedTab] = useState('Daily')
+  const [selectedTab, setSelectedTab] = useState('Feeding')
   const { setStep } = useStepperStore()
+  const [searchTerm, setSearchTerm] = useState('')
+  const user = useAuthStore((state) => state.user)
+
+  // Filtered tabs for search
+  const filteredTabs = tabs.filter((tab) => tab.label.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const useGetFeedingReports = createGetQueryHook({
     endpoint: '/feedings?size=1000000',
@@ -65,73 +80,76 @@ export default function FeedingReportsTable() {
   const { data: mortalityReport } = useGetMortality()
   const activeTab = searchParams.get('tab') || 'feeding'
 
-  const title = 'Daily reports'
+  const title = user?.role === 'FARMER' ? 'Daily reports' : 'Feeding reports'
   const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
         <SolarIconSet.AddCircle size={20} />
-        <Text>Submit report</Text>
+        <Text className="text-[11px] lg:text-sm">Submit report</Text>
       </Button>
     </Inline>
   )
   return (
     <>
-      <FlexBox direction="row" align="center" justify="between" className="mb-5 w-full pl-[160px]">
-        <Heading level={6}>{selectedTab} reports</Heading>
+      {/* Mobile Select Dropdown */}
+      <div className="mb-4 w-[50%] lg:hidden">
+        <Select
+          value={selectedTab}
+          onValueChange={(value) => {
+            setSelectedTab(value)
+            const tabIndex = tabs.findIndex((t) => t.value === value)
+            setStep(tabIndex + 1)
+          }}
+        >
+          <SelectTrigger className="w-full">
+            <div className="flex items-center justify-center gap-3 text-neutral-300">
+              <SelectValue placeholder="Select a view" />
+            </div>
+          </SelectTrigger>
+          <SelectContent className="z-[2000]">
+            <Heading level={6}>Select view</Heading>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded border px-2 py-1 text-sm"
+            />
+
+            {filteredTabs.length > 0 ? (
+              filteredTabs.map((tab) => (
+                <SelectItem key={tab.value} value={tab.label}>
+                  {tab.label}
+                </SelectItem>
+              ))
+            ) : (
+              <div className="px-2 py-1 text-sm text-gray-500">No results found</div>
+            )}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <FlexBox direction="row" align="center" justify="between" className="mb-5 w-full">
+        <Heading level={6} className="text-[14px] lg:text-xl">
+          {selectedTab} reports
+        </Heading>
         {actions && <div>{actions}</div>}
       </FlexBox>
       <Tabs defaultValue="feeding" className="flex w-full items-start gap-8">
-        <TabsList className="flex flex-col items-start justify-start text-sm font-semibold">
-          <VerticalTabsTrigger
-            onClick={() => {
-              setSelectedTab('Daily')
-              setStep(1)
-            }}
-            value="feeding"
-            className="data-[state=active]:font-semibold"
-          >
-            Feeding
-          </VerticalTabsTrigger>
-          <VerticalTabsTrigger
-            onClick={() => {
-              setSelectedTab('Water Quality')
-              setStep(2)
-            }}
-            value="water-quality"
-            className="data-[state=active]:font-semibold"
-          >
-            Water quality
-          </VerticalTabsTrigger>
-          <VerticalTabsTrigger
-            onClick={() => {
-              setSelectedTab('Fish Behavior')
-              setStep(3)
-            }}
-            value="behavior"
-            className="data-[state=active]:font-semibold"
-          >
-            Fish behavior
-          </VerticalTabsTrigger>
-          <VerticalTabsTrigger
-            onClick={() => {
-              setSelectedTab('Fish Disease')
-              setStep(4)
-            }}
-            value="disease"
-            className="data-[state=active]:font-semibold"
-          >
-            Fish disease
-          </VerticalTabsTrigger>
-          <VerticalTabsTrigger
-            onClick={() => {
-              setSelectedTab('Mortality')
-              setStep(5)
-            }}
-            value="mortality"
-            className="data-[state=active]:font-semibold"
-          >
-            Mortality
-          </VerticalTabsTrigger>
+        <TabsList className="hidden flex-col items-start justify-start text-sm font-semibold lg:flex">
+          {tabs.map((tab, index) => (
+            <VerticalTabsTrigger
+              key={tab.value}
+              onClick={() => {
+                setSelectedTab(tab.label)
+                setStep(index + 1)
+              }}
+              value={tab.value}
+              className="data-[state=active]:font-semibold"
+            >
+              {tab.label}
+            </VerticalTabsTrigger>
+          ))}
         </TabsList>
         <TabsContent value="feeding" className="w-full">
           <DataTable

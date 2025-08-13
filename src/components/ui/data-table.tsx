@@ -216,9 +216,9 @@ export function DataTable<TData>({
     setPendingEndDate('')
   }
   return (
-    <div className="w-full">
+    <div className="flex w-full flex-col items-center lg:inline">
       {search && (
-        <div className="mb-8 min-h-[80px] items-center  rounded-md bg-neutral-50 px-[24px] py-[20px]">
+        <div className="mb-8 min-h-[80px]  items-center  rounded-md bg-neutral-50 px-[24px] py-[20px]">
           <div className="flex justify-between">
             <div className="flex items-center gap-3 rounded-md border border-neutral-200 bg-white px-3 py-2">
               <SolarIconSet.MinimalisticMagnifer />
@@ -353,7 +353,7 @@ export function DataTable<TData>({
         </div>
       )}
 
-      <div className="overflow-hidden rounded-md border border-neutral-200">
+      <div className="max-w-[350px] overflow-hidden rounded-md border border-neutral-200 lg:max-w-full">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

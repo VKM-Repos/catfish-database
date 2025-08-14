@@ -75,7 +75,7 @@ const Stepper = () => {
   const { step } = useStepperStore()
 
   return (
-    <div className="hidden w-full lg:flex">
+    <div className="hidden w-full lg:inline">
       <div className="mx-auto flex max-w-[90%] items-center justify-center">
         <FlexBox
           gap="gap-[.625rem]"

@@ -9,14 +9,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/co
 
 import { formatCurrency } from 'src/lib/utils'
 
-
 export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) {
   const FormTooltip = ({ text }: { text: string }) => {
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
-            <SolarIconSet.QuestionCircle size={16} />
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer">
+              <SolarIconSet.QuestionCircle size={16} />
+            </span>
           </TooltipTrigger>
           <TooltipContent>{text}</TooltipContent>
         </Tooltip>

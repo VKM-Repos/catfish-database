@@ -98,9 +98,9 @@ export function SelectFarmerDialog({ title, open, onOpenChange }: SelectFarmerDi
                                   )
                                   return selectedFarmer
                                     ? `${selectedFarmer.firstName} ${selectedFarmer.lastName}`
-                                    : 'Select Pond'
+                                    : 'Select Farmer'
                                 })()
-                              : 'Select Pond'}
+                              : 'Select Farmer'}
                           </div>
                           <ChevronDown className="opacity-50" />
                         </Button>

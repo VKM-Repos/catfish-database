@@ -25,6 +25,7 @@ export default function ClusterManagersPage() {
           <PageHeader title={title} actions={null} />
           {/* <Spacer /> */}
           {user?.role === 'CLUSTER_MANAGER' && <FeedingReportsTable />}
+
           {user?.role === 'FARMER' && (
             <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
               <Tabs

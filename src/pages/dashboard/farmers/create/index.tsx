@@ -23,7 +23,7 @@ export default function CreateFarmersPage() {
     <Dialog open onOpenChange={() => navigate(paths.dashboard.farmers.root)}>
       <DialogContent
         className={`h-[500px] max-w-[350px] overflow-hidden p-4 lg:max-h-[600px] lg:max-w-[578px] ${
-          step === 1 ? 'overflow-y-scroll' : null
+          step === 1 ? '!overflow-x-visible overflow-y-scroll' : null
         }`}
       >
         <div className={`pt-[4rem] pb-${step === 1 ? '1' : '[2rem]'}`}>

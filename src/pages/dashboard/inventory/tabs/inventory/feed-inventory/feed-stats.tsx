@@ -23,10 +23,14 @@ export default function FeedStatistics({ totalFeedTypes, totalFeedCost, lowStock
   ]
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <Grid cols={3} gap="gap-5" className="w-full text-sm md:grid-cols-3">
+      <Grid gap="gap-5" className=" w-full grid-cols-2 text-sm md:grid-cols-3">
         {feed_inventory_stats.map((feed_stat, index) => {
           return (
-            <div key={index} style={{ backgroundColor: feed_stat.color }} className={`rounded-lg px-5 py-[1.875rem]`}>
+            <div
+              key={index}
+              style={{ backgroundColor: feed_stat.color }}
+              className={`rounded-lg px-5 py-[1.875rem] ${index == 2 && 'col-span-2 lg:col-span-1'}`}
+            >
               <FlexBox gap="gap-[1.125rem]" direction="col">
                 <Text className="text-xs text-[#37414F]">{feed_stat.label}</Text>
                 <FlexBox direction="col" gap="gap-3">

@@ -101,7 +101,7 @@ export default function FeedPriceTrends() {
   const hasNoData = chartData.length === 0
 
   return (
-    <Card className="h-[50rem] w-full rounded-[.875rem] border border-neutral-200 p-4">
+    <Card className="w-[350px] rounded-[.875rem] border border-neutral-200 p-4 lg:h-[50rem] lg:w-full">
       <ChartHeader
         title="Trend of feed prices per kg"
         action={
@@ -122,7 +122,12 @@ export default function FeedPriceTrends() {
             <Text className="text-sm text-neutral-500">No data available for this filter</Text>
           </div>
         ) : (
-          <AreaChart accessibilityLayer data={chartData} margin={{ top: 12, right: 12, bottom: 12, left: 12 }}>
+          <AreaChart
+            className=""
+            accessibilityLayer
+            data={chartData}
+            margin={{ top: 12, right: 12, bottom: 12, left: 12 }}
+          >
             <CartesianGrid stroke="#E5E7EB" />
 
             <XAxis

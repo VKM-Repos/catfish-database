@@ -67,13 +67,13 @@ export default function PondRevenue() {
     })) ?? []
 
   return (
-    <Card className="h-[35rem] w-full rounded-[.875rem] border border-neutral-200 p-4">
+    <Card className="w-full rounded-[.875rem] border border-neutral-200 p-4 lg:h-[35rem]">
       <ChartHeader
         title="Pond Revenue (₦)"
         action={<RevenueIntervalFilter interval={interval} onChange={setInterval} />}
       />
 
-      <ChartContainer className="h-[25rem] w-full" config={pondRevenueConfig}>
+      <ChartContainer className="h-fit w-fit lg:h-[25rem] lg:w-full" config={pondRevenueConfig}>
         <BarChart accessibilityLayer data={transformedData} height={100} barCategoryGap={20} margin={{ right: 40 }}>
           <CartesianGrid stroke="#E5E7EB" />
           <XAxis

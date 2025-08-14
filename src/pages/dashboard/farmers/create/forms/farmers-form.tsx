@@ -37,10 +37,12 @@ type FarmerProps = {
 const FormTooltip = ({ text }: { text: string }) => (
   <TooltipProvider>
     <Tooltip>
-      <TooltipTrigger>
-        <SolarIconSet.QuestionCircle size={16} />
+      <TooltipTrigger asChild>
+        <span className="cursor-pointer">
+          <SolarIconSet.QuestionCircle size={16} />
+        </span>
       </TooltipTrigger>
-      <TooltipContent>{text}</TooltipContent>
+      <TooltipContent className="w-[180px]">{text}</TooltipContent>
     </Tooltip>
   </TooltipProvider>
 )

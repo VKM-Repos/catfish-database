@@ -121,7 +121,6 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
   const handleIconClick = () => {
     timeInputRef.current?.showPicker()
   }
-  console.log('Selected Date (Independent):', selectedDate)
   return (
     <>
       <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
@@ -198,7 +197,7 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
               <div className="flex w-full items-center gap-5">
                 <div className="flex w-full flex-col gap-2">
                   <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-                    Number of Fish Harvested <span className="font-bold text-red-500">*</span>
+                    Number of Fish Harvested
                     <SolarIconSet.QuestionCircle size={16} />
                   </Text>
                   <FormField

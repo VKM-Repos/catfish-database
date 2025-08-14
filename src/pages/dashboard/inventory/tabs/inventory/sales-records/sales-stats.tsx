@@ -18,7 +18,7 @@ export default function SalesStatistics({ data }: { data: any }) {
   ]
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-2">
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm">
         {feed_inventory_stats.map((feed_stat, index) => {
           return (
             <div key={index} style={{ backgroundColor: feed_stat.color }} className={`rounded-lg px-5 py-[1.875rem]`}>

@@ -11,8 +11,10 @@ export default function SupplierInfoForm({ form }: { form: UseFormReturn<any> })
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
-            <SolarIconSet.QuestionCircle size={16} />
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer">
+              <SolarIconSet.QuestionCircle size={16} />
+            </span>
           </TooltipTrigger>
           <TooltipContent>{text}</TooltipContent>
         </Tooltip>

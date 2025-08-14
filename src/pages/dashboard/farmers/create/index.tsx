@@ -22,8 +22,8 @@ export default function CreateFarmersPage() {
   return (
     <Dialog open onOpenChange={() => navigate(paths.dashboard.farmers.root)}>
       <DialogContent
-        className={`h-[500px] max-w-[350px] overflow-hidden p-4 lg:max-h-[600px] lg:max-w-[578px] ${
-          step === 1 ? '!overflow-x-visible overflow-y-scroll' : null
+        className={`${step === 2 && 'h-[186px] w-[369px]'}  max-w-[350px] overflow-hidden p-4 lg:max-w-[578px] ${
+          step === 1 ? 'h-[500px] overflow-y-scroll lg:h-[600px] lg:overflow-hidden' : 'overflow-hidden'
         }`}
       >
         <div className={`pt-[4rem] pb-${step === 1 ? '1' : '[2rem]'}`}>

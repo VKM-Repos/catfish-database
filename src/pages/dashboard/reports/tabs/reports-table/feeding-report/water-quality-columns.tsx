@@ -15,6 +15,11 @@ export const waterQualityColumns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>,
   },
   {
+    accessorKey: 'batch.pond.name',
+    header: 'Pond',
+    cell: ({ row }) => <Text weight="light">{row.original.batch.pond.name || '-'}</Text>,
+  },
+  {
     accessorKey: 'dissolvedOxygen',
     header: 'Diss. Oxygen',
     cell: ({ row }) => <Text weight="light">{row.original.dissolvedOxygen ?? '-'}</Text>,

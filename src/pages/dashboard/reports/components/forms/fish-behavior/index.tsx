@@ -187,7 +187,7 @@ export function FishBehavior({ handleNext, handlePrevious }: { handleNext?: () =
                             >
                               <SelectTrigger className="font-light">
                                 <div className="flex items-center justify-center gap-2">
-                                  <SelectValue placeholder="Select Disease found" />
+                                  <SelectValue placeholder="Select fish behavior" />
                                 </div>
                               </SelectTrigger>
                               <SelectContent>

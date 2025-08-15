@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult, QueryClient, UseMutationOptions } from '@tanstack/react-query'
 import { z } from 'zod'
-import { authCache, axiosInstance } from '../config'
+import { axiosInstance } from '../config'
+import { useAuthStore } from 'src/store/auth.store'
 
 interface CreatePatchMutationHookArgs<RequestSchema extends z.ZodType, ResponseSchema extends z.ZodType> {
   /** The endpoint for the PATCH request */
@@ -65,8 +66,9 @@ export function createPatchMutationHook<
         )
       }
 
+      const { accessToken } = useAuthStore.getState()
       const validatedData = requestSchema.parse(data)
-      const headers = requiresAuth ? { Authorization: `Bearer ${authCache.getToken()}` } : {}
+      const headers = requiresAuth ? { Authorization: `Bearer ${accessToken}` } : {}
       return axiosInstance
         .patch(url, validatedData, { headers })
         .then((response: { data: unknown }) => {

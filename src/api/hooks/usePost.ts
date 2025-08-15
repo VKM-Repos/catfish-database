@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult, QueryClient, UseMutationOptions } from '@tanstack/react-query'
 import { z } from 'zod'
-import { axiosInstance, authCache } from '../config'
+import { axiosInstance } from '../config'
+import { useAuthStore } from 'src/store/auth.store'
 
 interface CreatePostMutationHookArgs<RequestSchema extends z.ZodType, ResponseSchema extends z.ZodType> {
   /** The endpoint for the POST request */
@@ -57,13 +58,15 @@ export function createPostMutationHook<RequestSchema extends z.ZodType, Response
     const mutationFn = async (data: z.infer<RequestSchema>) => {
       const validatedData = requestSchema.parse(data)
 
+      const { accessToken } = useAuthStore.getState()
       // Include the token in the headers if required
-      const headers = requiresAuth ? { Authorization: `Bearer ${authCache.getToken()}` } : {}
+      const headers = requiresAuth ? { Authorization: `Bearer ${accessToken}` } : {}
 
       return axiosInstance
         .post(endpoint, validatedData, { headers })
         .then((response: { data: unknown }) => {
           console.log('Raw response:', response)
+
           return responseSchema.parse(response.data)
         })
         .catch((error: unknown) => {

@@ -37,6 +37,7 @@ import { useFishDiseaseStore } from 'src/store/fish-disease-store'
 import { useFarmerReportStore } from 'src/store/farmer-report-store'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 import { CircularProgress } from '../../../create/daily-farm-report/_id'
+import { useQueryClient } from '@tanstack/react-query'
 
 const initialValues = {
   feedType: '',
@@ -49,7 +50,7 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
-
+  const queryClient = useQueryClient()
   const { combineDateTime } = useDateStore()
   const { farmerIdForDailyReport } = useFarmerReportStore()
 
@@ -131,11 +132,15 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
       }
       if (reportId) {
         await updateDailyFeeding.mutateAsync(updateFeedingData)
+        queryClient.refetchQueries(['daily-feedings'])
+
         if (handleNext) {
           handleNext()
         }
       } else {
         const response = await createDailyFeeding.mutateAsync(feedingData)
+        queryClient.refetchQueries(['daily-feedings'])
+
         setReportId(response.id)
         if (handleNext) {
           handleNext()

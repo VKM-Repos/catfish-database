@@ -21,10 +21,13 @@ import { ConfirmSamplingSubmission } from '../../modals/confirm-sampling-submiss
 import { useFishHarvestStore } from 'src/store/fish-harvest-store'
 import { useSplitStore } from 'src/store/split-store'
 import { useDateStore } from 'src/store/report-date-store'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) {
   const { id } = useParams<{ id: string }>()
   const [error, setError] = useState<ClientErrorType | null>()
+  const queryClient = useQueryClient()
+
   const useSamplingReport = createPostMutationHook({
     endpoint: '/samplings',
     requestSchema: z.any(),
@@ -169,12 +172,15 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
         }
         await createSamplingReport.mutateAsync(samplingData)
         await createHarvestReport.mutateAsync(harvestData)
+        queryClient.refetchQueries(['sampling-reports-table'])
+
         resetDateTime()
         setOpenConfirmDialog(false)
         setOpenDialog(true)
         form.reset()
       } else {
         await createSamplingReport.mutateAsync(samplingData)
+        queryClient.refetchQueries(['sampling-reports-table'])
         resetDateTime()
         setOpenConfirmDialog(false)
         setOpenDialog(true)

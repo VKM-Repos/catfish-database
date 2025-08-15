@@ -105,12 +105,15 @@ export default function MaintenanceRecordsForm({
       if (mode === 'create') {
         await createMaintenanceMutation.mutateAsync(basePayload)
         queryClient.refetchQueries(['maintenance-costs'])
+        queryClient.refetchQueries(['total-maintenance-cost'])
         form.reset()
         onSuccess?.()
         setStep(2)
       } else if (mode === 'edit' && pondId) {
         await updateMaintenanceMutation.mutateAsync(basePayload)
         queryClient.refetchQueries(['maintenance-costs'])
+        queryClient.refetchQueries(['total-maintenance-cost'])
+
         form.reset()
         onSuccess?.()
         setStep(2)

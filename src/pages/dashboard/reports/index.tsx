@@ -19,7 +19,7 @@ export default function ClusterManagersPage() {
   return (
     <div className="relative">
       <PageTransition>
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <PageHeader title={title} actions={null} />
           <Spacer />
           <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">

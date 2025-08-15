@@ -15,6 +15,11 @@ export const fishDiseaseColumn: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.time)}</Text>,
   },
   {
+    accessorKey: 'batch.pond.name',
+    header: 'Pond',
+    cell: ({ row }) => <Text weight="light">{row.original.batch.pond.name || '-'}</Text>,
+  },
+  {
     accessorKey: 'diseaseType',
     header: 'Disease Type',
     cell: ({ row }) => (

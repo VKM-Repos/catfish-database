@@ -21,7 +21,7 @@ export default function InventoryPage() {
   return (
     <div className="relative">
       <PageTransition>
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <PageHeader title={title} actions={null} />
           <Spacer />
           <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
@@ -31,8 +31,8 @@ export default function InventoryPage() {
               className="flex w-full flex-col items-start gap-1"
               onValueChange={handleTabChange}
             >
-              <div className="w-full border-b border-b-neutral-200 p-0">
-                <TabsList className="text-sm font-semibold">
+              <div className="w-full overflow-x-scroll border-b border-b-neutral-200 p-0">
+                <TabsList className=" text-sm font-semibold">
                   <TabsTrigger value="feed-inventory" className="data-[state=active]:font-semibold">
                     Feed Inventory
                   </TabsTrigger>

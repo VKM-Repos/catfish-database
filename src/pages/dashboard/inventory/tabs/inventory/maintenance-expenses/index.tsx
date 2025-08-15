@@ -66,7 +66,7 @@ export default function MaintenanceExpenses() {
           emptyStateMessage="No feed inventory found"
         />
       </FlexBox>
-      <Section className="mt-6 flex items-start justify-between gap-10">
+      <Section className="mt-3 flex flex-col items-start justify-between gap-10 lg:mt-6 lg:flex-row">
         <ActivityTypeCost />
         <PondCost />
       </Section>

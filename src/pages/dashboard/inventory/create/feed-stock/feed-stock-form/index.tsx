@@ -100,6 +100,10 @@ export default function FeedStockForm({
       if (!initialValues?.id) {
         await createFeedStockMutation.mutateAsync(basePayload as any)
         queryClient.refetchQueries(['feed-inventories'])
+        queryClient.refetchQueries(['feed-quantity'])
+        queryClient.refetchQueries(['feed-statistics'])
+        queryClient.refetchQueries(['low-stock-feeds'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -109,6 +113,10 @@ export default function FeedStockForm({
           ...basePayload,
         } as any)
         queryClient.refetchQueries(['feed-inventories'])
+        queryClient.refetchQueries(['feed-quantity'])
+        queryClient.refetchQueries(['feed-statistics'])
+        queryClient.refetchQueries(['low-stock-feeds'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -138,8 +146,10 @@ export default function FeedStockForm({
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
-            <SolarIconSet.QuestionCircle size={16} />
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer">
+              <SolarIconSet.QuestionCircle size={16} />
+            </span>
           </TooltipTrigger>
           <TooltipContent className="w-[70%]">{text}</TooltipContent>
         </Tooltip>

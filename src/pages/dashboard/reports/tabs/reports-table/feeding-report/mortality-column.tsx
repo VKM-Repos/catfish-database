@@ -5,14 +5,19 @@ import { FeedingReportActionsDropdown } from './actions-dropdown'
 
 export const mortalityColumn: ColumnDef<any>[] = [
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'time',
     header: 'Date',
-    cell: ({ row }) => <Text weight="light">{formatDate(row.original?.createdAt)}</Text>,
+    cell: ({ row }) => <Text weight="light">{formatDate(row.original?.time)}</Text>,
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'time',
     header: 'Time',
-    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.createdAt)}</Text>,
+    cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.time)}</Text>,
+  },
+  {
+    accessorKey: 'batch.pond.name',
+    header: 'Pond',
+    cell: ({ row }) => <Text weight="light">{row.original.batch.pond.name || '-'}</Text>,
   },
   {
     accessorKey: 'mortalityNumber',

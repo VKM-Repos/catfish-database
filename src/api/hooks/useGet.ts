@@ -1,7 +1,8 @@
 import { useQuery, type UseQueryResult, QueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
-import { authCache, axiosInstance } from '../config'
+import { axiosInstance } from '../config'
 import { getQueryKey } from '../config/url'
+import { useAuthStore } from 'src/store/auth.store'
 
 type QueryKey = [string] | [string, Record<string, string | number | undefined>]
 
@@ -84,9 +85,11 @@ export function createGetQueryHook<
           url += `?${query.toString()}`
         }
       }
+      const { accessToken } = useAuthStore.getState()
 
+      // console.log('createGetQueryHook token: ', accessToken)
       // Include the token in the headers if required
-      const headers = requiresAuth ? { Authorization: `Bearer ${authCache.getToken()}` } : {}
+      const headers = requiresAuth ? { Authorization: `Bearer ${accessToken}` } : {}
 
       return axiosInstance
         .get<ApiResponse<unknown>>(url, { headers })

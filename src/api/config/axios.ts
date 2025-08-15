@@ -2,15 +2,15 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { APP_CONFIG } from 'src/assets/resources/config'
 import { authCache } from './query-client'
 import { useAuthStore } from 'src/store/auth.store'
-// import { getCurrentSubdomain } from 'src/lib/subdomain'
-// import subdomainConfig from './subdomains'
+import { getCurrentSubdomain } from 'src/lib/subdomain'
+import subdomainConfig from './subdomains'
 
-// const subdomain = getCurrentSubdomain()
-// const config = subdomainConfig[subdomain] || subdomainConfig.default
+const subdomain = getCurrentSubdomain()
+const config = subdomainConfig[subdomain] || subdomainConfig.default
 // Create axios instance
 export const axiosInstance = axios.create({
-  // baseURL: config.apiBaseUrl,
-  baseURL: APP_CONFIG.api.baseUrl,
+  baseURL: config.apiBaseUrl,
+  // baseURL: APP_CONFIG.api.baseUrl,
   timeout: APP_CONFIG.api.timeout,
   headers: {
     'Content-Type': 'application/json',
@@ -77,6 +77,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config
+    // console.log('response: ', Response)
 
     // Skip refresh token logic if it's already a refresh token request
     if (originalRequest?.url?.includes('refresh')) {
@@ -88,43 +89,60 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error)
     }
 
+    // const payload = JSON.parse(atob(token.split('.')[1]))
+    // const isExpired = Date.now() >= payload.exp * 1000 // Convert to ms and compare
+
+    // console.log('isExpired:', isExpired, 'Current token:', token)
+
     // For other 401 errors, try to refresh the token
     if (error.response?.status === 401) {
       console.log('401 error encountered, attempting to refresh token...')
-      const refreshToken = authCache.getRefreshToken()
+
+      const { accessToken, expiresAt, refreshToken, logout, setTokens, setUser } = useAuthStore.getState()
+
+      // ✅ Step 1 — Check if access token is expired
+      const isExpired = !expiresAt || Date.now() >= new Date(expiresAt).getTime()
+      // console.log('isExpired:', isExpired, 'Current token:', accessToken)
+
+      if (!isExpired) {
+        console.log('Access token not expired, skipping refresh.')
+        return Promise.reject(error) // Token might be invalid for another reason
+      }
+
       if (!refreshToken) {
         console.log('No refresh token available, logging out...')
         authCache.clearAuth()
-        useAuthStore.getState().logout()
+        logout()
         return Promise.reject(error)
       }
 
       try {
-        // Call refresh token endpoint
+        console.log('Attempting to get new token...')
         const response = await axios.post(`${APP_CONFIG.api.baseUrl}/auth/refresh`, {
           refreshToken,
         })
 
-        const { accessToken, newRefreshToken, expiresAt, user } = response.data
+        const {
+          userDto,
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+          expiresAt: newExpiresAt,
+        } = response.data
 
-        authCache.setToken(accessToken)
-        authCache.setRefreshToken(newRefreshToken)
-        authCache.setExpiresAt(expiresAt)
-        authCache.setUser(user)
+        setTokens(newAccessToken, newRefreshToken, newExpiresAt)
+        setUser(userDto)
 
-        useAuthStore.getState().setTokens(accessToken, newRefreshToken, expiresAt)
-        useAuthStore.getState().setUser(user)
+        // console.log('originalRequest: ', originalRequest)
 
-        // Retry the original request
+        // ✅ Retry original request
         if (originalRequest) {
           originalRequest.headers.Authorization = `Bearer ${accessToken}`
           return axios(originalRequest)
         }
       } catch (refreshError) {
         console.error('Refresh token failed:', refreshError)
-        // Clear auth state and reject the promise
         authCache.clearAuth()
-        useAuthStore.getState().logout()
+        logout()
         return Promise.reject(error)
       }
     }

@@ -3,7 +3,6 @@ import { Container } from 'src/components/ui/container'
 import PageTransition from 'src/components/animation/page-transition'
 import { PageHeader } from 'src/components/ui/page-header'
 import { Spacer } from 'src/components/ui/spacer'
-import { ScrollArea } from 'src/components/ui/scroll-area'
 import { Inline } from 'src/components/ui/inline'
 import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
@@ -300,6 +299,7 @@ export default function UsersPage() {
 
   // Handle empty state
   const showEmptyState = !loadingUsers && users.length === 0
+
   const hasFiltersOrSearch =
     appliedFilters.cluster || appliedFilters.role || appliedFilters.status || debouncedSearchTerm
 
@@ -409,29 +409,29 @@ export default function UsersPage() {
             )}
           </FlexBox> */}
 
-          <ScrollArea className="h-[calc(100vh-140px)] w-full">
-            <div className="h-fit">
-              {showEmptyState ? (
-                hasFiltersOrSearch ? (
-                  <div className="flex h-64 items-center justify-center">
-                    <div className="text-center">
-                      <p className="mb-2 text-neutral-500">No users found matching your filters</p>
-                      <p className="text-sm text-neutral-400">Try adjusting your search criteria</p>
-                    </div>
-                  </div>
-                ) : (
-                  <EmptyTableState
-                    image={UserPlaceholder}
-                    name="user"
-                    text="a user"
-                    buttonFunc={() => navigate(paths.dashboard.users.create)}
-                  />
-                )
-              ) : (
-                <UsersTable data={users?.content || []} isLoading={loadingUsers} />
-              )}
-            </div>
-          </ScrollArea>
+          {/* <ScrollArea className="h-[calc(100vh-140px)] w-full">
+            <div className="h-fit"> */}
+          {showEmptyState ? (
+            hasFiltersOrSearch ? (
+              <div className="flex h-64 items-center justify-center">
+                <div className="text-center">
+                  <p className="mb-2 text-neutral-500">No users found matching your filters</p>
+                  <p className="text-sm text-neutral-400">Try adjusting your search criteria</p>
+                </div>
+              </div>
+            ) : (
+              <EmptyTableState
+                image={UserPlaceholder}
+                name="user"
+                text="a user"
+                buttonFunc={() => navigate(paths.dashboard.users.create)}
+              />
+            )
+          ) : (
+            <UsersTable data={users?.content || []} isLoading={loadingUsers} />
+          )}
+          {/* </div>
+          </ScrollArea> */}
         </Container>
       </PageTransition>
       <Outlet />

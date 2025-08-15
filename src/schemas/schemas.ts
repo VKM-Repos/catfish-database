@@ -521,7 +521,7 @@ export const waterQualitySchema = z.object({
   nitrate: z.any().optional(),
   alkalinity: z.any().optional(),
   hardness: z.any().optional(),
-  observation: z.string().min(5, 'Water Quality Observations should be at least 5 characters long'),
+  observation: z.string().min(1, 'Water Quality Observations is required'),
 })
 export const fishBehaviorSchema = z.object({
   behaviorType: z.string().min(1, 'Please select fish behavior'),
@@ -529,7 +529,7 @@ export const fishBehaviorSchema = z.object({
 })
 
 export const fishDiseaseSchema = z.object({
-  diseaseType: z.string().min(1, 'Please select fish disease'),
+  diseaseType: z.string().optional(),
   diseaseObservation: z.string().min(1, 'Observation is required'),
 })
 export const mortalitySchema = z.object({
@@ -597,7 +597,7 @@ export const sortingSchema = z.object({
 // })
 
 export const harvestSchema = z.object({
-  numberOfFishHarvested: z.string().min(1, 'Number of fish harvested is required'),
+  numberOfFishHarvested: z.string().optional(),
   totalWeightHarvested: z.string().min(1, 'Weight of fish harvested is required'),
   costPerKg: z.string().min(1, 'Cost per kg is required'),
 })

@@ -15,6 +15,11 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => <Text weight="light">{extractTimeFromISO(row.original.time)}</Text>,
   },
   {
+    accessorKey: 'batch.pond.name',
+    header: 'Pond',
+    cell: ({ row }) => <Text weight="light">{row.original.batch.pond.name || '-'}</Text>,
+  },
+  {
     accessorKey: 'feedType',
     header: 'Feed Type',
     cell: ({ row }) => <Text weight="light">{row.original.feedType || '-'}</Text>,

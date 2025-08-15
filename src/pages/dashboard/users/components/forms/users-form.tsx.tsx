@@ -237,7 +237,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
                         <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light`}>
                           <SelectValue placeholder="Roles" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[2000]">
                           {isLoadingRoles ? (
                             <SelectItem value="loading" disabled>
                               <Text>Loading roles...</Text>
@@ -278,7 +278,7 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
                         <SelectTrigger className={`${fieldState.error ? 'border-error-500' : ''} font-light`}>
                           <SelectValue placeholder="Cluster" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="z-[2000]">
                           {isLoadingClusters ? (
                             <SelectItem value="loading" disabled>
                               <Text>Loading clusters...</Text>

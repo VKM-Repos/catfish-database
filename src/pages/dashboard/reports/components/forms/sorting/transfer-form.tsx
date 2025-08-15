@@ -34,21 +34,12 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
   const useGetPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
-    queryKey: ['my-ponds'],
+    queryKey: ['my-ponds-in-samplings-splitting'],
     options: {
       enabled: user?.role === 'FARMER',
     },
   })
 
-  const useGetPondByClusterManager = createGetQueryHook({
-    endpoint: '/ponds/clusters/me',
-    responseSchema: z.any(),
-    queryKey: ['ponds_for_cluster_manager'],
-    options: {
-      enabled: user?.role === 'CLUSTER_MANAGER',
-    },
-  })
-  const { data: clustersManagerPonds = [], isLoading: isLoadingClustersManagerPonds } = useGetPondByClusterManager()
   const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
   const { id } = useParams<{ id: string }>()
 
@@ -77,8 +68,7 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
       shouldDirty: true,
     })
   }
-  const filteredFarmerPonds = ponds.content?.filter((pond: any) => pond.id !== id) || []
-  const filteredClusterManagerPonds = clustersManagerPonds.content?.filter((pond: any) => pond.id !== id) || []
+  // const filteredFarmerPonds = ponds.content?.filter((pond: any) => pond.id !== id) || []
 
   return (
     <FlexBox gap="gap-5" direction="col" align="start" className="w-full">
@@ -177,23 +167,19 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
                                 <Text>Loading ponds...</Text>
                               </SelectItem>
                             ) : (
-                              filteredFarmerPonds?.map((pond: unknown) => (
+                              ponds.content?.map((pond: unknown) => (
                                 <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
                                   {(pond as { name: string }).name}
                                 </SelectItem>
                               ))
                             )}
-                            {filteredClusterManagerPonds?.map((pond: unknown) => (
-                              <SelectItem key={(pond as { id: string }).id} value={(pond as { id: string }).id}>
-                                {(pond as { name: string }).name}
-                              </SelectItem>
-                            ))}
+
                             <button
                               onClick={() => navigate(paths.dashboard.ponds.create.addPond + '?id=' + id)}
                               type="button"
-                              className="w-full"
+                              className="py-05 w-full rounded-md border border-primary-500"
                             >
-                              <span className="flex items-center gap-2 px-7 py-1 text-sm hover:bg-primary-100">
+                              <span className="flex items-center gap-2 px-2 py-1 text-sm hover:bg-primary-100">
                                 <SolarIconSet.AddCircle /> Add another pond
                               </span>
                             </button>

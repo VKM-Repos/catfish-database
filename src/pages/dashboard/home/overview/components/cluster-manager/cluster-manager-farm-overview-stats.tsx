@@ -3,7 +3,6 @@ import { Grid } from 'src/components/ui/grid'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import StatsCard from './stats-card'
-import { formatNumber } from 'src/lib/utils'
 type DateRange = { from: Date; to: Date }
 interface FarmOverviewStatisticsProps {
   dateRange?: DateRange
@@ -70,28 +69,20 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
       endDate: dateRange?.to?.toISOString().split('T')[0],
     },
   })
-  // 3. Check loading/error states
-
-  // if (isLoading) return <div>Loading...</div>
-  // if (isError) return <div>Error fetching data</div>
 
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
       <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-5">
-        <StatsCard
-          color={'#F8D082'}
-          label={'Active farmers'}
-          value={`${userStatus ? formatNumber(userStatus?.activeUsers) : 0}`}
-        />
+        <StatsCard color={'#F8D082'} label={'Active farmers'} value={`${userStatus ? userStatus?.activeUsers : 0}`} />
         <StatsCard
           color={'#A0E8B9'}
           label={'Total registered ponds'}
-          value={`${registeredPonds ? formatNumber(registeredPonds?.totalPonds) : 0}`}
+          value={`${registeredPonds ? registeredPonds?.totalPonds : 0}`}
         />
         <StatsCard
           color={'#B9D9FF'}
           label={'Fish stocked'}
-          value={`${availableStock ? formatNumber(availableStock?.availableFish) : 0}`}
+          value={`${availableStock ? availableStock?.availableFish : 0}`}
         />
         <StatsCard
           color={'#F1A8D3'}
@@ -101,48 +92,12 @@ export default function FarmOverviewStatistics({ dateRange }: FarmOverviewStatis
         <StatsCard
           color={'#BCADFB'}
           label={'Total volume of sales'}
-          value={`₦${totalRevenue ? formatNumber(totalRevenue[0]?.totalRevenue) : 0}`}
-          className="col-span-2 lg:col-span-1"
-          // value={`₦${totalRevenue ? formatNumberWithCommas(totalRevenue[0]?.totalRevenue) : 0}`}
+          value={`₦${totalRevenue ? totalRevenue[0]?.totalRevenue : 0}`}
         />
       </Grid>
     </FlexBox>
   )
 }
-
-// Default card data (fallback if API fails)
-const pondStatCards = [
-  {
-    color: '#F8D082',
-    label: 'Active farmers',
-    value: '0', // Placeholder
-    rate: '0%', // Placeholder
-  },
-  {
-    color: '#A0E8B9',
-    label: 'Total registered ponds',
-    value: '0',
-    rate: '0%',
-  },
-  {
-    color: '#B9D9FF',
-    label: 'Fish stocked',
-    value: '₦0',
-    rate: '0%',
-  },
-  {
-    color: '#F1A8D3',
-    label: 'Avg mortality rate',
-    value: '0%',
-    rate: '0%',
-  },
-  {
-    color: '#BCADFB',
-    label: 'Total volume of sales',
-    value: '₦89.5M',
-    rate: '0%',
-  },
-]
 
 // Helper function (unchanged)
 export function isPositive(value: string): boolean {

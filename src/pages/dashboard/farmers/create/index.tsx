@@ -26,14 +26,14 @@ export default function CreateFarmersPage() {
           step === 1 ? 'h-[500px] overflow-y-scroll lg:h-[600px] lg:overflow-hidden' : 'overflow-hidden'
         }`}
       >
-        <div className={`pt-[4rem] pb-${step === 1 ? '1' : '[2rem]'}`}>
+        <div className={`pt-${step === 1 ? '[2rem]' : '0'} pb-${step === 1 ? '1' : '0'} ${step === 2 && 'h-full'}`}>
           {(() => {
             switch (step) {
               case 1:
                 return <FarmersForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
               case 2:
                 return (
-                  <div className="flex h-[3rem] w-full flex-col items-center justify-center space-y-4">
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-y-4 ">
                     <Heading level={6}>Completed!</Heading>
                     <Text weight="light" size="base">
                       Farmer created successfully!

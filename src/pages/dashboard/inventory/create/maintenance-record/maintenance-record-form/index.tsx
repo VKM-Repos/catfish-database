@@ -105,12 +105,15 @@ export default function MaintenanceRecordsForm({
       if (mode === 'create') {
         await createMaintenanceMutation.mutateAsync(basePayload)
         queryClient.refetchQueries(['maintenance-costs'])
+        queryClient.refetchQueries(['total-maintenance-cost'])
         form.reset()
         onSuccess?.()
         setStep(2)
       } else if (mode === 'edit' && pondId) {
         await updateMaintenanceMutation.mutateAsync(basePayload)
         queryClient.refetchQueries(['maintenance-costs'])
+        queryClient.refetchQueries(['total-maintenance-cost'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -176,7 +179,7 @@ export default function MaintenanceRecordsForm({
                           <SelectTrigger className="w-full font-light">
                             <SelectValue placeholder="Select activity type" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[2000]">
                             {Object.values(MaintenanceActivityTypes).map((type) => {
                               // Format: remove underscores, capitalize each word
                               const label = type
@@ -257,7 +260,7 @@ export default function MaintenanceRecordsForm({
                                 <SelectValue placeholder="Select a pond" />
                               </div>
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="z-[2000]">
                               {isLoadingPonds ? (
                                 <SelectItem value="loading" disabled>
                                   <Text>Loading ponds...</Text>

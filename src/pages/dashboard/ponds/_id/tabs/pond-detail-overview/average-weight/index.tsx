@@ -96,7 +96,7 @@ export default function AverageWeight({ dateRange }: AverageWeightProps) {
   const hasNoData = chartData.length === 0
 
   return (
-    <Card className="h-[350px] w-full basis-8/12 rounded-[.875rem] border border-neutral-200 p-4 md:w-[60%]">
+    <Card className="w-full basis-8/12 rounded-[.875rem] border border-neutral-200 p-4 lg:h-[350px] lg:w-[60%]">
       <ChartHeader
         title={'Average Weight'}
         action={

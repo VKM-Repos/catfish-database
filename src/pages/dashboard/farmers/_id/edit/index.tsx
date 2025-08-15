@@ -8,6 +8,7 @@ import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
 import { userSchema } from 'src/schemas/schemas'
 import { FarmersForm } from '../../create/forms/farmers-form'
+import { paths } from 'src/routes'
 
 const useGetFarmer = createGetQueryHook<typeof userSchema, { id: string }>({
   endpoint: '/users/:id',
@@ -30,7 +31,8 @@ export default function EditFarmerPage() {
   }
 
   const handleClose = () => {
-    navigate(-1)
+    navigate(paths.dashboard.farmers.view(id))
+    // navigate(-1)
   }
 
   // Ensure clusterId is included in the initial values
@@ -46,19 +48,23 @@ export default function EditFarmerPage() {
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(-1)}>
-      <DialogContent className="overflow-hidden p-8 lg:max-w-[478px]">
+    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.farmers.view(id))}>
+      <DialogContent
+        className={`${step === 2 && 'h-[186px] w-[369px]'}  max-w-[350px] overflow-hidden p-4 lg:max-w-[578px] ${
+          step === 1 ? 'h-[500px] overflow-y-scroll lg:h-[600px] lg:overflow-hidden' : 'overflow-hidden'
+        }`}
+      >
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader type="dots" size={24} />
           </div>
         ) : farmer ? (
-          <div className="py-[4rem] pb-[6rem]">
+          <div className={`pt-${step === 1 ? '[2rem]' : '0'} pb-${step === 1 ? '1' : '0'} ${step === 2 && 'h-full'}`}>
             {step === 1 && (
               <FarmersForm mode="edit" initialValues={initialValues} onSuccess={handleSuccess} onClose={handleClose} />
             )}
             {step === 2 && (
-              <div className="flex h-[3rem] w-full flex-col items-center justify-center space-y-4">
+              <div className="flex h-full w-full flex-col items-center justify-center gap-y-4 ">
                 <Heading level={6}>Completed!</Heading>
                 <Text weight="light" size="base">
                   Farmer updated successfully!

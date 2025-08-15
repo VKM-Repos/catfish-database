@@ -31,8 +31,9 @@ export default function CLusterManagerDashboardOverview() {
           <FeedingInsight dateRange={dateRange} />
           <FeedsPriceTrends dateRange={dateRange} />
         </FlexBox>
-        <FlexBox className="mb-[20px] w-full lg:flex-row" direction="col">
-          <KeyHealthMetrics />
+        <FlexBox className="mb-[20px] w-full" direction="row">
+          <KeyHealthMetrics dateRange={dateRange} />
+
           <ClusterHealthAlert />
         </FlexBox>
       </FlexBox>

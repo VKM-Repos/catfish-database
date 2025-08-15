@@ -38,6 +38,14 @@ export default function CostBreakdownOverview({ dateRange }: CostBreakdownOvervi
     },
   })
 
+  const useGetAverageFeedPrice = createGetQueryHook({
+    endpoint: '/dashboards/farmer/feed-cost?interval=ALL',
+    responseSchema: z.any(),
+    queryKey: ['feed-cost-price'],
+  })
+  const { data: averageFeedPrice } = useGetAverageFeedPrice()
+  console.log(averageFeedPrice, '?????')
+
   const colorMap: any = {
     CHEMICALS: '#9C27B0',
     ENERGY: '#8C4EAD',
@@ -108,16 +116,16 @@ export default function CostBreakdownOverview({ dateRange }: CostBreakdownOvervi
         <FlexBox className="mt-[24px] hidden w-full lg:flex" direction="col">
           <Card className="w-full p-[10px]">
             <Text size="sm" weight="medium">
-              Cost per Kg of Fish
+              Cost per Kg of Feed
             </Text>
             <Text size="lg" weight="semibold">
-              ₦152
+              ₦ -
             </Text>
             <Text size="xs">At market average</Text>
           </Card>
           <Card className="w-full p-[10px]">
             <Text size="sm" weight="medium">
-              Cost per Fish
+              Cost per Kg of Fish
             </Text>
             <Text size="lg" weight="semibold">
               ₦{averagePrice?.averagePrice}

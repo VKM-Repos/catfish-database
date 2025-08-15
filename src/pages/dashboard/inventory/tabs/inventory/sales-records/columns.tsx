@@ -34,7 +34,7 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: 'costPerFish',
-    header: 'Total cost (₦)',
+    header: 'Cost per fish (₦)',
     cell: ({ row }) => (
       <Text weight="light">{row?.original?.costPerFish < 1 ? '-' : formatPrice(row?.original?.costPerFish)}</Text>
     ),

@@ -25,7 +25,7 @@ export default function ActionsDropdown({ batch }: { batch: fishBatchResponseTyp
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => setOpenView(true)}>View</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => setOpenView(true)}>View</DropdownMenuItem> */}
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>Edit</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

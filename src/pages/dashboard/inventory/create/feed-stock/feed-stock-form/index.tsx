@@ -100,6 +100,10 @@ export default function FeedStockForm({
       if (!initialValues?.id) {
         await createFeedStockMutation.mutateAsync(basePayload as any)
         queryClient.refetchQueries(['feed-inventories'])
+        queryClient.refetchQueries(['feed-quantity'])
+        queryClient.refetchQueries(['feed-statistics'])
+        queryClient.refetchQueries(['low-stock-feeds'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -109,6 +113,10 @@ export default function FeedStockForm({
           ...basePayload,
         } as any)
         queryClient.refetchQueries(['feed-inventories'])
+        queryClient.refetchQueries(['feed-quantity'])
+        queryClient.refetchQueries(['feed-statistics'])
+        queryClient.refetchQueries(['low-stock-feeds'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -210,7 +218,7 @@ export default function FeedStockForm({
                               <SelectValue placeholder="Select Feed Type" />
                             </div>
                           </SelectTrigger>
-                          <SelectContent className="z-[82]">
+                          <SelectContent className="z-[2000]">
                             {Object.values(AvailableFeedTypes).map((type) => {
                               // Format: remove underscores, capitalize each word
                               const label = type
@@ -259,7 +267,7 @@ export default function FeedStockForm({
                               <SelectValue placeholder="Select Pellet size" />
                             </div>
                           </SelectTrigger>
-                          <SelectContent className="z-[82]">
+                          <SelectContent className="z-[2000]">
                             {PelletSizes?.map((pellet) => (
                               <SelectItem key={pellet} value={parseFloat(pellet).toString()}>
                                 {pellet}

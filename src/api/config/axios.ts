@@ -136,7 +136,7 @@ axiosInstance.interceptors.response.use(
 
         // ✅ Retry original request
         if (originalRequest) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
           return axios(originalRequest)
         }
       } catch (refreshError) {

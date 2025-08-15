@@ -16,7 +16,6 @@ import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { authCache } from 'src/api/config'
 import { Loader } from 'src/components/ui/loader'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
@@ -54,14 +53,11 @@ export default function LoginPage() {
       // Call the login API
       const response = await loginMutation.mutateAsync(values)
 
+      // console.log('response: ', response)
+
       // Extract data from response
       const { userDto, accessToken, refreshToken, expiresAt } = response
 
-      // Update auth cache
-      authCache.setToken(accessToken)
-      authCache.setRefreshToken(refreshToken)
-      authCache.setExpiresAt(expiresAt)
-      authCache.setUser(userDto)
       // Update auth store
       login(userDto, accessToken, refreshToken, expiresAt)
     } catch (err) {

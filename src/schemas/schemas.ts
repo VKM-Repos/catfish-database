@@ -558,6 +558,7 @@ export const sortingSchema = z.object({
     z.object({
       pondId: z.string().optional(),
       quantity: z.any().optional(),
+      initialWeight: z.any().optional(),
     }),
   ),
   quantity: z.any(),

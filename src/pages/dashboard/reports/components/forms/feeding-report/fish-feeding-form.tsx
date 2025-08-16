@@ -8,7 +8,7 @@ import { Text } from 'src/components/ui/text'
 import { Input } from 'src/components/ui/input'
 import * as SolarIconSet from 'solar-icon-set'
 import { useRef, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { CreateReportDialog } from '../../modals/create-report-modal'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
@@ -38,6 +38,7 @@ import { useFarmerReportStore } from 'src/store/farmer-report-store'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 import { CircularProgress } from '../../../create/daily-farm-report/_id'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAuthStore } from 'src/store/auth.store'
 
 const initialValues = {
   feedType: '',
@@ -50,10 +51,14 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const { id } = useParams<{ id: string }>()
+  const [searchParams] = useSearchParams()
+
+  const farmerId = searchParams.get('fr')
   const queryClient = useQueryClient()
   const { combineDateTime } = useDateStore()
   const { farmerIdForDailyReport } = useFarmerReportStore()
 
+  const user = useAuthStore((state) => state.user)
   const {
     formData,
     activeInputs,
@@ -69,8 +74,21 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
     endpoint: '/feed-inventories',
     responseSchema: z.any(),
     queryKey: ['feed-inventory-report'],
+    options: {
+      enabled: user?.role === 'FARMER',
+    },
   })
   const { data: feedInventory } = useGetFeedInventory()
+
+  const useGetFeedInventoryByClusterManager = createGetQueryHook({
+    endpoint: `/feed-inventories/farmers/${farmerIdForDailyReport}`,
+    responseSchema: z.any(),
+    queryKey: ['feed-inventory-feeds-by-cluster-manager'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
+  })
+  const { data: feedInventoryByClusterManager } = useGetFeedInventoryByClusterManager()
 
   const useDailyFeeding = createPostMutationHook({
     endpoint: `/feedings`,
@@ -78,6 +96,13 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
     responseSchema: z.any(),
   })
   const createDailyFeeding = useDailyFeeding()
+
+  const useDailyFeedingByClusterManager = createPostMutationHook({
+    endpoint: `/feedings/create-by-cluster`,
+    requestSchema: z.any(),
+    responseSchema: z.any(),
+  })
+  const createDailyFeedingByManager = useDailyFeedingByClusterManager()
 
   const useUpdateDailyFeeding = createPutMutationHook({
     endpoint: `/feedings/${reportId}`,
@@ -131,17 +156,29 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
         feedingTime: combineDateTime,
       }
       if (reportId) {
-        await updateDailyFeeding.mutateAsync(updateFeedingData)
-        queryClient.refetchQueries(['daily-feedings'])
+        if (user?.role === 'FARMER') {
+          await updateDailyFeeding.mutateAsync(updateFeedingData)
+          queryClient.refetchQueries(['daily-feedings'])
+        } else if (user?.role === 'CLUSTER_MANAGER') {
+          await updateDailyFeeding.mutateAsync(updateFeedingData)
+          queryClient.refetchQueries(['daily-feedings'])
+        }
 
         if (handleNext) {
           handleNext()
         }
       } else {
-        const response = await createDailyFeeding.mutateAsync(feedingData)
-        queryClient.refetchQueries(['daily-feedings'])
+        if (user?.role === 'FARMER') {
+          const response = await createDailyFeeding.mutateAsync(feedingData)
+          queryClient.refetchQueries(['daily-feedings'])
+          setReportId(response.id)
+        } else if (user?.role === 'CLUSTER_MANAGER') {
+          const data = { farmerId: farmerIdForDailyReport, ...feedingData }
+          const response = await createDailyFeedingByManager.mutateAsync(data)
+          setReportId(response.id)
+          queryClient.refetchQueries(['daily-feedings'])
+        }
 
-        setReportId(response.id)
         if (handleNext) {
           handleNext()
         }
@@ -283,21 +320,40 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                                   <SelectValue placeholder="Select Feed type" />
                                 </div>
                               </SelectTrigger>
-                              <SelectContent>
-                                {feedInventory?.content.map((feed: any) => (
-                                  <SelectItem
-                                    className="w-full items-center justify-between "
-                                    key={feed.id}
-                                    value={feed.type + feed.sizeInMm}
-                                  >
-                                    {''}
-                                    <Text>
-                                      {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
-                                    </Text>
-                                    <SelectSeparator />
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
+                              {user?.role === 'FARMER' && (
+                                <SelectContent>
+                                  {feedInventory?.content.map((feed: any) => (
+                                    <SelectItem
+                                      className="w-full items-center justify-between "
+                                      key={feed.id}
+                                      value={feed.type + feed.sizeInMm}
+                                    >
+                                      {''}
+                                      <Text>
+                                        {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
+                                      </Text>
+                                      <SelectSeparator />
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              )}
+                              {user?.role === 'CLUSTER_MANAGER' && (
+                                <SelectContent>
+                                  {feedInventoryByClusterManager?.content.map((feed: any) => (
+                                    <SelectItem
+                                      className="w-full items-center justify-between "
+                                      key={feed.id}
+                                      value={feed.type + feed.sizeInMm}
+                                    >
+                                      {''}
+                                      <Text>
+                                        {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
+                                      </Text>
+                                      <SelectSeparator />
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              )}
                             </Select>
                           </FormControl>
                           <FormMessage />
@@ -318,15 +374,15 @@ export function DailyFeeding({ handleNext, handlePrevious }: { handleNext?: () =
                         <FormItem>
                           <FormControl>
                             <div
-                              className={`focus-within:ring-offset-background flex max-h-fit items-center rounded-md border px-3 ${
+                              className={`focus-within:ring-offset-background max-h-fit items-center rounded-md border px-3 ${
                                 activeInputs.feedQuantity ? 'bg-white' : ''
                               } border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
                             >
-                              <SolarIconSet.Weigher />
                               <Input
                                 placeholder="input quantity in kg"
+                                icon={<SolarIconSet.Weigher />}
                                 {...field}
-                                className="w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                className="w-full border-0 px-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                                 onChange={(e) => {
                                   const value = e.target.value.replace(/[^0-9.]/g, '')
 

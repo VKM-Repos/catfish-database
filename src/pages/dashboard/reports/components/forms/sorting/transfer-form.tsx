@@ -191,6 +191,43 @@ export default function TransferForm({ form }: { form: UseFormReturn<SortingForm
                   )}
                 />
               </div>
+              <div className="flex w-full flex-col gap-2">
+                <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                  Initial average body weight <span className="font-bold text-red-500">*</span>
+                  <SolarIconSet.QuestionCircle size={16} />
+                </Text>
+                <FormField
+                  control={form.control}
+                  name={`batches.${index}.initialWeight`}
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div
+                          className={`focus-within:ring-offset-background flex max-h-fit w-full items-center rounded-md border ${
+                            fieldState.error ? 'border-red-500' : 'border-neutral-200'
+                          } focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2`}
+                        >
+                          <div className="w-full">
+                            <Input
+                              placeholder="Input initial average body weight"
+                              {...field}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9.]/g, '')
+                                field.onChange(value)
+                              }}
+                              className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                            />
+                          </div>
+                          <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
+                            <Text>Kg</Text>
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </div>
         ))}

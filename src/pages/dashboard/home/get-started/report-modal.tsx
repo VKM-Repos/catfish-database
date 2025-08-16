@@ -135,9 +135,17 @@ export function ReportModal({ title, open, redirect, onOpenChange, from }: Repor
     // Perform action using values.pondId
     switch (redirect) {
       case 'daily-farm-report':
-        navigate(
-          paths.dashboard.reports.createDailyFarmReport(values.pondId) + `${from !== undefined ? `?from=${from}` : ''}`,
-        )
+        user?.role === 'FARMER'
+          ? navigate(
+              paths.dashboard.reports.createDailyFarmReport(values.pondId) +
+                `${from !== undefined ? `?from=${from}` : ''}`,
+            )
+          : navigate(
+              paths.dashboard.reports.createDailyFarmReport(values.pondId) +
+                `${from !== undefined ? `?from=${from}&` : ''}${
+                  values.farmerId !== null ? `?fr=${values.farmerId}` : ''
+                } `,
+            )
         break
       case 'daily-sampling-report':
         navigate(

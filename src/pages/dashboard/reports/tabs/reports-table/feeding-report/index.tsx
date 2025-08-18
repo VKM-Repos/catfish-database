@@ -30,7 +30,8 @@ const tabs = [
 
 export default function FeedingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
-  const [selectedTab, setSelectedTab] = useState('Feeding')
+  const [selectedTab, setSelectedTab] = useState('feeding')
+  const [selectedValue, setSelectedValue] = useState('feeding')
   const { setStep } = useStepperStore()
   const [searchTerm, setSearchTerm] = useState('')
   const user = useAuthStore((state) => state.user)
@@ -118,7 +119,7 @@ export default function FeedingReportsTable() {
 
             {filteredTabs.length > 0 ? (
               filteredTabs.map((tab) => (
-                <SelectItem key={tab.value} value={tab.label}>
+                <SelectItem key={tab.value} value={tab.value}>
                   {tab.label}
                 </SelectItem>
               ))
@@ -131,17 +132,17 @@ export default function FeedingReportsTable() {
 
       <FlexBox direction="row" align="center" justify="between" className="mb-5 w-full">
         <Heading level={6} className="text-[14px] lg:text-xl">
-          {selectedTab} reports
+          {tabs.find((t) => t.value === selectedTab)?.label} reports
         </Heading>
         {actions && <div>{actions}</div>}
       </FlexBox>
-      <Tabs defaultValue="feeding" className="flex w-full items-start gap-8">
+      <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex w-full items-start gap-8">
         <TabsList className="hidden flex-col items-start justify-start text-sm font-semibold lg:flex">
           {tabs.map((tab, index) => (
             <VerticalTabsTrigger
               key={tab.value}
               onClick={() => {
-                setSelectedTab(tab.label)
+                setSelectedTab(tab.value)
                 setStep(index + 1)
               }}
               value={tab.value}

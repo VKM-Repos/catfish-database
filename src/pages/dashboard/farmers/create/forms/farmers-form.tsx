@@ -136,13 +136,13 @@ export function FarmersForm({ mode, initialValues, onSuccess, onClose }: FarmerP
 
   return (
     <>
-      <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
+      <div className="mb-4 w-full border-b border-b-neutral-200 py-2">
         <Heading className="text-center" level={6}>
           {mode === 'create' ? 'Add a farmer' : ' Edit farmer’s info'}
         </Heading>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {error && <FormValidationErrorAlert error={error} />}
           <Grid cols={2} gap="gap-4">
             <FlexBox direction="col" gap="gap-2">

@@ -141,6 +141,7 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
         batches: data.batches?.map((batch) => ({
           ...batch,
           quantity: Number(batch.quantity),
+          initialWeight: Number(batch.initialWeight),
         })),
       },
       harvestCreate: null,
@@ -173,6 +174,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
         await createSamplingReport.mutateAsync(samplingData)
         await createHarvestReport.mutateAsync(harvestData)
         queryClient.refetchQueries(['sampling-reports-table'])
+        queryClient.refetchQueries(['fish-batches-in-ponds'])
+        queryClient.refetchQueries(['my-ponds-in-ponds'])
 
         resetDateTime()
         setOpenConfirmDialog(false)
@@ -181,6 +184,8 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
       } else {
         await createSamplingReport.mutateAsync(samplingData)
         queryClient.refetchQueries(['sampling-reports-table'])
+        queryClient.refetchQueries(['fish-batches-in-ponds'])
+        queryClient.refetchQueries(['my-ponds-in-ponds'])
         resetDateTime()
         setOpenConfirmDialog(false)
         setOpenDialog(true)

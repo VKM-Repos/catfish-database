@@ -45,7 +45,7 @@ export default function UpdatePondPage() {
     switch (step) {
       case 1:
         return (
-          <div className="w-full min-w-[46.25rem] pb-[2rem] pt-[4rem]">
+          <div className="pb-[2rem] pt-[4rem] lg:w-full lg:min-w-[46.25rem]">
             <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
               <Heading className="text-center" level={6}>
                 Edit pond info
@@ -93,7 +93,9 @@ export default function UpdatePondPage() {
   return (
     <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}>
       <DialogContent
-        className={`max-h-[40rem] min-w-fit overflow-hidden ${step === 1 && '!overflow-y-scroll'} px-8 py-4`}
+        className={` max-h-[40rem] w-[90%] overflow-hidden rounded-lg  lg:w-full lg:min-w-fit ${
+          step === 1 && '!overflow-y-scroll'
+        } px-8 py-4`}
         onInteractOutside={(e) => {
           e.preventDefault()
         }}

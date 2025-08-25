@@ -57,7 +57,7 @@ export default function AddSalesRecord() {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        className="max-h-[80vh] w-fit max-w-[750px]  overflow-y-scroll p-8"
+        className="max-h-[80vh] max-w-[90%] rounded-lg p-8  lg:w-fit lg:overflow-y-scroll"
       >
         <RenderSteps />
       </DialogContent>

@@ -152,7 +152,7 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
       <form onSubmit={form.handleSubmit(onSubmit)} className="mt-12 flex w-full flex-col gap-10">
         {error && <FormValidationErrorAlert error={error} />}
         <div className="flex w-full flex-col gap-10">
-          <Grid cols={2} gap="gap-4" className="!grid-cols-1 md:!grid-cols-2">
+          <Grid cols={2} gap="gap-4" className="!flex !grid-cols-1 flex-col md:!grid md:!grid-cols-2">
             <FlexBox direction="col" gap="gap-2" className=" w-full">
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Date<span className="font-bold text-red-500">*</span>

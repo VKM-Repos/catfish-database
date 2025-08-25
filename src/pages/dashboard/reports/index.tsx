@@ -21,7 +21,7 @@ export default function ClusterManagersPage() {
   return (
     <div className="relative">
       <PageTransition>
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <PageHeader title={title} actions={null} />
           {/* <Spacer /> */}
           {user?.role === 'CLUSTER_MANAGER' && <FeedingReportsTable />}

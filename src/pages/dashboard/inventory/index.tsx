@@ -31,7 +31,7 @@ export default function InventoryPage() {
               className="flex w-full flex-col items-start gap-1"
               onValueChange={handleTabChange}
             >
-              <div className="w-full overflow-x-scroll border-b border-b-neutral-200 p-0">
+              <div className="h-[45px] w-full overflow-x-scroll border-b border-b-neutral-200 p-0">
                 <TabsList className=" text-sm font-semibold">
                   <TabsTrigger value="feed-inventory" className="data-[state=active]:font-semibold">
                     Feed Inventory
@@ -44,7 +44,7 @@ export default function InventoryPage() {
                   </TabsTrigger>
                 </TabsList>
               </div>
-              <ScrollArea className="h-[calc(100vh-240px)] w-full">
+              <ScrollArea className="h-[calc(100vh-240px)] w-full overflow-y-scroll">
                 <TabsContent value="feed-inventory" className="w-full">
                   <FeedInventoryTable />
                 </TabsContent>

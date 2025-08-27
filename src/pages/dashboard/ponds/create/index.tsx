@@ -12,7 +12,7 @@ export default function CreatePondPage() {
   const isAddFish = pathname.includes('add-fish-to-pond')
 
   return (
-    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full lg:max-w-[50%]">
       {isAddPond && (
         <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full text-center">
           <h1 className="flex items-center gap-2 text-[1.5rem] font-bold">
@@ -25,14 +25,14 @@ export default function CreatePondPage() {
         </FlexBox>
       )}
       {isAddFish && (
-        <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full text-center">
-          <h1 className="flex items-center gap-2 text-[1.5rem] font-bold">
+        <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full ">
+          <h1 className="flex items-center gap-2 text-center text-[1.5rem] font-bold">
             Add Fish to a Pond
             <span>
               <SolarIconSet.Waterdrop />
             </span>
           </h1>
-          <Text>Let’s add the fish you just stocked into this pond</Text>
+          <Text className="text-center text-sm lg:text-base">Let’s add the fish you just stocked into this pond</Text>
         </FlexBox>
       )}
       <Outlet />

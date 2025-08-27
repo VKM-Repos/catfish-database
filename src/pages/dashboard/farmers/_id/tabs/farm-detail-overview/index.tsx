@@ -12,6 +12,8 @@ import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes'
 import { User } from 'src/types'
+import { useState } from 'react'
+import { DateRange } from 'src/components/ui/mega-datepicker'
 
 type FarmerProps = {
   farmer: User
@@ -21,6 +23,11 @@ type FarmerProps = {
 export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: new Date(2020, 0, 1), // Default to "All Time"
+    to: new Date(),
+  })
 
   const farmer_details = [
     { label: 'First Name', value: farmer.firstName },
@@ -51,26 +58,37 @@ export default function FarmDetailOverview({ farmer, isLoading }: FarmerProps) {
       {isLoading ? (
         <Loader type="spinner" />
       ) : (
-        <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3 text-sm">
+        <Grid
+          style={{ wordBreak: 'break-word' }}
+          cols={3}
+          gap="gap-6"
+          className="w-full grid-cols-2 break-words lg:!grid-cols-3"
+        >
+          {' '}
           {farmer_details.map((item) => (
             <FlexBox key={item.label} gap="gap-2" direction="col">
               <Text variant="body" color="text-neutral-500" weight="semibold">
                 {item.label}
               </Text>
-              <Text variant="body" color="text-neutral-500" weight="light">
+              <Text
+                variant="body"
+                color="text-neutral-500"
+                weight="light"
+                className="w-full break-words break-all text-sm lg:text-base"
+              >
                 {item.value}
               </Text>
             </FlexBox>
           ))}
         </Grid>
       )}
-      <FarmStatistics />
+      {id && <FarmStatistics farmerId={id} />}
       <section className="flex w-full flex-col items-center justify-center gap-3 md:flex-row md:items-stretch">
-        <AverageWeight />
-        <FeedConversionRatio />
+        <AverageWeight dateRange={dateRange} farmerId={id} />
+        <FeedConversionRatio dateRange={dateRange} farmerId={id} />
       </section>
       <section className="h-fit w-full">
-        <MonthlyFeedConsumption />
+        <MonthlyFeedConsumption dateRange={dateRange} farmerId={id} />
       </section>
     </FlexBox>
   )

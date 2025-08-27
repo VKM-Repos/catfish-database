@@ -1,21 +1,14 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { Button } from 'src/components/ui/button'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
-import UpdatePondForm from './update-pond-form'
-import { z } from 'zod'
-import { pondResponseSchema, pondSchema } from 'src/schemas'
+import { pondResponseSchema, pondTypeEnum, waterSourceEnum } from 'src/schemas'
 import { useNavigate, useParams } from 'react-router-dom'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { createPutMutationHook } from 'src/api/hooks/usePut'
-import { ClientErrorType, ServerErrorType } from 'src/types'
-import { Form } from 'src/components/ui/form'
-import { useQueryClient } from '@tanstack/react-query'
 import { paths } from 'src/routes'
-
-type PondData = z.infer<typeof pondSchema>
+import PondForm, { PondCreateData } from '../../create/add-pond/forms/pond-form'
+import { Heading } from 'src/components/ui/heading'
+import { z } from 'zod'
 
 const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>({
   endpoint: '/ponds/:id',
@@ -28,82 +21,44 @@ export default function UpdatePondPage() {
 
   const navigate = useNavigate()
 
-  const queryClient = useQueryClient()
-
   const { id } = useParams<{ id: string }>()
 
   const { data: pond } = useGetPond({ route: { id: id! } })
 
-  const initialValues = {
-    id: pond?.id || '',
-    name: pond?.name || '',
-    size: pond?.size || '',
-    latitude: pond?.latitude || '',
-    longitude: pond?.longitude || '',
-    waterSource: pond?.waterSource || '',
-    pondType: pond?.pondType || '',
-    status: 'Active',
-    clusterId: pond?.cluster?.id || '',
-  }
-
-  const form = useForm<PondData>({
-    resolver: zodResolver(pondSchema),
-    defaultValues: initialValues,
-    mode: 'onChange',
+  const toInitialValues = (p: z.infer<typeof pondResponseSchema>): Partial<PondCreateData> => ({
+    name: p.name,
+    size: p.size,
+    length: p.length,
+    breadth: p.breadth,
+    height: p.height,
+    status: p.status,
+    longitude: p.longitude,
+    latitude: p.latitude,
+    clusterId: p.cluster.id,
+    farmerId: p.farmer.id,
+    // cast because we trust the backend – or you can add a runtime guard
+    waterSource: p.waterSource as z.infer<typeof waterSourceEnum>,
+    pondType: p.pondType as z.infer<typeof pondTypeEnum>,
   })
-
-  const [error, setError] = useState<ClientErrorType | null>(null)
-
-  const useUpdatePond = createPutMutationHook({
-    endpoint: `/ponds/${initialValues?.id}`,
-    requestSchema: pondSchema,
-    responseSchema: pondResponseSchema,
-  })
-
-  const updatePondMutation = useUpdatePond()
-
-  const onSubmit = async (values: z.infer<typeof pondSchema>) => {
-    try {
-      setError(null)
-      await updatePondMutation.mutateAsync({
-        ...values,
-      })
-      queryClient.invalidateQueries(['pond-details-for-farmer'])
-      queryClient.refetchQueries(['pond-details-for-farmer'])
-      queryClient.refetchQueries(['my-ponds'])
-      setStep(2)
-    } catch (error) {
-      console.error(error)
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: ServerErrorType } }
-        const errorData = axiosError.response?.data
-
-        if (errorData) {
-          setError({
-            title: errorData.error,
-            message: errorData.message,
-            errors: errorData.errors ?? null,
-          })
-        }
-        console.error(error)
-      }
-    }
-  }
 
   const renderSteps = () => {
     switch (step) {
       case 1:
         return (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <UpdatePondForm
-                setOpen={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}
-                form={form}
-                error={error}
-                loading={updatePondMutation.isLoading}
-              />
-            </form>
-          </Form>
+          <div className="pb-[2rem] pt-[4rem] lg:w-full lg:min-w-[46.25rem]">
+            <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
+              <Heading className="text-center" level={6}>
+                Edit pond info
+              </Heading>
+            </div>
+            <PondForm
+              mode="edit"
+              pondId={id!}
+              initialValues={pond ? toInitialValues(pond) : undefined}
+              onSuccess={handleSuccess}
+              onClose={handleClose}
+            />
+          </div>
         )
       case 2:
         return (
@@ -127,10 +82,20 @@ export default function UpdatePondPage() {
     }
   }
 
+  const handleSuccess = () => {
+    setStep(2)
+  }
+
+  const handleClose = () => {
+    navigate(`${paths.dashboard.ponds.root}/${id}`)
+  }
+
   return (
     <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}>
       <DialogContent
-        className={`max-h-[40rem] min-w-fit overflow-hidden ${step === 1 && '!overflow-y-scroll'} px-8 py-4`}
+        className={` max-h-[40rem] w-[90%] overflow-hidden rounded-lg  lg:w-full lg:min-w-fit ${
+          step === 1 && '!overflow-y-scroll'
+        } px-8 py-4`}
         onInteractOutside={(e) => {
           e.preventDefault()
         }}

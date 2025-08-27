@@ -10,15 +10,15 @@ import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { FarmersTable } from './components/farmers-table'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedUserResponseSchema } from 'src/schemas'
+import { z } from 'zod'
 
 export default function FarmersPage() {
   const title = 'Farmers'
   const navigate = useNavigate()
 
   const useGetFarmers = createGetQueryHook({
-    endpoint: '/users/farmers?direction=DESC',
-    responseSchema: paginatedUserResponseSchema,
+    endpoint: '/users/farmers?direction=DESC&size=100',
+    responseSchema: z.any(),
     queryKey: ['farmers'],
   })
 
@@ -30,7 +30,7 @@ export default function FarmersPage() {
 
   const actions = farmers && farmers?.content.length > 0 && (
     <Inline>
-      <Button variant="outline" className="flex items-center gap-2 border-primary-400">
+      <Button variant="outline" className="flex  hidden items-center gap-2 border-primary-400">
         <SolarIconSet.CircleBottomUp color="#651391" size={20} iconStyle="Outline" />
         <Text className="text-primary-400">Import</Text>
       </Button>
@@ -44,8 +44,8 @@ export default function FarmersPage() {
   return (
     <div className="relative pb-[5rem]">
       <PageTransition>
-        <Container className="!px-12">
-          <PageHeader title={title} actions={actions} />
+        <Container className="lg:max-w-screen-xl lg:!px-12 ">
+          <PageHeader className="flex flex-row" title={title} actions={actions} />
           <Spacer />
           <FarmersTable useGetFarmers={useGetFarmers} />
         </Container>

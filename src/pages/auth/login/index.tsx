@@ -16,11 +16,11 @@ import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { Checkbox } from 'src/components/ui/checkbox'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { authCache } from 'src/api/config'
 import { Loader } from 'src/components/ui/loader'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
+import { PartnersLogo } from 'src/components/ui/partners-logo'
 
 const useLogin = createPostMutationHook({
   endpoint: '/auth/login',
@@ -38,10 +38,12 @@ export default function LoginPage() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(loginRequestSchema),
-    defaultValues: {},
+    defaultValues: {
+      email: '',
+      password: '',
+    },
     mode: 'onChange',
   })
-
   const loginMutation = useLogin()
 
   const onSubmit = async (values: FormValues) => {
@@ -51,14 +53,10 @@ export default function LoginPage() {
       // Call the login API
       const response = await loginMutation.mutateAsync(values)
 
+      // console.log('response: ', response)
+
       // Extract data from response
       const { userDto, accessToken, refreshToken, expiresAt } = response
-
-      // Update auth cache
-      authCache.setToken(accessToken)
-      authCache.setRefreshToken(refreshToken)
-      authCache.setExpiresAt(expiresAt)
-      authCache.setUser(userDto)
 
       // Update auth store
       login(userDto, accessToken, refreshToken, expiresAt)
@@ -84,11 +82,11 @@ export default function LoginPage() {
 
   return (
     <Container className="w-fit overflow-hidden">
-      <Card className="mx-auto flex min-h-[517px] w-[480px] flex-col gap-2 bg-white p-2 leading-tight tracking-wide lg:min-w-[470px]">
-        <CardHeader className="flex flex-col items-center justify-center gap-y-8">
+      <Card className="mx-auto flex min-h-[517px] w-fit flex-col gap-2 bg-white p-2 leading-tight tracking-wide lg:min-w-[470px]">
+        <CardHeader className="flex flex-col items-center justify-center gap-y-8 px-4 lg:px-4">
           <div className="flex flex-col items-center justify-center">
             <Logo className="text-primary h-[50px] w-[55px] p-1" />
-            <Heading level={5} className="font-semibold text-primary-500">
+            <Heading level={5} className="px-2 font-semibold text-primary-500">
               Catfish Database
             </Heading>
           </div>
@@ -98,7 +96,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
               {error && <FormValidationErrorAlert error={error} />}
               <FormField
                 control={form.control}
@@ -210,13 +208,15 @@ export default function LoginPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex h-[56px] flex-col items-center justify-center rounded-lg bg-neutral-100">
-          <span className="mt-4 text-sm text-neutral-400">
+        <CardFooter className="flex h-fit flex-col items-center justify-center gap-1 rounded-lg bg-neutral-100 px-8 py-4">
+          <span className=" text-sm text-neutral-400">
             Powered by
             <a href="https://www.fao.org/fish4acp" className="ml-2 font-semibold text-info-500 underline">
               FISH4ACP
             </a>
           </span>
+
+          <PartnersLogo />
         </CardFooter>
       </Card>
     </Container>

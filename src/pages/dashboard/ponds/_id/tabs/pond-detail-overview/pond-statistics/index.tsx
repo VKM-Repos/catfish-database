@@ -1,39 +1,193 @@
-import { Button } from 'src/components/ui/button'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { Grid } from 'src/components/ui/grid'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { z } from 'zod'
+import { formatPrice } from 'src/lib/utils'
+import { useMemo } from 'react'
 
-export default function PondStatistics() {
+// Schema for feed total response
+const feedTotalSchema = z.object({
+  totalQuantity: z.number(),
+  totalCost: z.number(),
+  intervalLabel: z.string(),
+})
+
+// Schema for total weight per pond response
+const totalWeightPerPondSchema = z.array(
+  z.object({
+    pondId: z.string(),
+    pondName: z.string(),
+    weights: z.array(
+      z.object({
+        interval: z.string(),
+        totalWeight: z.number(),
+      }),
+    ),
+  }),
+)
+
+// Schema for production cost per pond response
+const productionCostPerPondSchema = z.array(
+  z.object({
+    pondId: z.string(),
+    pondName: z.string(),
+    costs: z.array(
+      z.object({
+        intervalLabel: z.string(),
+        totalCost: z.number(),
+      }),
+    ),
+  }),
+)
+
+// Schema for average mortality rate response
+const averageMortalityRateSchema = z.object({
+  intervalLabel: z.string(),
+  mortalityRate: z.number(),
+  survivalRate: z.number(),
+})
+
+interface PondStatisticsProps {
+  pondId: string
+}
+
+export default function PondStatistics({ pondId }: PondStatisticsProps) {
+  // Hook to fetch feed total data
+  const useGetFeedTotal = createGetQueryHook({
+    endpoint: '/dashboards/farmer/fcr/per-pond',
+    responseSchema: z.any(),
+    queryKey: ['feed-total'],
+  })
+
+  // Hook to fetch previous week's feed data for comparison
+  const useGetTotalCostFeedTotal = createGetQueryHook({
+    endpoint: '/dashboards/farmer/feed-consumption/per-pond',
+    responseSchema: z.any(),
+    queryKey: ['total-cost-feed'],
+  })
+
+  // Hook to fetch total weight per pond
+  const useGetTotalWeightPerPond = createGetQueryHook({
+    endpoint: '/dashboards/farmer/volume-of-sales/per-pond',
+    responseSchema: z.any(),
+    queryKey: ['total-weight-per-pond'],
+  })
+
+  // Hook to fetch average mortality rate (for survival rate)
+  const useGetMortalityRate = createGetQueryHook({
+    endpoint: '/dashboards/farmer/mortality-rate/per-pond',
+    responseSchema: z.any(),
+    queryKey: ['mortality-rate'],
+  })
+
+  const { data: feedTotal, isLoading: feedTotalLoading } = useGetFeedTotal({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+  const { data: totalCostFeed, isLoading: totalCostFeedLoading } = useGetTotalCostFeedTotal({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+  const { data: totalWeightData, isLoading: totalWeightLoading } = useGetTotalWeightPerPond({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+
+  const { data: mortalityRateData, isLoading: mortalityRateLoading } = useGetMortalityRate({
+    query: {
+      interval: 'ALL',
+      pondId: pondId,
+      // startDate: dateRange?.from?.toISOString().split('T')[0],
+      // endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+
+  // console.log('feedTotal: ', feedTotal)
+  // console.log('totalCostFeed: ', totalCostFeed)
+  // console.log('totalWeightData: ', totalWeightData)
+  // console.log('mortalityRateData: ', mortalityRateData)
+
+  const isLoading = feedTotalLoading || totalCostFeedLoading || totalWeightLoading || mortalityRateLoading
+
+  // Calculate percentage changes
+  const calculatePercentageChange = (current: number, previous: number): string => {
+    if (previous === 0) return '+0.0%'
+    const change = ((current - previous) / previous) * 100
+    const sign = change >= 0 ? '+' : ''
+    return `${sign}${change.toFixed(1)}%`
+  }
+
+  // Create pond stat cards with real data
+  const pondStatCards = useMemo(() => {
+    return [
+      {
+        color: '#F1A8D3',
+        label: 'Total feed consumed',
+        value: feedTotalLoading ? '...' : `${feedTotal[0]?.fcrValues?.[0]?.totalFeedConsumed ?? 0}kg`,
+        rate: '+0.0%',
+      },
+      {
+        color: '#B9D9FF',
+        label: 'Total cost of feed',
+        value: totalCostFeedLoading
+          ? '...'
+          : formatPrice(totalCostFeed[0]?.consumptionByInterval?.[0]?.totalCost) ?? '₦ 0.00',
+        rate: '+0.0%',
+      },
+      {
+        color: '#F8D082',
+        label: 'Total weight of fish',
+        value: totalWeightLoading
+          ? '...'
+          : totalWeightData && totalWeightData[0]?.sales
+          ? `${totalWeightData[0]?.sales?.[0]?.totalWeight?.toLocaleString()}`
+          : '0',
+        rate: '+0.0%',
+      },
+      {
+        color: '#A0E8B9',
+        label: 'Survival Rate',
+        value: mortalityRateLoading ? '...' : `${mortalityRateData[0]?.rates?.[0]?.survivalRate?.toFixed(2) ?? '0'}%`,
+        rate: '+0.0%',
+      },
+    ]
+  }, [
+    feedTotalLoading,
+    feedTotal,
+    totalCostFeedLoading,
+    totalCostFeed,
+    totalWeightLoading,
+    totalWeightData,
+    mortalityRateLoading,
+    mortalityRateData,
+  ])
+
   return (
     <FlexBox direction="col" gap="gap-5" className="w-full py-4">
-      <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Text className="w-full text-xl font-semibold text-neutral-700">Pond Statistics</Text>
-        <div className="flex w-full place-content-end items-center gap-4">
-          <Text size="sm" weight="light">
-            All Time
-          </Text>
-          <Button
-            variant="outline"
-            className=" flex items-center justify-between gap-4 rounded-sm border border-neutral-200 text-neutral-500"
-          >
-            <Text size="sm" weight="light">
-              May 21 - 27, 2024
-            </Text>
-            <SolarIconSet.AltArrowDown color="currentColor" size={20} iconStyle="Outline" />
-          </Button>
-        </div>
-      </FlexBox>
-      <Grid cols={2} gap="gap-5" className="w-full text-sm md:grid-cols-4">
-        {pondStatCards.map((pondStat, index) => {
-          const sign = isPositive(pondStat.rate)
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-4">
+        {pondStatCards?.map((pondStat, index) => {
+          const sign = isPositive(pondStat?.rate)
 
           return (
             <div key={index} style={{ backgroundColor: pondStat.color }} className={`rounded-lg px-5 py-[1.875rem]`}>
               <FlexBox gap="gap-[1.125rem]" direction="col">
-                <Text className="text-xs text-[#37414F]">{pondStat.label}</Text>
+                <Text className="text-xs text-[#37414F]">{pondStat?.label}</Text>
                 <FlexBox direction="col" gap="gap-3">
-                  <Text className="!text-[1.5rem] font-bold text-[#1F2937]">{pondStat.value}</Text>
+                  <Text className="!text-[1.5rem] font-bold text-[#1F2937]">{pondStat?.value}</Text>
                   <div
                     style={{
                       backgroundColor: sign === true ? '#E7F6E5' : '#FFE5E5',
@@ -41,7 +195,7 @@ export default function PondStatistics() {
                     }}
                     className="flex items-center justify-center rounded-[.625rem] px-1 py-1"
                   >
-                    {pondStat.rate}
+                    {pondStat?.rate}
                     {sign === true ? (
                       <SolarIconSet.ArrowToTopLeft size={16} iconStyle="Broken" color="currentColor" />
                     ) : (
@@ -58,34 +212,7 @@ export default function PondStatistics() {
   )
 }
 
-const pondStatCards = [
-  {
-    color: '#F1A8D3',
-    label: 'Total feed consumed',
-    value: '2,000',
-    rate: '+2.4%',
-  },
-  {
-    color: '#B9D9FF',
-    label: 'Total cost of feed',
-    value: '₦32,000',
-    rate: '-2.4%',
-  },
-  {
-    color: '#F8D082',
-    label: 'Total weight of fish consumed',
-    value: '620kg',
-    rate: '+2.4%',
-  },
-  {
-    color: '#A0E8B9',
-    label: 'Survival Rate',
-    value: '76%',
-    rate: '+2.4%',
-  },
-]
-
 export function isPositive(value: string): boolean {
-  const numericValue = parseFloat(value.replace('%', '').trim())
+  const numericValue = parseFloat(value?.replace('%', '').trim())
   return numericValue >= 0
 }

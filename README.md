@@ -93,3 +93,15 @@ src
 ### Swagger
 
 http://ec2-34-239-49-92.compute-1.amazonaws.com/swagger-ui/index.html
+
+super Admin
+alaniomotosho2@gmail.com
+Password@123
+
+Farmer
+ayomide@gmail.com
+Password@123#
+
+cluster manager
+olumidebalogun851+3@gmail.com
+Password7637#

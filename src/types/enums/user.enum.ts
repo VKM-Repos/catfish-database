@@ -3,4 +3,6 @@ export enum UserRole {
   ADMIN = 'ADMIN',
   CLUSTER_MANAGER = 'CLUSTER_MANAGER',
   FARMER = 'FARMER',
+  FARMER_STAFF = 'FARMER_STAFF',
+  // Add more roles as needed
 }

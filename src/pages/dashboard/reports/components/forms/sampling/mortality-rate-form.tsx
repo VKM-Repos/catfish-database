@@ -3,11 +3,11 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
-import type { samplingSchema } from 'src/schemas'
+import type { mortalitySchema } from 'src/schemas'
 import * as SolarIconSet from 'solar-icon-set'
 import type { z } from 'zod'
 
-type SamplingFormValues = z.infer<typeof samplingSchema>
+type SamplingFormValues = z.infer<typeof mortalitySchema>
 
 export default function MortalityRateForm({ form }: { form: UseFormReturn<SamplingFormValues> }) {
   const handleIncrement = (fieldName: keyof SamplingFormValues) => {
@@ -31,12 +31,12 @@ export default function MortalityRateForm({ form }: { form: UseFormReturn<Sampli
       <div className="flex w-full items-center gap-5">
         <div className="flex w-full flex-col gap-2">
           <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
-            No of fish mortality recorded
+            No of fish mortality recorded <span className="font-bold text-red-500">*</span>
             <SolarIconSet.QuestionCircle size={16} />
           </Text>
           <FormField
             control={form.control}
-            name="numberOfFishMortalityRecorded"
+            name="mortalityNumber"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -54,12 +54,12 @@ export default function MortalityRateForm({ form }: { form: UseFormReturn<Sampli
                     </div>
                     <div className="flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 text-xs">
                       <SolarIconSet.AltArrowUp
-                        onClick={() => handleIncrement('numberOfFishMortalityRecorded')}
+                        onClick={() => handleIncrement('mortalityNumber')}
                         className="cursor-pointer hover:text-primary-500"
                       />
                       <div className="w-full border border-l-0 border-r-0 border-t-0 border-neutral-200" />
                       <SolarIconSet.AltArrowDown
-                        onClick={() => handleDecrement('numberOfFishMortalityRecorded')}
+                        onClick={() => handleDecrement('mortalityNumber')}
                         className="cursor-pointer hover:text-primary-500"
                       />
                     </div>

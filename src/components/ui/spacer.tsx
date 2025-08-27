@@ -3,6 +3,6 @@ type SpacerProps = {
   className?: string
 }
 
-export const Spacer = ({ size = 'h-4', className = '' }: SpacerProps) => {
+export const Spacer = ({ size = 'lg:h-4 h-[60px]', className = '' }: SpacerProps) => {
   return <div className={`${size} ${className}`} />
 }

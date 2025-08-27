@@ -1,8 +1,8 @@
+import { useMemo } from 'react'
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
-// import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { Inline } from 'src/components/ui/inline'
 import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
@@ -14,52 +14,87 @@ import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { z } from 'zod'
 import { Section } from 'src/components/ui/section'
 import PondRevenue from './pond-revenue'
+import { fishBatchResponseSchema } from 'src/schemas'
+import { Container } from 'src/components/ui/container'
 
-// --- Mock data for maintenance expenses ---
-const mockMaintenanceExpenses = [
-  {
-    id: '1',
-    updatedAt: '2025-05-30T10:00:00Z',
-    type: 'Cleaning',
-    description: 'General pond cleaning and debris removal',
-    cost: 2000,
-    pond: 'Pond A',
-  },
-  {
-    id: '2',
-    updatedAt: '2025-05-29T15:30:00Z',
-    type: 'Repairs',
-    description: 'Fixed broken inlet pipe',
-    cost: 5500,
-    pond: 'Pond B',
-  },
-  {
-    id: '3',
-    updatedAt: '2025-05-28T09:15:00Z',
-    type: 'Disinfection',
-    description: 'Applied disinfectant to all surfaces',
-    cost: 3200,
-    pond: 'Pond C',
-  },
-  {
-    id: '4',
-    updatedAt: '2025-05-27T12:45:00Z',
-    type: 'Others',
-    description: 'Miscellaneous maintenance',
-    cost: 1000,
-    pond: 'Pond D',
-  },
-]
+type SalesRecordRaw = {
+  id: string
+  fishBatchId: string
+  quantityInKg?: number
+  costPerKg?: number
+  totalAmount?: number
+  [key: string]: any
+}
+
+type EnrichedSalesRecord = SalesRecordRaw & {
+  pond?: any
+}
+
+const fishBatchesResponseSchema = z.object({
+  content: z.array(fishBatchResponseSchema),
+  page: z.number(),
+  size: z.number(),
+  totalElements: z.number(),
+  totalPages: z.number(),
+})
+
+const useGetSalesRecords = createGetQueryHook({
+  endpoint: `/harvests/by-farmer/me?direction=DESC`,
+  responseSchema: z.any(),
+  queryKey: ['sales-records'],
+})
+
+const useGetAllFishBatches = createGetQueryHook({
+  endpoint: `/fish-batches`,
+  responseSchema: fishBatchesResponseSchema,
+  queryKey: ['fish-batches-all'],
+})
+
+const useGetVolumeOfSales = createGetQueryHook({
+  endpoint: 'dashboards/farmer/volume-of-sales?interval=ALL',
+  responseSchema: z.any(),
+  queryKey: ['volume-sales'],
+})
 
 export default function SalesRecords() {
   const navigate = useNavigate()
-  const useGetFeedInventories = createGetQueryHook({
-    endpoint: '/feed-inventories',
-    responseSchema: z.any(),
-    queryKey: ['feed-inventories'],
+  const { data: salesRecordsRaw, isLoading: isLoadingSales } = useGetSalesRecords()
+  const { data: volumeOfSales } = useGetVolumeOfSales()
+  const raw: SalesRecordRaw[] = salesRecordsRaw?.content ?? []
+
+  const { data: fishBatchesData, isLoading: isLoadingFishBatches } = useGetAllFishBatches({
+    query: {
+      size: 1000,
+      direction: 'DESC',
+      page: 0,
+    },
   })
 
-  const { data: feedInventories, isLoading } = useGetFeedInventories()
+  const fishBatchMap = useMemo(() => {
+    if (!fishBatchesData?.content) return {}
+
+    return fishBatchesData?.content.reduce((acc, batch) => {
+      if (batch?.id) {
+        acc[batch.id] = batch
+      }
+      return acc
+    }, {} as Record<string, (typeof fishBatchesData.content)[number]>)
+  }, [fishBatchesData])
+
+  const enrichedRecords: EnrichedSalesRecord[] = useMemo(() => {
+    return raw.map((record) => {
+      const fishBatchData = fishBatchMap[record.fishBatchId]
+
+      return {
+        ...record,
+        pond: fishBatchData?.pond ?? null,
+      }
+    })
+  }, [raw, fishBatchMap])
+
+  console.log('Enriched Sales Records:', volumeOfSales)
+
+  const isLoading = isLoadingSales || isLoadingFishBatches
 
   const title = 'Sales records'
   const actions = (
@@ -76,9 +111,9 @@ export default function SalesRecords() {
   )
 
   return (
-    <>
+    <Container>
       <FlexBox direction="col" gap="gap-4" className="w-full">
-        <SalesStatistics />
+        <SalesStatistics data={Array.isArray(volumeOfSales) ? volumeOfSales[0] : 0} />
         <FlexBox direction="row" align="center" justify="between" className="w-full">
           <Heading level={6}>{title}</Heading>
           <div>{actions}</div>
@@ -86,14 +121,14 @@ export default function SalesRecords() {
         <DataTable
           search={false}
           columns={columns}
-          data={mockMaintenanceExpenses}
+          data={enrichedRecords}
           isLoading={isLoading}
-          emptyStateMessage="No feed inventory found"
+          emptyStateMessage="No sales record found"
         />
       </FlexBox>
       <Section className="mt-6 flex items-start justify-between gap-10">
         <PondRevenue />
       </Section>
-    </>
+    </Container>
   )
 }

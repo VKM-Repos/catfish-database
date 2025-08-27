@@ -54,10 +54,13 @@ function ActionCard({ title, description, icon, buttonText, buttonAction, isFirs
   )
 }
 
-// Component for unregistered pond state
 function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }: UnregisteredCardsProps) {
   const [showPondError, setShowPondError] = useState(false)
   const [showFeedError, setShowFeedError] = useState(false)
+
+  const showFirstOnAddPond = !hasPond
+  const showFirstOnAddFish = hasPond && !hasBatch
+  const showFirstOnAddFeed = hasPond && hasBatch && !hasFeed
 
   return (
     <>
@@ -71,7 +74,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
         }
         buttonText="Register a pond"
         buttonAction={() => navigate(paths.dashboard.ponds.create.addPond)}
-        isFirstCard={true}
+        isFirstCard={showFirstOnAddPond}
       />
 
       <ActionCard
@@ -90,7 +93,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
             setShowPondError(true)
           }
         }}
-        isFirstCard={false}
+        isFirstCard={showFirstOnAddFish}
       />
       <ActionCard
         title="Register your feed types"
@@ -104,6 +107,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
         buttonAction={() => {
           navigate(paths.dashboard.feeds.create.root)
         }}
+        isFirstCard={showFirstOnAddFeed}
       />
 
       {/* Pond error dialog */}
@@ -154,6 +158,7 @@ function UnregisteredPondBatchFeedCards({ navigate, hasPond, hasBatch, hasFeed }
 
 // Component for registered pond state
 function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) => void }) {
+  const { user } = useAuthStore()
   const [farmReportOpen, setFarmReportOpen] = useState(false)
   const [samplingReportOpen, setSamplingReportOpen] = useState(false)
   const [harvestReportOpen, setHarvestReportOpen] = useState(false)
@@ -175,35 +180,45 @@ function RegisteredPondAndBatchCards({ navigate }: { navigate: (path: string) =>
         onOpenChange={setFarmReportOpen}
       />
 
-      <ActionCard
-        title="Sampling Report"
-        description="Record important details from your sampling operation, including fish weight, mortality, total feed consumed, and current stock."
-        icon={<img src="/assets/images/sampling-report.svg" alt="Sampling Report" />}
-        buttonText="Submit Sampling Report"
-        buttonAction={() => setSamplingReportOpen(true)}
-      />
+      {user?.role === 'FARMER' && (
+        <ActionCard
+          title="Sampling Report"
+          description="Record important details from your sampling operation, including fish weight, mortality, total feed consumed, and current stock."
+          icon={<img src="/assets/images/sampling-report.svg" alt="Sampling Report" />}
+          buttonText="Submit Sampling Report"
+          buttonAction={() => setSamplingReportOpen(true)}
+          isFirstCard={true}
+        />
+      )}
 
-      <ReportModal
-        title="Sampling Report"
-        open={samplingReportOpen}
-        redirect="daily-sampling-report"
-        onOpenChange={setSamplingReportOpen}
-      />
+      {user?.role === 'FARMER' && (
+        <ReportModal
+          title="Sampling Report"
+          open={samplingReportOpen}
+          redirect="daily-sampling-report"
+          onOpenChange={setSamplingReportOpen}
+        />
+      )}
 
-      <ActionCard
-        title="Harvest Report"
-        description="Record your farm’s harvest and sales. Submit data on cost of feed, labor, maintenance, and sales revenue."
-        icon={<img src="/assets/images/harvest-report.svg" alt="Harvest Report" />}
-        buttonText="Submit Harvest Report"
-        buttonAction={() => setHarvestReportOpen(true)}
-      />
+      {user?.role === 'FARMER' && (
+        <ActionCard
+          title="Harvest Report"
+          description="Record your farm’s harvest and sales. Submit data on cost of feed, labor, maintenance, and sales revenue."
+          icon={<img src="/assets/images/harvest-report.svg" alt="Harvest Report" />}
+          buttonText="Submit Harvest Report"
+          buttonAction={() => setHarvestReportOpen(true)}
+          isFirstCard={true}
+        />
+      )}
 
-      <ReportModal
-        title="Harvest Report"
-        open={harvestReportOpen}
-        redirect="daily-harvest-report"
-        onOpenChange={setHarvestReportOpen}
-      />
+      {user?.role === 'FARMER' && (
+        <ReportModal
+          title="Harvest Report"
+          open={harvestReportOpen}
+          redirect="daily-harvest-report"
+          onOpenChange={setHarvestReportOpen}
+        />
+      )}
     </>
   )
 }
@@ -215,34 +230,58 @@ export default function GetStarted() {
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
     queryKey: ['my-ponds'],
+    options: {
+      enabled: user?.role === 'FARMER',
+    },
+  })
+
+  const useGetClusterManagerPonds = createGetQueryHook({
+    endpoint: '/ponds/clusters/me',
+    responseSchema: z.any(),
+    queryKey: ['cluster-manager-ponds'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
   })
 
   const useGetFishBatches = createGetQueryHook({
     endpoint: `/fish-batches?farmerId=${user?.id}`,
     responseSchema: z.any(),
     queryKey: ['my-batches'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   const useGetFeeds = createGetQueryHook({
     endpoint: '/feed-inventories',
     responseSchema: z.any(),
     queryKey: ['my-inventory'],
+    options: {
+      enabled: true,
+      staleTime: 0,
+    },
   })
 
   // 👇 Move useState here, before any return!
   const [showProceedError, setShowProceedError] = useState(false)
 
   const { data: ponds = [], isLoading: isLoadingPonds } = useGetPonds()
+  const { data: clusterManagerPonds = [], isLoading: isLoadingClusterManagerPonds } = useGetClusterManagerPonds()
   const { data: fishBatches = [], isLoading: isLoadingFishBatches } = useGetFishBatches()
   const { data: feeds = [], isLoading: isLoadingFeeds } = useGetFeeds()
 
-  if (isLoadingPonds || isLoadingFishBatches || isLoadingFeeds) {
+  if (user?.role === 'CLUSTER_MANAGER' && isLoadingClusterManagerPonds) {
+    return <LoadingScreen />
+  }
+  if ((user?.role === 'FARMER' && isLoadingPonds) || isLoadingFeeds || isLoadingFishBatches) {
     return <LoadingScreen />
   }
 
-  const hasPond = ponds.totalElements > 0
-  const hasBatches = fishBatches.totalElements > 0
-  const hasFeeds = feeds.totalElements > 0
+  const hasPond = ponds.totalElements > 0 || clusterManagerPonds.totalElements > 0
+  const hasBatches = fishBatches.totalElements > 0 || user?.role === 'CLUSTER_MANAGER'
+  const hasFeeds = feeds.totalElements > 0 || user?.role === 'CLUSTER_MANAGER'
   const hasAllSetup = hasPond && hasBatches && hasFeeds
   const pageTitle = hasAllSetup ? 'Welcome back to the Catfish Database 🐟' : 'Welcome to the Catfish Database 👋'
 
@@ -251,8 +290,8 @@ export default function GetStarted() {
     : 'Get Started with Your Farm Management'
 
   return (
-    <div className="container mx-auto flex max-w-7xl flex-col gap-6 px-3 py-8">
-      <div className="mt-[3rem] space-y-0 text-center">
+    <div className="container mx-auto flex max-w-7xl flex-col gap-3 px-3 py-8">
+      <div className=" space-y-0 text-center">
         <Heading level={5} className="mb-2" weight="bold">
           {pageTitle}
         </Heading>

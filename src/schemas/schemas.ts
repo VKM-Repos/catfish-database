@@ -58,6 +58,27 @@ export const userSchema = z.object({
   cluster: clusterSchema.nullable().optional(),
 })
 
+export const userRequestSchema = z.object({
+  firstName: z
+    .string()
+    .min(3, 'Field must be at least 3 characters')
+    .max(50, 'Field must not be more than 50 characters'),
+  lastName: z.string().min(3, 'Field must be at least 3 characters'),
+  email: z.string().email().max(50, 'Field must not be more than 50 characters'),
+  phone: z
+    .string()
+    .regex(/^\d+$/, {
+      message: 'Phone number must contain only digits (0-9)',
+    })
+    .min(11, 'Field must be at least 11 digits')
+    .max(11, 'Field must not be more than 11 digit'),
+  clusterId: z.string().min(1, 'Cluster ID is required'),
+  role: z.string().optional(),
+  id: z.string().optional(),
+})
+
+export const userResponseSchema = userSchema
+
 export const paginatedUserResponseSchema = z.object({
   totalPages: z.number(),
   totalElements: z.number(),
@@ -65,6 +86,40 @@ export const paginatedUserResponseSchema = z.object({
   size: z.number(),
   content: z.array(userSchema),
 })
+
+export const staffUserResponseSchema = z.object({
+  totalPages: z.number(),
+  totalElements: z.number(),
+  page: z.number(),
+  size: z.number(),
+  content: z.array(userSchema),
+})
+
+export const staffRequestSchema = z.object({
+  firstName: z
+    .string()
+    .min(3, 'Field must be at least 3 characters')
+    .max(50, 'Field must not be more than 50 characters'),
+  lastName: z.string().min(3, 'Field must be at least 3 characters'),
+  email: z.string().email().max(50, 'Field must not be more than 50 characters'),
+  phone: z
+    .string()
+    .regex(/^\d+$/, {
+      message: 'Phone number must contain only digits (0-9)',
+    })
+    .min(11, 'Field must be at least 11 digits')
+    .max(11, 'Field must not be more than 11 digit'),
+  address: z
+    .string()
+    .min(5, 'Field must be at least 5 characters')
+    .max(100, 'Field must not be more than 100 characters'),
+
+  password: z.string().optional(),
+  // role: z.string().optional(),
+  // id: z.string().optional(),
+})
+
+export const staffResponseSchema = userSchema
 
 export const clusterRequestSchema = z.object({
   name: z.string().min(3, 'Cluster name must not be less than 3 characters'),
@@ -99,7 +154,6 @@ export const clusterManagerRequestSchema = z.object({
 
 export const clusterManagerResponseSchema = userSchema
 const user = useAuthStore.getState().user
-console.log(user?.role, '<<<<<<<')
 
 export const farmerRequestSchema = z.object({
   firstName: z
@@ -160,63 +214,108 @@ export const changePasswordSchema = z.object({
   newPassword: passwordSchema,
 })
 
-export const pondSchema = z.object({
-  id: z.string().optional(),
-  status: z.string().optional(),
-  name: z.string().min(3, { message: 'Pond Name must not be less than 3 characters' }),
+// Base schema for form inputs (strings from HTML inputs)
+export const pondFormSchema = z.object({
+  name: z.string().min(1, 'Pond name is required'),
+  size: z.string().optional(), // Will be calculated from dimensions
+  waterSource: z.string().min(1, 'Please select a valid water source'),
+  pondType: z.string().min(1, 'Please select a pond type'),
   length: z
     .string()
-    .regex(/^\d+(\.\d+)?$/, 'Pond length must be a valid number')
-    .optional(),
+    .min(1, 'Length is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Length must be a positive number'),
   breadth: z
     .string()
-    .regex(/^\d+(\.\d+)?$/, 'Pond breadth must be a valid number')
-    .optional(),
-  height: z
+    .min(1, 'Breadth is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Breadth must be a positive number'),
+  depth: z
     .string()
-    .regex(/^\d+(\.\d+)?$/, 'Pond height must be a valid number')
-    .optional(),
-  size: z.string().regex(/^\d+(\.\d+)?$/, 'Pond size must be a valid number'),
-  waterSource: z.string().min(1, { message: 'Please add a water source' }),
-  pondType: z.string().min(1, { message: 'Please add pond type' }),
+    .min(1, 'Depth is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Depth must be a positive number'),
+  status: z.enum(['Active', 'Inactive']).default('Active'),
+  longitude: z
+    .string()
+    .min(1, 'Longitude is required')
+    .refine((val) => !isNaN(Number(val)), 'Longitude must be a valid number'),
+  latitude: z
+    .string()
+    .min(1, 'Latitude is required')
+    .refine((val) => !isNaN(Number(val)), 'Latitude must be a valid number'),
   clusterId: z.string().min(1, 'Cluster ID is required'),
-  latitude: z.string().regex(/^-?(90(\.0+)?|[0-8]?\d(\.\d+)?)$/, {
-    message: 'Latitude must be a valid number between -90 and 90 (e.g., -18.211',
-  }),
-  longitude: z.string().regex(/^-?(180(\.0+)?|1[0-7]\d(\.\d+)?|[0-9]?\d(\.\d+)?|[1-9]\d(\.\d+)?)$/, {
-    message: 'Longitude must be a valid number between 180 and -180(e.g., 36.8219)',
-  }),
   farmerId: z.string().optional(),
 })
 
-export const pondResponseSchema = z.object({
-  id: z.string().optional(),
-  status: z.string().optional(),
-  name: z.string(),
-  size: z.union([z.string(), z.number()]).transform((val) => String(val)),
-  latitude: z
-    .union([z.string(), z.number()])
-    .transform((val) => String(val))
-    .optional()
-    .nullable(),
-  longitude: z
-    .union([z.string(), z.number()])
-    .transform((val) => String(val))
-    .optional()
-    .nullable(),
-  waterSource: z.string(),
-  pondType: z.string(),
-  cluster: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
-  farmer: z.object({
-    id: z.string().optional(),
-    name: z.string().optional(),
-  }),
-  createdAt: z.string().nullable().optional(),
-  updatedAt: z.string().nullable().optional(),
+// Schema for API requests (numbers for backend)
+export const pondCreateSchema = z.object({
+  name: z.string().min(1, 'Pond name is required'),
+  size: z.number().positive('Size must be positive'),
+  waterSource: z.enum(['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers']),
+  pondType: z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpaulin']),
+  length: z.number().positive('Length must be positive'),
+  breadth: z.number().positive('Breadth must be positive'),
+  height: z.number().positive('Depth must be positive'),
+  status: z.enum(['Active', 'Inactive']).default('Active'),
+  longitude: z.number(),
+  latitude: z.number(),
+  clusterId: z.string().min(1, 'Cluster ID is required'),
+  farmerId: z.string().optional(),
 })
+
+export const pondEditSchema = pondCreateSchema.extend({
+  id: z.string().optional(),
+})
+
+export const waterSourceEnum = z.enum(['Treated pipe borne water', 'Streams', 'Bore holes', 'Wells', 'Rivers'])
+
+export const pondTypeEnum = z.enum(['Concrete', 'Earthen', 'Plastic', 'Tarpaulin'])
+
+// response
+export const pondResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  size: z.number(),
+  waterSource: waterSourceEnum.optional(), // ← enum, not string
+  pondType: pondTypeEnum.optional(), // ← enum, not string
+  length: z.number(),
+  breadth: z.number(),
+  height: z.number(),
+  status: z.enum(['Active', 'Inactive']),
+  longitude: z.number(),
+  latitude: z.number(),
+  cluster: z.object({ id: z.string(), name: z.string() }),
+  farmer: z.object({ id: z.string(), name: z.string() }),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
+// Helper function to transform form data to API data
+export const transformFormDataToApiData = (formData: z.infer<typeof pondFormSchema>) => {
+  return {
+    ...formData,
+    size: Number(formData.length) * Number(formData.breadth) * Number(formData.depth),
+    length: Number(formData.length),
+    breadth: Number(formData.breadth),
+    height: Number(formData.depth),
+    longitude: Number(formData.longitude),
+    latitude: Number(formData.latitude),
+  }
+}
+
+// Helper function to transform API data to form data
+export const transformApiDataToFormData = (apiData: Partial<z.infer<typeof pondCreateSchema>>) => {
+  return {
+    ...apiData,
+    size: apiData.size?.toString() || '',
+    length: apiData.length?.toString() || '',
+    breadth: apiData.breadth?.toString() || '',
+    height: apiData.height?.toString() || '',
+    longitude: apiData.longitude?.toString() || '',
+    latitude: apiData.latitude?.toString() || '',
+  }
+}
+
+// Export the form schema as pondSchema for backward compatibility
+export const pondSchema = pondFormSchema
 
 export const paginatedPondResponseSchema = z.object({
   totalPages: z.number(),
@@ -229,20 +328,11 @@ export const paginatedPondResponseSchema = z.object({
 export const fishDetailsSchema = z.object({
   pondId: z.string().min(1, { message: 'Please add a pond name' }),
   batchName: z.string().min(1, { message: 'Please add a batch name' }).optional(),
-  quantity: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
-    message: 'Fish quantity must be a valid number',
-  }),
   supplier: z.string().min(1, { message: 'Please add a supplier name' }).optional(),
-  singleCost: z
-    .string()
-    .regex(/^[-+]?\d+(\.\d+)?$/, {
-      message: 'Fish cost must be a valid number',
-    })
-    .optional(),
-  costOfSupply: z.string().regex(/^[-+]?\d+(\.\d+)?$/, {
-    message: 'Fish cost must be a valid number',
-  }),
-  fishDescription: z.string().min(3, { message: 'Description must not be less than 3 characters' }),
+  quantity: z.coerce.number().positive('Quantity must be greater than 0'),
+  singleCost: z.coerce.number().positive('Cost must be greater than 0'),
+  costOfSupply: z.coerce.number().positive(),
+  initialWeight: z.coerce.number().positive('Initial weight must be greater than 0'),
   fishSize: z.string().min(1, { message: 'Please input size of fish' }),
 })
 
@@ -255,14 +345,46 @@ export const fishDetailsResponseSchema = z.object({
   updatedAt: z.string(),
 })
 
-export const feedTypeSchema = z.object({
+export const transformFishFormDataToApi = (values: any, ponds: any[]) => {
+  const pond = ponds.find((p) => p.name === values.pondId)
+  return {
+    ...values,
+    pondId: pond?.id ?? '',
+    quantity: Number(values.quantity),
+    singleCost: Number(values.singleCost),
+    costOfSupply: Number(values.costOfSupply),
+  }
+}
+
+export const transformFishApiToForm = (api: any) => ({
+  ...api,
+  quantity: api.quantity?.toString() ?? '',
+  singleCost: api.singleCost?.toString() ?? '',
+  costOfSupply: api.costOfSupply?.toString() ?? '',
+})
+
+// When creating — all fields required
+export const feedTypeCreateSchema = z.object({
   id: z.string().optional(),
   type: z.string().min(1, { message: 'Please select the brand of feed' }),
   sizeInMm: z.number({ required_error: 'Please select a pellet size' }),
   quantityInKg: z.number({ required_error: 'Please enter the quantity of feed' }),
+  totalCost: z.string().min(1, { message: 'Please enter total cost' }),
+  costPerKg: z.number({ required_error: 'Feed cost per kg must be a number' }),
+  // date: z.string().min(1, { message: 'Please select a date' }),
+  time: z.string().min(1, { message: 'Please select a time' }).optional(),
+})
+
+// When editing — only quantity and cost are required
+export const feedTypeEditSchema = z.object({
+  id: z.string().optional(),
+  type: z.string().optional(),
+  sizeInMm: z.number().optional(),
+  quantityInKg: z.number({ required_error: 'Please enter the quantity of feed' }),
   totalCost: z.string().optional(),
   costPerKg: z.number({ required_error: 'Feed cost per kg must be a number' }),
-  date: z.string().optional(),
+  // date: z.string().optional(),
+  time: z.string().min(1, { message: 'Please select a time' }).optional(),
 })
 
 export const feedTypeResponseSchema = z.object({
@@ -382,39 +504,37 @@ export const paginatedSamplingResponseSchema = z.object({
 })
 
 export const dailyFeedingSchema = z.object({
-  feedType: z.string().optional(),
+  feedType: z.string().min(1, { message: 'Please select a feed type' }),
   pelletSize: z.string().optional(),
-  feedQuantity: z.any().optional(),
-  // .regex(/^[0-9]+$/, { message: 'Only numbers are allowed' })
-  // .transform(Number),
-  feedTime: z.string().optional(),
-  dissolvedOxygen: z.string().optional(),
-  phLevel: z.string().optional(),
-  temperature: z.string().optional(),
-  ammonia: z.string().optional(),
-  nitrite: z.string().optional(),
-  nitrate: z.string().optional(),
-  alkalinity: z.string().optional(),
-  hardness: z.string().optional(),
-  waterQualityObservation: z.string().optional(),
-  // .min(10, {
-  //   message: 'Water quality observation must be at least 10 characters.',
-  // }),
+  feedQuantity: z.string().min(1, { message: 'Please enter the quantity of feed' }),
+})
+export const updateDailyFeedingSchema = z.object({
+  feedType: z.string().min(1, { message: 'Please select a feed type' }),
+  feedQuantity: z.string().min(1, { message: 'Please enter the quantity of feed' }),
 })
 
-export const dailyWaterQualitySchema = z.object({
-  recordWaterQuality: z.boolean().optional(),
-  dissolvedOxygen: z.string().optional(),
-  phLevel: z.string().optional(),
-  temperature: z.string().optional(),
-  ammonia: z.string().optional(),
-  nitrite: z.string().optional(),
-  nitrate: z.string().optional(),
-  alkalinity: z.string().optional(),
-  hardness: z.string().optional(),
-  observation: z.string().optional(),
+export const waterQualitySchema = z.object({
+  dissolvedOxygen: z.any().optional(),
+  phLevel: z.any().optional(),
+  temperature: z.any().optional(),
+  ammonia: z.any().optional(),
+  nitrate: z.any().optional(),
+  alkalinity: z.any().optional(),
+  hardness: z.any().optional(),
+  observation: z.string().min(1, 'Water Quality Observations is required'),
+})
+export const fishBehaviorSchema = z.object({
+  behaviorType: z.string().min(1, 'Please select fish behavior'),
+  observation: z.string().min(1, 'Observation is required'),
 })
 
+export const fishDiseaseSchema = z.object({
+  diseaseType: z.string().optional(),
+  diseaseObservation: z.string().min(1, 'Observation is required'),
+})
+export const mortalitySchema = z.object({
+  mortalityNumber: z.string().min(1, 'Mortality number is required'),
+})
 export const maintenanceSchema = z.object({
   maintenance: z.string().min(1, { message: 'Please Select a maintenance' }),
   cost: z
@@ -425,16 +545,10 @@ export const maintenanceSchema = z.object({
 })
 
 export const samplingSchema = z.object({
-  numberOfFishSampled: z.any(),
-  weightOfFishSampled: z.any().optional(),
-  avgWeightFishSampled: z.any().optional(),
-  totalWeightGain: z.any(),
-  totalFeedConsumed: z.any(),
-  numberOfFishMortalityRecorded: z.any(),
-  disease: z.string().optional(),
-  diseaseObservation: z.string().optional(),
-  behavior: z.string().optional(),
-  observation: z.string().optional(),
+  numberOfFishSampled: z.string().min(1, 'Number of fish sampled is required'),
+  weightOfFishSampled: z.string().min(1, 'Weight of fish sampled is required'),
+  avgWeightFishSampled: z.string().min(1, 'Observation is required'),
+  totalWeightGain: z.string().min(1, 'Observation is required'),
 })
 
 export const sortingSchema = z.object({
@@ -444,6 +558,7 @@ export const sortingSchema = z.object({
     z.object({
       pondId: z.string().optional(),
       quantity: z.any().optional(),
+      initialWeight: z.any().optional(),
     }),
   ),
   quantity: z.any(),
@@ -483,7 +598,7 @@ export const sortingSchema = z.object({
 // })
 
 export const harvestSchema = z.object({
-  numberOfFishHarvested: z.string(),
-  totalWeightHarvested: z.string(),
-  costPerKg: z.string(),
+  numberOfFishHarvested: z.string().optional(),
+  totalWeightHarvested: z.string().min(1, 'Weight of fish harvested is required'),
+  costPerKg: z.string().min(1, 'Cost per kg is required'),
 })

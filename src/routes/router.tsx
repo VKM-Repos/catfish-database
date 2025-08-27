@@ -349,7 +349,7 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            path: 'create/feed-stock',
+            path: paths.dashboard.inventory.createFeedStock(':from'),
             element: (
               <RoleGuard allowedRoles={[UserRole.FARMER]}>
                 {LazyPage(() => import('src/pages/dashboard/inventory/create/feed-stock'))}
@@ -375,20 +375,64 @@ export const router = createBrowserRouter([
         ],
       },
 
-      // ---------------- Admins Section ----------------
+      // ---------------- Staff Section ----------------
       {
-        path: paths.dashboard.admins.root,
+        path: paths.dashboard.staff.root,
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>{LazyPage(() => import('src/pages/dashboard/staff'))}</RoleGuard>
+        ),
+        children: [
+          {
+            path: 'create',
+            element: (
+              <RoleGuard allowedRoles={[UserRole.FARMER]}>
+                {LazyPage(() => import('src/pages/dashboard/staff/create'))}
+              </RoleGuard>
+            ),
+          },
+        ],
+      },
+      {
+        path: `${paths.dashboard.staff.root}/:id`, // /dashboard/staff/:id
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/staff/_id'))}
+          </RoleGuard>
+        ),
+      },
+
+      // {
+      //   path: paths.dashboard.staff.view, // This handles the view route
+      //   element: (
+      //     <RoleGuard allowedRoles={[UserRole.FARMER]}>
+      //       {LazyPage(() => import('src/pages/dashboard/staff/_id'))}
+      //     </RoleGuard>
+      //   ),
+      // },
+
+      {
+        path: `${paths.dashboard.staff.root}:id/edit`, // This handles the edit route
+        element: (
+          <RoleGuard allowedRoles={[UserRole.FARMER]}>
+            {LazyPage(() => import('src/pages/dashboard/staff/_id/edit'))}
+          </RoleGuard>
+        ),
+      },
+
+      // ---------------- Users Section ----------------
+      {
+        path: paths.dashboard.users.root,
         element: (
           <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-            {LazyPage(() => import('src/pages/dashboard/admins'))}
+            {LazyPage(() => import('src/pages/dashboard/users'))}
           </RoleGuard>
         ),
         children: [
           {
             path: 'create',
             element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-                {LazyPage(() => import('src/pages/dashboard/admins/create'))}
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                {LazyPage(() => import('src/pages/dashboard/users/create'))}
               </RoleGuard>
             ),
           },
@@ -398,16 +442,16 @@ export const router = createBrowserRouter([
               {
                 index: true,
                 element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-                    {LazyPage(() => import('src/pages/dashboard/admins/_id'))}
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/users/_id'))}
                   </RoleGuard>
                 ),
               },
               {
                 path: 'edit',
                 element: (
-                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
-                    {LazyPage(() => import('src/pages/dashboard/admins/_id/edit'))}
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/users/_id/edit'))}
                   </RoleGuard>
                 ),
               },
@@ -511,14 +555,88 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          // Roles and Permissions
+          {
+            path: paths.dashboard.system.rolesPermission.root,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                {LazyPage(() => import('src/pages/dashboard/system/roles-permissions'))}
+              </RoleGuard>
+            ),
+            children: [
+              {
+                path: 'create',
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/system/roles-permissions/create'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: ':id',
+                children: [
+                  {
+                    path: 'edit',
+                    element: (
+                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                        {LazyPage(() => import('src/pages/dashboard/system/roles-permissions/_id'))}
+                      </RoleGuard>
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
+          // Configuration
+          {
+            path: paths.dashboard.system.configuration.root,
+            element: (
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                {LazyPage(() => import('src/pages/dashboard/system/configuration'))}
+              </RoleGuard>
+            ),
+            children: [
+              {
+                path: ':id',
+                children: [
+                  {
+                    path: 'edit',
+                    element: (
+                      <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+                        {LazyPage(() => import('src/pages/dashboard/system/configuration/_id'))}
+                      </RoleGuard>
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
           // Farm rules
           {
             path: paths.dashboard.system.farmRules.root,
             element: (
-              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN]}>
+              <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
                 {LazyPage(() => import('src/pages/dashboard/system/farm-rules'))}
               </RoleGuard>
             ),
+            children: [
+              {
+                path: 'create/:navOpt',
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/system/farm-rules/create'))}
+                  </RoleGuard>
+                ),
+              },
+              {
+                path: ':id/edit',
+                element: (
+                  <RoleGuard allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
+                    {LazyPage(() => import('src/pages/dashboard/system/farm-rules/_id'))}
+                  </RoleGuard>
+                ),
+              },
+            ],
           },
         ],
       },

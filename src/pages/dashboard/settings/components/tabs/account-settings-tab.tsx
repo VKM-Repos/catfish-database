@@ -40,13 +40,23 @@ export default function AccountTab() {
         <Text className="text-xl font-semibold text-neutral-700">Profile</Text>
         <ProfileDialog current_user={user} />
       </FlexBox>
-      <Grid cols={3} gap="gap-6" className="w-full !grid-cols-3">
+      <Grid
+        style={{ wordBreak: 'break-word' }}
+        cols={3}
+        gap="gap-6"
+        className="w-full grid-cols-2 break-words lg:!grid-cols-3"
+      >
         {profile.map((item) => (
-          <FlexBox key={item.label} gap="gap-2" direction="col">
+          <FlexBox key={item.label} gap="gap-2" direction="col" className="w-full">
             <Text variant="body" color="text-neutral-500" weight="semibold">
               {item.label}
             </Text>
-            <Text variant="body" color="text-neutral-500" weight="light">
+            <Text
+              variant="body"
+              color="text-neutral-500"
+              weight="light"
+              className="w-full break-words break-all text-sm lg:text-base"
+            >
               {item.value}
             </Text>
           </FlexBox>
@@ -54,7 +64,7 @@ export default function AccountTab() {
       </Grid>
       <div className="w-full py-4">
         <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-          <Text className="text-xl font-semibold text-neutral-700">Password Authentication</Text>
+          <Text className="text-sm font-semibold text-neutral-700 lg:text-xl">Password Authentication</Text>
           <PasswordDialog />
         </FlexBox>
       </div>

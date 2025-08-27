@@ -10,10 +10,11 @@ import * as SolarIconSet from 'solar-icon-set'
 import { useState } from 'react'
 import { Heading } from 'src/components/ui/heading'
 import { ReportModal } from 'src/pages/dashboard/home/get-started/report-modal'
+import { useAuthStore } from 'src/store/auth.store'
 
 export default function SamplingReportsTable() {
   const [farmReportOpen, setFarmReportOpen] = useState(false)
-
+  const user = useAuthStore((state) => state.user)
   const useGetSamplingReports = createGetQueryHook({
     endpoint: '/samplings/me',
     responseSchema: z.any(),
@@ -24,7 +25,7 @@ export default function SamplingReportsTable() {
     setFarmReportOpen(true)
   }
   const title = 'Sampling reports'
-  const actions = samplingReports && samplingReports?.content.length > 0 && (
+  const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openModal}>
         <SolarIconSet.AddCircle size={20} />
@@ -32,12 +33,13 @@ export default function SamplingReportsTable() {
       </Button>
     </Inline>
   )
+
   return (
     <>
       <FlexBox direction="col" gap="gap-6" className="mb-10 w-full">
         <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
           <Heading level={6}>{title}</Heading>
-          {actions && <div>{actions}</div>}
+          {actions && user?.role === 'FARMER' && <div>{actions}</div>}
         </FlexBox>
         <DataTable
           search={false}
@@ -51,6 +53,7 @@ export default function SamplingReportsTable() {
         title="Sampling Report"
         open={farmReportOpen}
         redirect="daily-sampling-report"
+        from="sampling-report-list"
         onOpenChange={setFarmReportOpen}
       />
     </>

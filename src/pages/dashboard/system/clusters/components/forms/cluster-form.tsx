@@ -139,7 +139,7 @@ export function ClusterForm({ mode, initialValues, onSuccess, onClose }: Cluster
                     <SelectTrigger className="font-light">
                       <SelectValue placeholder="State" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[2000]">
                       {isLoadingStates ? (
                         <SelectItem value="loading" disabled>
                           <Text>Loading states...</Text>

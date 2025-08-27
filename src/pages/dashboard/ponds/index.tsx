@@ -9,14 +9,6 @@ import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { paths } from 'src/routes/paths'
 import { PondsTable } from './components/ponds-table'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paginatedPondResponseSchema } from 'src/schemas'
-
-const useGetPonds = createGetQueryHook({
-  endpoint: '/ponds/farmers/me',
-  responseSchema: paginatedPondResponseSchema,
-  queryKey: ['my-ponds'],
-})
 
 export default function PondsPage() {
   const title = 'Ponds'
@@ -26,9 +18,7 @@ export default function PondsPage() {
     navigate(paths.dashboard.ponds.create.addPond)
   }
 
-  const { data: ponds } = useGetPonds()
-
-  const actions = ponds && ponds?.content.length > 0 && (
+  const actions = (
     <Inline>
       <Button variant="primary" className="flex items-center gap-2" onClick={openCreateModal}>
         <SolarIconSet.AddCircle size={20} />
@@ -40,7 +30,7 @@ export default function PondsPage() {
   return (
     <div className="relative pb-[5rem]">
       <PageTransition>
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <PageHeader title={title} actions={actions} />
           <Spacer />
           <PondsTable />

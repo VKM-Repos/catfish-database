@@ -49,6 +49,17 @@ export const paths = {
     privacyPolicy: '/dashboard/privacy-policy',
     newPassword: '/dashboard/new-password',
 
+    // -------- User Section --------
+    /**
+     * User management routes.
+     */
+    users: {
+      root: '/dashboard/users',
+      view: (id: string) => `/dashboard/users/${id}`,
+      create: '/dashboard/users/create',
+      edit: (id: string) => `/dashboard/users/${id}/edit`,
+    },
+
     // -------- Farmers Section --------
     /**
      * Farmer management routes.
@@ -126,7 +137,7 @@ export const paths = {
      */
     inventory: {
       root: '/dashboard/inventory',
-      createFeedStock: () => `/dashboard/inventory/create/feed-stock`,
+      createFeedStock: (from: string) => `/dashboard/inventory/create/feed-stock/${from}`,
       createMaintenanceRecord: () => `/dashboard/inventory/create/maintenance-record`,
       createSalesRecord: () => `/dashboard/inventory/create/sales-record`,
 
@@ -138,6 +149,16 @@ export const paths = {
       editMaintenanceRecord: (id: string) => `/dashboard/inventory/${id}/edit/maintenance-record`,
     },
 
+    // -------- Staff management Section --------
+    /**
+     * Farmer Staffs.
+     */
+    staff: {
+      root: '/dashboard/staff',
+      view: (id: string) => `/dashboard/staff/${id}`,
+      create: '/dashboard/staff/create',
+      id: (id: string) => `/dashboard/staff/${id}/edit`,
+    },
     // -------- System Section --------
     /**
      * System management routes: permissions, audit log, clusters.
@@ -161,10 +182,19 @@ export const paths = {
         id: (id: string) => `/dashboard/system/clusters/${id}`,
         edit: (id: string) => `/dashboard/system/clusters/${id}/edit`,
       },
+      rolesPermission: {
+        root: '/dashboard/system/roles-permissions',
+        create: '/dashboard/system/roles-permissions/create',
+        edit: (id: string) => `/dashboard/system/roles-permissions/${id}/edit`,
+      },
+      configuration: {
+        root: '/dashboard/system/configuration',
+        edit: (id: string) => `/dashboard/system/configuration/${id}/edit`,
+      },
       farmRules: {
         root: '/dashboard/system/farm-rules',
-        // create: '/dashboard/system/audit-log/create',
-        // id: (id: string) => `/dashboard/system/audit-log/${id}`,
+        create: (navOpt: string) => `/dashboard/system/farm-rules/create/${navOpt}`,
+        edit: (id: string) => `/dashboard/system/farm-rules/${id}/edit`,
       },
     },
   },

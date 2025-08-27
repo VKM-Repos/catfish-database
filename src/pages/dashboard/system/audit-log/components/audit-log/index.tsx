@@ -2,25 +2,46 @@ import { columns } from './columns'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { DataTable } from 'src/components/ui/data-table'
 import { paginatedAuditResponseSchema } from 'src/schemas/auditLogSchema'
+import React from 'react'
 
 export function AuditLogTable() {
-  const useGetAuditsLog = createGetQueryHook({
-    endpoint: '/audit-logs?direction=ASC',
-    responseSchema: paginatedAuditResponseSchema,
-    queryKey: ['audits'],
+  const [filters, setFilters] = React.useState({
+    actionType: '',
+    startDate: '',
+    endDate: '',
   })
-  const { data: audits, isLoading } = useGetAuditsLog()
+
+  const useGetAuditsLog = createGetQueryHook({
+    endpoint: '/audit-logs',
+    responseSchema: paginatedAuditResponseSchema,
+    queryKey: ['audits', { ...filters }],
+  })
+
+  const { data: audits, isLoading } = useGetAuditsLog({
+    query: {
+      direction: 'DESC',
+      // direction: 'ASC',
+      actionType: filters.actionType !== ' ' ? filters.actionType : undefined,
+      startDate: filters.startDate || undefined,
+      endDate: filters.endDate || undefined,
+    },
+  })
+
+  // Called by DataTable when Apply is clicked
+  const handleFilterApply = (appliedFilters: { actionType: string; startDate: string; endDate: string }) => {
+    setFilters(appliedFilters)
+  }
 
   console.log('audits: ', audits)
 
   return (
     <DataTable
       columns={columns}
-      data={audits?.content ?? []}
+      data={audits?.content || []}
       isLoading={isLoading}
-      // showFilter={true}
       emptyStateMessage="No audits found"
       hideClusterFilter={true}
+      onFilterApply={handleFilterApply}
     />
   )
 }

@@ -1,32 +1,33 @@
 import { DataTable } from 'src/components/ui/data-table'
 import { columns } from './columns'
 import { FlexBox } from 'src/components/ui/flexbox'
-import { Text } from 'src/components/ui/text'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { Loader } from 'src/components/ui/loader'
 import { z } from 'zod'
+import { Heading } from 'src/components/ui/heading'
+import { useParams } from 'react-router-dom'
 
 export default function SamplingHistory() {
+  const { id } = useParams<{ id: string }>()
+
   const useGetSamplings = createGetQueryHook({
-    endpoint: '/samplings',
+    endpoint: `/samplings/pond/${id}`,
     responseSchema: z.any(),
-    queryKey: ['samplings'],
+    queryKey: [`samplings-${id}`],
   })
+  console.log(id, '<<<<<')
 
   const { data: samplings, isLoading } = useGetSamplings()
 
-  if (isLoading) return <Loader type="spinner" />
-
   return (
     <FlexBox direction="col" gap="gap-6" className="w-full">
-      <FlexBox gap="gap-unset" justify="between" align="center" className="w-full">
-        <Text className="text-xl font-semibold text-neutral-700">Sampling history</Text>
+      <FlexBox direction="row" align="center" justify="between" className="w-full">
+        <Heading level={6}>Sampling history</Heading>
       </FlexBox>
       <DataTable
         search={false}
         columns={columns}
         data={samplings?.content ?? []}
-        isLoading={false}
+        isLoading={isLoading}
         emptyStateMessage="No sampling history found"
       />
     </FlexBox>

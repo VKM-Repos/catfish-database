@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { paths } from 'src/routes/paths'
 import { useState } from 'react'
@@ -11,6 +11,7 @@ export default function AddFeedStock() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const location = useLocation()
+  const { from } = useParams<{ from: string }>()
 
   const RenderSteps = () => {
     switch (step) {
@@ -19,20 +20,16 @@ export default function AddFeedStock() {
           <>
             <div className="absolute inset-x-0 top-0 w-full border-b border-b-neutral-200 py-2">
               <Heading className="text-center" level={6}>
-                {location.state ? `Add ${location.state?.item.type} feed stock` : 'Add feed stock'}
+                {location.state ? `Add ${location.state?.item.type.toLowerCase()} feed stock` : 'Add feed stock'}
               </Heading>
             </div>
-            <FeedStockForm
-              mode="create"
-              setStep={setStep}
-              onCancel={() => navigate(`${paths.dashboard.inventory.root}`)}
-            />
+            <FeedStockForm mode="create" setStep={setStep} onCancel={goBack} />
           </>
         )
       case 2:
         return (
-          <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Feeding report updated successfully!</Text>
+          <div className="my-8 flex w-fit flex-col items-center justify-center gap-4">
+            <Text className="text-lg font-semibold">Feed added to inventory!</Text>
             <Button
               variant="primary"
               onClick={() => {
@@ -51,13 +48,17 @@ export default function AddFeedStock() {
     }
   }
 
+  const goBack = () => {
+    if (from == 'overview') navigate(paths.dashboard.home.overview)
+    else if (from == 'inventory') navigate(paths.dashboard.inventory.root)
+  }
   return (
-    <Dialog open={true} onOpenChange={() => navigate(paths.dashboard.inventory.root)}>
+    <Dialog open={true} onOpenChange={goBack}>
       <DialogContent
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        className="max-h-[80vh] max-w-[750px] overflow-y-scroll p-8"
+        className="h-fit max-h-[80vh] w-fit max-w-[750px] !overflow-visible overflow-y-scroll p-8"
       >
         <RenderSteps />
       </DialogContent>

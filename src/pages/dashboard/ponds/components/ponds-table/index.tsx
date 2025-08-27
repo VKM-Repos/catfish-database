@@ -6,7 +6,6 @@ import EmptyClusterManagerImg from 'src/assets/images/empty-cluster-manager.jpg'
 import { paths } from 'src/routes'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { mergePondsWithTotalFishQuantity } from 'src/lib/utils'
-import { LoadingScreen } from 'src/components/global/loading-screen'
 import { z } from 'zod'
 
 export function PondsTable() {
@@ -19,28 +18,31 @@ export function PondsTable() {
   const useGetFishBatches = createGetQueryHook({
     endpoint: '/fish-batches',
     responseSchema: z.any(),
-    queryKey: ['fish-batches'],
+    queryKey: ['fish-batches-in-ponds'],
   })
 
   const useFetchPonds = createGetQueryHook({
     endpoint: '/ponds/farmers/me',
     responseSchema: z.any(),
-    queryKey: ['my-ponds'],
+    queryKey: ['my-ponds-in-ponds'],
   })
 
-  const { data: fishBatches, isLoading: isFishBatchesLoading } = useGetFishBatches()
-  const { data: ponds, isLoading: isPondsLoading } = useFetchPonds()
-
-  if (isPondsLoading || isFishBatchesLoading) return <LoadingScreen />
+  const { data: fishBatches, isLoading: isFishBatchesLoading } = useGetFishBatches({
+    query: { size: 1000, sortBy: 'DESC' },
+  })
+  const { data: ponds, isLoading: isPondsLoading } = useFetchPonds({
+    query: { size: 1000, sortBy: 'DESC' },
+  })
 
   const totalPonds = ponds && fishBatches ? mergePondsWithTotalFishQuantity(ponds, fishBatches) : 0
+  const isLoading = isPondsLoading || isFishBatchesLoading
 
   return (
     <>
-      {totalPonds && totalPonds.length > 0 ? (
-        <DataTable columns={columns} data={totalPonds ?? []} emptyStateMessage="No ponds found" />
-      ) : (
+      {!isLoading && totalPonds <= 0 ? (
         <EmptyTableState image={EmptyClusterManagerImg} name="pond" text="a pond" buttonFunc={openCreateModal} />
+      ) : (
+        <DataTable columns={columns} data={totalPonds ?? []} isLoading={isLoading} emptyStateMessage="No ponds found" />
       )}
     </>
   )

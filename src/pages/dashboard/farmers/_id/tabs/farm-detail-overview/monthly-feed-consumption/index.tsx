@@ -1,7 +1,13 @@
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts'
+import { useState } from 'react'
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { ChartHeader } from 'src/components/global/chart-header'
 import { Card } from 'src/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
+import { Interval, IntervalFilter } from 'src/components/ui/interval-filter'
+import { DateRange } from 'src/components/ui/mega-datepicker'
+import { Text } from 'src/components/ui/text'
+import { z } from 'zod'
 
 const monthlyFeedConfig = {
   monthlyFeed: {
@@ -10,36 +16,78 @@ const monthlyFeedConfig = {
   },
 }
 
-export default function MonthlyFeedConsumption() {
+interface MonthlyFeedConsumptionProps {
+  dateRange?: DateRange
+  farmerId?: string
+}
+
+const useFeedConsumptionTrend = createGetQueryHook({
+  endpoint: '/dashboards/cluster/feed-consumption-trend',
+  responseSchema: z.any(),
+  queryKey: ['feed-consumption-trend'],
+})
+
+export default function MonthlyFeedConsumption({ dateRange, farmerId }: MonthlyFeedConsumptionProps) {
+  const [interval, setInterval] = useState<Interval>('MONTHLY')
+
+  const { data: feedData, isLoading } = useFeedConsumptionTrend({
+    query: {
+      interval,
+      farmerId,
+      startDate: dateRange?.from?.toISOString().split('T')[0],
+      endDate: dateRange?.to?.toISOString().split('T')[0],
+    },
+  })
+
+  const restructuredData = feedData?.map((item: any) => item.dataPoints[0])
+
+  const hasNoData = (feedData?.length ?? 0) === 0
+
   return (
     <Card className="h-[35rem] w-full rounded-[.875rem] border border-neutral-200 p-4">
-      <ChartHeader title={'Monthly feed consumption (kg)'} action={null} />
+      <ChartHeader
+        title={'Monthly feed consumption (kg)'}
+        action={
+          <div className="flex gap-2">
+            <IntervalFilter value={interval} onChange={setInterval} />
+          </div>
+        }
+      />
       <ChartContainer className="h-[25rem] w-full " config={monthlyFeedConfig}>
-        <BarChart accessibilityLayer data={monthlyFeedData} height={100} barCategoryGap={20} margin={{ right: 40 }}>
-          <CartesianGrid horizontal={false} vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <YAxis tick={false} tickLine={false} axisLine={false} />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="dot" hideLabel={false} className="!min-w-[10rem] bg-white !p-2" />}
-          />
-          <Bar dataKey="monthlyFeed" fill="#651391" radius={5}>
-            <LabelList
-              dataKey="monthlyFeed"
-              position="insideTop"
-              offset={12}
-              className="fill-white"
-              fontSize={14}
-              formatter={(monthlyFeed: string) => `${monthlyFeed}%`}
+        {isLoading ? (
+          <div className="flex h-full items-center justify-center">
+            <Text className="text-sm text-neutral-400">Loading chart...</Text>
+          </div>
+        ) : hasNoData ? (
+          <div className="flex h-full items-center justify-center">
+            <Text className="text-sm text-neutral-500">No data available for this filter</Text>
+          </div>
+        ) : (
+          <BarChart accessibilityLayer data={restructuredData} height={100} barCategoryGap={20} margin={{ right: 40 }}>
+            <CartesianGrid horizontal={false} vertical={false} />
+            <XAxis
+              dataKey="intervalLabel"
+              tick={{
+                fontSize: Math.max(6, 10 - restructuredData?.length * 0.2), // Adjust these values as needed
+              }}
+              angle={restructuredData?.length > 6 ? -45 : 0}
+              tickLine={false}
+              tickMargin={20} // Increased margin for angled text
+              interval={0} // Critical - forces all labels to show
+              height={60} // Give more vertical space for labels
+              axisLine={false}
+              // tickFormatter={(value) => value.slice(0, 3)}
             />
-          </Bar>
-        </BarChart>
+            <YAxis tick={false} tickLine={false} axisLine={false} />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent indicator="dot" hideLabel={false} className="!min-w-[10rem] bg-white !p-2" />
+              }
+            />
+            <Bar dataKey="quantityInKg" fill="#651391" radius={5}></Bar>
+          </BarChart>
+        )}
       </ChartContainer>
     </Card>
   )

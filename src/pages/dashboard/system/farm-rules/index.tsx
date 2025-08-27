@@ -11,11 +11,7 @@ export default function farmRulesPage() {
     <div className="relative">
       <PageTransition>
         <Container className="!px-12">
-          <PageHeader
-            title={title}
-            // actions={actions}
-            subtitle="Set system-wide constraints and defaults for farm operations."
-          />
+          <PageHeader title={title} subtitle="Set system-wide constraints and defaults for farm operations." />
           {/* <Spacer />
           <SolarIconSet.Database color="#1C274C" size={24} iconStyle="Outline" /> */}
           <RulesCard />

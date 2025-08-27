@@ -91,6 +91,7 @@ module.exports = {
       fontFamily: {
         inter: ['Inter', 'serif'],
         clash: ['"Clash Display"', 'sans-serif'],
+        bricolage: ['Bricolage Grotesque', 'sans-serif'],
       },
       backgroundImage: {
         waves: "url('/src/assets/images/waves.png')",
@@ -111,8 +112,8 @@ module.exports = {
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        'accordion-down': 'accordion-down 0.7s ease-out',
+        'accordion-up': 'accordion-up 0.7s ease-out',
       },
     },
   },

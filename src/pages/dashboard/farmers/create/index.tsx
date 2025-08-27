@@ -5,7 +5,7 @@ import { Text } from 'src/components/ui/text'
 import { Button } from 'src/components/ui/button'
 import { useState } from 'react'
 import { Heading } from 'src/components/ui/heading'
-import { FarmersForm } from '../components/forms/farmers-form'
+import { FarmersForm } from './forms/farmers-form'
 
 export default function CreateFarmersPage() {
   const navigate = useNavigate()
@@ -21,15 +21,19 @@ export default function CreateFarmersPage() {
 
   return (
     <Dialog open onOpenChange={() => navigate(paths.dashboard.farmers.root)}>
-      <DialogContent className="max-w-[478px] overflow-hidden p-8">
-        <div className="py-[4rem] pb-[6rem]">
+      <DialogContent
+        className={`${step === 2 && 'h-[186px] w-[369px]'}  max-w-[350px] overflow-hidden p-4 lg:max-w-[578px] ${
+          step === 1 ? 'h-[500px] overflow-y-scroll lg:h-[600px] lg:overflow-hidden' : 'overflow-hidden'
+        }`}
+      >
+        <div className={`pt-${step === 1 ? '[2rem]' : '0'} pb-${step === 1 ? '1' : '0'} ${step === 2 && 'h-full'}`}>
           {(() => {
             switch (step) {
               case 1:
                 return <FarmersForm mode="create" onSuccess={handleSuccess} onClose={handleClose} />
               case 2:
                 return (
-                  <div className="flex h-[3rem] w-full flex-col items-center justify-center space-y-4">
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-y-4 ">
                     <Heading level={6}>Completed!</Heading>
                     <Text weight="light" size="base">
                       Farmer created successfully!

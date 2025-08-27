@@ -56,6 +56,18 @@ export function removeSymbols(str: keyof typeof UserRole) {
   return newStr
 }
 
+/**
+ * Converts a string like "HYBRID_CATFISH_FEED" to "Hybrid Catfish Feed"
+ */
+export function formatLabel(str: string) {
+  if (!str) return ''
+  return str
+    .toLowerCase()
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
 export function formatLatLng(lat: string, lng: string) {
   const latDirection = parseFloat(lat) >= 0 ? 'N' : 'S'
   const lngDirection = parseFloat(lng) >= 0 ? 'E' : 'W'
@@ -69,13 +81,17 @@ export function formatLatLng(lat: string, lng: string) {
 export function mergePondsWithTotalFishQuantity(ponds: any, batches: any) {
   return ponds?.content.map((pond: any) => {
     const relatedBatches = batches?.content.filter((batch: any) => batch.pond.id === pond.id)
-    const latestQuantity = relatedBatches.reduce((sum: any, b: any) => sum + (Number(b.latestQuantity) || 0), 0)
+    const quantity = relatedBatches.reduce((sum: any, b: any) => sum + (Number(b.latestQuantity) || 0), 0)
 
     return {
       ...pond,
-      latestQuantity,
+      quantity,
     }
   })
+}
+
+export function formatNumberWithCommas(number: number) {
+  return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export const scrollToTop = () => {
@@ -91,4 +107,43 @@ export function getInitials(str: string) {
     .split(' ')
     .map((word) => word.charAt(0))
     .join('')
+}
+
+export function formatPrice(value: number | string | undefined | null): string {
+  if (value === undefined || value === null || isNaN(Number(value))) return '-'
+
+  const number = Number(value)
+  return number
+    .toLocaleString('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })
+    .replace('NGN', '₦')
+}
+
+export function formatCurrency(value: string) {
+  if (!value) return ''
+  const num = parseFloat(value)
+  if (isNaN(num)) return ''
+  return new Intl.NumberFormat('en', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+    .format(num)
+    .replace('NGN', '')
+    .trim()
+}
+
+export function formatNumber(value: number | string | undefined): string {
+  if (value === undefined || value === null) return '0'
+  const num = typeof value === 'string' ? parseFloat(value) : value
+  if (isNaN(num)) return '0'
+  if (num >= 1_000_000_000) return (num / 1_000_000_000)?.toFixed(num % 1_000_000_000 === 0 ? 0 : 1) + 'b'
+  if (num >= 1_000_000) return (num / 1_000_000)?.toFixed(num % 1_000_000 === 0 ? 0 : 1) + 'm'
+  if (num >= 100_000) return (num / 1_000)?.toFixed(num % 1_000 === 0 ? 0 : 1) + 'k'
+  return num?.toLocaleString()
 }

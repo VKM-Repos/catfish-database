@@ -17,16 +17,17 @@ import { Input } from 'src/components/ui/input'
 import { ClientErrorType, ServerErrorType } from 'src/types'
 import { Grid } from 'src/components/ui/grid'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
 
-import { feedTypeResponseSchema, feedTypeSchema } from 'src/schemas'
+import { feedTypeResponseSchema, feedTypeCreateSchema, feedTypeEditSchema } from 'src/schemas'
 import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { scrollToTop } from 'src/lib/utils'
+import { scrollToTop, cn } from 'src/lib/utils'
 import { createPutMutationHook } from 'src/api/hooks/usePut'
 
 import DatePicker from 'src/components/ui/datepicker'
+import { AvailableFeedTypes, PelletSizes } from 'src/lib/constants'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
-type FeedingTypeData = z.infer<typeof feedTypeSchema>
+type FeedingTypeData = z.infer<typeof feedTypeCreateSchema> | z.infer<typeof feedTypeEditSchema>
 
 type FeedStockFormProps = {
   onCancel: () => void
@@ -49,45 +50,35 @@ export default function FeedStockForm({
 
   const [error, setError] = useState<ClientErrorType | null>()
   const queryClient = useQueryClient()
-  const pelletsSize = ['0.5mm', '1.0mm', '2.0mm', '3.0mm', '4.0mm', '5.0mm', '6.0mm', '7.0mm', '8.0mm']
-
-  const useGetFishBatches = createGetQueryHook({
-    endpoint: '/fish-batches',
-    responseSchema: z.any(),
-    queryKey: ['fish-batches'],
-  })
 
   const useCreateFeedStockMutation = createPostMutationHook({
     endpoint: '/feed-inventories',
-    requestSchema: feedTypeSchema,
+    requestSchema: feedTypeCreateSchema,
     responseSchema: feedTypeResponseSchema,
   })
 
   const useUpdateFeedStockMutation = createPutMutationHook({
     endpoint: `/feed-inventories/${initialValues?.id}`,
-    requestSchema: feedTypeSchema,
+    requestSchema: feedTypeEditSchema,
     responseSchema: feedTypeResponseSchema,
   })
 
-  const { data: fishBatches } = useGetFishBatches()
   const createFeedStockMutation = useCreateFeedStockMutation()
   const updateFeedStockMutation = useUpdateFeedStockMutation()
 
   const form = useForm<FeedingTypeData>({
-    resolver: zodResolver(feedTypeSchema),
-    defaultValues: {
-      type: '',
-      sizeInMm: undefined,
-      quantityInKg: undefined,
-      totalCost: '',
-      costPerKg: undefined,
-    },
+    resolver: zodResolver(initialValues ? feedTypeEditSchema : feedTypeCreateSchema),
+    defaultValues: {},
     mode: 'onChange',
   })
 
   const quantityInKg = form.watch('quantityInKg')
   const totalCost = form.watch('totalCost')
-  const cost = quantityInKg && totalCost && !isNaN(Number(totalCost)) ? Number(totalCost) / Number(quantityInKg) : 0
+
+  const cost =
+    quantityInKg && totalCost && !isNaN(Number(totalCost)) && Number(quantityInKg) !== 0
+      ? Math.round((Number(totalCost) / Number(quantityInKg)) * 10) / 10
+      : 0
 
   useEffect(() => {
     if (!isNaN(cost) && isFinite(cost)) {
@@ -95,32 +86,37 @@ export default function FeedStockForm({
     }
   }, [form.setValue, cost])
 
-  const onSubmit = async (values: z.infer<typeof feedTypeSchema>) => {
+  const onSubmit = async (values: FeedingTypeData) => {
     try {
       setError(null)
-      // Remove date from payload
-      const { date, totalCost, ...rest } = values
 
-      // Convert string values to numbers for backend
-      const mutationData = {
-        ...rest,
-        sizeInMm: rest.sizeInMm ? Number(rest.sizeInMm) : undefined,
-        quantityInKg: rest.quantityInKg ? Number(rest.quantityInKg) : undefined,
-        costPerKg: rest.costPerKg ? Number(rest.costPerKg) : undefined,
+      const basePayload = {
+        ...values,
+        sizeInMm: values.sizeInMm !== undefined ? Number(values.sizeInMm) : 0,
+        quantityInKg: values.quantityInKg !== undefined ? Number(values.quantityInKg) : 0,
+        costPerKg: values.costPerKg !== undefined ? Number(values.costPerKg) : 0,
       }
 
-      if (mode === 'create') {
-        await createFeedStockMutation.mutateAsync(mutationData as any)
-        queryClient.refetchQueries(['fish-batches'])
+      if (!initialValues?.id) {
+        await createFeedStockMutation.mutateAsync(basePayload as any)
+        queryClient.refetchQueries(['feed-inventories'])
+        queryClient.refetchQueries(['feed-quantity'])
+        queryClient.refetchQueries(['feed-statistics'])
+        queryClient.refetchQueries(['low-stock-feeds'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
-      } else if (mode === 'edit' && initialValues?.id) {
+      } else {
         await updateFeedStockMutation.mutateAsync({
-          ...mutationData,
           id: initialValues.id,
+          ...basePayload,
         } as any)
-        queryClient.refetchQueries(['fish-batches'])
+        queryClient.refetchQueries(['feed-inventories'])
+        queryClient.refetchQueries(['feed-quantity'])
+        queryClient.refetchQueries(['feed-statistics'])
+        queryClient.refetchQueries(['low-stock-feeds'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
@@ -146,18 +142,59 @@ export default function FeedStockForm({
   // Hide Feed Type and Pellet Size if initialValues is present (i.e., opened from Add action)
   const hideFeedTypeAndPelletSize = Boolean(initialValues)
 
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer">
+              <SolarIconSet.QuestionCircle size={16} />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent className="w-[70%]">{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
+
+  const NairaIcon1 = (
+    <span
+      className={cn(
+        'mr-1 flex h-full w-full items-center justify-center rounded-l-md  border-r border-neutral-200 bg-neutral-100 text-neutral-400',
+      )}
+    >
+      <Text>₦</Text>
+    </span>
+  )
+  const NairaIcon2 = (
+    <span
+      className={cn(
+        'mr-1 flex h-full w-full items-center justify-center rounded-l-md  border-r border-neutral-200 text-neutral-400',
+      )}
+    >
+      <Text>₦</Text>
+    </span>
+  )
+  const KgIcon = (
+    <span className=" flex h-full w-full items-center justify-center rounded-r-md border-l border-neutral-200 bg-neutral-100 text-neutral-400">
+      <Text variant="body" size="base">
+        Kg
+      </Text>
+    </span>
+  )
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="mt-12 flex w-full flex-col gap-10">
         {error && <FormValidationErrorAlert error={error} />}
         <div className="flex w-full flex-col gap-10">
-          <Grid cols={3} gap="gap-2" className="!grid-cols-1 md:!grid-cols-3">
+          <Grid cols={3} gap="gap-2" className={` ${hideFeedTypeAndPelletSize ? '!grid-cols-1' : 'md:!grid-cols-3'}`}>
             {!hideFeedTypeAndPelletSize && (
               <FlexBox direction="col" gap="gap-2">
                 <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                   Feed Type
                   <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
+                  <FormTooltip text="Enter the name or brand of the feed, e.g., Skretting, Top Feed, etc." />
                 </Text>
                 <FormField
                   control={form.control}
@@ -169,7 +206,7 @@ export default function FeedStockForm({
                           value={field.value}
                           onValueChange={(v) => {
                             if (v === 'add_custom') {
-                              console.log('open dialoog')
+                              console.log('open dialog')
                             } else {
                               field.onChange(v)
                             }
@@ -181,15 +218,23 @@ export default function FeedStockForm({
                               <SelectValue placeholder="Select Feed Type" />
                             </div>
                           </SelectTrigger>
-                          <SelectContent>
-                            {['PELLETS', 'COPPENS', 'SKRETTING', 'AQUALIS', 'BLUECROWN'].map((type) => (
-                              <SelectItem key={type} value={type}>
-                                {type}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="add_custom">
+                          <SelectContent className="z-[2000]">
+                            {Object.values(AvailableFeedTypes).map((type) => {
+                              // Format: remove underscores, capitalize each word
+                              const label = type
+                                .toLowerCase()
+                                .split('_')
+                                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                .join(' ')
+                              return (
+                                <SelectItem key={type} value={type}>
+                                  {label}
+                                </SelectItem>
+                              )
+                            })}
+                            {/* <SelectItem value="add_custom">
                               <span className="text-primary-500">+ Add custom</span>
-                            </SelectItem>
+                            </SelectItem> */}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -204,7 +249,7 @@ export default function FeedStockForm({
                 <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                   Pellet size
                   <span className="font-bold text-red-500">*</span>
-                  <SolarIconSet.QuestionCircle size={16} />
+                  <FormTooltip text="Select the size of the feed pellets in millimeters (e.g., 2mm, 3mm). This affects what fish size can eat it." />
                 </Text>
                 <FormField
                   control={form.control}
@@ -222,8 +267,8 @@ export default function FeedStockForm({
                               <SelectValue placeholder="Select Pellet size" />
                             </div>
                           </SelectTrigger>
-                          <SelectContent>
-                            {pelletsSize?.map((pellet) => (
+                          <SelectContent className="z-[2000]">
+                            {PelletSizes?.map((pellet) => (
                               <SelectItem key={pellet} value={parseFloat(pellet).toString()}>
                                 {pellet}
                               </SelectItem>
@@ -241,7 +286,7 @@ export default function FeedStockForm({
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Feed Quantity
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                <FormTooltip text="Enter the total quantity of feed available in kilograms (kg)." />
               </Text>
               <FormField
                 control={form.control}
@@ -251,14 +296,23 @@ export default function FeedStockForm({
                     <FormControl>
                       <div className="w-full">
                         <Input
+                          icon={KgIcon}
+                          iconPosition="right"
                           placeholder="Input quantity in kg"
                           {...field}
                           value={field.value ?? ''}
+                          type="number"
+                          min={0}
+                          step="any"
                           onChange={(e) => {
                             const val = e.target.value
-                            field.onChange(val === '' ? undefined : Number(val))
+                            // Only allow numbers and empty string
+                            if (/^\d*\.?\d*$/.test(val)) {
+                              field.onChange(val === '' ? undefined : Number(val))
+                            }
                           }}
-                          type="text" // or "number"
+                          inputMode="decimal"
+                          pattern="[0-9]*"
                         />
                       </div>
                     </FormControl>
@@ -274,11 +328,11 @@ export default function FeedStockForm({
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Date
                 <span className="font-bold text-red-500">*</span>
-                <SolarIconSet.QuestionCircle size={16} />
+                <FormTooltip text="Select the date when this feed batch was added to the inventory." />
               </Text>
               <FormField
                 control={form.control}
-                name="date"
+                name="time"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
@@ -294,6 +348,7 @@ export default function FeedStockForm({
                 {' '}
                 Total cost (₦)
                 <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="Enter the total amount you spent on this feed batch in naira." />
               </Text>
               <FormField
                 control={form.control}
@@ -302,7 +357,25 @@ export default function FeedStockForm({
                   <FormItem className="w-full !space-y-0">
                     <FormControl>
                       <div className="w-full">
-                        <Input placeholder="Input cost of feed" {...field} />
+                        <Input
+                          icon={NairaIcon1}
+                          iconPosition="left"
+                          placeholder="Input cost of feed"
+                          {...field}
+                          value={field.value ?? ''}
+                          type="number"
+                          min={0}
+                          step="any"
+                          onChange={(e) => {
+                            const val = e.target.value
+                            // Only allow numbers and empty string
+                            if (/^\d*\.?\d*$/.test(val)) {
+                              field.onChange(val === '' ? undefined : val)
+                            }
+                          }}
+                          inputMode="decimal"
+                          pattern="[0-9]*"
+                        />
                       </div>
                     </FormControl>
                     <div className={`relative min-h-fit`}>
@@ -316,6 +389,7 @@ export default function FeedStockForm({
               <Text className="flex items-center gap-2 text-sm font-medium text-neutral-700">
                 Cost per kg (₦)
                 <span className="font-bold text-red-500">*</span>
+                <FormTooltip text="This value is automatically calculated by dividing the total cost by the feed quantity." />
               </Text>
               <FormField
                 control={form.control}
@@ -324,7 +398,14 @@ export default function FeedStockForm({
                   <FormItem className="w-full !space-y-0">
                     <FormControl>
                       <div className="w-full">
-                        <Input placeholder="0" {...field} className="bg-neutral-200 !text-black" disabled />
+                        <Input
+                          icon={NairaIcon2}
+                          iconPosition="left"
+                          placeholder="0"
+                          {...field}
+                          className=" border-neutral-300 bg-neutral-200 !text-black"
+                          disabled
+                        />
                       </div>
                     </FormControl>
                     <div className={`relative min-h-fit`}>

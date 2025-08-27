@@ -3,7 +3,6 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { usePondStore } from 'src/store/pond.store'
 
 import { useNavigate } from 'react-router-dom'
-import { SortingForm } from '../../../components/forms/sorting/sorting-form'
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -42,8 +41,6 @@ export default function CreatePondPage() {
     switch (step) {
       case 1:
         return <HarvestForm handlePrevious={handlePrevious} handleNext={handleNext} />
-      case 2:
-        return <SortingForm handlePrevious={handlePrevious} handleNext={onSubmit} />
       default:
         return null
     }

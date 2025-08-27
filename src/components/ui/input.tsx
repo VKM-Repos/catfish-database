@@ -52,7 +52,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     // Base styles for the input
     const baseStyles =
-      'border flex h-10 w-full rounded-md font-clash px-3 py-2 font-normal text-base md:text-sm focus:outline-none '
+      'border flex h-10 w-full rounded-md font-bricolage px-3 py-2 font-normal text-base md:text-sm focus:outline-none '
 
     // State-specific styles
     const stateStyles = {
@@ -135,7 +135,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={cn('relative flex items-center', containerClassName)}>
         {icon && (iconPosition === 'left' || iconPosition === 'both') && (
-          <div className="absolute left-0 flex h-full w-9 items-center justify-center">{icon}</div>
+          <div className="flex h-full w-9 items-center justify-center">{icon}</div>
         )}
         <input
           type={type}
@@ -159,7 +159,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {icon && (iconPosition === 'right' || iconPosition === 'both') && (
-          <div className="absolute right-0 flex h-full w-9 items-center justify-center">{icon}</div>
+          <div className="flex h-full w-9 items-center justify-center">{icon}</div>
         )}
       </div>
     )

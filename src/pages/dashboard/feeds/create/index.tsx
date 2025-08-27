@@ -1,41 +1,25 @@
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Text } from 'src/components/ui/text'
 import { useState } from 'react'
-import { z } from 'zod'
-import CancelPrompt from '../../ponds/create/prompts/cancel-prompt'
+
 import PromptNewFeedType from '../prompts/prompt-new-feed'
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes'
-import { createGetQueryHook } from 'src/api/hooks/useGet'
 import FeedStockForm from '../../inventory/create/feed-stock/feed-stock-form'
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from 'src/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader } from 'src/components/ui/dialog'
 import { Button } from 'src/components/ui/button'
 import { Heading } from 'src/components/ui/heading'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import * as SolarIconSet from 'solar-icon-set'
+import ECLIPSE from 'src/assets/images/ellipse.png'
+import DiscardChanges from '../../ponds/create/prompts/discard-changes'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function RegisterFeedTypes() {
   const [open, setOpen] = useState(false)
   const [openCancelPrompt, setOpenCancelPrompt] = useState(false)
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
-
-  const useGetFishBatches = createGetQueryHook({
-    endpoint: '/fish-batches',
-    responseSchema: z.any(),
-    queryKey: ['fish-batches'],
-  })
-
-  const { data: fishBatches } = useGetFishBatches()
-
-  const handleCancelYes = () => {
-    setOpenCancelPrompt(false)
-    navigate(-1)
-  }
-
-  const handleCancelNo = () => {
-    setOpenCancelPrompt(false)
-  }
+  const queryClient = useQueryClient()
 
   const handleYesConditionOnClose = () => {
     setOpen(false)
@@ -43,7 +27,8 @@ export default function RegisterFeedTypes() {
 
   const handleNoConditionOnClose = () => {
     setOpen(false)
-    navigate(fishBatches.totalElements > 1 ? paths.dashboard.home.overview : paths.dashboard.home.getStarted)
+    queryClient.refetchQueries(['my-inventory'])
+    navigate(paths.dashboard.home.overview)
   }
 
   const RenderSteps = () => {
@@ -58,7 +43,9 @@ export default function RegisterFeedTypes() {
                   <SolarIconSet.MoneyBag />
                 </span>
               </h1>
-              <Text>Add each feed’s name, pellet size, and cost to populate your daily feeding options</Text>
+              <Text className="text-center text-sm lg:text-base">
+                Add each feed’s name, pellet size, and cost to populate your daily feeding options
+              </Text>
             </FlexBox>
             <div className="relative left-0 w-full rounded-lg border border-neutral-200 p-4">
               <Heading level={6} className="absolute left-0 top-0 w-full border-b border-neutral-200 p-3 text-left ">
@@ -76,36 +63,35 @@ export default function RegisterFeedTypes() {
               onInteractOutside={(e) => {
                 e.preventDefault()
               }}
-              className="max-h-[80vh] max-w-[750px] overflow-y-scroll p-8"
+              className="h-fit w-[90%] overflow-y-scroll rounded-lg p-8 lg:w-fit"
             >
-              <VisuallyHidden>
-                <DialogTitle>Add new feed type?</DialogTitle>
-                <DialogDescription>
-                  This popup allows you to either start a new process to add a feed type or leave the page
-                </DialogDescription>
-              </VisuallyHidden>
-              <FlexBox direction="col" justify="between" gap="gap-[3.25rem]" align="center">
-                <FlexBox direction="col" gap="gap-2" align="center">
-                  <Heading level={5} weight="bold">
+              <>
+                <picture>
+                  <img className="absolute left-0 top-0 w-[10rem]" src={ECLIPSE} alt="Background ellipse" />
+                </picture>
+                <DialogHeader>
+                  <Heading level={5} weight="semibold" className="text-center">
                     Success! Feed recorded
                   </Heading>
+                </DialogHeader>
+                <div className="space-y-8">
                   <Text className="text-center">
                     Do you want to add another feed ? You can always add to your stock from your inventory.
                   </Text>
-                </FlexBox>
-                <FlexBox direction="col" gap="gap-3" className="w-full">
-                  <Button variant="primary" onClick={handleYesConditionOnClose} className="w-full font-semibold">
-                    Yes, add another feed
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={handleNoConditionOnClose}
-                    className="w-full font-semibold text-primary-500"
-                  >
-                    No, I will do this later
-                  </Button>
-                </FlexBox>
-              </FlexBox>
+                  <div className="flex w-full flex-col justify-between space-x-2">
+                    <Button variant="primary" onClick={() => setStep(1)} className="w-full font-semibold">
+                      Yes, add another feed
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={handleNoConditionOnClose}
+                      className="w-full font-semibold text-primary-500"
+                    >
+                      No, I will do this later
+                    </Button>
+                  </div>
+                </div>
+              </>
             </DialogContent>
           </Dialog>
         )
@@ -115,23 +101,18 @@ export default function RegisterFeedTypes() {
   }
 
   return (
-    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full max-w-[50%]">
+    <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto w-full lg:max-w-[50%]">
       <FlexBox direction="col" gap="gap-[.625rem]" align="center" className="w-full text-center">
         <RenderSteps />
       </FlexBox>
       <>
-        <CancelPrompt
-          openCancelPrompt={openCancelPrompt}
-          setOpenCancelPrompt={setOpenCancelPrompt}
-          handleCancelYes={handleCancelYes}
-          handleCancelNo={handleCancelNo}
-        />
         <PromptNewFeedType
           open={open}
           setOpen={setOpen}
           handleNoConditionOnClose={handleNoConditionOnClose}
           handleYesConditionOnClose={handleYesConditionOnClose}
         />
+        <DiscardChanges open={openCancelPrompt} setOpen={setOpenCancelPrompt} onDiscard={() => navigate(-1)} />
       </>
     </FlexBox>
   )

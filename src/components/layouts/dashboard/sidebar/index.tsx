@@ -8,7 +8,11 @@ import { useState } from 'react'
 import { container, item } from 'src/components/animation'
 import { AnchorButton } from 'src/components/ui/anchor-button'
 
-export function Sidebar() {
+type SidebarProps = {
+  onLinkClick?: () => void
+}
+
+export function Sidebar({ onLinkClick }: SidebarProps) {
   const { pathname } = useLocation()
   const { links } = useSideBar()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -18,7 +22,7 @@ export function Sidebar() {
   }
 
   return (
-    <Section className="inset-y-0 h-[calc(100vh-100px)] w-full overflow-y-auto rounded-lg border border-neutral-200 bg-neutral-50 p-2 shadow-sm">
+    <Section className="inset-y-0 w-full overflow-y-auto rounded-lg border border-neutral-200 bg-neutral-50 p-2 shadow-sm lg:h-[calc(100vh-100px)]">
       <motion.ul variants={container} initial="hidden" animate="visible" className="flex flex-col gap-y-2">
         {links.map(({ path, icon, label, subLinks }) => (
           <motion.li key={label} variants={item} className="flex flex-col">
@@ -58,6 +62,7 @@ export function Sidebar() {
                         <motion.li key={label} variants={item}>
                           <Link
                             to={typeof path === 'string' ? path : ''}
+                            onClick={onLinkClick}
                             className={`${
                               pathname === path ? '!font-semibold text-primary-500' : 'text-neutral-500'
                             } flex items-center justify-start space-x-4 hover:text-primary-600`}
@@ -71,12 +76,13 @@ export function Sidebar() {
               </>
             ) : (
               path && (
-                <AnchorButton size={'lg'} active={pathname === path}>
+                <AnchorButton asChild size="lg" active={pathname === path}>
                   <Link
                     to={typeof path === 'string' ? path : path.root}
+                    onClick={onLinkClick}
                     className={`${
                       pathname === path ? ' text-inherit' : 'text-neutral-500'
-                    } flex w-full items-center justify-start space-x-3 whitespace-nowrap hover:text-primary-600`}
+                    } flex w-full items-center !justify-start space-x-3 whitespace-nowrap hover:text-primary-600`}
                   >
                     <span className="mt-[6px]">{icon}</span>
                     <Text size="base">{label}</Text>

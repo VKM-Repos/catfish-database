@@ -27,10 +27,10 @@ const commonLinks = {
 
 // Role-specific links
 const roleSpecificLinks = {
-  clusterManagers: {
-    label: 'Cluster managers',
-    path: paths.dashboard.clusterManagers.root,
-    icon: <SolarIconSet.Structure color="currentColor" size={22} iconStyle="Outline" />,
+  users: {
+    label: 'Users',
+    path: paths.dashboard.users.root,
+    icon: <SolarIconSet.UsersGroupTwoRounded color="currentColor" size={22} iconStyle="Outline" />,
   },
   admins: {
     label: 'Admins',
@@ -52,48 +52,36 @@ const roleSpecificLinks = {
     path: paths.dashboard.inventory.root,
     icon: <SolarIconSet.FolderOpen color="currentColor" size={22} iconStyle="Outline" />,
   },
+  staff: {
+    label: 'Staff',
+    path: paths.dashboard.staff.root,
+    icon: <SolarIconSet.UsersGroupRounded color="currentColor" size={22} iconStyle="Outline" />,
+  },
   system: {
     label: 'System',
     icon: <SolarIconSet.Settings color="currentColor" size={22} iconStyle="Outline" />,
     subLinks: [
       { label: 'Audit log', path: paths.dashboard.system.auditLog.root },
       { label: 'Clusters', path: paths.dashboard.system.clusters.root },
-      { label: 'Permissions', path: paths.dashboard.system.permissions.root },
-      { label: 'Farm rules', path: paths.dashboard.system.farmRules.root },
+      { label: 'Roles & permissions', path: paths.dashboard.system.rolesPermission.root },
+      { label: 'Configuration', path: paths.dashboard.system.configuration.root },
+      // { label: 'Permissions', path: paths.dashboard.system.permissions.root },
+      // { label: 'Farm rules', path: paths.dashboard.system.farmRules.root },
     ],
-  },
-  systemAdmin: {
-    label: 'System',
-    icon: <SolarIconSet.Settings color="currentColor" size={22} iconStyle="Outline" />,
-    subLinks: [{ label: 'Clusters', path: paths.dashboard.system.clusters.root }],
   },
 }
 
 // Combine links for each role
 export const sideBarLinks: Record<string, SideBarLink[]> = {
-  SUPER_ADMIN: [
-    commonLinks.home,
-    roleSpecificLinks.clusterManagers,
-    roleSpecificLinks.admins,
-    roleSpecificLinks.farmers,
-    commonLinks.reports,
-    roleSpecificLinks.system,
-    commonLinks.more,
-  ],
-  ADMIN: [
-    commonLinks.home,
-    roleSpecificLinks.clusterManagers,
-    roleSpecificLinks.farmers,
-    commonLinks.reports,
-    roleSpecificLinks.systemAdmin,
-    commonLinks.more,
-  ],
+  SUPER_ADMIN: [commonLinks.home, roleSpecificLinks.users, roleSpecificLinks.system, commonLinks.more],
+  ADMIN: [commonLinks.home, roleSpecificLinks.users, commonLinks.reports, commonLinks.more],
   CLUSTER_MANAGER: [commonLinks.home, roleSpecificLinks.farmers, commonLinks.reports, commonLinks.more],
   FARMER: [
     commonLinks.home,
     roleSpecificLinks.ponds,
     commonLinks.reports,
     roleSpecificLinks.inventory,
+    roleSpecificLinks.staff,
     commonLinks.more,
   ],
 }

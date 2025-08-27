@@ -1,87 +1,178 @@
+import { useState } from 'react'
+import { z } from 'zod'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
-import { Card } from 'src/components/ui/card'
+import { Popover, PopoverTrigger, PopoverContent } from 'src/components/ui/popover'
 import { Button } from 'src/components/ui/button'
-import * as SolarIconSet from 'solar-icon-set'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from 'src/components/ui/chart'
 import { ChartHeader } from 'src/components/global/chart-header'
+import { Card } from 'src/components/ui/card'
+import * as SolarIconSet from 'solar-icon-set'
+import { createGetQueryHook } from 'src/api/hooks/useGet'
+import { AvailableFeedTypes } from 'src/lib/constants'
+import { formatDate } from 'src/lib/date'
+import { formatPrice } from 'src/lib/utils'
+import { Text } from 'src/components/ui/text'
 
-const feedPriceConfig = {
-  feedPrice: {
-    label: 'Feed Price (₦)',
-    color: '#651391B2',
-  },
+type Interval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | 'ALL'
+const FEED_TYPES = Object.keys(AvailableFeedTypes) as Array<keyof typeof AvailableFeedTypes>
+type FeedType = (typeof FEED_TYPES)[number]
+
+function IntervalFilter({ value, onChange }: { value: Interval; onChange: (v: Interval) => void }) {
+  const options: Interval[] = ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL']
+  return <SelectPopover<Interval> label={value.toLowerCase()} options={options} value={value} onChange={onChange} />
 }
 
-const feedPriceData = [
-  { day: 'May 1', feedPrice: 3500 },
-  { day: 'May 3', feedPrice: 3700 },
-  { day: 'May 5', feedPrice: 4000 },
-  { day: 'May 8', feedPrice: 4200 },
-  { day: 'May 10', feedPrice: 4100 },
-  { day: 'May 13', feedPrice: 4300 },
-  { day: 'May 15', feedPrice: 4500 },
-  { day: 'May 18', feedPrice: 4700 },
-  { day: 'May 20', feedPrice: 5000 },
-  { day: 'May 23', feedPrice: 5200 },
-  { day: 'May 25', feedPrice: 5400 },
-  { day: 'May 27', feedPrice: 6000 },
-  { day: 'May 29', feedPrice: 7000 },
-  { day: 'May 30', feedPrice: 8000 },
-]
+function FeedTypeFilter({ value, onChange }: { value: FeedType; onChange: (v: FeedType) => void }) {
+  const options: FeedType[] = [...FEED_TYPES]
+  return (
+    <SelectPopover<FeedType>
+      label={value.replaceAll('_', ' ').toLowerCase()}
+      options={options}
+      value={value}
+      onChange={onChange}
+    />
+  )
+}
+
+function SelectPopover<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string
+  options: T[]
+  value: T
+  onChange: (newVal: T) => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="neutral" size="sm" className="flex gap-x-2 !border border-neutral-200 bg-white capitalize">
+          {label} <SolarIconSet.AltArrowDown size={14} />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent className="flex max-h-64 w-40 flex-col gap-1 overflow-y-scroll p-2">
+        {options.map((opt) => (
+          <Button
+            key={opt}
+            variant={opt === value ? 'neutral' : 'ghost'}
+            size="sm"
+            className="justify-start capitalize"
+            onClick={() => {
+              onChange(opt)
+              setOpen(false)
+            }}
+          >
+            {opt.replaceAll('_', ' ').toLowerCase()}
+          </Button>
+        ))}
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+const useFeedPriceTrend = createGetQueryHook({
+  endpoint: '/dashboards/farmer/feed-price-trend',
+  responseSchema: z.any(),
+  queryKey: ['feed-price-trend'],
+})
+
+const feedPriceConfig = {
+  feedPrice: { label: 'Feed Price (₦)', color: '#651391B2' },
+}
 
 export default function FeedPriceTrends() {
+  const [interval, setInterval] = useState<Interval>('DAILY')
+  const [feedType, setFeedType] = useState<FeedType>('PELLETS')
+
+  const { data: trendData, isLoading } = useFeedPriceTrend({
+    query: { interval, feedType },
+  })
+
+  const chartData =
+    trendData?.map((d: any) => ({
+      day: d.intervalLabel,
+      feedPrice: d.averagePrice,
+    })) ?? []
+
+  const hasNoData = chartData.length === 0
+
   return (
-    <Card className="h-[50rem] w-full rounded-[.875rem] border border-neutral-200 p-4">
+    <Card className="mt-10 w-[350px] rounded-[.875rem] border border-neutral-200 p-4 lg:h-[50rem] lg:w-full">
       <ChartHeader
-        title={'Trend of feed prices per kg'}
+        title="Trend of feed prices per kg"
         action={
-          <Button variant="ghost" className="rotate-90">
-            <SolarIconSet.MenuDots color="#A1A4AA" size={28} iconStyle="Bold" />
-          </Button>
+          <div className="flex gap-2">
+            <IntervalFilter value={interval} onChange={setInterval} />
+            <FeedTypeFilter value={feedType} onChange={setFeedType} />
+          </div>
         }
       />
-      <ChartContainer config={feedPriceConfig}>
-        <AreaChart
-          accessibilityLayer
-          data={feedPriceData}
-          margin={{
-            left: 12,
-            right: 12,
-            top: 12,
-            bottom: 12,
-          }}
-        >
-          {/* Solid, equally spaced grid lines */}
-          <CartesianGrid stroke="#E5E7EB" />
-          <XAxis
-            dataKey="day"
-            tick={{ fill: '#737780', fontSize: 10 }}
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-          />
-          <YAxis
-            domain={[0, 9000]}
-            tick={{ fill: '#737780', fontSize: 10 }}
-            axisLine={false}
-            tickLine={false}
-            tickMargin={4}
-            width={40}
-            interval="preserveStartEnd"
-            tickCount={10} // Show 10 equally spaced ticks (0, 1000, ..., 9000)
-          />
-          <defs>
-            <linearGradient id="colorFeedPrice" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#651391" stopOpacity={0.7} />
-              <stop offset="100%" stopColor="#651391" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="dot" hideLabel={false} className="!min-w-[10rem] bg-white" />}
-          />
-          <Area dataKey="feedPrice" type="linear" stroke="#651391" fill="url(#colorFeedPrice)" />
-        </AreaChart>
+
+      <ChartContainer config={feedPriceConfig} className="relative">
+        {isLoading ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Text className="text-sm text-neutral-400">Loading chart...</Text>
+          </div>
+        ) : hasNoData ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Text className="text-sm text-neutral-500">No data available for this filter</Text>
+          </div>
+        ) : (
+          <AreaChart
+            className=""
+            accessibilityLayer
+            data={chartData}
+            margin={{ top: 12, right: 12, bottom: 12, left: 12 }}
+          >
+            <CartesianGrid stroke="#E5E7EB" />
+
+            <XAxis
+              dataKey="day"
+              tick={{ fill: '#737780', fontSize: 10 }}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => formatDate(value)}
+            />
+
+            <YAxis
+              domain={[0, 'auto']}
+              tick={{ fill: '#737780', fontSize: 10 }}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={4}
+              width={48}
+              interval="preserveStartEnd"
+              tickFormatter={(value) => formatPrice(value)}
+            />
+
+            <defs>
+              <linearGradient id="colorFeedPrice" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#651391" stopOpacity={0.7} />
+                <stop offset="100%" stopColor="#651391" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  indicator="dot"
+                  hideLabel={false}
+                  className="!min-w-[10rem] bg-white !p-2"
+                  // formatter={(value: number, _name: string) => formatPrice(value)}
+                  labelFormatter={(label) => formatDate(label)}
+                />
+              }
+            />
+
+            <Area type="linear" dataKey="feedPrice" stroke="#651391" fill="url(#colorFeedPrice)" />
+          </AreaChart>
+        )}
       </ChartContainer>
     </Card>
   )

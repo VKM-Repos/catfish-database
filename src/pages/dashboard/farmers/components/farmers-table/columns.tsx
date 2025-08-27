@@ -35,18 +35,22 @@ export const columns: ColumnDef<Farmer>[] = [
     cell: ({ row }) => <Text weight="light">{row.original.cluster?.name}</Text>,
   },
   {
-    accessorKey: 'accountNonLocked',
+    accessorKey: 'enabled',
     header: 'Status',
     cell: ({ row }) => (
       <StatusBadge
-        status={row.getValue('accountNonLocked')}
+        status={row.getValue('enabled')}
         activeText="Active"
         inactiveText="Deactivated"
-        inactiveBg="bg-[#737780]/10 border-[#737780] text-[#737780]"
+        size="sm"
+        inactiveConfig={{
+          textColor: 'text-[#737780]',
+          borderColor: 'border-[#737780]',
+          backgroundColor: 'bg-[#737780]/10',
+          dotColor: 'bg-[#737780]',
+        }}
         inactiveIcon={
-          <div
-            className={cn('h-2 w-2 rounded-full', row.getValue('accountNonLocked') ? 'bg-success-400' : 'bg-[#737780]')}
-          />
+          <div className={cn('h-2 w-2 rounded-full', row.getValue('enabled') ? 'bg-success-400' : 'bg-[#737780]')} />
         }
       />
     ),

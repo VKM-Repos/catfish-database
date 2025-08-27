@@ -1,220 +1,172 @@
-import { useState } from 'react'
-import { FlexBox } from 'src/components/ui/flexbox'
-
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { Form, FormControl, FormDescription, FormField, FormItem } from 'src/components/ui/form'
-import { dailyFeedingSchema, dailyWaterQualitySchema } from 'src/schemas'
-import { z } from 'zod'
-import { Button } from 'src/components/ui/button'
-import { useNavigate, useParams } from 'react-router-dom'
-import { paths } from 'src/routes'
-import { createPostMutationHook } from 'src/api/hooks/usePost'
-import { Switch } from 'src/components/ui/switch'
-import FormValidationErrorAlert from 'src/components/global/form-error-alert'
-import { ClientErrorType, ServerErrorType } from 'src/types'
-import { scrollToTop } from 'src/lib/utils'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Breadcrumb,
+  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbList,
   BreadcrumbSeparator,
 } from 'src/components/ui/breadcrumb'
 import { Text } from 'src/components/ui/text'
-import { CreateReportDialog } from '../../../components/modals/create-report-modal'
-import FishFeedingForm from '../../../components/forms/feeding-report/fish-feeding-form'
-import WaterQualityForm from '../../../components/forms/feeding-report/water-quality-form'
-import { useQueryClient } from '@tanstack/react-query'
-
-type FormData = z.infer<typeof dailyFeedingSchema> & z.infer<typeof dailyWaterQualitySchema>
+import { paths } from 'src/routes'
+import { DailyFeeding } from '../../../components/forms/feeding-report/fish-feeding-form'
+import { WaterQuality } from '../../../components/forms/water-quality'
+import { useStepperStore } from 'src/store/daily-feeding-stepper-store'
+import { FlexBox } from 'src/components/ui/flexbox'
+import { FishBehavior } from '../../../components/forms/fish-behavior'
+import { FishDisease } from '../../../components/forms/fish-disease'
+import { Mortality } from '../../../components/forms/mortality'
+import { DateTimePicker } from '../../../components/forms/date-time-picker'
+import { useMemo } from 'react'
 
 export default function CreateDailyFeedingReportPage() {
-  const [openDialog, setOpenDialog] = useState(false)
-  const [error, setError] = useState<ClientErrorType | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const { step, next, previous } = useStepperStore()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const [searchParams] = useSearchParams()
+  const from = searchParams.get('from')
+  const handleNext = () => {
+    next()
+    // setStep(step + 1)
+  }
 
-  const { id } = useParams<{ id: string }>()
-  const useCreateDailyFeeding = createPostMutationHook({
-    endpoint: '/feeding-water-qualities',
-    requestSchema: z.any(),
-    responseSchema: z.any(),
-  })
+  const handlePrevious = () => {
+    if (from) {
+      navigate(paths.dashboard.reports.root)
+      return
+    }
+    if (step === 1) {
+      navigate(paths.dashboard.home.getStarted)
+      return
+    }
+    previous()
+  }
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(dailyFeedingSchema.merge(dailyWaterQualitySchema)),
-    defaultValues: {
-      feedType: '',
-      pelletSize: '',
-      feedQuantity: 0,
-      feedTime: '',
-      dissolvedOxygen: '',
-      phLevel: '',
-      temperature: '',
-      ammonia: '',
-      nitrite: '',
-      nitrate: '',
-      alkalinity: '',
-      hardness: '',
-      recordWaterQuality: false,
-      observation: '',
-    },
-    mode: 'onChange',
-  })
-
-  const { reset } = form
-  const createDailyFeeding = useCreateDailyFeeding()
-
-  const onSubmit = async (values: FormData) => {
-    setError(null)
-    setIsSubmitting(true)
-    try {
-      const feedingData = {
-        pondId: id,
-        feedType: values.feedType?.toUpperCase(),
-        pelletSize: values.pelletSize ? Number(values.pelletSize.replace('mm', '')) : null,
-        quantity: Number(values.feedQuantity),
-        // feedTime: values.feedTime,
-      }
-
-      const waterQualityData = {
-        dissolvedOxygen: values.dissolvedOxygen ? Number(values.dissolvedOxygen) : null,
-        phLevel: values.phLevel ? Number(values.phLevel) : null,
-        temperature: values.temperature ? Number(values.temperature) : null,
-        ammonia: values.ammonia ? Number(values.ammonia) : null,
-        nitrite: values.nitrite ? Number(values.nitrite) : null,
-        alkalinity: values.alkalinity ? Number(values.alkalinity) : null,
-        hardness: values.hardness ? Number(values.hardness) : null,
-        frequency: 'DAILY',
-        // observation: values.observation ? values.observation : null,
-        observation: 'EXCELLENT',
-      }
-
-      const formData = { ...feedingData, ...waterQualityData }
-      console.log('Submit', formData)
-      await createDailyFeeding.mutateAsync(formData)
-
-      queryClient.refetchQueries(['feeding-water-quality'])
-
-      setOpenDialog(true)
-    } catch (error) {
-      console.error('Submission error:', error)
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: ServerErrorType } }
-        const errorData = axiosError.response?.data
-        if (errorData) {
-          setError({
-            title: errorData?.error,
-            message: errorData?.message,
-            errors: errorData?.errors ?? null,
-          })
-          scrollToTop()
-        }
-      }
-    } finally {
-      setIsSubmitting(false)
+  const RenderSteps = () => {
+    switch (step) {
+      case 1:
+        return <DailyFeeding handleNext={handleNext} handlePrevious={handlePrevious} />
+      case 2:
+        return <WaterQuality handleNext={handleNext} handlePrevious={handlePrevious} />
+      case 3:
+        return <FishBehavior handleNext={handleNext} handlePrevious={handlePrevious} />
+      case 4:
+        return <FishDisease handlePrevious={handlePrevious} handleNext={handleNext} />
+      case 5:
+        return <Mortality handlePrevious={handlePrevious} />
+      default:
+        return null
     }
   }
 
   return (
-    <>
-      <FlexBox className="mx-10">
+    <div className="flex flex-col justify-center lg:items-center">
+      <FlexBox className="flex w-full  flex-col lg:mx-10 lg:max-w-[80%] lg:flex-row lg:items-center" justify="between">
         <CustomBreadcrumb />
+        <DateTimePicker dateLabel="Change Date" timeLabel="Time" required={true} className="items-start" />
       </FlexBox>
-      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-10 w-full max-w-[60%]">
-        <>
-          <CreateReportDialog open={openDialog} resetForm={reset} onOpenChange={setOpenDialog} />
-          {error && <FormValidationErrorAlert error={error} />}
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col items-center space-y-8 pb-0.5">
-              {/* Daily Feeding Section */}
-              <div className="flex w-full flex-col items-start gap-1">
-                <div className="py-5">
-                  <h5 className="text-[1.5rem] font-bold text-[#444955]">Daily Feeding</h5>
-                  <p className="text-xs font-medium">
-                    Log today&lsquo;s feed type, amount, and feeding time to track your fish nutrition
-                  </p>
-                </div>
-              </div>
-              <div className="w-full rounded-lg border border-neutral-300 p-5">
-                <FishFeedingForm form={form} />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="recordWaterQuality"
-                render={({ field }) => (
-                  <FormItem className="flex w-full flex-col items-start justify-between shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormDescription className="flex items-center gap-1">
-                        Do you want to record Water Quality? <span className="text-xl text-error-500">*</span>
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <span>No</span>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
-                        <span>Yes</span>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              {/* Water Quality Section */}
-              <div className="w-full">
-                {form.getValues('recordWaterQuality') && (
-                  <div className="">
-                    <div className="mb-2 w-full items-start">
-                      <div className="py-5">
-                        <h5 className="text-[1.5rem] font-bold text-[#444955]">Daily Water Quality</h5>
-                        <p className="text-xs font-medium">Record key water parameters to monitor pond health.</p>
-                      </div>
-                    </div>
-                    <div className="w-full rounded-lg border border-neutral-300 p-5">
-                      <WaterQualityForm form={form} />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Form Actions */}
-              <div className="mb-5 mt-10 flex w-full justify-between bg-neutral-100 px-5 py-3">
-                <Button
-                  type="button"
-                  onClick={() => navigate(paths.dashboard.home.getStarted)}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="flex items-center gap-2"
-                  disabled={!form.formState.isValid || isSubmitting}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Continue'}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </>
+      <FlexBox direction="col" gap="gap-5" align="center" className="mx-auto mt-5 w-full lg:max-w-[80%]">
+        <Stepper />
+        <RenderSteps />
       </FlexBox>
-    </>
+    </div>
   )
 }
 
+const Stepper = () => {
+  const { step } = useStepperStore()
+
+  return (
+    <div className="hidden w-full lg:inline">
+      <div className="mx-auto flex max-w-[90%] items-center justify-center">
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${
+            step === 1 || step > 1 ? 'border-primary-500' : ''
+          } p-[.625rem]`}
+        >
+          <span
+            className={`${
+              step >= 1 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
+          >
+            1
+          </span>
+          <p className={`${step >= 1 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Feeding</p>
+        </FlexBox>
+        <hr className={`w-full max-w-[1/5] border ${step > 1 ? 'border-primary-500' : ''}`} />
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${step > 1 ? 'border-primary-500' : ''} p-[.625rem]`}
+        >
+          <span
+            className={`${
+              step >= 2 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
+          >
+            2
+          </span>
+          <p className={`${step >= 2 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Water Quality</p>
+        </FlexBox>
+        <hr className={`w-full max-w-[1/5] border ${step > 2 ? 'border-primary-500' : ''}`} />
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${step > 2 ? 'border-primary-500' : ''} p-[.625rem]`}
+        >
+          <span
+            className={`${
+              step >= 3 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
+          >
+            3
+          </span>
+          <p className={`${step >= 3 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Fish Behavior</p>
+        </FlexBox>
+        <hr className={`w-full max-w-[1/5] border ${step > 3 ? 'border-primary-500' : ''}`} />
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${step > 3 ? 'border-primary-500' : ''} p-[.625rem]`}
+        >
+          <span
+            className={`${
+              step >= 4 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
+          >
+            4
+          </span>
+          <p className={`${step >= 4 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Fish Diseases</p>
+        </FlexBox>
+        <hr className={`w-full max-w-[1/5] border ${step > 4 ? 'border-primary-500' : ''}`} />
+
+        <FlexBox
+          gap="gap-[.625rem]"
+          align="center"
+          className={`w-full max-w-fit rounded-[4rem] border ${step > 4 ? 'border-primary-500' : ''} p-[.625rem]`}
+        >
+          <span
+            className={`${
+              step >= 5 ? 'border-primary-500 text-primary-500' : 'border-neutral-200 text-neutral-200'
+            } flex h-5 w-5 items-center justify-center rounded-[1.25rem] border text-xs`}
+          >
+            5
+          </span>
+          <p className={`${step >= 5 ? 'text-primary-500' : 'text-neutral-200'} text-sm font-medium`}>Mortality</p>
+        </FlexBox>
+      </div>
+    </div>
+  )
+}
+
+// CustomBreadcrumb remains the same
 const CustomBreadcrumb = () => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href={paths.dashboard.home.getStarted}>
-            <Text className="text-primary-500">Daily Farm Report</Text>
+          <BreadcrumbLink>
+            <Text className="text-primary-500">Daily Report</Text>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
@@ -225,5 +177,53 @@ const CustomBreadcrumb = () => {
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
+  )
+}
+
+{
+  /* Circular Progress Bar for mobile screens.*/
+}
+
+const TOTAL_STEPS = 5
+
+export const CircularProgress = () => {
+  const { step } = useStepperStore()
+
+  const radius = 50
+  const stroke = 15
+  const normalizedRadius = radius - stroke / 2
+  const circumference = 2 * Math.PI * normalizedRadius
+
+  const strokeDashoffset = useMemo(() => {
+    const clampedStep = Math.min(step, TOTAL_STEPS)
+    const progress = clampedStep / TOTAL_STEPS
+    return circumference - progress * circumference
+  }, [step, circumference])
+
+  return (
+    <div className="">
+      <svg width={radius * 2} height={radius * 2} className="">
+        {/* Background Circle */}
+        <circle cx={radius} cy={radius} r={normalizedRadius} fill="transparent" stroke="#e5e7eb" strokeWidth={stroke} />
+        {/* Progress Circle */}
+        <circle
+          cx={radius}
+          cy={radius}
+          r={normalizedRadius}
+          fill="transparent"
+          stroke="#651391" // Primary color
+          strokeWidth={stroke}
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="butt"
+          transform={`rotate(-90 ${radius} ${radius})`} // Rotate around center
+          style={{ transition: 'stroke-dashoffset 0.4s ease' }}
+        />
+        {/* Text in the center */}
+        <text x="50%" y="50%" textAnchor="middle" dy=".3em" className=" text-[1rem] font-semibold">
+          {step} of {TOTAL_STEPS}
+        </text>
+      </svg>
+    </div>
   )
 }

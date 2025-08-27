@@ -12,13 +12,13 @@ import { Text } from 'src/components/ui/text'
 import { StatusBadge } from 'src/components/global/status-badge'
 import * as SolarIconSet from 'solar-icon-set'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { pondResponseSchema } from 'src/schemas'
 import { paths } from 'src/routes'
 import { LoadingScreen } from 'src/components/global/loading-screen'
+import { z } from 'zod'
 
-const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>({
+const useGetPond = createGetQueryHook({
   endpoint: '/ponds/:id',
-  responseSchema: pondResponseSchema,
+  responseSchema: z.any(),
   queryKey: ['pond-details-for-farmer'],
 })
 
@@ -50,7 +50,7 @@ export default function PondsDetailsPage() {
         <FlexBox
           justify="between"
           align="center"
-          className="sticky mb-[2rem] mt-4 w-full px-6 py-[.625rem] shadow-[0px_4px_16px_-8px_#0F4B2F29]"
+          className="sticky mb-[2rem] mt-4 w-full rounded-lg bg-neutral-50 px-6 py-[.625rem] shadow-md"
         >
           <FlexBox direction="col" gap="gap-1">
             <FlexBox gap="gap-2" align="center">
@@ -72,7 +72,7 @@ export default function PondsDetailsPage() {
           />
         </FlexBox>
         <Spacer />
-        <Container className="!px-12">
+        <Container className="lg:!px-12">
           <FlexBox direction="col" justify="center" align="start" gap="gap-4" className="w-full cursor-default">
             <Tabs
               defaultValue={activeTab}

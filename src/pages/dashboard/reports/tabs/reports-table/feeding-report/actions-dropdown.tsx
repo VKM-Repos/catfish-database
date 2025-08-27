@@ -9,15 +9,16 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { paths } from 'src/routes/paths'
 // import { DeactivateUserDialog } from '../modals/deactivate-user'
-import type { User } from 'src/types'
 import * as SolarIconSet from 'solar-icon-set'
 
 type ActionsDropdownProps = {
-  user: User
+  report: any
+  step: string
 }
 
-export function FeedingReportActionsDropdown({ user }: ActionsDropdownProps) {
+export function FeedingReportActionsDropdown({ report, step }: ActionsDropdownProps) {
   const navigate = useNavigate()
+  console.log(report)
 
   return (
     <>
@@ -29,10 +30,11 @@ export function FeedingReportActionsDropdown({ user }: ActionsDropdownProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.reports.viewFeedingReport(user.id))}>
-            <SolarIconSet.Eye /> View
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(paths.dashboard.reports.editFeedingReport(user.id))}>
+          <DropdownMenuItem
+            onClick={() =>
+              navigate(paths.dashboard.reports.editFeedingReport(report.id) + `?step=${step}`, { state: { report } })
+            }
+          >
             <SolarIconSet.Pen2 /> Edit
           </DropdownMenuItem>
         </DropdownMenuContent>

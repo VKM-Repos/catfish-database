@@ -31,8 +31,8 @@ export default function AddSalesRecord() {
         )
       case 2:
         return (
-          <div className="my-8 flex w-full flex-col items-center justify-center gap-4">
-            <Text className="text-lg font-semibold">Sales report updated successfully!</Text>
+          <div className="my-8 flex w-[300px]  flex-col items-center justify-center gap-4">
+            <Text className="text-lg font-semibold">Sales record added!</Text>
             <Button
               variant="primary"
               onClick={() => {
@@ -57,7 +57,7 @@ export default function AddSalesRecord() {
         onInteractOutside={(e) => {
           e.preventDefault()
         }}
-        className="max-h-[80vh] max-w-[750px] overflow-y-scroll p-8"
+        className="max-h-[80vh] max-w-[90%] rounded-lg p-8  lg:w-fit lg:overflow-y-scroll"
       >
         <RenderSteps />
       </DialogContent>

@@ -5,14 +5,32 @@ import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui
 import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
 
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
+
+import { formatCurrency } from 'src/lib/utils'
+
 export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) {
+  const FormTooltip = ({ text }: { text: string }) => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-pointer">
+              <SolarIconSet.QuestionCircle size={16} />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{text}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
   return (
     <FlexBox gap="gap-4" align="center" className="w-full flex-col md:flex-row">
       <FlexBox gap="gap-2" direction="col" className="w-full">
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
           Cost of fish per unit
           <span className="gap-2 font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <FormTooltip text="Enter the price per fish in Naira. This will be used to calculate your total fish cost." />
         </Text>
         <FormField
           control={form.control}
@@ -25,7 +43,11 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
                   <div className="w-full">
                     <Input
                       placeholder="Amount in naira"
-                      {...field}
+                      value={formatCurrency(field.value)}
+                      onChange={(e) => {
+                        const rawValue = e.target.value.replace(/[^0-9]/g, '')
+                        field.onChange(rawValue)
+                      }}
                       className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                   </div>
@@ -42,7 +64,7 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
         <Text className="flex items-center gap-2 text-sm font-medium text-neutral-600">
           Total Cost
           <span className="gap-2 font-bold text-red-500">*</span>
-          <SolarIconSet.QuestionCircle size={16} />
+          <FormTooltip text="This is the total amount spent on purchasing the fish. It is calculated by multiplying the quantity by the unit cost." />
         </Text>
         <FormField
           control={form.control}
@@ -55,6 +77,7 @@ export default function CostDetailsForm({ form }: { form: UseFormReturn<any> }) 
                   <div className="w-full">
                     <Input
                       {...field}
+                      value={formatCurrency(field.value)}
                       placeholder="Amount in naira"
                       className="!w-full border-0 px-3 text-sm !text-black focus-visible:ring-0 focus-visible:ring-offset-0"
                       disabled

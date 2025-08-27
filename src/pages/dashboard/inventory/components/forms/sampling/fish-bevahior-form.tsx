@@ -3,14 +3,14 @@ import { FlexBox } from 'src/components/ui/flexbox'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
 import { Input } from 'src/components/ui/input'
 import { Text } from 'src/components/ui/text'
-import type { samplingSchema } from 'src/schemas'
+import type { fishBehaviorSchema } from 'src/schemas'
 
 import type { z } from 'zod'
 import { useRef } from 'react'
 import * as SolarIconSet from 'solar-icon-set'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 
-type SamplingFormValues = z.infer<typeof samplingSchema>
+type SamplingFormValues = z.infer<typeof fishBehaviorSchema>
 
 export default function FishBehaviorForm({ form }: { form: UseFormReturn<SamplingFormValues> }) {
   const timeInputRef = useRef<HTMLInputElement>(null)
@@ -44,7 +44,7 @@ export default function FishBehaviorForm({ form }: { form: UseFormReturn<Samplin
           </Text>
           <FormField
             control={form.control}
-            name="behavior"
+            name="behaviorType"
             render={({ field }) => (
               <FormItem>
                 <FormControl>

@@ -101,7 +101,7 @@ export default function FeedPriceTrends() {
   const hasNoData = chartData.length === 0
 
   return (
-    <Card className="w-[350px] rounded-[.875rem] border border-neutral-200 p-4 lg:h-[50rem] lg:w-full">
+    <Card className="mt-10 w-[350px] rounded-[.875rem] border border-neutral-200 p-4 lg:h-[50rem] lg:w-full">
       <ChartHeader
         title="Trend of feed prices per kg"
         action={

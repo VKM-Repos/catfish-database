@@ -1,4 +1,4 @@
-const subdomainConfig: any = {
+export const subdomainConfig: any = {
   'ajegunle-test-cluster': {
     apiBaseUrl: 'https://ajegunle-test-cluster.aquadata.com.ng/api',
   },
@@ -23,4 +23,23 @@ const subdomainConfig: any = {
   },
 }
 
-export default subdomainConfig
+export const liveSubdomains: any = {
+  admin: {
+    apiBaseUrl: 'https://admin.aquadata.com.ng/api',
+  },
+  ajegunle: {
+    apiBaseUrl: 'https://ajegunle.aquadata.com.ng/api',
+  },
+  camp74: {
+    apiBaseUrl: 'https://camp74.aquadata.com.ng/api',
+  },
+  eriwe: {
+    apiBaseUrl: 'https://eriwe.aquadata.com.ng/api',
+  },
+  kumbotso: {
+    apiBaseUrl: 'https://kumbotso.aquadata.com.ng/api',
+  },
+  waziri: {
+    apiBaseUrl: 'https://waziri.aquadata.com.ng/api',
+  },
+}

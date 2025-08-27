@@ -44,7 +44,7 @@ export default function InventoryPage() {
                   </TabsTrigger>
                 </TabsList>
               </div>
-              <ScrollArea className="h-[calc(100vh-240px)] w-full overflow-y-scroll">
+              <ScrollArea className="max-h-[calc(100vh-240px)] w-full overflow-y-scroll">
                 <TabsContent value="feed-inventory" className="w-full">
                   <FeedInventoryTable />
                 </TabsContent>

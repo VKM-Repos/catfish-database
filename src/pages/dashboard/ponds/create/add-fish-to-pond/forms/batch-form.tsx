@@ -53,7 +53,8 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
   const createBatch = useCreateBatch()
   const updateBatch = useUpdateBatch(batchId ?? '')
   const queryClient = useQueryClient()
-
+  const [averageFishWeightScale, setAverageFishWeightScale] = useState('g')
+  const [totalWeightOFishScale, setTotalWeightOFishScale] = useState('g')
   const [error, setError] = useState<ClientErrorType | null>(null)
 
   const transformedInitial = initialValues ? transformFishApiToForm(initialValues) : {}
@@ -98,6 +99,10 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
     try {
       setError(null)
       const apiData = transformFishFormDataToApi(values, ponds.content)
+      // Convert initialWeight to kg only if entered in grams
+      if (averageFishWeightScale === 'g') {
+        apiData.initialWeight = Number(values.initialWeight) / 1000
+      }
 
       if (mode === 'edit' && batchId) {
         await updateBatch.mutateAsync(apiData)
@@ -142,7 +147,12 @@ export default function FishBatchForm({ mode, batchId, initialValues, onSuccess,
         {error && <FormValidationErrorAlert error={error} />}
 
         <BatchPondSelection form={form} pondNames={pondNames} />
-        <FishDetailsForm form={form} fishSizes={fishSizes} />
+        <FishDetailsForm
+          setAverageFishWeightScale={setAverageFishWeightScale}
+          setTotalWeightOFishScale={setTotalWeightOFishScale}
+          form={form}
+          fishSizes={fishSizes}
+        />
         <SupplierInfoForm form={form} />
         <CostDetailsForm form={form} />
 

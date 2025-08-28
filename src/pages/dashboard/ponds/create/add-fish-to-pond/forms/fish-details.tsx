@@ -1,13 +1,26 @@
 import { UseFormReturn } from 'react-hook-form'
+import { Dispatch, SetStateAction } from 'react'
 import { Text } from 'src/components/ui/text'
 import * as SolarIconSet from 'solar-icon-set'
 import { FormControl, FormField, FormItem, FormMessage } from 'src/components/ui/form'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'src/components/ui/select'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup } from 'src/components/ui/select'
 import { Input } from 'src/components/ui/input'
 import { FlexBox } from 'src/components/ui/flexbox'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'src/components/ui/tooltip'
 
-export default function FishDetailsForm({ form, fishSizes }: { form: UseFormReturn<any>; fishSizes: string[] }) {
+interface FishDetailsFormProps {
+  form: UseFormReturn<any>
+  fishSizes: string[]
+  setAverageFishWeightScale: Dispatch<SetStateAction<string>>
+  setTotalWeightOFishScale: Dispatch<SetStateAction<string>>
+}
+
+export default function FishDetailsForm({
+  form,
+  fishSizes,
+  setAverageFishWeightScale,
+  setTotalWeightOFishScale,
+}: FishDetailsFormProps) {
   const FormTooltip = ({ text }: { text: string }) => {
     return (
       <TooltipProvider>
@@ -105,14 +118,32 @@ export default function FishDetailsForm({ form, fishSizes }: { form: UseFormRetu
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder="Input initial average body weight of fish in grams"
-                  {...field}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9.]/g, '')
-                    field.onChange(value)
-                  }}
-                />
+                <div className="w-ful focus-within:ring-offset-background flex max-h-fit items-center rounded-md border border-neutral-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2">
+                  <div className="w-full border-0 border-r">
+                    <Input
+                      placeholder="Input initial average body weight of fish in grams"
+                      {...field}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9.]/g, '')
+                        field.onChange(value)
+                      }}
+                      className="!w-full border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                  </div>
+                  <div className="bg-neutral-100">
+                    <Select onValueChange={(value) => setAverageFishWeightScale(value)}>
+                      <SelectTrigger className="text-disabled border-0 bg-neutral-100 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                        <SelectValue placeholder="g" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="g">g</SelectItem>
+                          <SelectItem value="kg">kg</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

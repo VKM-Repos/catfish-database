@@ -183,6 +183,8 @@ export default function PondForm({
         await createPondMutation.mutateAsync(createData)
       }
 
+      queryClient.refetchQueries(['my-ponds-in-ponds'])
+      queryClient.refetchQueries(['fish-batches-in-ponds'])
       queryClient.refetchQueries(['my-ponds-in-samplings-splitting'])
       queryClient.refetchQueries(['my-ponds'])
       queryClient.refetchQueries(['all-ponds'])

@@ -188,7 +188,10 @@ export function UsersForm({ mode, initialValues, onSuccess, onClose }: UserFormP
                       state={fieldState.error ? 'error' : 'default'}
                       placeholder="Enter email"
                       {...field}
+                      value={field.value || ''}
+                      onChange={(e) => field.onChange(e.target.value.toLowerCase())}
                       disabled={mode === 'edit'}
+                      className="lowercase"
                     />
                   </FormControl>
                   <FormMessage />

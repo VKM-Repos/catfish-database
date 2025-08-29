@@ -31,7 +31,7 @@ export default function InventoryPage() {
               className="flex w-full flex-col items-start gap-1"
               onValueChange={handleTabChange}
             >
-              <div className="h-[45px] w-full overflow-x-scroll border-b border-b-neutral-200 p-0">
+              <div className="h-[45px] w-full overflow-x-hidden border-b border-b-neutral-200 p-0">
                 <TabsList className=" text-sm font-semibold">
                   <TabsTrigger value="feed-inventory" className="data-[state=active]:font-semibold">
                     Feed Inventory

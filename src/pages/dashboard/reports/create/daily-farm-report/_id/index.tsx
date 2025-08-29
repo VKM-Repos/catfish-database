@@ -16,10 +16,10 @@ import { FishBehavior } from '../../../components/forms/fish-behavior'
 import { FishDisease } from '../../../components/forms/fish-disease'
 import { Mortality } from '../../../components/forms/mortality'
 import { DateTimePicker } from '../../../components/forms/date-time-picker'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 export default function CreateDailyFeedingReportPage() {
-  const { step, next, previous } = useStepperStore()
+  const { step, next, previous, reset } = useStepperStore()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const from = searchParams.get('from')
@@ -27,6 +27,12 @@ export default function CreateDailyFeedingReportPage() {
     next()
     // setStep(step + 1)
   }
+
+  useEffect(() => {
+    if (!from) {
+      reset()
+    }
+  }, [from, reset])
 
   const handlePrevious = () => {
     if (from) {

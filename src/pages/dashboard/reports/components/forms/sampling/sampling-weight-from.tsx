@@ -7,15 +7,21 @@ import type { samplingSchema } from 'src/schemas'
 import * as SolarIconSet from 'solar-icon-set'
 
 import { z } from 'zod'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { useParams } from 'react-router-dom'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from 'src/components/ui/select'
 
 type SamplingFormValues = z.infer<typeof samplingSchema>
 
 export default function SamplingWeightForm({ form }: { form: UseFormReturn<SamplingFormValues> }) {
   const { watch, setValue } = form
   const { id } = useParams<{ id: string }>()
+  const [weightOfFishScale, setWeightOfFishScale] = useState('kg')
+  const [currentAverageScale, setCurrentAverageScale] = useState('kg')
+  const [initialWeightScale, setInitialWeightScale] = useState('kg')
+  const [averageWeightGaincale, setAverageWeightGaincale] = useState('kg')
+  const [totalWeightGainScale, settotalWeightGainScale] = useState('kg')
   const weightOfFishSampled = watch('weightOfFishSampled')
   const numberOfFishSampled = watch('numberOfFishSampled')
   const useGetActiveFishBatch = createGetQueryHook({
@@ -25,7 +31,8 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
   })
   const { data: activeFishBatch } = useGetActiveFishBatch()
   // Calculate derived values
-  const currentAvgWeight = Number(weightOfFishSampled) / Number(numberOfFishSampled) || 0
+  const weightOfFishSampledInKg = (Number(weightOfFishSampled) || 0) * (weightOfFishScale === 'g' ? 0.001 : 1)
+  const currentAvgWeight = weightOfFishSampledInKg / Number(numberOfFishSampled) || 0
   const initialWeightInGrams = activeFishBatch?.[0]?.initialWeight || 0
   const initialWeightInKg = initialWeightInGrams / 1000 // convert g to kg
 
@@ -36,10 +43,10 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
   // Update form values whenever calculations change
   useEffect(() => {
     if (Number(numberOfFishSampled) > 0) {
-      setValue('avgWeightFishSampled', currentAvgWeight.toFixed(2))
+      setValue('avgWeightFishSampled', weightOfFishSampledInKg.toFixed(5))
     }
-    setValue('totalWeightGain', totalWeightGain.toFixed(2))
-  }, [currentAvgWeight, totalWeightGain, numberOfFishSampled, setValue])
+    setValue('totalWeightGain', totalWeightGain.toFixed(5))
+  }, [weightOfFishSampledInKg, totalWeightGain, numberOfFishSampled, setValue])
 
   const handleIncrement = (fieldName: keyof SamplingFormValues) => {
     // biome-ignore lint/style/useNumberNamespace: <explanation>
@@ -144,14 +151,18 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                         className="!w-full border-0 px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                       />
                     </div>
-                    <div
-                      className={`flex h-10 w-10 flex-col items-center justify-center border border-b-0 border-r-0 border-t-0 border-neutral-200 ${
-                        form.getValues('weightOfFishSampled')
-                          ? 'bg-primary-500 text-xs text-white'
-                          : 'bg-neutral-100 text-xs'
-                      }`}
-                    >
-                      Kg
+                    <div className="border-l border-neutral-200 bg-neutral-100 text-xs text-[#737780]">
+                      <Select onValueChange={(value) => setWeightOfFishScale(value)}>
+                        <SelectTrigger className="text-disabled border-0 bg-neutral-100 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                          <SelectValue placeholder="g" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="g">g</SelectItem>
+                            <SelectItem value="kg">kg</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </FormControl>
@@ -179,8 +190,18 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 value={currentAvgWeight.toFixed(4)}
               />
             </div>
-            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
-              Kg
+            <div className="border-l border-neutral-200 bg-neutral-100 text-xs text-[#737780]">
+              <Select>
+                <SelectTrigger className="text-disabled border-0 bg-neutral-100 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                  <SelectValue placeholder="g" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="g">g</SelectItem>
+                    <SelectItem value="kg">kg</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -200,8 +221,18 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 value={initialWeightInGrams.toFixed(2)}
               />
             </div>
-            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
-              g
+            <div className="border-l border-neutral-200 bg-neutral-100 text-xs text-[#737780]">
+              <Select>
+                <SelectTrigger className="text-disabled border-0 bg-neutral-100 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                  <SelectValue placeholder="g" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="g">g</SelectItem>
+                    <SelectItem value="kg">kg</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -230,8 +261,18 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 value={avgWeightGain.toFixed(4)}
               />
             </div>
-            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
-              Kg
+            <div className="border-l border-neutral-200 bg-neutral-100 text-xs text-[#737780]">
+              <Select>
+                <SelectTrigger className="text-disabled border-0 bg-neutral-100 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                  <SelectValue placeholder="g" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="g">g</SelectItem>
+                    <SelectItem value="kg">kg</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -251,8 +292,18 @@ export default function SamplingWeightForm({ form }: { form: UseFormReturn<Sampl
                 value={totalWeightGain.toFixed(2)}
               />
             </div>
-            <div className="flex h-10 w-10 items-center justify-center border-l border-neutral-200 bg-neutral-100 text-xs">
-              Kg
+            <div className="border-l border-neutral-200 bg-neutral-100 text-xs text-[#737780]">
+              <Select>
+                <SelectTrigger className="text-disabled border-0 bg-neutral-100 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                  <SelectValue placeholder="g" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="g">g</SelectItem>
+                    <SelectItem value="kg">kg</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>

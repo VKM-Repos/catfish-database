@@ -69,9 +69,14 @@ export function HarvestForm({ handlePrevious }: { handlePrevious: () => void; ha
         harvestTime: harvestDateTime,
       }
       await createHarvestReport.mutateAsync(harvestData)
-      await queryClient.refetchQueries(['fish-batches-in-ponds'])
-      await queryClient.refetchQueries(['my-ponds-in-ponds'])
-      await queryClient.refetchQueries(['stocking-harvest-data'])
+
+      queryClient.refetchQueries(['stocking-harvest-data'])
+      queryClient.refetchQueries(['sampling-reports-table'])
+      queryClient.refetchQueries(['fish-batches-in-ponds'])
+      queryClient.refetchQueries(['my-ponds-in-ponds'])
+      queryClient.refetchQueries(['sales-records'])
+      queryClient.refetchQueries(['fish-batches-all'])
+      queryClient.refetchQueries(['volume-sales'])
 
       setOpenDialog(true)
     } catch (err) {

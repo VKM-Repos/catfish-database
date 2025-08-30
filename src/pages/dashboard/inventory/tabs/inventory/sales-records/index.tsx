@@ -92,8 +92,6 @@ export default function SalesRecords() {
     })
   }, [raw, fishBatchMap])
 
-  console.log('Enriched Sales Records:', volumeOfSales)
-
   const isLoading = isLoadingSales || isLoadingFishBatches
 
   const title = 'Sales records'

@@ -234,7 +234,7 @@ export function Header() {
                 <Button variant="outline" className="w-full" onClick={() => setIsLogoutDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button variant="primary" className="w-full" onClick={handleLogout}>
+                <Button disabled={logoutMutation.isLoading} variant="primary" className="w-full" onClick={handleLogout}>
                   Logout
                 </Button>
               </div>

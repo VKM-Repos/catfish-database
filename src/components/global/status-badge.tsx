@@ -44,8 +44,8 @@ export function StatusBadge({
   size = 'md',
   className,
 }: StatusBadgeProps) {
+  console.log(status, '??? stat')
   const config = status ? activeConfig : inactiveConfig
-
   const sizeClasses = {
     sm: 'px-2 py-0.5 text-xs gap-1',
     md: 'px-2 py-1 text-sm gap-2',
@@ -60,7 +60,7 @@ export function StatusBadge({
 
   const defaultIcon = <div className={cn('rounded-full', config.dotColor, dotSizes[size])} />
 
-  const icon = status ? activeIcon ?? defaultIcon : inactiveIcon ?? defaultIcon
+  const icon = !status ? activeIcon ?? defaultIcon : inactiveIcon ?? defaultIcon
 
   return (
     <div

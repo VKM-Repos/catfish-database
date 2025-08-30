@@ -120,17 +120,23 @@ export default function SalesRecordsForm({ onCancel, setStep, mode, initialValue
           harvestTime,
         })
 
-        queryClient.refetchQueries(['sales-records'])
         form.reset()
         onSuccess?.()
         setStep(2)
       } else if (mode === 'edit' && initialValues?.id) {
         await updateSalesRecordMutation.mutateAsync(values)
-        queryClient.refetchQueries(['sales-records'])
+
         form.reset()
         onSuccess?.()
         setStep(2)
       }
+      queryClient.refetchQueries(['stocking-harvest-data'])
+      queryClient.refetchQueries(['sampling-reports-table'])
+      queryClient.refetchQueries(['fish-batches-in-ponds'])
+      queryClient.refetchQueries(['my-ponds-in-ponds'])
+      queryClient.refetchQueries(['sales-records'])
+      queryClient.refetchQueries(['fish-batches-all'])
+      queryClient.refetchQueries(['volume-sales'])
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: ServerErrorType } }

@@ -18,12 +18,12 @@ type User = {
 
 export type ServerErrorType = {
   error: string
-  errors: string[]
+  errors: string[] | null
   message: string
 }
 
 export type ClientErrorType = {
   title: string
   message: string
-  errors: string[]
+  errors: string[] | null
 }

@@ -86,7 +86,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
               <span className="sr-only">Close</span>
             </DialogClose>
             <DialogHeader>
-              <Heading level={5}>{!user?.accountNonLocked ? 'Deactivate Farmer?' : 'Activate Farmer?'}</Heading>
+              <Heading level={5}>{user?.accountNonLocked ? 'Deactivate Farmer?' : 'Activate Farmer?'}</Heading>
             </DialogHeader>
             <div className="space-y-8">
               <Text weight="light" size="base">

@@ -21,6 +21,7 @@ import { ClientErrorType, ServerErrorType } from 'src/types'
 import { loginRequestSchema, loginResponseSchema } from 'src/schemas/schemas'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { PartnersLogo } from 'src/components/ui/partners-logo'
+import { getClusterSlugFromSubdomain } from 'src/lib/utils'
 
 const useLogin = createPostMutationHook({
   endpoint: '/auth/login',
@@ -49,15 +50,21 @@ export default function LoginPage() {
   const onSubmit = async (values: FormValues) => {
     try {
       setError(null)
-
+      const expectedCluster = getClusterSlugFromSubdomain()
       // Call the login API
       const response = await loginMutation.mutateAsync(values)
-
-      // console.log('response: ', response)
 
       // Extract data from response
       const { userDto, accessToken, refreshToken, expiresAt } = response
 
+      const userCluster = userDto.cluster?.id
+      if (userCluster !== expectedCluster) {
+        return setError({
+          title: 'Authentication error',
+          message: 'Invalid email or password',
+          errors: null,
+        })
+      }
       // Update auth store
       login(userDto, accessToken, refreshToken, expiresAt)
     } catch (err) {

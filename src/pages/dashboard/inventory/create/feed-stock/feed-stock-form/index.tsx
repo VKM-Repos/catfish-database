@@ -99,10 +99,6 @@ export default function FeedStockForm({
 
       if (!initialValues?.id) {
         await createFeedStockMutation.mutateAsync(basePayload as any)
-        queryClient.refetchQueries(['feed-inventories'])
-        queryClient.refetchQueries(['feed-quantity'])
-        queryClient.refetchQueries(['feed-statistics'])
-        queryClient.refetchQueries(['low-stock-feeds'])
 
         form.reset()
         onSuccess?.()
@@ -112,15 +108,15 @@ export default function FeedStockForm({
           id: initialValues.id,
           ...basePayload,
         } as any)
-        queryClient.refetchQueries(['feed-inventories'])
-        queryClient.refetchQueries(['feed-quantity'])
-        queryClient.refetchQueries(['feed-statistics'])
-        queryClient.refetchQueries(['low-stock-feeds'])
 
         form.reset()
         onSuccess?.()
         setStep(2)
       }
+      queryClient.refetchQueries(['feed-inventories'])
+      queryClient.refetchQueries(['feed-quantity'])
+      queryClient.refetchQueries(['feed-statistics'])
+      queryClient.refetchQueries(['low-stock-feeds'])
     } catch (err) {
       console.error('Error adding feed type:', err)
       if (err && typeof err === 'object' && 'response' in err) {

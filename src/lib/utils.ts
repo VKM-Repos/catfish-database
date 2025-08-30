@@ -147,3 +147,20 @@ export function formatNumber(value: number | string | undefined): string {
   if (num >= 100_000) return (num / 1_000)?.toFixed(num % 1_000 === 0 ? 0 : 1) + 'k'
   return num?.toLocaleString()
 }
+
+export const getClusterSlugFromSubdomain = (): string => {
+  const hostname = window.location.hostname
+
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'dev'
+  }
+
+  const parts = hostname.split('.')
+  const fullSubdomain = parts[0]
+
+  if (fullSubdomain.includes('-test-cluster')) {
+    return fullSubdomain.replace('-test-cluster', '')
+  }
+
+  return fullSubdomain
+}

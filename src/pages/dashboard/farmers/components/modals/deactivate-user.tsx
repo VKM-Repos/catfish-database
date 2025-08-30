@@ -23,7 +23,6 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
 
   const [isActive, setIsActive] = useState(user?.accountNonLocked)
   const [step, setStep] = useState(1)
-  console.log(user, 'user', isActive)
 
   // Create the put mutation hook for deactivating a user.
   const useDeactivateUser = createPutMutationHook({
@@ -87,7 +86,7 @@ export function DeactivateUserDialog({ user, open, onOpenChange }: DeactivateUse
               <span className="sr-only">Close</span>
             </DialogClose>
             <DialogHeader>
-              <Heading level={5}>{user?.accountNonLocked ? 'Deactivate Farmer?' : 'Activate Farmer?'}</Heading>
+              <Heading level={5}>{!user?.accountNonLocked ? 'Deactivate Farmer?' : 'Activate Farmer?'}</Heading>
             </DialogHeader>
             <div className="space-y-8">
               <Text weight="light" size="base">

@@ -173,9 +173,6 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
         }
         await createSamplingReport.mutateAsync(samplingData)
         await createHarvestReport.mutateAsync(harvestData)
-        queryClient.refetchQueries(['sampling-reports-table'])
-        queryClient.refetchQueries(['fish-batches-in-ponds'])
-        queryClient.refetchQueries(['my-ponds-in-ponds'])
 
         resetDateTime()
         setOpenConfirmDialog(false)
@@ -183,14 +180,18 @@ export function SortingForm({ handlePrevious }: { handlePrevious: () => void }) 
         form.reset()
       } else {
         await createSamplingReport.mutateAsync(samplingData)
-        queryClient.refetchQueries(['sampling-reports-table'])
-        queryClient.refetchQueries(['fish-batches-in-ponds'])
-        queryClient.refetchQueries(['my-ponds-in-ponds'])
+
         resetDateTime()
         setOpenConfirmDialog(false)
         setOpenDialog(true)
         form.reset()
       }
+      queryClient.refetchQueries(['sampling-reports-table'])
+      queryClient.refetchQueries(['fish-batches-in-ponds'])
+      queryClient.refetchQueries(['my-ponds-in-ponds'])
+      queryClient.refetchQueries(['sales-records'])
+      queryClient.refetchQueries(['fish-batches-all'])
+      queryClient.refetchQueries(['volume-sales'])
     } catch (err) {
       setOpenConfirmDialog(false)
       if (err && typeof err === 'object' && 'response' in err) {

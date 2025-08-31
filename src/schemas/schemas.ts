@@ -236,11 +236,17 @@ export const pondFormSchema = z.object({
   longitude: z
     .string()
     .min(1, 'Longitude is required')
-    .refine((val) => !isNaN(Number(val)), 'Longitude must be a valid number'),
+    .refine((val) => {
+      const num = Number(val)
+      return !isNaN(num) && num >= -180 && num <= 180
+    }, 'Longitude must be between -180 and 180'),
   latitude: z
     .string()
     .min(1, 'Latitude is required')
-    .refine((val) => !isNaN(Number(val)), 'Latitude must be a valid number'),
+    .refine((val) => {
+      const num = Number(val)
+      return !isNaN(num) && num >= -90 && num <= 90
+    }, 'Latitude must be between -90 and 90'),
   clusterId: z.string().min(1, 'Cluster ID is required'),
   farmerId: z.string().optional(),
 })

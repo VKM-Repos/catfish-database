@@ -151,7 +151,7 @@ export function formatNumber(value: number | string | undefined): string {
 export const getClusterSlugFromSubdomain = (): string => {
   const hostname = window.location.hostname
 
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === 'catefishdb.netlify.app') {
     return 'dev'
   }
 

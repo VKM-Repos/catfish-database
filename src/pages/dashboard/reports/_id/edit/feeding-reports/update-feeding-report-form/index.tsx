@@ -25,6 +25,8 @@ import { createPutMutationHook } from 'src/api/hooks/usePut'
 import FormValidationErrorAlert from 'src/components/global/form-error-alert'
 import { UpdateReportDialog } from '../../components/update-report-dialog'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAuthStore } from 'src/store/auth.store'
+import { dailyFeedingSchema } from 'src/schemas'
 
 const initialValues = {
   feedType: '',
@@ -49,7 +51,9 @@ export function UpdateFeedingReportForm() {
   const timeInputRef = useRef<HTMLInputElement>(null)
   const dateInputRef = useRef<HTMLInputElement>(null)
   const { activeInputs, setFormData, setActiveInput, reset: resetStore, reportId } = useDailyFeedingStore()
-  const [recordDailyFeeding, setRecordDailyReport] = useState(true)
+  const [recordDailyFeeding] = useState(true)
+
+  const user = useAuthStore((state) => state.user)
 
   const useGetFeedInventory = createGetQueryHook({
     endpoint: '/feed-inventories',
@@ -64,10 +68,18 @@ export function UpdateFeedingReportForm() {
     responseSchema: z.any(),
   })
   const updateDailyFeeding = useUpdateDailyFeeding()
-  const dailyFeedingSchema = z.object({
-    feedType: z.string().min(1, 'Feed type is required'),
-    feedQuantity: z.string().min(1, 'Quantity is required').regex(/^\d+$/, 'Must be a number'),
+
+  const useGetFeedInventoryByClusterManager = createGetQueryHook({
+    endpoint: `/feed-inventories/farmers/${location?.state?.report?.batch?.pond?.farmer?.id}`,
+    responseSchema: z.any(),
+    queryKey: ['feed-inventory-feeds-by-cluster-manager'],
+    options: {
+      enabled: user?.role === 'CLUSTER_MANAGER',
+    },
   })
+  const { data: feedInventoryByClusterManager } = useGetFeedInventoryByClusterManager()
+  console.log(`${location.state.report.feedType}${location.state.report.pelletSize}`, '????')
+
   const form = useForm<z.infer<typeof dailyFeedingSchema>>({
     resolver: zodResolver(dailyFeedingSchema),
     defaultValues: {
@@ -81,10 +93,14 @@ export function UpdateFeedingReportForm() {
   const { reset } = form
 
   const onSubmit = async (data: z.infer<typeof dailyFeedingSchema>) => {
+    const numbers = data.feedType.match(/\d+\.\d+|\d+/)
+    data.pelletSize = numbers ? numbers.join('') : ''
+    data.feedType = data.feedType.replace(/\d+/g, '')
+    data.feedType = data.feedType.replace('.', '')
     try {
       const updateFeedingData = {
-        feedType: data.feedType?.replace(/\d+/g, '')?.toUpperCase(),
-        pelletSize: Number(data.feedType.match(/\d+/g)?.join('')),
+        feedType: data.feedType?.toUpperCase(),
+        pelletSize: data.pelletSize ? Number(data.pelletSize.replace('mm', '')) : null,
         quantity: Number(data.feedQuantity),
         feedingTime: combinedDateTime,
       }
@@ -298,21 +314,40 @@ export function UpdateFeedingReportForm() {
                                   <SelectValue placeholder="Select Feed type" />
                                 </div>
                               </SelectTrigger>
-                              <SelectContent>
-                                {feedInventory?.content.map((feed: any) => (
-                                  <SelectItem
-                                    className="w-full items-center justify-between "
-                                    key={feed.id}
-                                    value={feed.type + feed.sizeInMm}
-                                  >
-                                    {''}
-                                    <Text>
-                                      {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
-                                    </Text>
-                                    <SelectSeparator />
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
+                              {user?.role === 'FARMER' && (
+                                <SelectContent>
+                                  {feedInventory?.content.map((feed: any) => (
+                                    <SelectItem
+                                      className="w-full items-center justify-between "
+                                      key={feed.id}
+                                      value={feed.type + feed.sizeInMm}
+                                    >
+                                      {''}
+                                      <Text>
+                                        {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
+                                      </Text>
+                                      <SelectSeparator />
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              )}
+                              {user?.role === 'CLUSTER_MANAGER' && (
+                                <SelectContent>
+                                  {feedInventoryByClusterManager?.content.map((feed: any) => (
+                                    <SelectItem
+                                      className="w-full items-center justify-between "
+                                      key={feed.id}
+                                      value={feed.type + feed.sizeInMm}
+                                    >
+                                      {''}
+                                      <Text>
+                                        {feed.type?.replace('_', ' ')} ({feed.sizeInMm}mm)
+                                      </Text>
+                                      <SelectSeparator />
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              )}
                             </Select>
                           </FormControl>
                           <FormMessage />

@@ -102,12 +102,12 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
         value: totFisIsLoading ? '...' : formatNumber(totalFish?.availableFish),
         rate: '+2.4%',
       },
-      {
-        color: '#BCADFB',
-        label: 'Total revenue generated',
-        value: totRevIsLoading ? '...' : `₦ ${formatNumber(totalRevenue?.[0]?.totalRevenue)}`,
-        rate: '+0%',
-      },
+      // {
+      //   color: '#BCADFB',
+      //   label: 'Total revenue generated',
+      //   value: totRevIsLoading ? '...' : `₦ ${formatNumber(totalRevenue?.[0]?.totalRevenue)}`,
+      //   rate: '+0%',
+      // },
       {
         color: '#B9D9FF',
         label: 'Average weight',
@@ -165,7 +165,7 @@ export default function FarmStatistics({ farmerId }: FarmStatisticsProps) {
         </div>
       </FlexBox>
 
-      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-5">
+      <Grid cols={2} gap="gap-5" className="w-full grid-cols-2 text-sm lg:grid-cols-4">
         {farmStatCards.map((farmStat, index) => {
           const sign = isPositive(farmStat.rate)
 

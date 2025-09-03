@@ -232,7 +232,11 @@ export const pondFormSchema = z.object({
     .string()
     .min(1, 'Depth is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Depth must be a positive number'),
-  status: z.enum(['Active', 'Inactive']).default('Active'),
+  height: z
+    .string()
+    .min(1, 'Depth is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Depth must be a positive number'),
+  status: z.enum(['Active', 'In Active']).default('Active'),
   longitude: z
     .string()
     .min(1, 'Longitude is required')
@@ -260,7 +264,7 @@ export const pondCreateSchema = z.object({
   length: z.number().positive('Length must be positive'),
   breadth: z.number().positive('Breadth must be positive'),
   height: z.number().positive('Depth must be positive'),
-  status: z.enum(['Active', 'Inactive']).default('Active'),
+  status: z.enum(['Active', 'In Active']).default('Active'),
   longitude: z.number(),
   latitude: z.number(),
   clusterId: z.string().min(1, 'Cluster ID is required'),
@@ -285,7 +289,7 @@ export const pondResponseSchema = z.object({
   length: z.number(),
   breadth: z.number(),
   height: z.number(),
-  status: z.enum(['Active', 'Inactive']),
+  status: z.enum(['Active', 'In Active']),
   longitude: z.number(),
   latitude: z.number(),
   cluster: z.object({ id: z.string(), name: z.string() }),
@@ -295,20 +299,30 @@ export const pondResponseSchema = z.object({
 })
 
 // Helper function to transform form data to API data
-export const transformFormDataToApiData = (formData: z.infer<typeof pondFormSchema>) => {
+export const transformFormDataToApiData = (
+  formData: z.infer<typeof pondFormSchema>,
+): z.infer<typeof pondCreateSchema> => {
+  const apiStatus: z.infer<typeof pondCreateSchema>['status'] = formData.status === 'In Active' ? 'In Active' : 'Active'
   return {
-    ...formData,
+    name: formData.name,
     size: Number(formData.length) * Number(formData.breadth) * Number(formData.depth),
+    waterSource: formData.waterSource as z.infer<typeof pondCreateSchema>['waterSource'],
+    pondType: formData.pondType as z.infer<typeof pondCreateSchema>['pondType'],
     length: Number(formData.length),
     breadth: Number(formData.breadth),
     height: Number(formData.depth),
+    status: apiStatus,
     longitude: Number(formData.longitude),
     latitude: Number(formData.latitude),
+    clusterId: formData.clusterId,
+    farmerId: formData.farmerId,
   }
 }
 
 // Helper function to transform API data to form data
-export const transformApiDataToFormData = (apiData: Partial<z.infer<typeof pondCreateSchema>>) => {
+export const transformApiDataToFormData = (
+  apiData: Partial<z.infer<typeof pondCreateSchema>>,
+): Partial<z.infer<typeof pondFormSchema>> => {
   return {
     ...apiData,
     size: apiData.size?.toString() || '',
@@ -317,6 +331,8 @@ export const transformApiDataToFormData = (apiData: Partial<z.infer<typeof pondC
     height: apiData.height?.toString() || '',
     longitude: apiData.longitude?.toString() || '',
     latitude: apiData.latitude?.toString() || '',
+    // Normalize status to form enum
+    status: apiData.status ? (apiData.status === 'In Active' ? 'In Active' : apiData.status) : undefined,
   }
 }
 
@@ -571,37 +587,6 @@ export const sortingSchema = z.object({
   totalWeightHarvested: z.any(),
   costPerKg: z.any(),
 })
-// export const sortingSchema = z.object({
-//   splitOccur: z.boolean(),
-//   reason: z
-//     .string()
-//     .optional()
-//     .superRefine((val, ctx) => {
-//       console.log(ctx, val)
-
-//       if (ctx.path[0].&& !val) {
-//         ctx.addIssue({
-//           code: z.ZodIssueCode.custom,
-//           message: 'Reason is required when split occurred',
-//         })
-//       }
-//     }),
-//   batches: z
-//     .array(
-//       z.object({
-//         numberOfFishMoved: z.number().min(1, 'Number of fish moved is required'),
-//         destinationPond: z.string().min(1, 'Destination pond is required'),
-//       }),
-//     )
-//     .superRefine((val, ctx) => {
-//       if (ctx.parent.reason === 'transfer' && (!val || val.length === 0)) {
-//         ctx.addIssue({
-//           code: z.ZodIssueCode.custom,
-//           message: 'Batch details are required for transfers',
-//         })
-//       }
-//     }),
-// })
 
 export const harvestSchema = z.object({
   numberOfFishHarvested: z.string().optional(),

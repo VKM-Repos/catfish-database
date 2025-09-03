@@ -40,7 +40,6 @@ export default function UpdatePondPage() {
     waterSource: p.waterSource as z.infer<typeof waterSourceEnum>,
     pondType: p.pondType as z.infer<typeof pondTypeEnum>,
   })
-
   const renderSteps = () => {
     switch (step) {
       case 1:

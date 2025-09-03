@@ -119,7 +119,7 @@ export default function PondForm({
       size: transformedInitialValues.size || '',
       length: transformedInitialValues.length || '',
       breadth: transformedInitialValues.breadth || '',
-      depth: transformedInitialValues.depth || '',
+      depth: transformedInitialValues.height || '',
       waterSource: transformedInitialValues.waterSource || '',
       pondType: transformedInitialValues.pondType || '',
       clusterId: transformedInitialValues.clusterId || current_cluster?.id || clusterId || urlClusterId || '',

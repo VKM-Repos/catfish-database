@@ -5,7 +5,6 @@ import { Text } from 'src/components/ui/text'
 import { pondResponseSchema, pondTypeEnum, waterSourceEnum } from 'src/schemas'
 import { useNavigate } from 'react-router-dom'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
-import { paths } from 'src/routes'
 import PondForm, { PondCreateData } from '../../create/add-pond/forms/pond-form'
 import { Heading } from 'src/components/ui/heading'
 import { z } from 'zod'
@@ -72,7 +71,7 @@ export default function UpdatePondPage({ open, onOpenChange, id }: UpdatePondPag
             <Button
               variant="primary"
               onClick={() => {
-                navigate(`${paths.dashboard.ponds.root}/${id}`)
+                navigate(-1)
                 setTimeout(() => {
                   setStep(1)
                 }, 1000)

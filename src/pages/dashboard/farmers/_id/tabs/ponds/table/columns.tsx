@@ -69,7 +69,8 @@ export const columns: ColumnDef<any>[] = [
     accessorFn: (row) => row.original.status,
     header: 'Pond Status',
     cell: ({ row }) => {
-      const status = row.original.latestQuantity === 0 ? 'Inactive' : 'Active'
+      console.log(row.original.status)
+      const status = row.original.status
       return (
         <div
           className={`flex max-w-fit items-center gap-2 rounded-sm border px-2 py-1 text-sm capitalize ${

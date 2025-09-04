@@ -6,9 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from 'src/components/ui/dropdown-menu'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { pondResponseType } from 'src/types/ponds.types'
-
+import UpdatePondPage from 'src/pages/dashboard/ponds/_id/edit'
 import { useState } from 'react'
 
 type ActionsDropdownType = {
@@ -16,10 +16,15 @@ type ActionsDropdownType = {
 }
 
 export default function ActionsDropdown({ pond }: ActionsDropdownType) {
+  const [open, setIsOpen] = useState(false)
+  const navigate = useNavigate()
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
 
-  const [open, setOpen] = useState(false)
+  const id = pond?.id
+  const openDialog = () => {
+    setIsOpen(true)
+  }
 
   return (
     <>
@@ -31,10 +36,11 @@ export default function ActionsDropdown({ pond }: ActionsDropdownType) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => setOpen(true)}>Edit pond</DropdownMenuItem>
+          <DropdownMenuItem onClick={openDialog}>Edit pond</DropdownMenuItem>
           <DropdownMenuItem>Delete pond</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <UpdatePondPage open={open} onOpenChange={setIsOpen} id={id} />
     </>
   )
 }

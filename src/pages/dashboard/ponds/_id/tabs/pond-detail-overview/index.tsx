@@ -13,11 +13,11 @@ import { formatLatLng, formatNumberWithCommas } from 'src/lib/utils'
 import { Loader } from 'src/components/ui/loader'
 import { Button } from 'src/components/ui/button'
 import * as SolarIconSet from 'solar-icon-set'
-import { paths } from 'src/routes'
 import { Heading } from 'src/components/ui/heading'
 
 import { useState } from 'react'
 import MegaDatePicker, { DateRange } from 'src/components/ui/mega-datepicker'
+import UpdatePondPage from '../../edit'
 
 const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>({
   endpoint: '/ponds/:id',
@@ -26,6 +26,7 @@ const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>
 })
 
 export default function PondDetailOverview() {
+  const [editModalOpen, setEditModalOpen] = useState(false)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -56,6 +57,10 @@ export default function PondDetailOverview() {
     // For example, update query parameters or trigger data refresh
   }
 
+  const openModal = () => {
+    setEditModalOpen(true)
+  }
+
   if (isLoading) {
     return <Loader />
   }
@@ -64,14 +69,7 @@ export default function PondDetailOverview() {
     <FlexBox direction="col" gap="gap-12" className="w-full">
       <FlexBox direction="row" align="center" justify="between" className="w-full">
         <Heading level={6}>Pond Info</Heading>
-        <Button
-          variant="outline"
-          size={'sm'}
-          className="border-primary-400"
-          onClick={() => {
-            id && navigate(paths.dashboard.ponds.id(id))
-          }}
-        >
+        <Button variant="outline" size={'sm'} className="border-primary-400" onClick={openModal}>
           <FlexBox gap="gap-3" align="center">
             <SolarIconSet.PenNewSquare color="#651391" size={20} iconStyle="Outline" />
             <Text className="text-primary-400">Edit</Text>
@@ -114,6 +112,7 @@ export default function PondDetailOverview() {
       <section className="h-fit w-full">
         <MonthlyFeedConsumption dateRange={dateRange} />
       </section>
+      <UpdatePondPage open={editModalOpen} onOpenChange={setEditModalOpen} id={id} />
     </FlexBox>
   )
 }

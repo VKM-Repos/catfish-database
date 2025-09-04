@@ -3,7 +3,7 @@ import { Button } from 'src/components/ui/button'
 import { Dialog, DialogContent } from 'src/components/ui/dialog'
 import { Text } from 'src/components/ui/text'
 import { pondResponseSchema, pondTypeEnum, waterSourceEnum } from 'src/schemas'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createGetQueryHook } from 'src/api/hooks/useGet'
 import { paths } from 'src/routes'
 import PondForm, { PondCreateData } from '../../create/add-pond/forms/pond-form'
@@ -16,12 +16,18 @@ const useGetPond = createGetQueryHook<typeof pondResponseSchema, { id: string }>
   queryKey: ['pond-details-for-farmer'],
 })
 
-export default function UpdatePondPage() {
+type UpdatePondPageProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  id?: string
+}
+
+export default function UpdatePondPage({ open, onOpenChange, id }: UpdatePondPageProps) {
   const [step, setStep] = useState(1)
 
   const navigate = useNavigate()
 
-  const { id } = useParams<{ id: string }>()
+  // const { id } = useParams<{ id: string }>()
 
   const { data: pond } = useGetPond({ route: { id: id! } })
 
@@ -87,13 +93,13 @@ export default function UpdatePondPage() {
   }
 
   const handleClose = () => {
-    navigate(`${paths.dashboard.ponds.root}/${id}`)
+    navigate(-1)
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => navigate(`${paths.dashboard.ponds.root}/${id}`)}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={` max-h-[40rem] w-[90%] overflow-hidden rounded-lg  lg:w-full lg:min-w-fit ${
+        className={`max-h-[40rem] w-[90%] overflow-hidden rounded-lg  lg:w-full lg:min-w-fit ${
           step === 1 && '!overflow-y-scroll'
         } px-8 py-4`}
         onInteractOutside={(e) => {
